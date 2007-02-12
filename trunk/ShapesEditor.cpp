@@ -424,10 +424,11 @@ ShapesEditor::ShapesEditor(const wxChar *t, int x, int y, int w, int h):
 	menubar->Append(view_menu, wxT("&View"));
 	menubar->Append(shapes_menu, wxT("&Shapes"));
 	menubar->Append(help_menu, wxT("&Help"));
-	menubar->EnableTop(menubar->FindMenu(wxT("Shapes")), false);
 
 	SetSizer(mainbox);
 	SetMenuBar(menubar);
+	
+	menubar->EnableTop(menubar->FindMenu(wxT("Shapes")), false);
 }
 
 ShapesEditor::~ShapesEditor(void)
