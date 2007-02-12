@@ -1,0 +1,456 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 42;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		F08B4C5A0AB0B31E00896399 /* ShapeFusionApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F08B4B780AB0AE4B00896399 /* ShapeFusionApp.cpp */; };
+		F08B4C5B0AB0B34E00896399 /* ShapesEditor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F08B4B810AB0AE4B00896399 /* ShapesEditor.cpp */; };
+		F08B4C5C0AB0B35700896399 /* Shapes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F08B4B770AB0AE4B00896399 /* Shapes.cpp */; };
+		F08B4C5D0AB0B35E00896399 /* FrameView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F08B4B7A0AB0AE4B00896399 /* FrameView.cpp */; };
+		F08B4C5E0AB0B36300896399 /* FrameBrowser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F08B4B7B0AB0AE4B00896399 /* FrameBrowser.cpp */; };
+		F08B4C5F0AB0B36700896399 /* CTBrowser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F08B4B7C0AB0AE4B00896399 /* CTBrowser.cpp */; };
+		F08B4C600AB0B36C00896399 /* BitmapView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F08B4B7D0AB0AE4B00896399 /* BitmapView.cpp */; };
+		F08B4C610AB0B37000896399 /* BitmapBrowser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F08B4B7E0AB0AE4B00896399 /* BitmapBrowser.cpp */; };
+		F08B4C630AB0B37900896399 /* MyTreeItemData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F08B4B790AB0AE4B00896399 /* MyTreeItemData.cpp */; };
+		F08B4C640AB0B37E00896399 /* utilities.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F08B4B800AB0AE4B00896399 /* utilities.cpp */; };
+		F08B4C650AB0B39200896399 /* wxmac.icns in Resources */ = {isa = PBXBuildFile; fileRef = F08B4B760AB0AE2000896399 /* wxmac.icns */; };
+		F08B4C660AB0B3BD00896399 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F08B4C360AB0B06D00896399 /* Carbon.framework */; };
+		F08B4C670AB0B3C100896399 /* System.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F08B4C370AB0B09A00896399 /* System.framework */; };
+		F08B4C770AB0B7E300896399 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F08B4C760AB0B7E300896399 /* IOKit.framework */; };
+		F08B4CB40AB0C0E700896399 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F08B4CB30AB0C0E700896399 /* OpenGL.framework */; };
+		F08B4D750AB0C59D00896399 /* libwx_mac_static.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F08B4B6C0AB0ADE700896399 /* libwx_mac_static.a */; };
+		F0966E030B551E4900820E4F /* SequenceView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F0966E020B551E4900820E4F /* SequenceView.cpp */; };
+		F096F44F0AD2DD97005A633A /* BigEndianBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F096F44E0AD2DD97005A633A /* BigEndianBuffer.cpp */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXBuildRule section */
+		F08B4D9F0AB0CF7500896399 /* PBXBuildRule */ = {
+			isa = PBXBuildRule;
+			compilerSpec = com.apple.compilers.gcc.3_3;
+			fileType = sourcecode.cpp;
+			isEditable = 1;
+			outputFiles = (
+			);
+		};
+/* End PBXBuildRule section */
+
+/* Begin PBXBuildStyle section */
+		F09C36E10AB194C800E6F488 /* Development */ = {
+			isa = PBXBuildStyle;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+			};
+			name = Development;
+		};
+		F09C36E20AB194C800E6F488 /* Deployment */ = {
+			isa = PBXBuildStyle;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+			};
+			name = Deployment;
+		};
+/* End PBXBuildStyle section */
+
+/* Begin PBXContainerItemProxy section */
+		F08B4B6B0AB0ADE700896399 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F08B4B650AB0ADE700896399 /* wxWindows.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 4086C8CB063AB30000D4CD53;
+			remoteInfo = static;
+		};
+		F08B4B6D0AB0ADE700896399 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F08B4B650AB0ADE700896399 /* wxWindows.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 4086CBE1063AB30000D4CD53;
+			remoteInfo = dynamic;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		F08B4B650AB0ADE700896399 /* wxWindows.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = wxWindows.xcodeproj; path = "/Applications/wxMac-2.6.3/src/wxWindows.xcodeproj"; sourceTree = "<absolute>"; };
+		F08B4B760AB0AE2000896399 /* wxmac.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = wxmac.icns; path = "/Applications/wxMac-2.6.3/src/mac/wxmac.icns"; sourceTree = "<absolute>"; };
+		F08B4B770AB0AE4B00896399 /* Shapes.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 5; name = Shapes.cpp; path = ../../Shapes.cpp; sourceTree = SOURCE_ROOT; };
+		F08B4B780AB0AE4B00896399 /* ShapeFusionApp.cpp */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.cpp.cpp; name = ShapeFusionApp.cpp; path = ../../ShapeFusionApp.cpp; sourceTree = SOURCE_ROOT; };
+		F08B4B790AB0AE4B00896399 /* MyTreeItemData.cpp */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.cpp.cpp; name = MyTreeItemData.cpp; path = ../../MyTreeItemData.cpp; sourceTree = SOURCE_ROOT; };
+		F08B4B7A0AB0AE4B00896399 /* FrameView.cpp */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.cpp.cpp; name = FrameView.cpp; path = ../../FrameView.cpp; sourceTree = SOURCE_ROOT; };
+		F08B4B7B0AB0AE4B00896399 /* FrameBrowser.cpp */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.cpp.cpp; name = FrameBrowser.cpp; path = ../../FrameBrowser.cpp; sourceTree = SOURCE_ROOT; };
+		F08B4B7C0AB0AE4B00896399 /* CTBrowser.cpp */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.cpp.cpp; name = CTBrowser.cpp; path = ../../CTBrowser.cpp; sourceTree = SOURCE_ROOT; };
+		F08B4B7D0AB0AE4B00896399 /* BitmapView.cpp */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.cpp.cpp; name = BitmapView.cpp; path = ../../BitmapView.cpp; sourceTree = SOURCE_ROOT; };
+		F08B4B7E0AB0AE4B00896399 /* BitmapBrowser.cpp */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.cpp.cpp; name = BitmapBrowser.cpp; path = ../../BitmapBrowser.cpp; sourceTree = SOURCE_ROOT; };
+		F08B4B800AB0AE4B00896399 /* utilities.cpp */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.cpp.cpp; name = utilities.cpp; path = ../../utilities.cpp; sourceTree = SOURCE_ROOT; };
+		F08B4B810AB0AE4B00896399 /* ShapesEditor.cpp */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.cpp.cpp; name = ShapesEditor.cpp; path = ../../ShapesEditor.cpp; sourceTree = SOURCE_ROOT; };
+		F08B4B820AB0AE6C00896399 /* ShapeFusionApp.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 5; name = ShapeFusionApp.h; path = ../../ShapeFusionApp.h; sourceTree = SOURCE_ROOT; };
+		F08B4B830AB0AE6C00896399 /* MyTreeItemData.h */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.c.h; name = MyTreeItemData.h; path = ../../MyTreeItemData.h; sourceTree = SOURCE_ROOT; };
+		F08B4B840AB0AE6C00896399 /* FrameView.h */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.c.h; name = FrameView.h; path = ../../FrameView.h; sourceTree = SOURCE_ROOT; };
+		F08B4B850AB0AE6C00896399 /* FrameBrowser.h */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.c.h; name = FrameBrowser.h; path = ../../FrameBrowser.h; sourceTree = SOURCE_ROOT; };
+		F08B4B860AB0AE6C00896399 /* CTBrowser.h */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.c.h; name = CTBrowser.h; path = ../../CTBrowser.h; sourceTree = SOURCE_ROOT; };
+		F08B4B870AB0AE6C00896399 /* BitmapView.h */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.c.h; name = BitmapView.h; path = ../../BitmapView.h; sourceTree = SOURCE_ROOT; };
+		F08B4B880AB0AE6C00896399 /* BitmapBrowser.h */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.c.h; name = BitmapBrowser.h; path = ../../BitmapBrowser.h; sourceTree = SOURCE_ROOT; };
+		F08B4B8A0AB0AE6C00896399 /* utilities.h */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.c.h; name = utilities.h; path = ../../utilities.h; sourceTree = SOURCE_ROOT; };
+		F08B4B8B0AB0AE6C00896399 /* ShapesEditor.h */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.c.h; name = ShapesEditor.h; path = ../../ShapesEditor.h; sourceTree = SOURCE_ROOT; };
+		F08B4B8C0AB0AE6C00896399 /* Shapes.h */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.c.h; name = Shapes.h; path = ../../Shapes.h; sourceTree = SOURCE_ROOT; };
+		F08B4C360AB0B06D00896399 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
+		F08B4C370AB0B09A00896399 /* System.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = System.framework; path = /System/Library/Frameworks/System.framework; sourceTree = "<absolute>"; };
+		F08B4C440AB0B10000896399 /* ShapeFusion.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ShapeFusion.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F08B4C470AB0B10000896399 /* ShapeFusion.plist */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = ShapeFusion.plist; sourceTree = "<group>"; };
+		F08B4C760AB0B7E300896399 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = /System/Library/Frameworks/IOKit.framework; sourceTree = "<absolute>"; };
+		F08B4CB30AB0C0E700896399 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
+		F0966E020B551E4900820E4F /* SequenceView.cpp */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.cpp.cpp; name = SequenceView.cpp; path = ../../SequenceView.cpp; sourceTree = SOURCE_ROOT; };
+		F0966E040B551E5100820E4F /* SequenceView.h */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.c.h; name = SequenceView.h; path = ../../SequenceView.h; sourceTree = SOURCE_ROOT; };
+		F096F44E0AD2DD97005A633A /* BigEndianBuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.cpp.cpp; name = BigEndianBuffer.cpp; path = ../../BigEndianBuffer.cpp; sourceTree = SOURCE_ROOT; };
+		F096F4500AD2DD9F005A633A /* BigEndianBuffer.h */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.c.h; name = BigEndianBuffer.h; path = ../../BigEndianBuffer.h; sourceTree = SOURCE_ROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		F08B4C420AB0B10000896399 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F08B4D750AB0C59D00896399 /* libwx_mac_static.a in Frameworks */,
+				F08B4C660AB0B3BD00896399 /* Carbon.framework in Frameworks */,
+				F08B4C670AB0B3C100896399 /* System.framework in Frameworks */,
+				F08B4C770AB0B7E300896399 /* IOKit.framework in Frameworks */,
+				F08B4CB40AB0C0E700896399 /* OpenGL.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		F08B4B580AB0ADBA00896399 = {
+			isa = PBXGroup;
+			children = (
+				F08B4B720AB0AE0B00896399 /* Sources */,
+				F08B4B750AB0AE1200896399 /* Resources */,
+				F08B4B9E0AB0B02A00896399 /* External things */,
+				F08B4B650AB0ADE700896399 /* wxWindows.xcodeproj */,
+				F08B4C450AB0B10000896399 /* Products */,
+				F08B4C470AB0B10000896399 /* ShapeFusion.plist */,
+			);
+			sourceTree = "<group>";
+		};
+		F08B4B660AB0ADE700896399 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				F08B4B6C0AB0ADE700896399 /* libwx_mac_static.a */,
+				F08B4B6E0AB0ADE700896399 /* libwx_mac.dylib */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		F08B4B720AB0AE0B00896399 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				F08B4B820AB0AE6C00896399 /* ShapeFusionApp.h */,
+				F08B4B780AB0AE4B00896399 /* ShapeFusionApp.cpp */,
+				F08B4B8B0AB0AE6C00896399 /* ShapesEditor.h */,
+				F08B4B810AB0AE4B00896399 /* ShapesEditor.cpp */,
+				F08B4B8C0AB0AE6C00896399 /* Shapes.h */,
+				F08B4B770AB0AE4B00896399 /* Shapes.cpp */,
+				F08B4B840AB0AE6C00896399 /* FrameView.h */,
+				F08B4B7A0AB0AE4B00896399 /* FrameView.cpp */,
+				F08B4B850AB0AE6C00896399 /* FrameBrowser.h */,
+				F08B4B7B0AB0AE4B00896399 /* FrameBrowser.cpp */,
+				F08B4B860AB0AE6C00896399 /* CTBrowser.h */,
+				F08B4B7C0AB0AE4B00896399 /* CTBrowser.cpp */,
+				F08B4B870AB0AE6C00896399 /* BitmapView.h */,
+				F08B4B7D0AB0AE4B00896399 /* BitmapView.cpp */,
+				F08B4B880AB0AE6C00896399 /* BitmapBrowser.h */,
+				F08B4B7E0AB0AE4B00896399 /* BitmapBrowser.cpp */,
+				F0966E040B551E5100820E4F /* SequenceView.h */,
+				F0966E020B551E4900820E4F /* SequenceView.cpp */,
+				F096F4500AD2DD9F005A633A /* BigEndianBuffer.h */,
+				F096F44E0AD2DD97005A633A /* BigEndianBuffer.cpp */,
+				F08B4B830AB0AE6C00896399 /* MyTreeItemData.h */,
+				F08B4B790AB0AE4B00896399 /* MyTreeItemData.cpp */,
+				F08B4B8A0AB0AE6C00896399 /* utilities.h */,
+				F08B4B800AB0AE4B00896399 /* utilities.cpp */,
+			);
+			name = Sources;
+			sourceTree = "<group>";
+		};
+		F08B4B750AB0AE1200896399 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				F08B4B760AB0AE2000896399 /* wxmac.icns */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		F08B4B9E0AB0B02A00896399 /* External things */ = {
+			isa = PBXGroup;
+			children = (
+				F08B4C360AB0B06D00896399 /* Carbon.framework */,
+				F08B4C370AB0B09A00896399 /* System.framework */,
+				F08B4C760AB0B7E300896399 /* IOKit.framework */,
+				F08B4CB30AB0C0E700896399 /* OpenGL.framework */,
+			);
+			name = "External things";
+			sourceTree = "<group>";
+		};
+		F08B4C450AB0B10000896399 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				F08B4C440AB0B10000896399 /* ShapeFusion.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		F08B4C430AB0B10000896399 /* carbon_static */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F08B4C480AB0B10000896399 /* Build configuration list for PBXNativeTarget "carbon_static" */;
+			buildPhases = (
+				F08B4C400AB0B10000896399 /* Resources */,
+				F08B4C410AB0B10000896399 /* Sources */,
+				F08B4C420AB0B10000896399 /* Frameworks */,
+			);
+			buildRules = (
+				F08B4D9F0AB0CF7500896399 /* PBXBuildRule */,
+			);
+			buildSettings = {
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
+				INFOPLIST_FILE = "carbon_static-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Carbon,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = carbon_static;
+				WRAPPER_EXTENSION = app;
+				ZERO_LINK = YES;
+			};
+			dependencies = (
+			);
+			name = carbon_static;
+			productName = carbon_static;
+			productReference = F08B4C440AB0B10000896399 /* ShapeFusion.app */;
+			productSettingsXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<!DOCTYPE plist PUBLIC \"-//Apple Computer//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">
+<plist version=\"1.0\">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>English</string>
+	<key>CFBundleExecutable</key>
+	<string>${EXECUTABLE_NAME}</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.yourcompany.carbon_static</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleSignature</key>
+	<string>????</string>
+	<key>CFBundleVersion</key>
+	<string>1.0</string>
+</dict>
+</plist>
+";
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		F08B4B5A0AB0ADBA00896399 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = F08B4B5B0AB0ADBA00896399 /* Build configuration list for PBXProject "ShapeFusion" */;
+			buildSettings = {
+			};
+			buildStyles = (
+				F09C36E10AB194C800E6F488 /* Development */,
+				F09C36E20AB194C800E6F488 /* Deployment */,
+			);
+			hasScannedForEncodings = 0;
+			mainGroup = F08B4B580AB0ADBA00896399;
+			productRefGroup = F08B4C450AB0B10000896399 /* Products */;
+			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = F08B4B660AB0ADE700896399 /* Products */;
+					ProjectRef = F08B4B650AB0ADE700896399 /* wxWindows.xcodeproj */;
+				},
+			);
+			targets = (
+				F08B4C430AB0B10000896399 /* carbon_static */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		F08B4B6C0AB0ADE700896399 /* libwx_mac_static.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libwx_mac_static.a;
+			remoteRef = F08B4B6B0AB0ADE700896399 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		F08B4B6E0AB0ADE700896399 /* libwx_mac.dylib */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.dylib";
+			path = libwx_mac.dylib;
+			remoteRef = F08B4B6D0AB0ADE700896399 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
+/* Begin PBXResourcesBuildPhase section */
+		F08B4C400AB0B10000896399 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F08B4C650AB0B39200896399 /* wxmac.icns in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		F08B4C410AB0B10000896399 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F08B4C5A0AB0B31E00896399 /* ShapeFusionApp.cpp in Sources */,
+				F08B4C5B0AB0B34E00896399 /* ShapesEditor.cpp in Sources */,
+				F08B4C5C0AB0B35700896399 /* Shapes.cpp in Sources */,
+				F08B4C5D0AB0B35E00896399 /* FrameView.cpp in Sources */,
+				F08B4C5E0AB0B36300896399 /* FrameBrowser.cpp in Sources */,
+				F08B4C5F0AB0B36700896399 /* CTBrowser.cpp in Sources */,
+				F08B4C600AB0B36C00896399 /* BitmapView.cpp in Sources */,
+				F08B4C610AB0B37000896399 /* BitmapBrowser.cpp in Sources */,
+				F08B4C630AB0B37900896399 /* MyTreeItemData.cpp in Sources */,
+				F08B4C640AB0B37E00896399 /* utilities.cpp in Sources */,
+				F096F44F0AD2DD97005A633A /* BigEndianBuffer.cpp in Sources */,
+				F0966E030B551E4900820E4F /* SequenceView.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		F08B4B5C0AB0ADBA00896399 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = ppc;
+				COPY_PHASE_STRIP = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_PREPROCESSOR_DEFINITIONS = "";
+				INFOPLIST_FILE = ShapeFusion.plist;
+				LIBRARY_SEARCH_PATHS = "/Applications/wxMac-2.6.3/src";
+				MACOSX_DEPLOYMENT_TARGET = 10.4;
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = ShapeFusion;
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				ZERO_LINK = NO;
+			};
+			name = Debug;
+		};
+		F08B4B5D0AB0ADBA00896399 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.4;
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+			};
+			name = Release;
+		};
+		F08B4C490AB0B10000896399 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = ppc;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_TUNING = "";
+				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_PFE_FILE_C_DIALECTS = "c objective-c c++ objective-c++";
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "/Applications/wxMac-2.6.3/include/wx/wxprec.h";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					NO_GCC_PRAGMA,
+					__WXMAC__,
+					"wxUSE_BASE=1",
+					"_FILE_OFFSET_BITS=64",
+					_LARGE_FILES,
+					"__WXMAC_XCODE__=1",
+					"WX_PRECOMP=1",
+					MACOS_CLASSIC,
+				);
+				INFOPLIST_FILE = ShapeFusion.plist;
+				INSTALL_PATH = "$(HOME)/Applications";
+				LIBRARY_SEARCH_PATHS = "/Applications/wxMac-2.6.3/src/build/Deployment";
+				OTHER_LDFLAGS = (
+					"-liconv",
+					"-lz",
+				);
+				PREBINDING = YES;
+				PRECOMPS_INCLUDE_HEADERS_FROM_BUILT_PRODUCTS_DIR = YES;
+				PRODUCT_NAME = ShapeFusion;
+				USER_HEADER_SEARCH_PATHS = "${SYMROOT}/include /Applications/wxMac-2.6.3/include /Applications/wxMac-2.6.3/src/build/include .";
+				WRAPPER_EXTENSION = app;
+				ZERO_LINK = NO;
+			};
+			name = Debug;
+		};
+		F08B4C4A0AB0B10000896399 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
+				INFOPLIST_FILE = "carbon_static-Info.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Carbon,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = carbon_static;
+				WRAPPER_EXTENSION = app;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		F08B4B5B0AB0ADBA00896399 /* Build configuration list for PBXProject "ShapeFusion" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F08B4B5C0AB0ADBA00896399 /* Debug */,
+				F08B4B5D0AB0ADBA00896399 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F08B4C480AB0B10000896399 /* Build configuration list for PBXNativeTarget "carbon_static" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F08B4C490AB0B10000896399 /* Debug */,
+				F08B4C4A0AB0B10000896399 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = F08B4B5A0AB0ADBA00896399 /* Project object */;
+}
