@@ -64,7 +64,8 @@ BEGIN_EVENT_TABLE(ShapesEditor, wxFrame)
 	EVT_MENU(wxID_ABOUT, ShapesEditor::MenuHelpAbout)
 	EVT_TREE_SEL_CHANGED(-1, ShapesEditor::TreeSelect)
 	// bitmaps
-	EVT_COMMAND(wxID_ANY, wxEVT_BITMAPBROWSER, ShapesEditor::BitmapSelect)
+	EVT_COMMAND(BITMAP_BROWSER, wxEVT_BITMAPBROWSER, ShapesEditor::BitmapSelect)
+	EVT_COMMAND(BITMAP_BROWSER, wxEVT_BITMAPBROWSER_DELETE, ShapesEditor::BitmapDelete)
 	EVT_COMMAND_RANGE(CB_COLUMN_ORDER, CB_ENABLE_TRANSPARENCY, wxEVT_COMMAND_CHECKBOX_CLICKED, ShapesEditor::ToggleBitmapCheckboxes)
 	EVT_BUTTON(BTN_SAVE_BITMAP, ShapesEditor::AskSaveBitmap)
 	// color tables
@@ -95,7 +96,38 @@ BEGIN_EVENT_TABLE(ShapesEditor, wxFrame)
 	EVT_TEXT(FIELD_SEQ_SCALE_FACTOR, ShapesEditor::EditSequenceFields)
 END_EVENT_TABLE()
 
-extern char *collnames[];
+char	*collnames[] = {	"Interface graphics",
+							"Weapons in hand",
+							"Juggernaut",
+							"Tick",
+							"Projectiles & explosions",
+							"Hunter",
+							"Player",
+							"Items",
+							"Trooper",
+							"Pfhor fighter",
+							"Defender",
+							"Yeti",
+							"Bob",
+							"Vacuum Bob",
+							"Enforcer",
+							"Hummer",
+							"Compiler",
+							"Walls 1 (water)",
+							"Walls 2 (lava)",
+							"Walls 3 (sewage)",
+							"Walls 4 (jiaro)",
+							"Walls 5 (pfhor)",
+							"Scenery 1 (water)",
+							"Scenery 2 (lava)",
+							"Scenery 3 (sewage)",
+							"Scenery 4 (jiaro)",
+							"Scenery 5 (pfhor)",
+							"Landscape 1",
+							"Landscape 2",
+							"Landscape 3",
+							"Landscape 4",
+							"Cyborg" };
 
 ShapesEditor::ShapesEditor(const wxChar *t, int x, int y, int w, int h):
 		wxFrame(0, wxID_ANY, t, wxPoint(x, y), wxSize(w, h), wxDEFAULT_FRAME_STYLE, wxT("shapefusion")),
@@ -171,7 +203,7 @@ ShapesEditor::ShapesEditor(const wxChar *t, int x, int y, int w, int h):
 	mainbox->Show(ct_outer_sizer, false);
 	// create the bitmaps section
 	b_outer_sizer = new wxBoxSizer(wxVERTICAL);
-	bb = new BitmapBrowser(this);
+	bb = new BitmapBrowser(this, BITMAP_BROWSER);
 	bb->SetThumbnailSize(64);
 	b_count_label = new wxStaticText(this, -1, wxT("N bitmaps"));
 	b_edit_static_box = new wxStaticBox(this, -1, wxT("Bitmap N of M"));
@@ -1223,6 +1255,33 @@ void ShapesEditor::BitmapSelect(wxCommandEvent &e)
 		edit_menu->Enable(wxID_DELETE, true);
 	}
 	b_outer_sizer->Layout();
+}
+
+void ShapesEditor::BitmapDelete(wxCommandEvent &e)
+{
+	if (e.GetSelection() < 0)
+		return;
+
+	bb->Freeze();
+	bb->Clear();    // FIXME just remove THAT bitmap!
+	b_outer_sizer->Show(b_count_label, true);
+	b_outer_sizer->Show(b_edit_box, false);
+	b_view->SetBitmap(NULL);
+	payload->DeleteBitmap(selected_coll, selected_vers, e.GetSelection());
+	
+	unsigned int    bitmap_count = payload->CollBitmapCount(selected_coll, selected_vers);
+	
+	for (unsigned int i = 0; i < bitmap_count; i++)
+		bb->AddBitmap(payload->GetBitmap(selected_coll, selected_vers, i));
+	bb->Thaw();
+	
+	wxString    count_string;
+	
+	count_string << bitmap_count << wxT(" bitmap");
+	if (bitmap_count != 1)
+		count_string << wxT("s");
+	b_count_label->SetLabel(count_string);
+	Layout();
 }
 
 void ShapesEditor::ToggleBitmapCheckboxes(wxCommandEvent &e)

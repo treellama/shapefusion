@@ -22,6 +22,7 @@
 #include "utilities.h"
 
 DEFINE_EVENT_TYPE(wxEVT_BITMAPBROWSER)
+DEFINE_EVENT_TYPE(wxEVT_BITMAPBROWSER_DELETE)
 
 BEGIN_EVENT_TABLE(BitmapBrowser, wxScrolledWindow)
 	EVT_PAINT(BitmapBrowser::OnPaint)
@@ -31,8 +32,8 @@ BEGIN_EVENT_TABLE(BitmapBrowser, wxScrolledWindow)
 	EVT_KEY_DOWN(BitmapBrowser::OnKeyDown)
 END_EVENT_TABLE()
 
-BitmapBrowser::BitmapBrowser(wxWindow *parent):
-	wxScrolledWindow(parent, -1, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER),
+BitmapBrowser::BitmapBrowser(wxWindow *parent, wxWindowID id):
+	wxScrolledWindow(parent, id, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER),
 	ctable(NULL), selection(-1), num_cols(0), num_rows(0), frozen_count(0)
 {
 	SetBackgroundColour(wxColour(255, 255, 255));
@@ -133,49 +134,64 @@ void BitmapBrowser::OnMouseDown(wxMouseEvent& e)
 // handle keydown events
 void BitmapBrowser::OnKeyDown(wxKeyEvent &e)
 {
-	int	new_selection = selection;
+	switch (e.GetKeyCode()) {
+		case WXK_LEFT:
+		case WXK_RIGHT:
+		case WXK_UP:
+		case WXK_DOWN:
+			{
+				int	new_selection = selection;
 
-	if (selection >= 0 && selection < (int)shp_bitmaps.size()) {
-		switch (e.GetKeyCode()) {
-			// arrow keys move the selection
-			case WXK_LEFT:
-				if (selection % num_cols > 0)
-					new_selection--;
-				break;
-			case WXK_RIGHT:
-				if (selection % num_cols < (num_cols-1))
-					new_selection++;
-				break;
-			case WXK_UP:
-				if (selection / num_cols > 0)
-					new_selection -= num_cols;
-				break;
-			case WXK_DOWN:
-				if (selection / num_cols < (num_rows-1))
-					new_selection += num_cols;
-				break;
-			// clear deletes the selected item
-			case WXK_DELETE:
-				// TODO send a "bitmap delete" event
-				break;
-			default:
-				e.Skip();
-		}
-	} else if (shp_bitmaps.size() > 0) {
-		new_selection = 0;
-	}
-	// TODO scroll to show the new selection
-	if (new_selection != selection && new_selection >= 0
-			&& new_selection < (int)shp_bitmaps.size()) {
-		selection = new_selection;
-		Refresh();
+				if (selection >= 0 && selection < (int)shp_bitmaps.size()) {
+					switch (e.GetKeyCode()) {
+						case WXK_LEFT:
+							if (selection % num_cols > 0)
+								new_selection--;
+							break;
+						case WXK_RIGHT:
+							if (selection % num_cols < (num_cols-1))
+								new_selection++;
+							break;
+						case WXK_UP:
+							if (selection / num_cols > 0)
+								new_selection -= num_cols;
+							break;
+						case WXK_DOWN:
+							if (selection / num_cols < (num_rows-1))
+								new_selection += num_cols;
+							break;
+					}
+				} else if (shp_bitmaps.size() > 0) {
+					new_selection = 0;
+				}
+				if (new_selection != selection && new_selection >= 0
+						&& new_selection < (int)shp_bitmaps.size()) {
+					// TODO scroll to show the new selection
+					selection = new_selection;
+					Refresh();
 
-		// send selection event
-		wxCommandEvent	event(wxEVT_BITMAPBROWSER, GetId());
+					// send bitmap selection event
+					wxCommandEvent	event(wxEVT_BITMAPBROWSER, GetId());
 
-		event.SetEventObject(this);
-		event.SetInt(selection);
-		GetEventHandler()->ProcessEvent(event);
+					event.SetEventObject(this);
+					event.SetInt(selection);
+					GetEventHandler()->ProcessEvent(event);
+				}
+			}
+			break;
+		case WXK_DELETE:
+			// send a bitmap delete event
+			if (selection >= 0 && selection < (int)shp_bitmaps.size()) {
+				wxCommandEvent	event(wxEVT_BITMAPBROWSER_DELETE, GetId());
+
+				event.SetEventObject(this);
+				event.SetInt(selection);
+				GetEventHandler()->ProcessEvent(event);
+			}
+			break;
+		default:
+			e.Skip();
+			break;
 	}
 }
 
@@ -242,7 +258,7 @@ void BitmapBrowser::AddBitmap(ShpBitmap *bp)
 				Refresh();
 			}
 		} else {
-			std::cerr << "BitmapBrowser: someone tried to add a bitmap with NULL pixels\n";
+			std::cerr << "[BitmapBrowser] Someone tried to add a bitmap with NULL pixels\n";
 		}
 	}
 }

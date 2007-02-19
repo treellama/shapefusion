@@ -59,6 +59,7 @@ private:
 		MSHAPES_ADDFRAME,
 		MSHAPES_ADDSEQUENCE,
 		// bitmaps
+		BITMAP_BROWSER,
 		CB_COLUMN_ORDER,
 		CB_ENABLE_TRANSPARENCY,
 		BTN_SAVE_BITMAP,
@@ -253,6 +254,7 @@ public:
 	// control callbacks
 	void TreeSelect(wxTreeEvent &e);
 	void BitmapSelect(wxCommandEvent &e);
+	void BitmapDelete(wxCommandEvent &e);
 	void CTSelect(wxCommandEvent &e);
 	void ToggleBitmapCheckboxes(wxCommandEvent &e);
 	void AskSaveBitmap(wxCommandEvent &e);

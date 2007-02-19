@@ -35,6 +35,7 @@
 using std::vector;
 
 DECLARE_EVENT_TYPE(wxEVT_BITMAPBROWSER, -1)
+DECLARE_EVENT_TYPE(wxEVT_BITMAPBROWSER_DELETE, -1)
 
 class BitmapBrowser: public wxScrolledWindow {
 private:
@@ -61,7 +62,7 @@ protected:
 	DECLARE_EVENT_TABLE();
 
 public:
-	BitmapBrowser(wxWindow *parent);
+	BitmapBrowser(wxWindow *parent, wxWindowID id);
 	// event handlers
 	void OnPaint(wxPaintEvent& e);
 	void OnSize(wxSizeEvent& e);
