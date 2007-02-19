@@ -15,18 +15,97 @@
  * along with ShapeFusion; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
-#include <iostream>
-#include "ShapesEditor.h"
+//#include <iostream>
 #include "ShapeFusionApp.h"
+#include "ShapeFusionMain.h"
+#include "ShapeFusionMenus.h"
+//#include "ShapesEditor.h"
+#include "ShapesDocument.h"
+#include "ShapesView.h"
 
-IMPLEMENT_APP(ShapeFusionApp);
+ShapeFusionMain *frame = (ShapeFusionMain *) NULL;
+
+IMPLEMENT_APP(ShapeFusionApp)
+
+ShapeFusionApp::ShapeFusionApp(void)
+{
+    m_docManager = (wxDocManager *) NULL;
+}
 
 bool ShapeFusionApp::OnInit(void)
 {
-	ShapesEditor	*se = new ShapesEditor(wxT("ShapeFusion"), 10, 25, 900, 600);
+    if ( !wxApp::OnInit() )
+        return false;
+		
+	//// Create a document manager
+    m_docManager = new wxDocManager;
 
-	se->Show(true);
-	SetTopWindow(se);
-	return true;
+    //// Create a template relating drawing documents to their views
+    (void) new wxDocTemplate(m_docManager, _T("Shapes"), _T("*"), _T(""), _T(""), _T("Shapes"), _T("Shapes"),
+		CLASSINFO(ShapesDocument), CLASSINFO(ShapesView));
+#ifdef __WXMAC__
+//    wxFileName::MacRegisterDefaultTypeAndCreator( wxT("*") , 'WXMB' , 'WXMA' ) ;
+#endif
+    
+    //// Create the main frame window
+    frame = new ShapeFusionMain(m_docManager, (wxFrame *) NULL, wxID_ANY, _T("ShapeFusion Workspace"), wxPoint(0, 0), wxSize(500, 400), wxDEFAULT_FRAME_STYLE);
+    
+    //// Give it an icon (this is ignored in MDI mode: uses resources)
+#ifdef __WXMSW__
+    frame->SetIcon(wxIcon(_T("doc_icn")));
+#endif
+    
+    // A nice touch: a history of files visited. Use this menu.
+//    m_docManager->FileHistoryUseMenu(file_menu);
+
+    wxMenuBar *menu_bar = new wxMenuBar;
+    
+	CreateFileMenu(menu_bar);
+	CreateEditMenu(menu_bar);
+	CreateHelpMenu(menu_bar);
+    
+    //// Associate the menu bar with the frame
+    frame->SetMenuBar(menu_bar);
+    
+    frame->Centre(wxBOTH);
+    frame->Show(true);
+    
+    SetTopWindow(frame);
+    return true;
 }
 
+int ShapeFusionApp::OnExit(void)
+{
+    delete m_docManager;
+    return 0;
+}
+
+/*
+* Centralised code for creating a document frame.
+* Called from view.cpp, when a view is created, but not used at all
+* in 'single window' mode.
+*/
+
+wxFrame *ShapeFusionApp::CreateChildFrame(wxDocument *doc, wxView *view, bool isCanvas)
+{
+    //// Make a child frame
+    wxDocChildFrame *subframe = new wxDocChildFrame(doc, view, GetMainFrame(), wxID_ANY, _T("Child Frame"),
+        wxPoint(10, 10), wxSize(300, 300), wxDEFAULT_FRAME_STYLE);
+    
+    wxMenuBar *menu_bar = new wxMenuBar;
+    
+	CreateFileMenu(menu_bar);
+    CreateEditMenu(menu_bar);
+	CreateHelpMenu(menu_bar);
+    //// Associate the menu bar with the frame
+    subframe->SetMenuBar(menu_bar);
+    
+    subframe->Centre(wxBOTH);
+    
+    return subframe;
+}
+
+ShapeFusionMain *GetMainFrame(void)
+{
+    return frame;
+}

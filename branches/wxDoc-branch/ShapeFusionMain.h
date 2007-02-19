@@ -16,30 +16,26 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#ifndef SHAPEFUSIONAPP_H
-#define SHAPEFUSIONAPP_H
+#ifndef __FUSIONMAIN_H__
+#define __FUSIONMAIN_H__
 
-#include "wx/wxprec.h"
-#ifndef WX_PRECOMP
-    #include "wx/wx.h"
-#endif
 #include "wx/docview.h"
-#include "ShapeFusionMain.h"
 
-class ShapeFusionApp: public wxApp {
+// Define a new frame
+class MyCanvas;
+class ShapeFusionMain: public wxDocParentFrame
+{
+    DECLARE_CLASS(FusionMain)
 public:
-    ShapeFusionApp(void);
-    bool OnInit(void);
-    int OnExit(void);
+    wxMenu *editMenu;
     
-    wxFrame *CreateChildFrame(wxDocument *doc, wxView *view, bool isCanvas);
+    ShapeFusionMain(wxDocManager *manager, wxFrame *frame, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size,
+        const long type);
     
-protected:
-    wxDocManager* m_docManager;
+    void OnAbout(wxCommandEvent& event);
+    MyCanvas *CreateCanvas(wxView *view, wxFrame *parent);
+    
+    DECLARE_EVENT_TABLE()
 };
-
-DECLARE_APP(ShapeFusionApp);
-
-ShapeFusionMain *GetMainFrame(void);
 
 #endif

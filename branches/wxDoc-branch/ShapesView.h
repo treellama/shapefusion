@@ -16,30 +16,34 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#ifndef SHAPEFUSIONAPP_H
-#define SHAPEFUSIONAPP_H
+#ifndef __TEXTVIEW_H__
+#define __TEXTVIEW_H__
 
-#include "wx/wxprec.h"
-#ifndef WX_PRECOMP
-    #include "wx/wx.h"
-#endif
 #include "wx/docview.h"
-#include "ShapeFusionMain.h"
 
-class ShapeFusionApp: public wxApp {
+/*class MyTextWindow: public wxTextCtrl
+{
 public:
-    ShapeFusionApp(void);
-    bool OnInit(void);
-    int OnExit(void);
+    wxView *view;
     
-    wxFrame *CreateChildFrame(wxDocument *doc, wxView *view, bool isCanvas);
+    MyTextWindow(wxView *v, wxFrame *frame, const wxPoint& pos, const wxSize& size, const long style);
+};*/
+
+class ShapesView: public wxView
+{
+    DECLARE_DYNAMIC_CLASS(ShapesView)
+private:
+public:
+    wxFrame *frame;
+//    MyTextWindow *textsw;
     
-protected:
-    wxDocManager* m_docManager;
+    ShapesView(): wxView() { frame = (wxFrame *) NULL;/* textsw = (MyTextWindow *) NULL; */}
+    ~ShapesView(void) {}
+    
+    bool OnCreate(wxDocument *doc, long flags);
+    void OnDraw(wxDC *dc);
+    void OnUpdate(wxView *sender, wxObject *hint = (wxObject *) NULL);
+    bool OnClose(bool deleteWindow = true);
 };
-
-DECLARE_APP(ShapeFusionApp);
-
-ShapeFusionMain *GetMainFrame(void);
 
 #endif

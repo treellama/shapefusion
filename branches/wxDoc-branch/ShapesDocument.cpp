@@ -16,30 +16,39 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#ifndef SHAPEFUSIONAPP_H
-#define SHAPEFUSIONAPP_H
-
 #include "wx/wxprec.h"
+
 #ifndef WX_PRECOMP
-    #include "wx/wx.h"
+#include "wx/wx.h"
 #endif
-#include "wx/docview.h"
-#include "ShapeFusionMain.h"
+#ifdef __WXMAC__
+#include "wx/filename.h"
+#endif
 
-class ShapeFusionApp: public wxApp {
-public:
-    ShapeFusionApp(void);
-    bool OnInit(void);
-    int OnExit(void);
-    
-    wxFrame *CreateChildFrame(wxDocument *doc, wxView *view, bool isCanvas);
-    
-protected:
-    wxDocManager* m_docManager;
-};
+#include "ShapesDocument.h"
 
-DECLARE_APP(ShapeFusionApp);
+#include "ShapesView.h"
 
-ShapeFusionMain *GetMainFrame(void);
+IMPLEMENT_DYNAMIC_CLASS(ShapesDocument, wxDocument)
 
+#if wxUSE_STD_IOSTREAM
+wxSTD ostream& ShapesDocument::SaveObject(wxSTD ostream& text_stream)
+{
+	return stream;
+}
+	
+wxSTD istream& ShapesDocument::LoadObject(wxSTD istream& text_stream)
+{
+	return stream;
+}
+#else
+wxOutputStream& ShapesDocument::SaveObject(wxOutputStream& stream)
+{
+	return stream;
+}
+	
+wxInputStream& ShapesDocument::LoadObject(wxInputStream& stream)
+{
+	return stream;
+}
 #endif
