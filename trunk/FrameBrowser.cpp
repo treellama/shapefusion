@@ -29,6 +29,7 @@
 #include "utilities.h"
 
 DEFINE_EVENT_TYPE(wxEVT_FRAMEBROWSER)
+DEFINE_EVENT_TYPE(wxEVT_FRAMEBROWSER_DELETE)
 
 BEGIN_EVENT_TABLE(FrameBrowser, wxScrolledWindow)
 	EVT_PAINT(FrameBrowser::OnPaint)
@@ -139,48 +140,64 @@ void FrameBrowser::OnMouseDown(wxMouseEvent& e)
 
 void FrameBrowser::OnKeyDown(wxKeyEvent &e)
 {
-	int	new_selection = selection;
+	switch (e.GetKeyCode()) {
+		case WXK_LEFT:
+		case WXK_RIGHT:
+		case WXK_UP:
+		case WXK_DOWN:
+			{
+				int new_selection = selection;
 
-	if (selection >= 0 && selection < (int)frames.size()) {
-		switch (e.GetKeyCode()) {
-			// arrow keys move the selection
-			case WXK_LEFT:
-				if (selection % num_cols > 0)
-					new_selection--;
-				break;
-			case WXK_RIGHT:
-				if (selection % num_cols < (num_cols-1))
-					new_selection++;
-				break;
-			case WXK_UP:
-				if (selection / num_cols > 0)
-					new_selection -= num_cols;
-				break;
-			case WXK_DOWN:
-				if (selection / num_cols < (num_rows-1))
-					new_selection += num_cols;
-				break;
-			// clear deletes selected item
-			case WXK_DELETE:
-				// TODO send a "frame delete" event
-				break;
-			default:
-				e.Skip();
-		}
-	} else if (frames.size() > 0) {
-		new_selection = 0;
-	}
-	// TODO scroll to show the new selection
-	if (new_selection != selection && new_selection >= 0 && new_selection < (int)frames.size()) {
-		selection = new_selection;
-		Refresh();
+				if (selection >= 0 && selection < (int)frames.size()) {
+					switch (e.GetKeyCode()) {
+						case WXK_LEFT:
+							if (selection % num_cols > 0)
+								new_selection--;
+							break;
+						case WXK_RIGHT:
+							if (selection % num_cols < (num_cols-1))
+								new_selection++;
+							break;
+						case WXK_UP:
+							if (selection / num_cols > 0)
+								new_selection -= num_cols;
+							break;
+						case WXK_DOWN:
+							if (selection / num_cols < (num_rows-1))
+								new_selection += num_cols;
+							break;
+					}
+				} else if (frames.size() > 0) {
+					new_selection = 0;
+				}
+				if (new_selection != selection && new_selection >= 0
+						&& new_selection < (int)frames.size()) {
+					// TODO scroll to show the new selection
+					selection = new_selection;
+					Refresh();
+					
+					// send frame selection event
+					wxCommandEvent  event(wxEVT_FRAMEBROWSER, GetId());
+					
+					event.SetEventObject(this);
+					event.SetInt(selection);
+					GetEventHandler()->ProcessEvent(event);
+				}
+			}
+			break;
+		case WXK_DELETE:
+			// send a frame delete event
+			if (selection >= 0 && selection < (int)frames.size()) {
+				wxCommandEvent	event(wxEVT_FRAMEBROWSER_DELETE, GetId());
 
-		// send selection event
-		wxCommandEvent	event(wxEVT_FRAMEBROWSER, GetId());
-
-		event.SetEventObject(this);
-		event.SetInt(selection);
-		GetEventHandler()->ProcessEvent(event);
+				event.SetEventObject(this);
+				event.SetInt(selection);
+				GetEventHandler()->ProcessEvent(event);
+			}
+			break;
+		default:
+			e.Skip();
+			break;
 	}
 }
 

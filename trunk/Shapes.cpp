@@ -21,43 +21,9 @@
 #include "Shapes.h"
 #include "BigEndianBuffer.h"
 
-char	*collnames[] = {	"Interface graphics",
-							"Weapons in hand",
-							"Juggernaut",
-							"Tick",
-							"Projectiles & explosions",
-							"Hunter",
-							"Player",
-							"Items",
-							"Trooper",
-							"Pfhor fighter",
-							"Defender",
-							"Yeti",
-							"Bob",
-							"Vacuum Bob",
-							"Enforcer",
-							"Hummer",
-							"Compiler",
-							"Walls 1 (water)",
-							"Walls 2 (lava)",
-							"Walls 3 (sewage)",
-							"Walls 4 (jiaro)",
-							"Walls 5 (pfhor)",
-							"Scenery 1 (water)",
-							"Scenery 2 (lava)",
-							"Scenery 3 (sewage)",
-							"Scenery 4 (jiaro)",
-							"Scenery 5 (pfhor)",
-							"Landscape 1",
-							"Landscape 2",
-							"Landscape 3",
-							"Landscape 4",
-							"Cyborg" };
-
 Shapes::Shapes(void): verbose_file_load(false)
 {
-	// TODO free allocated memory!
-	// (ShpChunks and bitmap pixels)
+	
 }
 
 // load shapes from given file
@@ -403,7 +369,6 @@ int Shapes::LoadShapesChunk(unsigned int id, ShpChunk *pc, std::ifstream &is, lo
 		}
 	}
 
-	
 	return size;
 }
 
@@ -663,6 +628,7 @@ int Shapes::WriteToFile(std::string path)
 
 Shapes::~Shapes(void)
 {
+	// TODO free bitmaps pixels
 	for (unsigned int i = 0; i < collections.size(); i++) {
 		if (collections[i].chunks[0] != NULL)
 			delete collections[i].chunks[0];

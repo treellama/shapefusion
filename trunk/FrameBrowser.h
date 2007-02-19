@@ -35,6 +35,7 @@
 using std::vector;
 
 DECLARE_EVENT_TYPE(wxEVT_FRAMEBROWSER, -1)
+DECLARE_EVENT_TYPE(wxEVT_FRAMEBROWSER_DELETE, -1)
 
 class FrameBrowser: public wxScrolledWindow {
 private:
