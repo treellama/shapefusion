@@ -16,30 +16,19 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#ifndef SHAPEFUSIONAPP_H
-#define SHAPEFUSIONAPP_H
+#include "ShapeFusionLists.h"
 
-#include "wx/wxprec.h"
-#ifndef WX_PRECOMP
-    #include "wx/wx.h"
-#endif
-#include "wx/docview.h"
-#include "ShapeFusionMain.h"
+#include <wx/listimpl.cpp>
 
-class ShapeFusionApp: public wxApp {
-public:
-    ShapeFusionApp(void);
-    bool OnInit(void);
-    int OnExit(void);
-    
-	wxFrame *CreateChildFrame(wxDocument *doc, wxView *view, const wxString title, wxPoint point, wxSize size);
-    
-protected:
-    wxDocManager* m_docManager;
-};
+WX_DEFINE_LIST(shortList);
+WX_DEFINE_LIST(intList);
+WX_DEFINE_LIST(longList);
 
-DECLARE_APP(ShapeFusionApp);
+WX_DEFINE_LIST(wxBitmapList);
+WX_DEFINE_LIST(wxPointList);
 
-ShapeFusionMain *GetMainFrame(void);
-
-#endif
+WX_DEFINE_LIST(ShapesColorList);
+WX_DEFINE_LIST(ShapesColorTableList);
+WX_DEFINE_LIST(ShapesSequenceList);
+WX_DEFINE_LIST(ShapesFrameList);
+WX_DEFINE_LIST(ShapesBitmapList);

@@ -16,30 +16,27 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#ifndef SHAPEFUSIONAPP_H
-#define SHAPEFUSIONAPP_H
+#ifndef SHAPEFUSIONLISTS_H
+#define SHAPEFUSIONLISTS_H
 
-#include "wx/wxprec.h"
-#ifndef WX_PRECOMP
-    #include "wx/wx.h"
-#endif
-#include "wx/docview.h"
-#include "ShapeFusionMain.h"
+//#include "ShapesDocument.h"
 
-class ShapeFusionApp: public wxApp {
-public:
-    ShapeFusionApp(void);
-    bool OnInit(void);
-    int OnExit(void);
-    
-	wxFrame *CreateChildFrame(wxDocument *doc, wxView *view, const wxString title, wxPoint point, wxSize size);
-    
-protected:
-    wxDocManager* m_docManager;
-};
+WX_DECLARE_LIST(short, shortList);
+WX_DECLARE_LIST(int, intList);
+WX_DECLARE_LIST(long, longList);
 
-DECLARE_APP(ShapeFusionApp);
+WX_DECLARE_LIST(wxBitmap, wxBitmapList);
+WX_DECLARE_LIST(wxPoint, wxPointList);
 
-ShapeFusionMain *GetMainFrame(void);
+class ShapesColor;
+class ShapesColorTable;
+class ShapesSequence;
+class ShapesFrame;
+class ShapesBitmap;
+WX_DECLARE_LIST(ShapesColor, ShapesColorList);
+WX_DECLARE_LIST(ShapesColorTable, ShapesColorTableList);
+WX_DECLARE_LIST(ShapesSequence, ShapesSequenceList);
+WX_DECLARE_LIST(ShapesFrame, ShapesFrameList);
+WX_DECLARE_LIST(ShapesBitmap, ShapesBitmapList);
 
 #endif

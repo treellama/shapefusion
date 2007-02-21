@@ -82,15 +82,13 @@ int ShapeFusionApp::OnExit(void)
 
 /*
 * Centralised code for creating a document frame.
-* Called from view.cpp, when a view is created, but not used at all
-* in 'single window' mode.
+* Called when a new view is created (after a New/Open event)
 */
-
-wxFrame *ShapeFusionApp::CreateChildFrame(wxDocument *doc, wxView *view, bool isCanvas)
+wxFrame *ShapeFusionApp::CreateChildFrame(wxDocument *doc, wxView *view, const wxString title, wxPoint point, wxSize size)
 {
     //// Make a child frame
-    wxDocChildFrame *subframe = new wxDocChildFrame(doc, view, GetMainFrame(), wxID_ANY, _T("Child Frame"),
-        wxPoint(10, 10), wxSize(300, 300), wxDEFAULT_FRAME_STYLE);
+    wxDocChildFrame *subframe = new wxDocChildFrame(doc, view, GetMainFrame(), wxID_ANY, title,
+        point, size, wxDEFAULT_FRAME_STYLE);
     
     wxMenuBar *menu_bar = new wxMenuBar;
     

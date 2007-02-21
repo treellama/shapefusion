@@ -129,8 +129,8 @@ char	*collnames[] = {	"Interface graphics",
 							"Landscape 4",
 							"Cyborg" };
 
-ShapesEditor::ShapesEditor(const wxChar *t, int x, int y, int w, int h):
-		wxFrame(0, wxID_ANY, t, wxPoint(x, y), wxSize(w, h), wxDEFAULT_FRAME_STYLE, wxT("shapefusion")),
+ShapesEditor::ShapesEditor(wxView *v, wxFrame *frame, const wxChar *t,  const wxPoint& pos, const wxSize& size):
+		wxFrame(frame, wxID_ANY, t, pos, size, wxDEFAULT_FRAME_STYLE, wxT("shapefusion")),
 		seqnameconv(wxT("macintosh")),
 		payload(NULL), selected_coll(-1), selected_vers(-1), selected_sequence(-1), view_ct(-1), show_transparent_pixels(false)
 {

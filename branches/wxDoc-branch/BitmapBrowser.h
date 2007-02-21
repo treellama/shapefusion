@@ -31,7 +31,7 @@
     #include "wx/wx.h"
 #endif
 #include <vector>
-#include "Shapes.h"
+#include "ShapesDocument.h"
 using std::vector;
 
 DECLARE_EVENT_TYPE(wxEVT_BITMAPBROWSER, -1)

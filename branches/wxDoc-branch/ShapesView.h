@@ -20,25 +20,177 @@
 #define __TEXTVIEW_H__
 
 #include "wx/docview.h"
-
-/*class MyTextWindow: public wxTextCtrl
-{
-public:
-    wxView *view;
-    
-    MyTextWindow(wxView *v, wxFrame *frame, const wxPoint& pos, const wxSize& size, const long style);
-};*/
+#include "wx/treectrl.h"
+#include "wx/spinctrl.h"
+#include "wx/statline.h"
+//#include "BitmapBrowser.h"
+//#include "BitmapView.h"
+//#include "CTBrowser.h"
+//#include "FrameBrowser.h"
+//#include "FrameView.h"
+//#include "SequenceView.h"
+#include "ShapeFusionMenus.h"
 
 class ShapesView: public wxView
 {
     DECLARE_DYNAMIC_CLASS(ShapesView)
 private:
+	// control ids
+	/*enum {
+		// bitmaps
+		BITMAP_BROWSER,
+		CB_COLUMN_ORDER,
+		CB_ENABLE_TRANSPARENCY,
+		BTN_SAVE_BITMAP,
+		BTN_REPLACE_BITMAP,
+		BTN_DELETE_BITMAP,
+		// frames
+		FRAME_BROWSER,
+		FIELD_BITMAP_INDEX,
+		CB_XMIRROR,
+		CB_YMIRROR,
+		CB_KEYPOINT,
+		FIELD_ORIGIN_X,
+		FIELD_ORIGIN_Y,
+		FIELD_KEY_X,
+		FIELD_KEY_Y,
+		FIELD_FRAME_SCALEFACTOR,
+		FIELD_MIN_LIGHT_INT,
+		// sequences
+		FIELD_SEQ_NAME,
+		BTN_DELETE_SEQ,
+		MENU_SEQ_TYPE,
+		FIELD_SEQ_NUMBER_OF_VIEWS,
+		FIELD_SEQ_FRAMES_PER_VIEW,
+		FIELD_SEQ_TICKS_PER_FRAME,
+		FIELD_SEQ_LOOP_FRAME,
+		FIELD_SEQ_KEY_FRAME,
+		MENU_SEQ_XFER_MODE,
+		FIELD_SEQ_XFER_MODE_PERIOD,
+		FIELD_SEQ_FIRST_FRAME_SND,
+		FIELD_SEQ_KEY_FRAME_SND,
+		FIELD_SEQ_LAST_FRAME_SND,
+		FIELD_SEQ_SCALE_FACTOR,
+	};
+	
+	wxBoxSizer			*mainbox;
+	wxTreeCtrl			*colltree;
+	wxBoxSizer			*dummy_sizer;
+	// widgets for collection info
+	wxBoxSizer			*coll_sizer;
+	wxStaticBox			*coll_static_box;
+	wxStaticBoxSizer	*coll_inner_box;
+	wxStaticText		*coll_text;
+
+	// widgets for chunk info
+	wxBoxSizer			*chunk_sizer;
+	wxStaticBox			*chunk_static_box;
+	wxStaticBoxSizer	*chunk_inner_box;
+	wxStaticText			*chunk_undef_label;
+	wxFlexGridSizer			*chunk_grid;
+	wxStaticText				*chunk_version_label,
+								*chunk_type_label,
+								*chunk_flags_label,
+								*chunk_sf_label;
+	wxTextCtrl					*chunk_version_field,
+								*chunk_flags_field,
+								*chunk_sf_field;
+	wxChoice					*chunk_type_menu;
+	// widgets for color tables section
+	wxBoxSizer			*ct_outer_sizer;
+	CTBrowser			*ctb;
+	wxStaticText		*ct_count_label;
+	// widgets for bitmaps section
+	wxBoxSizer			*b_outer_sizer,
+						*b_edit_inner_box;
+	BitmapBrowser		*bb;
+	wxStaticText		*b_count_label;
+	wxStaticBox			*b_edit_static_box;
+	wxStaticBoxSizer	*b_edit_box;
+	wxCheckBox			*b_order_checkbox,
+						*b_transparency_checkbox;
+	wxStaticText		*b_info_label;
+	BitmapView			*b_view;
+	wxButton			*b_save,
+						*b_replace;
+	// widgets for frames section
+	wxBoxSizer			*f_outer_sizer,
+						*f_edit_inner_box;
+	FrameBrowser		*fb;
+	wxStaticText		*f_count_label;
+	wxStaticBox			*f_edit_static_box;
+	wxStaticBoxSizer	*f_edit_box;
+	wxStaticText		*f_bitmap_label;
+	wxSpinCtrl			*f_bitmap_id;
+	wxTextCtrl			*f_origin_x_field,
+						*f_origin_y_field,
+						*f_key_x_field,
+						*f_key_y_field,
+						*f_scalefactor_field;
+	wxCheckBox			*f_xmirror_checkbox,
+						*f_ymirror_checkbox,
+						*f_keypoint_checkbox;
+	FrameView			*f_view;
+	wxFlexGridSizer		*f_origin_box;
+	wxStaticText		*f_origin_x_label,
+						*f_origin_y_label,
+						*f_key_x_label,
+						*f_key_y_label,
+						*f_scalefactor_label,
+						*f_mli_label,
+						*f_w_left_label,
+						*f_w_right_label,
+						*f_w_top_label,
+						*f_w_bottom_label,
+						*f_w_x0_label,
+						*f_w_y0_label;
+	wxTextCtrl			*f_mli_field,
+						*f_w_left_field,
+						*f_w_right_field,
+						*f_w_top_field,
+						*f_w_bottom_field,
+						*f_w_x0_field,
+						*f_w_y0_field;
+	// widgets for sequences section
+	wxStaticBoxSizer	*s_outer_sizer;
+	wxStaticBox			*s_outer_static_box;
+	wxBoxSizer			*s_box1;
+	wxStaticText			*s_name_label;
+	wxTextCtrl				*s_name_field;
+	wxButton				*s_delete_button;
+	wxBoxSizer			*s_box2;
+	wxFlexGridSizer			*s_grid_box;
+	wxStaticText				*s_type_label;
+	wxChoice					*s_type_menu;
+	wxStaticText				*s_fpv_label;
+	wxTextCtrl					*s_fpv_field;
+	wxStaticText        		*s_tpf_label;
+	wxTextCtrl          		*s_tpf_field;
+	wxStaticText				*s_lf_label;
+	wxTextCtrl					*s_lf_field;
+	wxStaticText				*s_kf_label;
+	wxTextCtrl					*s_kf_field;
+	wxStaticLine			*s_separator;
+	wxFlexGridSizer			*s_grid_box2;
+	wxStaticText				*s_xfermode_label;
+	wxChoice					*s_xfermode_menu;
+	wxStaticText				*s_xferperiod_label;
+	wxTextCtrl					*s_xferperiod_field;
+	wxStaticText				*s_ffs_label,
+								*s_kfs_label,
+								*s_lfs_label;
+	wxTextCtrl					*s_ffs_field,
+								*s_kfs_field,
+								*s_lfs_field;
+	wxStaticText				*s_sf_label;
+	wxTextCtrl					*s_sf_field;
+	SequenceView		*s_fb;*/
+    wxFrame				*frame;
+
 public:
-    wxFrame *frame;
-//    MyTextWindow *textsw;
     
-    ShapesView(): wxView() { frame = (wxFrame *) NULL;/* textsw = (MyTextWindow *) NULL; */}
-    ~ShapesView(void) {}
+    ShapesView();
+    ~ShapesView(void);
     
     bool OnCreate(wxDocument *doc, long flags);
     void OnDraw(wxDC *dc);

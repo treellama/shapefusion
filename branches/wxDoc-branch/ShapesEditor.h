@@ -28,6 +28,7 @@
 #ifndef WX_PRECOMP
     #include "wx/wx.h"
 #endif
+#include "wx/docview.h"
 #include "wx/treectrl.h"
 #include "wx/spinctrl.h"
 #include "wx/statline.h"
@@ -232,7 +233,7 @@ protected:
 	DECLARE_EVENT_TABLE();
 
 public:
-	ShapesEditor(const wxChar *t, int x, int y, int w, int h);
+	ShapesEditor(wxView *v, wxFrame *frame, const wxChar *t,  const wxPoint& pos, const wxSize& size);
 	~ShapesEditor(void);
 	wxTreeItemId GetSequencesTreeItem(unsigned int collection, unsigned int version) const;
 	// menu event callbacks

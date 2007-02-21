@@ -72,7 +72,13 @@ void CreateEditMenu(wxMenuBar *menu_bar)
 	edit_menu->Append(EDIT_MENU_CUT, wxT("&Cut\tCtrl+X"));
 	edit_menu->Append(EDIT_MENU_COPY, wxT("&Copy\tCtrl+C"));
 	edit_menu->Append(EDIT_MENU_PASTE, wxT("&Paste\tCtrl+V"));
+    edit_menu->AppendSeparator();
 	edit_menu->Append(EDIT_MENU_DELETE, wxT("&Delete"));
+	
+	edit_menu->Enable(wxID_CUT, false);
+	edit_menu->Enable(wxID_COPY, false);
+	edit_menu->Enable(wxID_PASTE, false);
+	edit_menu->Enable(wxID_DELETE, false);
 	
 	// We add the Edit menu to the passed menubar
 	menu_bar->Append(edit_menu, wxT("&Edit"));
