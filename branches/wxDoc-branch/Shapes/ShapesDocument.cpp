@@ -15,41 +15,65 @@
  * along with ShapeFusion; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
+
 #include "wx/wxprec.h"
 
 #ifndef WX_PRECOMP
 #include "wx/wx.h"
 #endif
-#ifdef __WXMAC__
-#include "wx/filename.h"
-#endif
+#include "wx/datstrm.h"
 
 #include "ShapesDocument.h"
 
 IMPLEMENT_DYNAMIC_CLASS(ShapesDocument, wxDocument)
 
-#if wxUSE_STD_IOSTREAM
-wxSTD ostream& ShapesDocument::SaveObject(wxSTD ostream& text_stream)
+ShapesDocument::ShapesDocument():
+	wxDocument(), mGoodData(false), mVerboseLoading(true)
 {
 
-	return stream;
 }
-	
-wxSTD istream& ShapesDocument::LoadObject(wxSTD istream& text_stream)
+
+ShapesDocument::~ShapesDocument()
 {
-	return stream;
+
 }
+
+#if wxUSE_STD_IOSTREAM
+wxSTD ostream& ShapesDocument::SaveObject(wxSTD ostream& data_stream)
 #else
 wxOutputStream& ShapesDocument::SaveObject(wxOutputStream& stream)
-{
-	return stream;
-}
-	
-wxInputStream& ShapesDocument::LoadObject(wxInputStream& stream)
-{
-	return stream;
-}
 #endif
+{
+	return stream;
+}
+
+#if wxUSE_STD_IOSTREAM
+wxSTD istream& ShapesDocument::LoadObject(wxSTD istream& data_stream)
+#else
+wxInputStream& ShapesDocument::LoadObject(wxInputStream& stream)
+#endif
+{
+#if !wxUSE_STD_IOSTREAM
+	wxDataInputStream data_stream(stream);
+	data_stream.BigEndianOrdered(true);
+#endif
+	
+	for (unsigned int i = 0; i < COLLECTIONS_PER_FILE; i++)
+	{
+		ShapesCollection	*c = new ShapesCollection(mVerboseLoading);
+		if (mVerboseLoading)
+			wxLogDebug("[ShapesDocument] Loading collection %d\n", i);
+		
+		c->LoadObject(stream);
+		// store
+		mCollections.Append(c);
+		
+	}
+	
+	mGoodData = true;
+	
+	return stream;
+}
 
 #if 0
 Shapes::Shapes(void): verbose_file_load(false)

@@ -19,24 +19,11 @@
 #ifndef SHAPEFUSIONLISTS_H
 #define SHAPEFUSIONLISTS_H
 
-//#include "ShapesDocument.h"
-
 WX_DECLARE_LIST(short, shortList);
 WX_DECLARE_LIST(int, intList);
 WX_DECLARE_LIST(long, longList);
 
 WX_DECLARE_LIST(wxBitmap, wxBitmapList);
 WX_DECLARE_LIST(wxPoint, wxPointList);
-
-class ShapesColor;
-class ShapesColorTable;
-class ShapesSequence;
-class ShapesFrame;
-class ShapesBitmap;
-WX_DECLARE_LIST(ShapesColor, ShapesColorList);
-WX_DECLARE_LIST(ShapesColorTable, ShapesColorTableList);
-WX_DECLARE_LIST(ShapesSequence, ShapesSequenceList);
-WX_DECLARE_LIST(ShapesFrame, ShapesFrameList);
-WX_DECLARE_LIST(ShapesBitmap, ShapesBitmapList);
 
 #endif

@@ -17,6 +17,7 @@
 */
 
 #include "ShapeFusionLists.h"
+#include "ShapesElements.h"
 
 #include <wx/listimpl.cpp>
 
@@ -32,3 +33,4 @@ WX_DEFINE_LIST(ShapesColorTableList);
 WX_DEFINE_LIST(ShapesSequenceList);
 WX_DEFINE_LIST(ShapesFrameList);
 WX_DEFINE_LIST(ShapesBitmapList);
+WX_DEFINE_LIST(ShapesCollectionList);

@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		1F6C5E070B80E37800628F07 /* wx.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F6C5E060B80E37800628F07 /* wx.framework */; };
 		1F84BD360B8C7A8C000B4DC4 /* ShapeFusionLists.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F84BD350B8C7A8C000B4DC4 /* ShapeFusionLists.cpp */; };
+		1F84BFC50B8CBF08000B4DC4 /* ShapesElements.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F84BFC40B8CBF08000B4DC4 /* ShapesElements.cpp */; };
 		1F9857330B8A2CDC00D0395F /* ShapeFusionMain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F98572F0B8A2CDC00D0395F /* ShapeFusionMain.cpp */; };
 		1F9857340B8A2CDC00D0395F /* ShapeFusionMenus.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F9857310B8A2CDC00D0395F /* ShapeFusionMenus.cpp */; };
 		1F9857EA0B8A39BF00D0395F /* ShapesDocument.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F9857E60B8A39BF00D0395F /* ShapesDocument.cpp */; };
@@ -34,6 +35,8 @@
 		1F84BCE90B8C760D000B4DC4 /* ShapesDocument.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ShapesDocument.h; sourceTree = "<group>"; };
 		1F84BD340B8C7A8C000B4DC4 /* ShapeFusionLists.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShapeFusionLists.h; sourceTree = "<group>"; };
 		1F84BD350B8C7A8C000B4DC4 /* ShapeFusionLists.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ShapeFusionLists.cpp; sourceTree = "<group>"; };
+		1F84BFC30B8CBF08000B4DC4 /* ShapesElements.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShapesElements.h; sourceTree = "<group>"; };
+		1F84BFC40B8CBF08000B4DC4 /* ShapesElements.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ShapesElements.cpp; sourceTree = "<group>"; };
 		1F98572F0B8A2CDC00D0395F /* ShapeFusionMain.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = ShapeFusionMain.cpp; sourceTree = "<group>"; };
 		1F9857300B8A2CDC00D0395F /* ShapeFusionMain.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ShapeFusionMain.h; sourceTree = "<group>"; };
 		1F9857310B8A2CDC00D0395F /* ShapeFusionMenus.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = ShapeFusionMenus.cpp; sourceTree = "<group>"; };
@@ -61,7 +64,7 @@
 		F08B4B8A0AB0AE6C00896399 /* utilities.h */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.c.h; path = utilities.h; sourceTree = "<group>"; };
 		F08B4C360AB0B06D00896399 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
 		F08B4C370AB0B09A00896399 /* System.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = System.framework; path = /System/Library/Frameworks/System.framework; sourceTree = "<absolute>"; };
-		F08B4C440AB0B10000896399 /* ShapeFusion.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = ShapeFusion.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F08B4C440AB0B10000896399 /* ShapeFusion.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ShapeFusion.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F08B4C470AB0B10000896399 /* ShapeFusion-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "ShapeFusion-Info.plist"; sourceTree = "<group>"; };
 		F08B4C760AB0B7E300896399 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = /System/Library/Frameworks/IOKit.framework; sourceTree = "<absolute>"; };
 		F08B4CB30AB0C0E700896399 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
@@ -104,6 +107,8 @@
 				F08B4B7E0AB0AE4B00896399 /* BitmapBrowser.cpp */,
 				F0966E040B551E5100820E4F /* SequenceView.h */,
 				F0966E020B551E4900820E4F /* SequenceView.cpp */,
+				1F84BFC30B8CBF08000B4DC4 /* ShapesElements.h */,
+				1F84BFC40B8CBF08000B4DC4 /* ShapesElements.cpp */,
 			);
 			path = Shapes;
 			sourceTree = "<group>";
@@ -229,6 +234,7 @@
 				1F9857EA0B8A39BF00D0395F /* ShapesDocument.cpp in Sources */,
 				1F9857EB0B8A39BF00D0395F /* ShapesView.cpp in Sources */,
 				1F84BD360B8C7A8C000B4DC4 /* ShapeFusionLists.cpp in Sources */,
+				1F84BFC50B8CBF08000B4DC4 /* ShapesElements.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
