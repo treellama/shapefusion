@@ -40,8 +40,8 @@ void CreateFileMenu(wxMenuBar *menu_bar)
 	file_menu = new wxMenu();
 //	file_menu->Append(FILE_MENU_NEW, wxT("New..."), file_new_menu);
 //	file_menu->Append(FILE_MENU_OPEN, wxT("Open..."), file_open_menu);
-	file_menu->Append(FILE_MENU_NEW, wxT("New..."));
-	file_menu->Append(FILE_MENU_OPEN, wxT("Open..."));
+	file_menu->Append(FILE_MENU_NEW, wxT("New...\tCtrl+N"));
+	file_menu->Append(FILE_MENU_OPEN, wxT("Open...\tCtrl+O"));
 	file_menu->AppendSeparator();
 	file_menu->Append(FILE_MENU_SAVE, wxT("&Save\tCtrl+S"));
 	file_menu->Append(FILE_MENU_SAVEAS, wxT("Save as...\tCtrl+Shift+S"));

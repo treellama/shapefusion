@@ -18,7 +18,7 @@
 
 //
 // BitmapView
-// A widget for displaying a single, full size ShpBitmap
+// A widget for displaying a single, full size ShapesBitmap
 //
 
 #ifndef BITMAPVIEW_H
@@ -28,15 +28,13 @@
 #ifndef WX_PRECOMP
     #include "wx/wx.h"
 #endif
-#include <vector>
-#include "Shapes.h"
-using std::vector;
+#include "ShapesDocument.h"
 
 class BitmapView: public wxScrolledWindow {
 private:
-	ShpBitmap		*enc_bmp;			// encoded bitmap
-	wxBitmap		dec_bmp;			// ready-to-draw bitmap
-	ShpColorTable	*ctable;			// which palette to use for display
+	ShapesBitmap		*enc_bmp;			// encoded bitmap
+	wxBitmap			dec_bmp;			// ready-to-draw bitmap
+	ShapesColorTable	*ctable;			// which palette to use for display
 	bool			white_transparency;	// hide transparent pixels
 	wxPen			invisible_pen;
 
@@ -55,9 +53,9 @@ public:
 	void OnDrag(wxMouseEvent &e);
 	// access
 	void SetTranspPixelsDisplay(bool show);
-	void SetBitmap(ShpBitmap *bp);
-	ShpBitmap *GetBitmap(void) const;
-	void SetColorTable(ShpColorTable *ct);
+	void SetBitmap(ShapesBitmap *bp);
+	ShapesBitmap *GetBitmap(void) const;
+	void SetColorTable(ShapesColorTable *ct);
 };
 
 #endif

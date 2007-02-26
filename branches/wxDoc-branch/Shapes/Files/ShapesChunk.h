@@ -15,40 +15,34 @@
  * along with ShapeFusion; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
-#ifndef MYTREEITEMDATA_H
-#define MYTREEITEMDATA_H
 
-#include "wx/wxprec.h"
-#ifndef WX_PRECOMP
-    #include "wx/wx.h"
-#endif
-#include "wx/treectrl.h"
-#include "ShapesDocument.h"
+#include "ShapeFusionLists.h"
 
-enum {
-	TREESECTION_COLLECTION = 1,
-	TREESECTION_VERSION,
-	TREESECTION_BITMAPS,
-	TREESECTION_COLORTABLES,
-	TREESECTION_FRAMES,
-	TREESECTION_SEQUENCES
-};
-
-class MyTreeItemData: public wxTreeItemData {
+// a Shapes chunk
+class ShapesChunk : public ShapesElement
+{
 private:
-	int	coll_id;
-	int	version;
-	int section;
-	int	sequence;
+	short			mVersion;	// COLLECTION_VERSION (same for all Marathon games)
+	short			mType;
+	unsigned short	mFlags;		// unused; 0 in Durandal/Infinity, 1 in Rubicon and others
+	short			mPixelsToWorld;
+
+	ShapesColorTableList	mColortables;
+	ShapesSequenceList		mSequences;
+	ShapesFrameList			mFrames;
+	ShapesBitmapList		mBitmaps;
+
+	wxInt32 mOffset, mLength;
 
 public:
-	MyTreeItemData(int id=-1, int vers=-1, int sect=-1, int seq=-1);
-	~MyTreeItemData(void);
-	
-	int CollID(void) const;
-	int Version(void) const;
-	int Section(void) const;
-	int Sequence(void) const;
-};
+	ShapesChunk(wxInt32 offset, wxInt32 length, bool verbose = false);
+	~ShapesChunk(void);
 
+#if wxUSE_STD_IOSTREAM
+    wxSTD ostream& SaveObject(wxSTD ostream& stream);
+    wxSTD istream& LoadObject(wxSTD istream& stream);
+#else
+    wxOutputStream& SaveObject(wxOutputStream& stream);
+    wxInputStream& LoadObject(wxInputStream& stream);
 #endif
+};

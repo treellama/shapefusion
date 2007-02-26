@@ -18,7 +18,7 @@
 
 //
 // FrameBrowser
-// A widget for displaying a list of ShpFrame's as a scrollable list
+// A widget for displaying a list of ShapesFrame's as a scrollable list
 // of selectable thumbnails. Each thumbnail displays the frame's
 // associated bitmap, altered with the specified mirror transformations.
 //
@@ -30,20 +30,18 @@
 #ifndef WX_PRECOMP
     #include "wx/wx.h"
 #endif
-#include <vector>
-#include "Shapes.h"
-using std::vector;
+#include "ShapesDocument.h"
 
 DECLARE_EVENT_TYPE(wxEVT_FRAMEBROWSER, -1)
 DECLARE_EVENT_TYPE(wxEVT_FRAMEBROWSER_DELETE, -1)
 
 class FrameBrowser: public wxScrolledWindow {
 private:
-	vector<ShpFrame *>	frames;				// pointers to frames
-	vector<ShpBitmap *>	bitmaps;			// pointers to bitmaps
-	vector<wxBitmap>	thumbnails;			// scaled/rendered frame thumbnails
-	ShpColorTable		*ctable;			// which palette to use for display
-	vector<wxPoint>		tn_positions;		// thumbnail positions within window
+	ShapesFrameList		frames;				// pointers to frames
+	ShapesBitmapList	bitmaps;			// pointers to bitmaps
+	wxBitmapList		thumbnails;			// scaled/rendered frame thumbnails
+	ShapesColorTable	*ctable;			// which palette to use for display
+	wxPointList			tn_positions;		// thumbnail positions within window
 	wxCoord				tn_size,			// thumbnail size
 						margin;				// margin between thumbnails and window edges
 	bool				auto_size,
@@ -56,7 +54,7 @@ private:
 						invisible_pen;
 	unsigned int		frozen_count;
 
-	wxBitmap CreateThumbnail(ShpFrame *fp);
+	wxBitmap CreateThumbnail(ShapesFrame *fp);
 	void UpdateVirtualSize(void);
 
 protected:
@@ -76,9 +74,9 @@ public:
 	int GetSelection(void) const;
 	void SetThumbnailSize(int size);
 	void SetTranspPixelsDisplay(bool show);
-	void AddFrame(ShpFrame *fp);
-	void AddBitmap(ShpBitmap *bp);
-	void SetColorTable(ShpColorTable *ct);
+	void AddFrame(ShapesFrame *fp);
+	void AddBitmap(ShapesBitmap *bp);
+	void SetColorTable(ShapesColorTable *ct);
 	void Clear(void);
 	// utilities
 	void RebuildThumbnail(unsigned int i);

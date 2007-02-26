@@ -16,15 +16,25 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#ifndef SHAPEFUSIONLISTS_H
-#define SHAPEFUSIONLISTS_H
+#include "ShapeFusionLists.h"
+#include "BigEndianBuffer.h"
 
-WX_DECLARE_LIST(short, shortList);
-WX_DECLARE_LIST(int, intList);
-WX_DECLARE_LIST(long, longList);
-WX_DECLARE_LIST(wxInt32, wxInt32List);
+// a color table
+class ShapesColorTable : public ShapesElement
+{
+private:
+	ShapesColorList		mColors;
+	
+	wxInt32 mColorCount,
+			mOffset;
+	
+public:
+	ShapesColorTable::ShapesColorTable(wxInt32 colorcount, wxInt32 offset, bool verbose = false);
+	~ShapesColorTable(void);
+	
+    wxOutputStream& SaveObject(wxOutputStream& stream);
+    BigEndianBuffer& LoadObject(BigEndianBuffer& buffer);
+};
 
-WX_DECLARE_LIST(wxBitmap, wxBitmapList);
-WX_DECLARE_LIST(wxPoint, wxPointList);
+WX_DECLARE_LIST(ShapesColorTable, ShapesColorTableList);
 
-#endif

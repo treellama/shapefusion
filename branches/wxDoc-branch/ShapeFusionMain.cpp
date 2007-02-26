@@ -18,7 +18,7 @@
 
 #include "ShapeFusionMain.h"
 #include "ShapeFusionMenus.h"
-//#include "DrawView.h"
+
 /*
 * This is the top-level window of the application.
 */
@@ -37,7 +37,14 @@ wxDocParentFrame(manager, frame, id, title, pos, size, type)
 
 void ShapeFusionMain::OnAbout(wxCommandEvent& WXUNUSED(event) )
 {
-    (void)wxMessageBox(_T("DocView Demo\nAuthor: Julian Smart\nUsage: docview.exe [-single]"), _T("About DocView"));
+	 wxMessageDialog *dlg = new wxMessageDialog(this,
+								wxT("ShapeFusion 0.2\nhttp://shapefusion.sourceforge.net\n\nCopyright 2000-2007, Tito Dal Canton\n\n"
+									"An editor for Marathon II, Marathon Infinity and AlephOne shapes files. "
+									"Released under the terms of the GNU General Public License: for more information "
+									"see the COPYING file that comes with ShapeFusion."),
+								wxT("About ShapeFusion"), wxOK | wxICON_INFORMATION);
+	 dlg->ShowModal();
+	 dlg->Destroy();
 }
 
 // Creates a canvas. Called either from view.cc when a new drawing

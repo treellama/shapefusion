@@ -158,8 +158,8 @@ void CTBrowser::OnKeyDown(wxKeyEvent &e)
 	}
 }
 
-// add a new ShpColorTable to the list
-void CTBrowser::AddColorTable(ShpColorTable *ctp)
+// add a new ShapesColorTable to the list
+void CTBrowser::AddColorTable(ShapesColorTable *ctp)
 {
 	if (ctp == NULL)
 		return;

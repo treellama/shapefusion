@@ -32,7 +32,7 @@
 #include "wx/treectrl.h"
 #include "wx/spinctrl.h"
 #include "wx/statline.h"
-#include "Shapes.h"
+#include "ShapesDocument.h"
 #include "BitmapBrowser.h"
 #include "BitmapView.h"
 #include "CTBrowser.h"

@@ -223,21 +223,21 @@ void FrameView::SetTranspPixelsDisplay(bool show)
 }
 
 // associate a frame
-void FrameView::SetFrame(ShpFrame *fp)
+void FrameView::SetFrame(ShapesFrame *fp)
 {
 	frame = fp;
 	SetBitmap(enc_bmp);
 	Refresh();
 }
 
-ShpFrame *FrameView::GetFrame(void) const
+ShapesFrame *FrameView::GetFrame(void) const
 {
 	return frame;
 }
 
 // associate a bitmap to display (we could do this in SetFrame
 // but we would need a pointer to the original Shapes object)
-void FrameView::SetBitmap(ShpBitmap *bp)
+void FrameView::SetBitmap(ShapesBitmap *bp)
 {
 	int	cw, ch;
 
@@ -256,7 +256,7 @@ void FrameView::SetBitmap(ShpBitmap *bp)
 			SetVirtualSize(vw, vh);
 			// decode bitmap
 			if (ctable != NULL) {
-				wxImage	img = ShpBitmapToImage(bp, ctable, white_transparency);
+				wxImage	img = ShapesBitmapToImage(bp, ctable, white_transparency);
 
 				// apply transformations
 				if (frame) {
@@ -279,7 +279,7 @@ void FrameView::SetBitmap(ShpBitmap *bp)
 }
 
 // call this before Set'tingBitmap!
-void FrameView::SetColorTable(ShpColorTable *ct)
+void FrameView::SetColorTable(ShapesColorTable *ct)
 {
 	ctable = ct;
 	SetBitmap(enc_bmp);

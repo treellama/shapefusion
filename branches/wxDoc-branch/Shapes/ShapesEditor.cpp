@@ -562,7 +562,7 @@ void ShapesEditor::MenuFileOpen(wxCommandEvent &e)
 	
 						for (unsigned int k = 0; k < payload->CollSeqCount(i, j); k++) {
 							// sequence nodes
-							ShpSequence		*seq = payload->GetSeq(i, j, k);
+							ShapesSequence		*seq = payload->GetSeq(i, j, k);
 							wxString    	blabel;
 							MyTreeItemData	*id_seq = new MyTreeItemData(i, j, TREESECTION_SEQUENCES, k);
 	
@@ -666,7 +666,7 @@ void ShapesEditor::MenuViewCT(wxCommandEvent &e)
 {
 	view_ct = e.GetId() - MVIEW_COLORTABLE_0;
 
-	ShpColorTable	*ctp = payload->GetColorTable(selected_coll, selected_vers, view_ct);
+	ShapesColorTable	*ctp = payload->GetColorTable(selected_coll, selected_vers, view_ct);
 
 	wxBeginBusyCursor();
 	bb->SetColorTable(ctp);
@@ -751,7 +751,7 @@ void ShapesEditor::MenuShapesSaveColorTable(wxCommandEvent &e)
 			}
 
 			if (!ctpath.empty()) {
-				ShpColorTable	*ct = payload->GetColorTable(selected_coll, selected_vers, selection);
+				ShapesColorTable	*ct = payload->GetColorTable(selected_coll, selected_vers, selection);
 				std::ofstream	cts(ctpath.fn_str());
 
 				if (cts.good()) {
@@ -822,8 +822,8 @@ void ShapesEditor::MenuShapesAddBitmap(wxCommandEvent &e)
 
 			if (img.LoadFile(filename)) {
 				// we have the wxImage now. Encode it to a new bitmap
-				ShpBitmap		newbmp;
-				ShpColorTable	*ct = payload->GetColorTable(selected_coll, selected_vers, view_ct);
+				ShapesBitmap		newbmp;
+				ShapesColorTable	*ct = payload->GetColorTable(selected_coll, selected_vers, view_ct);
 				unsigned char	*srcpixels = img.GetData(),
 								*src = srcpixels,
 								*dst;
@@ -885,7 +885,7 @@ void ShapesEditor::MenuShapesAddBitmap(wxCommandEvent &e)
 
 				// update the GUI
 				unsigned int	bitmap_count = payload->CollBitmapCount(selected_coll, selected_vers);
-				ShpBitmap		*pnewbitmap = payload->GetBitmap(selected_coll, selected_vers, bitmap_count-1);
+				ShapesBitmap		*pnewbitmap = payload->GetBitmap(selected_coll, selected_vers, bitmap_count-1);
 				wxString		count_string = wxString::Format(wxT("%u bitmap"), bitmap_count);
 
 				bb->AddBitmap(pnewbitmap);
@@ -914,7 +914,7 @@ void ShapesEditor::MenuShapesExportBitmaps(wxCommandEvent &e)
 	if (!dir.empty()) {
 		for (unsigned int i = 0; i < payload->CollBitmapCount(selected_coll, selected_vers); i++) {
 			wxString	file_name = wxString::Format(wxT("bitmap%.3d.bmp"), i);
-			wxImage		img = ShpBitmapToImage(payload->GetBitmap(selected_coll, selected_vers, i),
+			wxImage		img = ShapesBitmapToImage(payload->GetBitmap(selected_coll, selected_vers, i),
 							payload->GetColorTable(selected_coll, selected_vers, view_ct),
 							!show_transparent_pixels);
 
@@ -927,7 +927,7 @@ void ShapesEditor::MenuShapesNewFrame(wxCommandEvent &e)
 {
 	if (payload != NULL && selected_coll != -1 && selected_vers != -1) {
 		// append an empty frame
-		ShpFrame	newframe;
+		ShapesFrame	newframe;
 
 		// initialize values to something reasonable
 		newframe.bitmap_index = -1;
@@ -953,7 +953,7 @@ void ShapesEditor::MenuShapesNewSequence(wxCommandEvent &e)
 {
 	if (payload != NULL && selected_coll != -1 && selected_vers != -1) {
 		// append an empty sequence
-		ShpSequence		newseq;
+		ShapesSequence		newseq;
 
 		// initialize values to something reasonable
 		newseq.type = 0;
@@ -973,7 +973,7 @@ void ShapesEditor::MenuShapesNewSequence(wxCommandEvent &e)
 		// insert the new entry in the main tree
 		wxTreeItemId	thenode = GetSequencesTreeItem(selected_coll, selected_vers);
 		int				seq_id = payload->CollSeqCount(selected_coll, selected_vers) - 1;
-		ShpSequence     *seq = payload->GetSeq(selected_coll, selected_vers, seq_id);
+		ShapesSequence     *seq = payload->GetSeq(selected_coll, selected_vers, seq_id);
 		MyTreeItemData  *itemdata = new MyTreeItemData(selected_coll, selected_vers, TREESECTION_SEQUENCES, seq_id);
 		wxString		label;
 
@@ -1130,7 +1130,7 @@ void ShapesEditor::TreeSelect(wxTreeEvent &e)
 		// handle sequence selection
 		selected_sequence = data->Sequence();
 		if (selected_sequence > -1) {
-			ShpSequence *seq = payload->GetSeq(new_coll, new_vers, selected_sequence);
+			ShapesSequence *seq = payload->GetSeq(new_coll, new_vers, selected_sequence);
 
 			// setup sequence panel controls
 			s_outer_static_box->SetLabel(wxString::Format(wxT("Sequence %d of %u"),
@@ -1232,7 +1232,7 @@ void ShapesEditor::BitmapSelect(wxCommandEvent &e)
 		edit_menu->SetLabel(wxID_DELETE, wxT("Delete"));
 		edit_menu->Enable(wxID_DELETE, false);
 	} else {
-		ShpBitmap	*sel_bitmap = payload->GetBitmap(selected_coll, selected_vers, selection);
+		ShapesBitmap	*sel_bitmap = payload->GetBitmap(selected_coll, selected_vers, selection);
 		
 		// set labels
 		wxString	info_label = wxString::Format(wxT("%dx%d pixels, "), sel_bitmap->width, sel_bitmap->height);
@@ -1286,7 +1286,7 @@ void ShapesEditor::BitmapDelete(wxCommandEvent &e)
 
 void ShapesEditor::ToggleBitmapCheckboxes(wxCommandEvent &e)
 {
-	ShpBitmap	*sel_bitmap = b_view->GetBitmap();
+	ShapesBitmap	*sel_bitmap = b_view->GetBitmap();
 
 	if (sel_bitmap != NULL) {
 		switch (e.GetId()) {
@@ -1336,8 +1336,8 @@ void ShapesEditor::FrameSelect(wxCommandEvent &e)
 		edit_menu->SetLabel(wxID_DELETE, wxT("Delete"));
 		edit_menu->Enable(wxID_DELETE, false);
 	} else {
-		ShpFrame	*sel_frame = payload->GetFrame(selected_coll, selected_vers, selection);
-		ShpBitmap	*assoc_bitmap = NULL;
+		ShapesFrame	*sel_frame = payload->GetFrame(selected_coll, selected_vers, selection);
+		ShapesBitmap	*assoc_bitmap = NULL;
 
 		// set labels
 		f_edit_static_box->SetLabel(wxString::Format(wxT("Frame %d of %u"),
@@ -1382,7 +1382,7 @@ void ShapesEditor::AskSaveBitmap(wxCommandEvent &e)
 	if (dlg->ShowModal() == wxID_OK) {
 		// FIXME create an 8-bit bitmap with the exact color table,
 		// instead of wasting space with an RGB one
-		wxImage	img = ShpBitmapToImage(payload->GetBitmap(selected_coll, selected_vers, selected_bmp),
+		wxImage	img = ShapesBitmapToImage(payload->GetBitmap(selected_coll, selected_vers, selected_bmp),
 										payload->GetColorTable(selected_coll, selected_vers, view_ct),
 										!show_transparent_pixels);
 
@@ -1395,7 +1395,7 @@ void ShapesEditor::AskSaveBitmap(wxCommandEvent &e)
 void ShapesEditor::BitmapIndexSpin(wxSpinEvent &e)
 {
 	int			newid = e.GetPosition();
-	ShpFrame	*sel_frame = f_view->GetFrame();
+	ShapesFrame	*sel_frame = f_view->GetFrame();
 
 	if (sel_frame != NULL) {
 		sel_frame->bitmap_index = newid;
@@ -1409,7 +1409,7 @@ void ShapesEditor::BitmapIndexSpin(wxSpinEvent &e)
 // checkbox toggle in the frame panel
 void ShapesEditor::ToggleFrameCheckboxes(wxCommandEvent &e)
 {
-	ShpFrame	*sel_frame = f_view->GetFrame();
+	ShapesFrame	*sel_frame = f_view->GetFrame();
 
 	if (sel_frame != NULL) {
 		switch (e.GetId()) {
@@ -1429,7 +1429,7 @@ void ShapesEditor::ToggleFrameCheckboxes(wxCommandEvent &e)
 // user messed with fields in the frame panel
 void ShapesEditor::EditFrameFields(wxCommandEvent &e)
 {
-	ShpFrame	*sel_frame = f_view->GetFrame();
+	ShapesFrame	*sel_frame = f_view->GetFrame();
 	wxString	s = e.GetString();
 
 	if (sel_frame != NULL) {
@@ -1475,7 +1475,7 @@ void ShapesEditor::EditFrameFields(wxCommandEvent &e)
 			// recalculate world_* fields if needed and possible
 			if (recalculate_world_fields && sel_frame->bitmap_index >= 0
 					&& sel_frame->bitmap_index < (int)payload->CollBitmapCount(selected_coll, selected_vers)) {
-				ShpBitmap	*assoc_bitmap = payload->GetBitmap(selected_coll, selected_vers, sel_frame->bitmap_index);
+				ShapesBitmap	*assoc_bitmap = payload->GetBitmap(selected_coll, selected_vers, sel_frame->bitmap_index);
 				int			w = assoc_bitmap->width,
 							h = assoc_bitmap->height,
 							scale_factor = sel_frame->scale_factor;
@@ -1507,7 +1507,7 @@ void ShapesEditor::DeleteSequence(wxCommandEvent &e)
 	colltree->SelectItem(seqnode);
 	colltree->DeleteChildren(seqnode);
 	for (unsigned int k = 0; k < payload->CollSeqCount(selected_coll, selected_vers); k++) {
-		ShpSequence		*seq = payload->GetSeq(selected_coll, selected_vers, k);
+		ShapesSequence		*seq = payload->GetSeq(selected_coll, selected_vers, k);
 		wxString		label;
 		MyTreeItemData	*seqdata = new MyTreeItemData(selected_coll, selected_vers, TREESECTION_SEQUENCES, k);
 
@@ -1524,7 +1524,7 @@ void ShapesEditor::DeleteSequence(wxCommandEvent &e)
 void ShapesEditor::EditSequenceType(wxCommandEvent &e)
 {
 	if (selected_sequence >= 0) {
-		ShpSequence	*sel_seq = payload->GetSeq(selected_coll, selected_vers, selected_sequence);
+		ShapesSequence	*sel_seq = payload->GetSeq(selected_coll, selected_vers, selected_sequence);
 		int			real_nov;
 
 		// always use ANIMATED_4, ANIMATED_5, ANIMATED_8
@@ -1552,7 +1552,7 @@ void ShapesEditor::EditSequenceType(wxCommandEvent &e)
 void ShapesEditor::EditSequenceXferMode(wxCommandEvent &e)
 {
 	if (selected_sequence >= 0) {
-		ShpSequence	*sel_seq = payload->GetSeq(selected_coll, selected_vers, selected_sequence);
+		ShapesSequence	*sel_seq = payload->GetSeq(selected_coll, selected_vers, selected_sequence);
 
 		sel_seq->transfer_mode = s_xfermode_menu->GetSelection();
 	}
@@ -1562,7 +1562,7 @@ void ShapesEditor::EditSequenceXferMode(wxCommandEvent &e)
 void ShapesEditor::EditSequenceFields(wxCommandEvent &e)
 {
 	if (selected_sequence >= 0) {
-		ShpSequence	*sel_seq = payload->GetSeq(selected_coll, selected_vers, selected_sequence);
+		ShapesSequence	*sel_seq = payload->GetSeq(selected_coll, selected_vers, selected_sequence);
 		wxString	s = e.GetString();
 
 		if (sel_seq != NULL) {

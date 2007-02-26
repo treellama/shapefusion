@@ -28,7 +28,7 @@
 IMPLEMENT_DYNAMIC_CLASS(ShapesDocument, wxDocument)
 
 ShapesDocument::ShapesDocument():
-	wxDocument(), mGoodData(false), mVerboseLoading(true)
+	wxDocument(), mGoodData(false), mVerboseLoading(false)
 {
 
 }
@@ -39,12 +39,48 @@ ShapesDocument::~ShapesDocument()
 }
 
 #if wxUSE_STD_IOSTREAM
-wxSTD ostream& ShapesDocument::SaveObject(wxSTD ostream& data_stream)
+wxSTD ostream& ShapesDocument::SaveObject(wxSTD ostream& stream)
 #else
 wxOutputStream& ShapesDocument::SaveObject(wxOutputStream& stream)
 #endif
-{
-	return stream;
+{	// calculate collection sizes
+	unsigned int	coll_sizes[COLLECTIONS_PER_FILE * 2];
+
+	for (unsigned int i = 0; i < COLLECTIONS_PER_FILE; i++) {
+		coll_sizes[i * 2] = CollectionSizeInFile(i, COLL_VERSION_8BIT);
+		coll_sizes[i * 2 + 1] = CollectionSizeInFile(i, COLL_VERSION_TRUECOLOR);
+	}
+
+	// compose and write the collection header block
+	{
+		BigEndianBuffer	raw_headers(SIZEOF_collection_header * COLLECTIONS_PER_FILE);
+		long			running_offset = SIZEOF_collection_header * COLLECTIONS_PER_FILE;
+
+		for (unsigned int i = 0; i < COLLECTIONS_PER_FILE; i++) {
+			raw_headers.WriteShort(mCollections[i]->mStatus);
+			raw_headers.WriteUShort(mCollections[i]->mFlags);
+			// 8-bit version
+			if (CollDefined(i, COLL_VERSION_8BIT)) {
+				raw_headers.WriteLong(running_offset);
+				raw_headers.WriteLong(coll_sizes[i * 2]);
+				running_offset += coll_sizes[i * 2];
+			} else {
+				raw_headers.WriteLong(-1);
+				raw_headers.WriteLong(0);
+			}
+			// truecolor version
+			if (CollDefined(i, COLL_VERSION_TRUECOLOR)) {
+				raw_headers.WriteLong(running_offset);
+				raw_headers.WriteLong(coll_sizes[i * 2 + 1]);
+				running_offset += coll_sizes[i * 2 + 1];
+			} else {
+				raw_headers.WriteLong(-1);
+				raw_headers.WriteLong(0);
+			}
+			raw_headers.WriteZeroes(12);
+		}
+		stream.Write((char *)raw_headers.Data(), raw_headers.Size());
+	}
 }
 
 #if wxUSE_STD_IOSTREAM
@@ -53,23 +89,25 @@ wxSTD istream& ShapesDocument::LoadObject(wxSTD istream& data_stream)
 wxInputStream& ShapesDocument::LoadObject(wxInputStream& stream)
 #endif
 {
-#if !wxUSE_STD_IOSTREAM
-	wxDataInputStream data_stream(stream);
-	data_stream.BigEndianOrdered(true);
-#endif
 	
 	for (unsigned int i = 0; i < COLLECTIONS_PER_FILE; i++)
 	{
 		ShapesCollection	*c = new ShapesCollection(mVerboseLoading);
+		
 		if (mVerboseLoading)
-			wxLogDebug("[ShapesDocument] Loading collection %d\n", i);
+			wxLogDebug("[ShapesDocument] Loading collection %d", i);
+		
+		stream.SeekI(i * SIZEOF_collection_header);
 		
 		c->LoadObject(stream);
-		// store
-		mCollections.Append(c);
+		
+		// store if correct
+		if (c->IsGood())
+			mCollections.Append(c);
+		else
+			wxLogError("[ShapesDocument] Error loading collection... Dropped");
 		
 	}
-	
 	mGoodData = true;
 	
 	return stream;

@@ -16,15 +16,34 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#ifndef SHAPEFUSIONLISTS_H
-#define SHAPEFUSIONLISTS_H
+#include "ShapeFusionLists.h"
+#include "BigEndianBuffer.h"
+#define SIZEOF_bitmap_definition			30
 
-WX_DECLARE_LIST(short, shortList);
-WX_DECLARE_LIST(int, intList);
-WX_DECLARE_LIST(long, longList);
-WX_DECLARE_LIST(wxInt32, wxInt32List);
+// a bitmap
+class ShapesBitmap : public ShapesElement
+{
+private:
+	short			mWidth, mHeight,
+					mBytesPerRow,	// width for uncompressed bitmaps, -1 for compressed ones
+					mBitDepth;		// 8
+	bool			mColumnOrder,	// store in column-order format
+					mTransparent;
+	unsigned char	*mPixels;
+	// list of frames referencing this bitmap
+	intList			mUsers;
+	
+	wxInt32 mOffset;
+	
+public:
 
-WX_DECLARE_LIST(wxBitmap, wxBitmapList);
-WX_DECLARE_LIST(wxPoint, wxPointList);
+	ShapesBitmap(wxInt32 offset, bool verbose = false);
+	~ShapesBitmap(void);
 
-#endif
+	short Width(void);
+	
+    wxOutputStream& SaveObject(wxOutputStream& stream);
+    BigEndianBuffer& LoadObject(BigEndianBuffer& stream);
+};
+
+WX_DECLARE_LIST(ShapesBitmap, ShapesBitmapList);

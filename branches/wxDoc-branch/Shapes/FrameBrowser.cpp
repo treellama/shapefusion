@@ -17,7 +17,7 @@
 */
 //
 // FrameBrowser
-// A widget for displaying a list of ShpFrame's
+// A widget for displaying a list of ShapesFrame's
 // as a scrollable list of selectable thumbnails. Each thumbnail
 // displays the frame's associated bitmap, altered with
 // the specified mirror transformations.
@@ -251,8 +251,8 @@ void FrameBrowser::SetTranspPixelsDisplay(bool show)
 	}
 }
 
-// add a new ShpFrame to the thumbnail list
-void FrameBrowser::AddFrame(ShpFrame *fp)
+// add a new ShapesFrame to the thumbnail list
+void FrameBrowser::AddFrame(ShapesFrame *fp)
 {
 	if (fp != NULL) {
 		frames.push_back(fp);
@@ -264,9 +264,9 @@ void FrameBrowser::AddFrame(ShpFrame *fp)
 	}
 }
 
-// add a ShpBitmap to the bitmap pointer list.
+// add a ShapesBitmap to the bitmap pointer list.
 // Call before adding frames!
-void FrameBrowser::AddBitmap(ShpBitmap *bp)
+void FrameBrowser::AddBitmap(ShapesBitmap *bp)
 {
 	if (bp != NULL) {
 		if (bp->pixels != NULL)
@@ -291,7 +291,7 @@ void FrameBrowser::Clear(void)
 }
 
 // call before adding frames!
-void FrameBrowser::SetColorTable(ShpColorTable *ct)
+void FrameBrowser::SetColorTable(ShapesColorTable *ct)
 {
 	ctable = ct;
 	if (frozen_count == 0) {
@@ -386,20 +386,20 @@ void FrameBrowser::UpdateVirtualSize(void)
 	}
 }
 
-// transform an ShpFrame to a wxBitmap thumbnail
-wxBitmap FrameBrowser::CreateThumbnail(ShpFrame *fp)
+// transform an ShapesFrame to a wxBitmap thumbnail
+wxBitmap FrameBrowser::CreateThumbnail(ShapesFrame *fp)
 {
 	if (fp->bitmap_index < 0 || fp->bitmap_index >= (int)bitmaps.size()) {
 		// invalid or unset bitmap
 		return BadThumbnail(tn_size);
 	} else {
 		// valid bitmap
-		ShpBitmap	*bp = bitmaps[fp->bitmap_index];
+		ShapesBitmap	*bp = bitmaps[fp->bitmap_index];
 		wxImage		newimg(bp->width, bp->height);
 
 		// decode the bitmap to a wxImage
 		if (ctable)
-			newimg = ShpBitmapToImage(bp, ctable, white_transparency);
+			newimg = ShapesBitmapToImage(bp, ctable, white_transparency);
 
 		// apply frame transformations
 		if (fp->x_mirror)

@@ -246,8 +246,8 @@ void BitmapBrowser::SetTranspPixelsDisplay(bool show)
 	}
 }
 
-// add a new ShpBitmap to the thumbnail list
-void BitmapBrowser::AddBitmap(ShpBitmap *bp)
+// add a new ShapesBitmap to the thumbnail list
+void BitmapBrowser::AddBitmap(ShapesBitmap *bp)
 {
 	if (bp != NULL) {
 		if (bp->pixels != NULL) {
@@ -276,7 +276,7 @@ void BitmapBrowser::Clear(void)
 }
 
 // call before adding bitmaps!
-void BitmapBrowser::SetColorTable(ShpColorTable *ct)
+void BitmapBrowser::SetColorTable(ShapesColorTable *ct)
 {
 	ctable = ct;
 	if (frozen_count == 0) {
@@ -366,13 +366,13 @@ void BitmapBrowser::UpdateVirtualSize(void)
 	}
 }
 
-// transform an ShpBitmap to a wxBitmap thumbnail
-wxBitmap BitmapBrowser::CreateThumbnail(ShpBitmap *bp)
+// transform an ShapesBitmap to a wxBitmap thumbnail
+wxBitmap BitmapBrowser::CreateThumbnail(ShapesBitmap *bp)
 {
 	wxImage	newimg(bp->width, bp->height);
 
 	if (ctable)
-		newimg = ShpBitmapToImage(bp, ctable, white_transparency);
+		newimg = ShapesBitmapToImage(bp, ctable, white_transparency);
 	return ImageThumbnail(newimg, tn_size, true);
 }
 
@@ -382,10 +382,10 @@ void BitmapBrowser::RebuildThumbnail(unsigned int i)
 		thumbnails[i] = CreateThumbnail(shp_bitmaps[i]);
 }
 
-// just re-decode the ShpBitmaps to their thumbnail previews,
+// just re-decode the ShapesBitmaps to their thumbnail previews,
 // without touching window sizes or thumbnail positions.
 // Useful to update the display at the end of SetColorTable or after
-// altering the ShpBitmaps
+// altering the ShapesBitmaps
 void BitmapBrowser::RebuildThumbnails(void)
 {
 	for (unsigned int i = 0; i < shp_bitmaps.size(); i++)

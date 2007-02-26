@@ -16,15 +16,20 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#ifndef SHAPEFUSIONLISTS_H
-#define SHAPEFUSIONLISTS_H
+#include "ShapesElement.h"
 
-WX_DECLARE_LIST(short, shortList);
-WX_DECLARE_LIST(int, intList);
-WX_DECLARE_LIST(long, longList);
-WX_DECLARE_LIST(wxInt32, wxInt32List);
+ShapesElement::ShapesElement(bool verbose) : mVerboseLoading(verbose), mGoodData(false)
+{}
 
-WX_DECLARE_LIST(wxBitmap, wxBitmapList);
-WX_DECLARE_LIST(wxPoint, wxPointList);
+ShapesElement::~ShapesElement(void)
+{}
 
-#endif
+bool ShapesElement::IsGood()
+{
+	return mGoodData;
+}
+
+bool ShapesElement::IsVerbose()
+{
+	return mVerboseLoading;
+}

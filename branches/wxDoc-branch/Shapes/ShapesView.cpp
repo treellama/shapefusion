@@ -310,13 +310,15 @@ bool ShapesView::OnCreate(wxDocument *doc, long WXUNUSED(flags) )
     return true;
 }
 
-// Handled by wxTextWindow
+
 void ShapesView::OnDraw(wxDC *WXUNUSED(dc) )
 {
+
 }
 
 void ShapesView::OnUpdate(wxView *WXUNUSED(sender), wxObject *WXUNUSED(hint) )
 {
+
 }
 
 bool ShapesView::OnClose(bool deleteWindow)

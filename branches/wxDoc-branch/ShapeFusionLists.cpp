@@ -24,6 +24,7 @@
 WX_DEFINE_LIST(shortList);
 WX_DEFINE_LIST(intList);
 WX_DEFINE_LIST(longList);
+WX_DEFINE_LIST(wxInt32List);
 
 WX_DEFINE_LIST(wxBitmapList);
 WX_DEFINE_LIST(wxPointList);

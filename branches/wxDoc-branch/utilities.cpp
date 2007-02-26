@@ -18,10 +18,10 @@
 #include <iostream>
 #include "utilities.h"
 
-// convert an 8-bit ShpBitmap to a RGB wxImage using the provided color table.
+// convert an 8-bit ShapesBitmap to a RGB wxImage using the provided color table.
 // <white_transparency> renders transparent pixels as white instead of using
 // the chroma-key color. NOTE: this routine assumes valid pointers.
-wxImage ShpBitmapToImage(ShpBitmap *bp, ShpColorTable *ct, bool white_transparency)
+wxImage ShapesBitmapToImage(ShapesBitmap *bp, ShapesColorTable *ct, bool white_transparency)
 {
 	int				w = bp->width,
 					h = bp->height;

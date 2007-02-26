@@ -16,15 +16,18 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#ifndef SHAPEFUSIONLISTS_H
-#define SHAPEFUSIONLISTS_H
+class ShapesElement /*: public wxObject*/
+{
+private:
+	bool	mVerboseLoading;
 
-WX_DECLARE_LIST(short, shortList);
-WX_DECLARE_LIST(int, intList);
-WX_DECLARE_LIST(long, longList);
-WX_DECLARE_LIST(wxInt32, wxInt32List);
-
-WX_DECLARE_LIST(wxBitmap, wxBitmapList);
-WX_DECLARE_LIST(wxPoint, wxPointList);
-
-#endif
+protected:
+	bool	mGoodData;
+	
+public:
+	ShapesElement(bool verbose);
+	~ShapesElement(void);
+	
+	bool IsGood();
+	bool IsVerbose();
+};

@@ -265,15 +265,15 @@ void SequenceView::SetTranspPixelsDisplay(bool show)
 	Refresh();
 }
 
-// add a new ShpFrame to the thumbnail list
-void SequenceView::AddFrame(ShpFrame *fp)
+// add a new ShapesFrame to the thumbnail list
+void SequenceView::AddFrame(ShapesFrame *fp)
 {
 	if (fp != NULL)
 		frames.push_back(fp);
 }
 
-// add a ShpBitmap to the bitmap pointer list. Call before adding frames!
-void SequenceView::AddBitmap(ShpBitmap *bp)
+// add a ShapesBitmap to the bitmap pointer list. Call before adding frames!
+void SequenceView::AddBitmap(ShapesBitmap *bp)
 {
 	if (bp != NULL) {
 		if (bp->pixels != NULL)
@@ -286,7 +286,7 @@ void SequenceView::AddBitmap(ShpBitmap *bp)
 // set sequence parameters: frames per view, animation type and frame index array.
 // Guess number of views from animation type. Also create thumbnails (add frames,
 // bitmaps and set color table before!)
-void SequenceView::SetSeqParameters(int animtype, int fpv, vector<short> *indexes)
+void SequenceView::SetSeqParameters(int animtype, int fpv, shortList *indexes)
 {
 	animation_type = animtype;
 	number_of_views = CalcActualNumberOfViews(animtype);
@@ -310,7 +310,7 @@ void SequenceView::Clear(void)
 }
 
 // call before adding frames!
-void SequenceView::SetColorTable(ShpColorTable *ct)
+void SequenceView::SetColorTable(ShapesColorTable *ct)
 {
 	ctable = ct;
 	RebuildThumbnails();
@@ -399,8 +399,8 @@ void SequenceView::UpdateVirtualSize(void)
 	}
 }
 
-// transform an ShpFrame to a wxBitmap thumbnail
-wxBitmap SequenceView::CreateThumbnail(ShpFrame *fp)
+// transform an ShapesFrame to a wxBitmap thumbnail
+wxBitmap SequenceView::CreateThumbnail(ShapesFrame *fp)
 {
 	if (fp->bitmap_index < 0 || fp->bitmap_index >= (int)bitmaps.size()) {
 		// invalid or unset bitmap
@@ -409,12 +409,12 @@ wxBitmap SequenceView::CreateThumbnail(ShpFrame *fp)
 		return BadThumbnail(tn_size);
 	} else {
 		// valid bitmap
-		ShpBitmap	*bp = bitmaps[fp->bitmap_index];
+		ShapesBitmap	*bp = bitmaps[fp->bitmap_index];
 		wxImage		newimg(bp->width, bp->height);
 
 		// decode the bitmap to a wxImage
 		if (ctable)
-			newimg = ShpBitmapToImage(bp, ctable, white_transparency);
+			newimg = ShapesBitmapToImage(bp, ctable, white_transparency);
 
 		// apply frame transformations
 		if (fp->x_mirror)
