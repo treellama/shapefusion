@@ -31,7 +31,7 @@
 #define SHAPESDOCUMENT_H
 
 #include "wx/docview.h"
-#include "ShapesElements.h"
+#include "ShapesCollection.h"
 
 // class representing the contents of a Marathon shapes file
 #if 0
@@ -85,11 +85,37 @@ class ShapesDocument: public wxDocument
 {
     DECLARE_DYNAMIC_CLASS(ShapesDocument)
 private:
-	ShapesCollectionList	mCollections;
-	bool					mGoodData;
-	bool					mVerboseLoading;
+	vector<ShapesCollection*>	mCollections;
+	bool						mGoodData;
+	bool						mVerboseLoading;
 public:
 
+	// collection data access
+	int CollectionStatus(unsigned int id);
+	unsigned int CollectionFlags(unsigned int id) const;
+	bool CollectionDefined(unsigned int id, unsigned int chunk) const;
+	int CollectionVersion(unsigned int id, unsigned int chunk) const;
+	int CollectionType(unsigned int id, unsigned int chunk) const;
+	unsigned int CollectionFlags(unsigned int id, unsigned int chunk) const;
+	int CollectionScaleFactor(unsigned int id, unsigned int chunk) const;
+	unsigned int CollectionBitmapCount(unsigned int id, unsigned int chunk) const;
+	unsigned int CollectionColorTableCount(unsigned int id, unsigned int chunk) const;
+	unsigned int CollectionFrameCount(unsigned int id, unsigned int chunk) const;
+	unsigned int CollectionSequenceCount(unsigned int id, unsigned int chunk) const;
+	ShapesColorTable *GetColorTable(unsigned int coll, unsigned int chunk, unsigned int ct) const;
+	ShapesBitmap *GetBitmap(unsigned int coll, unsigned int chunk, unsigned int bitmap) const;
+	ShapesFrame *GetFrame(unsigned int coll, unsigned int chunk, unsigned int frame) const;
+	ShapesSequence *GetSequence(unsigned int coll, unsigned int chunk, unsigned int seq) const;
+	// collection alteration
+	void InsertColorTable(ShapesColorTable *ct, unsigned int coll, unsigned int chunk);
+	void DeleteColorTable(unsigned int coll, unsigned int chunk, unsigned int ct);
+	void InsertBitmap(ShapesBitmap *b, unsigned int coll, unsigned int chunk);
+	void DeleteBitmap(unsigned int coll, unsigned int chunk, unsigned int b);
+	void InsertFrame(ShapesFrame *f, unsigned int coll, unsigned int chunk);
+	void DeleteFrame(unsigned int coll, unsigned int chunk, unsigned int f);
+	void InsertSequence(ShapesSequence *s, unsigned int coll, unsigned int chunk);
+	void DeleteSequence(unsigned int coll, unsigned int chunk, unsigned int s);
+	
 #if wxUSE_STD_IOSTREAM
     wxSTD ostream& SaveObject(wxSTD ostream& text_stream);
     wxSTD istream& LoadObject(wxSTD istream& text_stream);
@@ -101,7 +127,5 @@ public:
     ShapesDocument(void);
     ~ShapesDocument(void);
 };
-
-int CalcActualNumberOfViews(int t);
 
 #endif

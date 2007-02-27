@@ -38,41 +38,158 @@ ShapesDocument::~ShapesDocument()
 
 }
 
+// collection data access
+int ShapesDocument::CollectionStatus(unsigned int id)
+{
+	return mCollections[id]->Status();
+}
+
+unsigned int ShapesDocument::CollectionFlags(unsigned int id) const
+{
+	return mCollections[id]->Flags();
+}
+
+bool ShapesDocument::CollectionDefined(unsigned int id, unsigned int chunk) const
+{
+	return mCollections[id]->Defined(chunk);
+}
+
+int ShapesDocument::CollectionVersion(unsigned int id, unsigned int chunk) const
+{
+	return mCollections[id]->Version(chunk);
+}
+
+int ShapesDocument::CollectionType(unsigned int id, unsigned int chunk) const
+{
+	return mCollections[id]->Type(chunk);
+}
+
+unsigned int ShapesDocument::CollectionFlags(unsigned int id, unsigned int chunk) const
+{
+	return mCollections[id]->Flags(chunk);
+}
+
+int ShapesDocument::CollectionScaleFactor(unsigned int id, unsigned int chunk) const
+{
+	return mCollections[id]->ScaleFactor(chunk);
+}
+
+unsigned int ShapesDocument::CollectionBitmapCount(unsigned int id, unsigned int chunk) const
+{
+	return mCollections[id]->BitmapCount(chunk);
+}
+
+unsigned int ShapesDocument::CollectionColorTableCount(unsigned int id, unsigned int chunk) const
+{
+	return mCollections[id]->ColorTableCount(chunk);
+}
+
+unsigned int ShapesDocument::CollectionFrameCount(unsigned int id, unsigned int chunk) const
+{
+	return mCollections[id]->FrameCount(chunk);
+}
+
+unsigned int ShapesDocument::CollectionSequenceCount(unsigned int id, unsigned int chunk) const
+{
+	return mCollections[id]->SequenceCount(chunk);
+}
+
+ShapesColorTable *ShapesDocument::GetColorTable(unsigned int coll, unsigned int chunk, unsigned int ct) const
+{
+	return mCollections[coll]->GetColorTable(chunk, ct);
+}
+
+ShapesBitmap *ShapesDocument::GetBitmap(unsigned int coll, unsigned int chunk, unsigned int bitmap) const
+{
+	return mCollections[coll]->GetBitmap(chunk, bitmap);
+}
+
+ShapesFrame *ShapesDocument::GetFrame(unsigned int coll, unsigned int chunk, unsigned int frame) const
+{
+	return mCollections[coll]->GetFrame(chunk, frame);
+}
+
+ShapesSequence *ShapesDocument::GetSequence(unsigned int coll, unsigned int chunk, unsigned int seq) const
+{
+	return mCollections[coll]->GetSequence(chunk, seq);
+}
+
+// collection alteration
+void ShapesDocument::InsertColorTable(ShapesColorTable *ct, unsigned int coll, unsigned int chunk)
+{
+	mCollections[coll]->InsertColorTable(ct, chunk);
+}
+
+void ShapesDocument::DeleteColorTable(unsigned int coll, unsigned int chunk, unsigned int ct)
+{
+	mCollections[coll]->DeleteColorTable(chunk, ct);
+}
+
+void ShapesDocument::InsertBitmap(ShapesBitmap *b, unsigned int coll, unsigned int chunk)
+{
+	mCollections[coll]->InsertBitmap(b, chunk);
+}
+
+void ShapesDocument::DeleteBitmap(unsigned int coll, unsigned int chunk, unsigned int b)
+{
+	mCollections[coll]->DeleteBitmap(chunk, b);
+}
+
+void ShapesDocument::InsertFrame(ShapesFrame *f, unsigned int coll, unsigned int chunk)
+{
+	mCollections[coll]->InsertFrame(f, chunk);
+}
+
+void ShapesDocument::DeleteFrame(unsigned int coll, unsigned int chunk, unsigned int f)
+{
+	mCollections[coll]->DeleteFrame(chunk, f);
+}
+
+void ShapesDocument::InsertSequence(ShapesSequence *s, unsigned int coll, unsigned int chunk)
+{
+	mCollections[coll]->InsertSequence(s, chunk);
+}
+
+void ShapesDocument::DeleteSequence(unsigned int coll, unsigned int chunk, unsigned int s)
+{
+	mCollections[coll]->DeleteSequence(chunk, s);
+}
+
 #if wxUSE_STD_IOSTREAM
 wxSTD ostream& ShapesDocument::SaveObject(wxSTD ostream& stream)
 #else
 wxOutputStream& ShapesDocument::SaveObject(wxOutputStream& stream)
 #endif
 {	// calculate collection sizes
-	unsigned int	coll_sizes[COLLECTIONS_PER_FILE * 2];
-
-	for (unsigned int i = 0; i < COLLECTIONS_PER_FILE; i++) {
-		coll_sizes[i * 2] = CollectionSizeInFile(i, COLL_VERSION_8BIT);
-		coll_sizes[i * 2 + 1] = CollectionSizeInFile(i, COLL_VERSION_TRUECOLOR);
-	}
-
+	unsigned int	coll_size;
+	
 	// compose and write the collection header block
 	{
 		BigEndianBuffer	raw_headers(SIZEOF_collection_header * COLLECTIONS_PER_FILE);
 		long			running_offset = SIZEOF_collection_header * COLLECTIONS_PER_FILE;
-
+		
 		for (unsigned int i = 0; i < COLLECTIONS_PER_FILE; i++) {
-			raw_headers.WriteShort(mCollections[i]->mStatus);
-			raw_headers.WriteUShort(mCollections[i]->mFlags);
+			ShapesCollection	coll = mCollections[i];
+			raw_headers.WriteShort(coll.Status());
+			raw_headers.WriteUShort(coll.Flags());
 			// 8-bit version
-			if (CollDefined(i, COLL_VERSION_8BIT)) {
+			if (coll.Defined(COLL_VERSION_8BIT)) {
+				coll_size = coll.SizeInFile(COLL_VERSION_8BIT);
+				
 				raw_headers.WriteLong(running_offset);
-				raw_headers.WriteLong(coll_sizes[i * 2]);
-				running_offset += coll_sizes[i * 2];
+				raw_headers.WriteLong(coll_size);
+				running_offset += coll_size;
 			} else {
 				raw_headers.WriteLong(-1);
 				raw_headers.WriteLong(0);
 			}
 			// truecolor version
-			if (CollDefined(i, COLL_VERSION_TRUECOLOR)) {
+			if (coll.Defined(COLL_VERSION_TRUECOLOR)) {
+				coll_size = coll.SizeInFile(COLL_VERSION_TRUECOLOR);
+				
 				raw_headers.WriteLong(running_offset);
-				raw_headers.WriteLong(coll_sizes[i * 2 + 1]);
-				running_offset += coll_sizes[i * 2 + 1];
+				raw_headers.WriteLong(coll_size);
+				running_offset += coll_size;
 			} else {
 				raw_headers.WriteLong(-1);
 				raw_headers.WriteLong(0);
@@ -81,6 +198,12 @@ wxOutputStream& ShapesDocument::SaveObject(wxOutputStream& stream)
 		}
 		stream.Write((char *)raw_headers.Data(), raw_headers.Size());
 	}
+	
+	for (unsigned int i = 0; i < COLLECTIONS_PER_FILE; i++) {
+		mCollections[i]->SaveObject(stream);
+	}
+	
+	return stream;
 }
 
 #if wxUSE_STD_IOSTREAM
@@ -103,7 +226,7 @@ wxInputStream& ShapesDocument::LoadObject(wxInputStream& stream)
 		
 		// store if correct
 		if (c->IsGood())
-			mCollections.Append(c);
+			mCollections.push_back(c);
 		else
 			wxLogError("[ShapesDocument] Error loading collection... Dropped");
 		

@@ -37,13 +37,13 @@ DECLARE_EVENT_TYPE(wxEVT_CTBROWSER, -1)
 
 class CTBrowser: public wxScrolledWindow {
 private:
-	ShapesColorTableList	cts;				// array of pointers to color tables
-	unsigned int			colors_per_table;
-	wxCoord					sample_w, sample_h,	// size of color samples
-							margin;
-	wxPen					invisible_pen,
-							selection_pen;
-	int						selection;
+	vector<ShapesColorTable*>	cts;				// array of pointers to color tables
+	unsigned int				colors_per_table;
+	wxCoord						sample_w, sample_h,	// size of color samples
+								margin;
+	wxPen						invisible_pen,
+								selection_pen;
+	int							selection;
 
 	void UpdateVirtualSize(void);
 

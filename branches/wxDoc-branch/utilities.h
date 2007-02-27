@@ -25,7 +25,6 @@
 #include "wx/image.h"
 #include "ShapesDocument.h"
 
-wxImage ShapesBitmapToImage(ShapesBitmap *bp, ShapesColorTable *ct, bool white_transparency);
 wxBitmap ImageThumbnail(wxImage &img, int tn_size, bool filtering);
 wxBitmap BadThumbnail(int tn_size);
 void RGB2HSV(float r, float g, float b, float *hue, float *sat, float *val);

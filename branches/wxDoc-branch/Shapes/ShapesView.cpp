@@ -18,13 +18,46 @@
 
 #include "ShapesView.h"
 #include "ShapeFusionApp.h"
+#include "MyTreeItemData.h"
+
+char	*collnames[] = {	"Interface graphics",
+							"Weapons in hand",
+							"Juggernaut",
+							"Tick",
+							"Projectiles & explosions",
+							"Hunter",
+							"Player",
+							"Items",
+							"Trooper",
+							"Pfhor fighter",
+							"Defender",
+							"Yeti",
+							"Bob",
+							"Vacuum Bob",
+							"Enforcer",
+							"Hummer",
+							"Compiler",
+							"Walls 1 (water)",
+							"Walls 2 (lava)",
+							"Walls 3 (sewage)",
+							"Walls 4 (jiaro)",
+							"Walls 5 (pfhor)",
+							"Scenery 1 (water)",
+							"Scenery 2 (lava)",
+							"Scenery 3 (sewage)",
+							"Scenery 4 (jiaro)",
+							"Scenery 5 (pfhor)",
+							"Landscape 1",
+							"Landscape 2",
+							"Landscape 3",
+							"Landscape 4",
+							"Cyborg" };
 
 IMPLEMENT_DYNAMIC_CLASS(ShapesView, wxView)
 
-ShapesView::ShapesView(void): wxView()
+ShapesView::ShapesView(void): wxView(), seqnameconv(_T("macintosh"))
 {
 	frame = (wxFrame *) NULL;
-	/* textsw = (MyTextWindow *) NULL; */
 }
 
 ShapesView::~ShapesView(void)
@@ -34,14 +67,16 @@ ShapesView::~ShapesView(void)
 
 bool ShapesView::OnCreate(wxDocument *doc, long WXUNUSED(flags) )
 {
-	wxString frameTitle = _T("ShapeFusion : Shapes");
+	wxString frameTitle = _T("ShapeFusion : Shapes : ");
+	frameTitle.Append(doc->GetFilename());
+	
     frame = wxGetApp().CreateChildFrame(doc, this, frameTitle, wxPoint(0, 0), wxSize(900, 600));
     
     int width, height;
 	wxPoint point;
     frame->GetClientSize(&width, &height);
     
-/*	mainbox = new wxBoxSizer(wxHORIZONTAL);
+	mainbox = new wxBoxSizer(wxHORIZONTAL);
 	// create the collection tree
 	colltree = new wxTreeCtrl(frame, -1, wxDefaultPosition, wxDefaultSize, wxTR_DEFAULT_STYLE | wxTR_HIDE_ROOT);
 	wxTreeItemId	treeroot = colltree->AddRoot(wxT("No file loaded"));
@@ -292,7 +327,7 @@ bool ShapesView::OnCreate(wxDocument *doc, long WXUNUSED(flags) )
 	s_outer_sizer->Add(s_fb, 1, wxEXPAND | wxALL, 5);
 	mainbox->Show(s_outer_sizer, false);
 
-	mainbox->Layout();*/
+	mainbox->Layout();
 	
 	CreateViewMenu(frame->GetMenuBar());
 	CreateShapesMenu(frame->GetMenuBar());
@@ -303,7 +338,7 @@ bool ShapesView::OnCreate(wxDocument *doc, long WXUNUSED(flags) )
     frame->GetSize(&x, &y);
     frame->SetSize(wxDefaultCoord, wxDefaultCoord, x, y);
 #endif
-    
+	
     frame->Show(true);
     Activate(true);
     
@@ -319,6 +354,52 @@ void ShapesView::OnDraw(wxDC *WXUNUSED(dc) )
 void ShapesView::OnUpdate(wxView *WXUNUSED(sender), wxObject *WXUNUSED(hint) )
 {
 
+	// update all levels of the tree control
+	colltree->DeleteAllItems();
+	wxTreeItemId treeroot = colltree->AddRoot(GetDocument()->GetFilename().AfterLast('/'));
+	
+	for (unsigned int i = 0; i < COLLECTIONS_PER_FILE; i++) {
+		// collection name nodes
+		MyTreeItemData	*itemdata = new MyTreeItemData(i, -1, TREESECTION_COLLECTION);
+		wxTreeItemId	coll = colltree->AppendItem(treeroot, wxString(collnames[i], wxConvUTF8), -1, -1, itemdata);
+		
+		for (unsigned int j = 0; j < 2; j++) {
+			// color version nodes
+			MyTreeItemData	*id = new MyTreeItemData(i, j, TREESECTION_VERSION);
+			wxString		label;
+			
+			if (j == COLL_VERSION_8BIT)
+				label = wxT("8-bit color version");
+			else if (j == COLL_VERSION_TRUECOLOR)
+				label = wxT("True color version");
+			wxTreeItemId	coll2 = colltree->AppendItem(coll, label, -1, -1, id);
+			
+			if (((ShapesDocument*)GetDocument())->CollectionDefined(i, j)) {
+				// section nodes
+				MyTreeItemData	*id_b = new MyTreeItemData(i, j, TREESECTION_BITMAPS),
+				*id_ct = new MyTreeItemData(i, j, TREESECTION_COLORTABLES),
+				*id_f = new MyTreeItemData(i, j, TREESECTION_FRAMES),
+				*id_s = new MyTreeItemData(i, j, TREESECTION_SEQUENCES);
+				wxTreeItemId	coll_b = colltree->AppendItem(coll2, wxT("Bitmaps"), -1, -1, id_b),
+					coll_ct = colltree->AppendItem(coll2, wxT("Color tables"), -1, -1, id_ct),
+					coll_f = colltree->AppendItem(coll2, wxT("Frames"), -1, -1, id_f),
+					coll_s = colltree->AppendItem(coll2, wxT("Sequences"), -1, -1, id_s);
+				
+				for (unsigned int k = 0; k < ((ShapesDocument*)GetDocument())->CollectionSequenceCount(i, j); k++) {
+					// sequence nodes
+					ShapesSequence		*seq = ((ShapesDocument*)GetDocument())->GetSequence(i, j, k);
+					wxString    	blabel;
+					MyTreeItemData	*id_seq = new MyTreeItemData(i, j, TREESECTION_SEQUENCES, k);
+					
+					blabel << k;
+					if (strlen(seq->Name()) > 0)
+						blabel << wxT(" - ") << wxString(seq->Name(), seqnameconv);
+					colltree->AppendItem(coll_s, blabel, -1, -1, id_seq);
+				}
+			}
+		}
+	}
+	colltree->Expand(colltree->GetRootItem());
 }
 
 bool ShapesView::OnClose(bool deleteWindow)

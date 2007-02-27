@@ -23,12 +23,12 @@
 #include "wx/treectrl.h"
 #include "wx/spinctrl.h"
 #include "wx/statline.h"
-//#include "BitmapBrowser.h"
-//#include "BitmapView.h"
-//#include "CTBrowser.h"
-//#include "FrameBrowser.h"
-//#include "FrameView.h"
-//#include "SequenceView.h"
+#include "BitmapBrowser.h"
+#include "BitmapView.h"
+#include "CTBrowser.h"
+#include "FrameBrowser.h"
+#include "FrameView.h"
+#include "SequenceView.h"
 #include "ShapeFusionMenus.h"
 
 class ShapesView: public wxView
@@ -36,7 +36,7 @@ class ShapesView: public wxView
     DECLARE_DYNAMIC_CLASS(ShapesView)
 private:
 	// control ids
-	/*enum {
+	enum {
 		// bitmaps
 		BITMAP_BROWSER,
 		CB_COLUMN_ORDER,
@@ -184,9 +184,10 @@ private:
 								*s_lfs_field;
 	wxStaticText				*s_sf_label;
 	wxTextCtrl					*s_sf_field;
-	SequenceView		*s_fb;*/
+	SequenceView		*s_fb;
     wxFrame				*frame;
-
+	
+	wxCSConv		seqnameconv;
 public:
     
     ShapesView();

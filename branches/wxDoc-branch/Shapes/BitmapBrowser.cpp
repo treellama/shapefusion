@@ -250,7 +250,7 @@ void BitmapBrowser::SetTranspPixelsDisplay(bool show)
 void BitmapBrowser::AddBitmap(ShapesBitmap *bp)
 {
 	if (bp != NULL) {
-		if (bp->pixels != NULL) {
+		if (bp->Pixels() != NULL) {
 			shp_bitmaps.push_back(bp);
 			thumbnails.push_back(CreateThumbnail(bp));
 			if (frozen_count == 0) {
@@ -309,10 +309,10 @@ void BitmapBrowser::UpdateVirtualSize(void)
 		SetScrollRate(0, 0);
 		// find greatest dimension among all bitmaps
 		for (unsigned int i = 0; i < shp_bitmaps.size(); i++) {
-			if (shp_bitmaps[i]->width > max_bitmap_dimension)
-				max_bitmap_dimension = shp_bitmaps[i]->width;
-			if (shp_bitmaps[i]->height > max_bitmap_dimension)
-				max_bitmap_dimension = shp_bitmaps[i]->height;
+			if (shp_bitmaps[i]->Width() > max_bitmap_dimension)
+				max_bitmap_dimension = shp_bitmaps[i]->Width();
+			if (shp_bitmaps[i]->Height() > max_bitmap_dimension)
+				max_bitmap_dimension = shp_bitmaps[i]->Height();
 		}
 		// FIXME a better algorythm, without looping?
 		for (new_tn_size = margin; ; new_tn_size++) {
@@ -369,10 +369,10 @@ void BitmapBrowser::UpdateVirtualSize(void)
 // transform an ShapesBitmap to a wxBitmap thumbnail
 wxBitmap BitmapBrowser::CreateThumbnail(ShapesBitmap *bp)
 {
-	wxImage	newimg(bp->width, bp->height);
+	wxImage	newimg(bp->Width(), bp->Height());
 
 	if (ctable)
-		newimg = ShapesBitmapToImage(bp, ctable, white_transparency);
+		newimg = bp->ShapesBitmapToImage(ctable, white_transparency);
 	return ImageThumbnail(newimg, tn_size, true);
 }
 

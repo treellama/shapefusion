@@ -38,10 +38,10 @@ DECLARE_EVENT_TYPE(wxEVT_BITMAPBROWSER_DELETE, -1)
 
 class BitmapBrowser: public wxScrolledWindow {
 private:
-	ShapesBitmapList	shp_bitmaps;		// pointers to the encoded bitmaps
-	wxBitmapList		thumbnails;			// scaled/rendered bitmap thumbnails
+	vector<ShapesBitmap*>	shp_bitmaps;		// pointers to the encoded bitmaps
+	vector<wxBitmap>		thumbnails;			// scaled/rendered bitmap thumbnails
 	ShapesColorTable	*ctable;			// which palette to use for display
-	wxPointList			tn_positions;		// thumbnail positions within window
+	vector<wxPoint>			tn_positions;		// thumbnail positions within window
 	wxCoord				tn_size,			// thumbnail size
 						margin;				// margin between thumbnails and window edges
 	bool				auto_size,			// auto-calculate best thumbnail size

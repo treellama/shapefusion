@@ -37,22 +37,22 @@ DECLARE_EVENT_TYPE(wxEVT_FRAMEBROWSER_DELETE, -1)
 
 class FrameBrowser: public wxScrolledWindow {
 private:
-	ShapesFrameList		frames;				// pointers to frames
-	ShapesBitmapList	bitmaps;			// pointers to bitmaps
-	wxBitmapList		thumbnails;			// scaled/rendered frame thumbnails
-	ShapesColorTable	*ctable;			// which palette to use for display
-	wxPointList			tn_positions;		// thumbnail positions within window
-	wxCoord				tn_size,			// thumbnail size
-						margin;				// margin between thumbnails and window edges
-	bool				auto_size,
-						white_transparency;
-	int					selection,			// selected thumbnail
-						num_cols,
-						num_rows;
-	wxPen				tn_pen,
-						selection_pen,
-						invisible_pen;
-	unsigned int		frozen_count;
+	vector<ShapesFrame*>	frames;				// pointers to frames
+	vector<ShapesBitmap*>	bitmaps;			// pointers to bitmaps
+	vector<wxBitmap>		thumbnails;			// scaled/rendered frame thumbnails
+	ShapesColorTable		*ctable;			// which palette to use for display
+	vector<wxPoint>			tn_positions;		// thumbnail positions within window
+	wxCoord					tn_size,			// thumbnail size
+							margin;				// margin between thumbnails and window edges
+	bool					auto_size,
+							white_transparency;
+	int						selection,			// selected thumbnail
+							num_cols,
+							num_rows;
+	wxPen					tn_pen,
+							selection_pen,
+							invisible_pen;
+	unsigned int			frozen_count;
 
 	wxBitmap CreateThumbnail(ShapesFrame *fp);
 	void UpdateVirtualSize(void);

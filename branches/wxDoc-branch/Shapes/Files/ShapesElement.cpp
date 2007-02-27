@@ -17,19 +17,3 @@
 */
 
 #include "ShapesElement.h"
-
-ShapesElement::ShapesElement(bool verbose) : mVerboseLoading(verbose), mGoodData(false)
-{}
-
-ShapesElement::~ShapesElement(void)
-{}
-
-bool ShapesElement::IsGood()
-{
-	return mGoodData;
-}
-
-bool ShapesElement::IsVerbose()
-{
-	return mVerboseLoading;
-}

@@ -36,11 +36,11 @@ DECLARE_EVENT_TYPE(wxEVT_SEQUENCEVIEW, -1)
 
 class SequenceView: public wxScrolledWindow {
 private:
-	ShapesFrameList		frames;				// pointers to frames
-	ShapesBitmapList	bitmaps;			// pointers to bitmaps
-	wxBitmapList		thumbnails;			// scaled/rendered frame thumbnails
+	vector<ShapesFrame*>	frames;				// pointers to frames
+	vector<ShapesBitmap*>	bitmaps;			// pointers to bitmaps
+	vector<wxBitmap>		thumbnails;			// scaled/rendered frame thumbnails
 	ShapesColorTable	*ctable;			// which palette to use for display
-	wxPointList		tn_positions;		// thumbnail positions within window
+	vector<wxPoint>		tn_positions;		// thumbnail positions within window
 	wxCoord				tn_size,			// thumbnail size
 						margin,				// margin between thumbnails and window edges
 						angle_label_space;
@@ -57,7 +57,7 @@ private:
 	int					number_of_views,
 						frames_per_view,
 						animation_type;
-	shortList			*frame_indexes;
+	vector<short>			*frame_indexes;
 
 	wxBitmap CreateThumbnail(ShapesFrame *fp);
 	void UpdateVirtualSize(void);
@@ -80,7 +80,7 @@ public:
 	void AddFrame(ShapesFrame *fp);
 	void AddBitmap(ShapesBitmap *bp);
 	void SetColorTable(ShapesColorTable *ct);
-	void SetSeqParameters(int animtype, int fpv, shortList *indexes);
+	void SetSeqParameters(int animtype, int fpv, vector<short>	*indexes);
 	void Clear(void);
 	// utilities
 	void RebuildThumbnail(unsigned int i);

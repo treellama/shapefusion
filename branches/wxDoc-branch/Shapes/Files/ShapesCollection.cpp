@@ -16,10 +16,983 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#include "ShapesElements.h"
+#include <vector>
+using std::vector;
+
+#include "ShapesCollection.h"
 #include "BigEndianBuffer.h"
-#include "wx/datstrm.h"
-#include "wx/wfstream.h"
+#include "ShapesElement.h"
+
+// on-file struct sizes
+#define SIZEOF_collection_definition		544
+#define SIZEOF_rgb_color_value				8
+#define SIZEOF_bitmap_definition			30
+#define SIZEOF_low_level_shape_definition	36
+#define SIZEOF_high_level_shape_definition	88
+// NOTE about SIZEOF_high_level_shape_definition. The original engine
+// sets SIZEOF_high_level_shape_definition=90 because the first frame
+// index is included in the high_level_shape_definition. I don't like
+// this, so I do my way (but be careful!)
+
+#define COLLECTION_VERSION					3
+
+// color flags
+enum {
+	SELF_LUMINESCENT_COLOR	= 1 << 7
+};
+
+// bitmap flags
+enum {
+	COLUMN_ORDER			= 1 << 15,
+	TRANSPARENCY_ENABLED	= 1 << 14
+};
+
+// frame flags
+enum {
+	X_MIRROR			= 1 << 15,	// mirror along vertical axis
+	Y_MIRROR			= 1 << 14,	// mirror along horizontal axis
+	KEYPOINT_OBSCURED	= 1 << 13	// "host obscures parasite" (RenderPlaceObjs.cpp)
+};
+
+BigEndianBuffer& ShapesColor::SaveObject(BigEndianBuffer& buffer)
+{
+	unsigned char	flags = (mLuminescent ? SELF_LUMINESCENT_COLOR : 0);
+	
+	buffer.WriteUChar(flags);
+	buffer.WriteUChar(mValue);
+	buffer.WriteUShort(mRed);
+	buffer.WriteUShort(mGreen);
+	buffer.WriteUShort(mBlue);
+	
+	return buffer;
+}
+
+BigEndianBuffer& ShapesColor::LoadObject(BigEndianBuffer& buffer)
+{
+	unsigned char	flags;
+
+	flags = buffer.ReadUChar();
+	mValue = buffer.ReadUChar();
+	mRed = buffer.ReadUShort();
+	mGreen = buffer.ReadUShort();
+	mBlue = buffer.ReadUShort();
+	
+	mLuminescent = flags & SELF_LUMINESCENT_COLOR;
+	
+	mGoodData = true;
+	return buffer;
+}
+
+BigEndianBuffer& ShapesColorTable::SaveObject(BigEndianBuffer& stream)
+{
+	for (unsigned int i = 0; i < mColors.size(); i++) {
+		ShapesColor		*color = mColors[i];
+		
+		color->SaveObject(stream);
+	}
+	return stream;
+}
+
+BigEndianBuffer& ShapesColorTable::LoadObject(BigEndianBuffer& buffer, long offset, long color_count)
+{
+	buffer.Position(offset);
+	
+	for (short i = 0; i < color_count; i++) {
+		ShapesColor		*color = new ShapesColor(IsVerbose());
+		
+		color->LoadObject(buffer);
+		
+		mColors.push_back(color);
+	}
+	
+	mGoodData = true;
+	return buffer;
+}
+
+// convert an 8-bit ShapesBitmap to a RGB wxImage using the provided color table.
+// <white_transparency> renders transparent pixels as white instead of using
+// the chroma-key color. NOTE: this routine assumes valid pointers.
+wxImage ShapesBitmap::ShapesBitmapToImage(ShapesColorTable *ct, bool white_transparency)
+{
+	int				w = mWidth,
+					h = mHeight;
+	bool			transparency_enabled = mTransparent;
+	wxImage			img(w, h);
+	unsigned char	*imgbuf = img.GetData(),
+					*inp = mPixels,
+					*outp = imgbuf;
+
+	for (int i = 0; i < w * h; i++) {
+		unsigned char	value = *inp++;
+
+		if (value == 0 && transparency_enabled && white_transparency) {
+			*outp++ = 255;
+			*outp++ = 255;
+			*outp++ = 255;
+		} else {
+			*outp++ = ct->GetColor(value)->Red() >> 8;
+			*outp++ = ct->GetColor(value)->Green() >> 8;
+			*outp++ = ct->GetColor(value)->Blue() >> 8;
+		}
+	}
+	return img;
+}
+
+unsigned int ShapesBitmap::SizeInFile(void) const
+{
+	unsigned int size = 0;
+	
+//	size = SIZEOF_bitmap_definition;
+	
+	// scanline pointer placeholder
+	if (mColumnOrder)
+		size += 4 * mWidth;
+	else
+		size += 4 * mHeight;
+	if (mBytesPerRow == -1) {
+		// compressed
+		size += mWidth * 4;
+		for (int x = 0; x < mWidth; x++) {
+			unsigned char	*pp = mPixels + x;
+			int				p0 = -1,
+				p1;
+			
+			for (int y = 0; y < mHeight; y++) {
+				if (*pp != 0) {
+					p0 = y;
+					break;
+				}
+				pp += mWidth;
+			}
+			if (p0 == -1)
+				continue;	// no opaque pixels in this column
+			p1 = p0;
+			pp = mPixels + x + mWidth * (mHeight - 1);
+			for (int y = mHeight - 1; y >= 0; y--) {
+				if (*pp != 0) {
+					p1 = y;
+					break;
+				}
+				pp -= mWidth;
+			}
+			size += p1 - p0 + 1;
+		}
+	} else {
+		// plain
+		size += mWidth * mHeight;
+	}
+	
+	return size;
+}
+
+BigEndianBuffer& ShapesBitmap::SaveObject(BigEndianBuffer& buffer)
+{
+	short		flags = 0;
+	
+	if (mColumnOrder)
+		flags |= COLUMN_ORDER;
+	if (mTransparent)
+		flags |= TRANSPARENCY_ENABLED;
+	buffer.WriteShort(mWidth);
+	buffer.WriteShort(mHeight);
+	buffer.WriteShort(mBytesPerRow);
+	buffer.WriteShort(flags);
+	buffer.WriteShort(mBitDepth);
+	buffer.WriteZeroes(20 + 4 * (mColumnOrder ? mWidth : mHeight));
+	if (mBytesPerRow == -1) {
+		// compress
+		for (int x = 0; x < mWidth; x++) {
+			unsigned char	*pp = mPixels + x;
+			int				p0 = -1,
+				p1;
+			
+			for (int y = 0; y < mHeight; y++) {
+				if (*pp != 0) {
+					p0 = y;
+					break;
+				}
+				pp += mWidth;
+			}
+			if (p0 == -1) {
+				// no opaque pixels in this column
+				buffer.WriteShort(0);
+				buffer.WriteShort(0);
+			} else {
+				// found opaque pixels, go on
+				p1 = p0;
+				pp = mPixels + x + mWidth * (mHeight - 1);
+				for (int y = mHeight - 1; y >= 0; y--) {
+					if (*pp != 0) {
+						p1 = y;
+						break;
+					}
+					pp -= mWidth;
+				}
+				buffer.WriteShort(p0);
+				buffer.WriteShort(p1 + 1);
+				pp = mPixels + x + p0 * mWidth;
+				for (int y = p0; y <= p1; y++) {
+					buffer.WriteChar(*pp);
+					pp += mWidth;
+				}
+			}
+		}
+	} else {
+		if (mColumnOrder) {
+			for (int x = 0; x < mWidth; x++) {
+				for (int y = 0; y < mHeight; y++)
+					buffer.WriteChar(*(mPixels + x + y * mWidth));
+			}
+		} else {
+			buffer.WriteBlock(mWidth * mHeight, mPixels);
+		}
+	}
+	return buffer;
+}
+
+BigEndianBuffer& ShapesBitmap::LoadObject(BigEndianBuffer& buffer, long offset)
+{
+	
+	buffer.Position(offset);
+	
+	mWidth = buffer.ReadShort();
+	mHeight = buffer.ReadShort();
+	mBytesPerRow = buffer.ReadShort();
+	
+	if (mWidth < 0) {
+		wxLogError("[ShapesBitmap] Invalid bitmap width");
+		return buffer;
+	}
+	if (mHeight < 0) {
+		wxLogError("[ShapesBitmap] Invalid bitmap height");
+		return buffer;
+	}
+	if (mBytesPerRow < -1) {
+		wxLogError("[ShapesBitmap] Invalid bitmap bytes-per-row");
+		return buffer;
+	}
+	
+	short	flags;
+	
+	flags = buffer.ReadShort();
+	
+	mColumnOrder = flags & COLUMN_ORDER;
+	mTransparent = flags & TRANSPARENCY_ENABLED;
+	
+	mBitDepth = buffer.ReadShort();
+	if (mBitDepth != 8) {
+		wxLogError("[ShapesBitmap] Invalid bitmap depth %d", mBitDepth);
+		return buffer;
+	}
+
+	if (IsVerbose()) {
+		wxLogDebug("[ShapesBitmap]         Width:		%d", mWidth);
+		wxLogDebug("[ShapesBitmap]         Height:	%d", mHeight);
+		wxLogDebug("[ShapesBitmap]         Bytes/Row:	%d", mBytesPerRow);
+		wxLogDebug("[ShapesBitmap]         Flags:		%d", flags);
+		wxLogDebug("[ShapesBitmap]         Bit Depth:	%d", mBitDepth);
+	}
+
+	
+	// skip unused fields and placeholders
+	unsigned int	numscanlines = mColumnOrder ? mWidth : mHeight;
+	
+	buffer.Position(buffer.Position() + 20 + numscanlines * 4);
+	
+	// load pixel data
+	mPixels = new unsigned char[mWidth * mHeight];
+	if (mBytesPerRow > -1) {
+		// uncompressed bitmap
+		if (mColumnOrder) {
+			// column order
+			unsigned char	*dstp;
+			
+			for (int x = 0; x < mWidth; x++) {
+				dstp = mPixels + x;
+				for (int y = 0; y < mHeight; y++) {
+					*dstp = buffer.ReadUChar();
+					dstp += mWidth;
+				}
+			}
+		} else {
+			// row order
+			buffer.ReadBlock(mWidth * mHeight, mPixels);
+		}
+	} else {
+		// compressed bitmap (always column order)
+		memset(mPixels, 0, mWidth * mHeight);
+		for (int x = 0; x < mWidth; x++) {
+			short			p0, p1;
+			unsigned char	*dstp;
+			
+			p0 = buffer.ReadShort();
+			p1 = buffer.ReadShort();
+			dstp = mPixels + x + p0 * mWidth;
+			while (p0 != p1) {
+				*dstp = buffer.ReadUChar();
+				dstp += mWidth;
+				p0++;
+			}
+		}
+	}
+	
+	mGoodData = true;
+	return buffer;
+}
+
+BigEndianBuffer& ShapesFrame::SaveObject(BigEndianBuffer& buffer)
+{
+	unsigned short	flags = 0;
+	double			mli_integer, mli_fractional;
+	long			min_light_intensity = 0;
+	
+	if (mXmirror)
+		flags |= X_MIRROR;
+	if (mYmirror)
+		flags |= Y_MIRROR;
+	if (mKeypointObscured)
+		flags |= KEYPOINT_OBSCURED;
+		
+	// double to fixed
+	mli_fractional = modf(mMinimumLightIntensity, &mli_integer);
+	min_light_intensity |= (((short)mli_integer) << 16) & 0xffff0000;
+	min_light_intensity |= (short)(mli_fractional * 0xffff) & 0x0000ffff;
+	buffer.WriteUShort(flags);
+	buffer.WriteLong(min_light_intensity);
+	buffer.WriteShort(mBitmapIndex);
+	buffer.WriteShort(mOriginX);
+	buffer.WriteShort(mOriginY);
+	buffer.WriteShort(mKeyX);
+	buffer.WriteShort(mKeyY);
+	buffer.WriteShort(mWorldLeft);
+	buffer.WriteShort(mWorldRight);
+	buffer.WriteShort(mWorldTop);
+	buffer.WriteShort(mWorldBottom);
+	buffer.WriteShort(mWorldX0);
+	buffer.WriteShort(mWorldY0);
+	buffer.WriteZeroes(8);
+	
+	return buffer;
+}
+
+BigEndianBuffer& ShapesFrame::LoadObject(BigEndianBuffer& buffer, long offset)
+{
+	unsigned short	flags;
+	wxInt32			mli_fixed;
+	
+	buffer.Position(offset);
+	
+	flags = buffer.ReadUShort();
+
+	mXmirror = flags & X_MIRROR;
+	mYmirror = flags & Y_MIRROR;
+	mKeypointObscured = flags & KEYPOINT_OBSCURED;
+	
+	mli_fixed = buffer.ReadLong();
+	
+	mMinimumLightIntensity = ((mli_fixed >> 16) & 0xffff) + (float)(mli_fixed & 0xffff) / 65536.0;	// convert fixed point [0,1] to double
+	
+	mBitmapIndex = buffer.ReadShort();
+	mOriginX = buffer.ReadShort();
+	mOriginY = buffer.ReadShort();
+	mKeyX = buffer.ReadShort();
+	mKeyY = buffer.ReadShort();
+	mWorldLeft = buffer.ReadShort();
+	mWorldRight = buffer.ReadShort();
+	mWorldTop = buffer.ReadShort();
+	mWorldBottom = buffer.ReadShort();
+	mWorldX0 = buffer.ReadShort();
+	mWorldY0 = buffer.ReadShort();
+	
+	if (IsVerbose()) {
+		wxLogDebug("[ShapesFrame]         Flags:			%d", flags);
+		wxLogDebug("[ShapesFrame]         Min. Light Intensity:	%f", mMinimumLightIntensity);
+		wxLogDebug("[ShapesFrame]         Bitmap Index:	%d", mBitmapIndex);
+		wxLogDebug("[ShapesFrame]         Origin (X):		%d", mOriginX);
+		wxLogDebug("[ShapesFrame]         Origin (Y):		%d", mOriginY);
+		wxLogDebug("[ShapesFrame]         Key (X):		%d", mKeyX);
+		wxLogDebug("[ShapesFrame]         Key (Y):		%d", mKeyY);
+		wxLogDebug("[ShapesFrame]         World (Left):	%d", mWorldLeft);
+		wxLogDebug("[ShapesFrame]         World (Right):	%d", mWorldRight);
+		wxLogDebug("[ShapesFrame]         World (Top):	%d", mWorldTop);
+		wxLogDebug("[ShapesFrame]         World (Bottom):	%d", mWorldBottom);
+		wxLogDebug("[ShapesFrame]         World (X0):		%d", mWorldX0);
+		wxLogDebug("[ShapesFrame]         World (Y0):		%d", mWorldY0);
+	}
+
+	mGoodData = true;
+	return buffer;
+}
+
+unsigned int ShapesSequence::SizeInFile() const
+{
+	unsigned int size = 0;
+	
+	//size = SIZEOF_high_level_shape_definition;
+	
+	size += 2 * (FrameIndexCount() + 1);
+		
+	return size;
+}
+
+BigEndianBuffer& ShapesSequence::SaveObject(BigEndianBuffer& buffer)
+{
+	buffer.WriteShort(mType);
+	buffer.WriteUShort(mFlags);
+	buffer.WriteChar(mName.Length());
+	buffer.WriteBlock(33, (unsigned char *)mName.c_str());
+	buffer.WriteShort(mNumberOfViews);
+	buffer.WriteShort(mFramesPerView);
+	buffer.WriteShort(mTicksPerFrame);
+	buffer.WriteShort(mKeyFrame);
+	buffer.WriteShort(mTransferMode);
+	buffer.WriteShort(mTransferModePeriod);
+	buffer.WriteShort(mFirstFrameSound);
+	buffer.WriteShort(mKeyFrameSound);
+	buffer.WriteShort(mLastFrameSound);
+	buffer.WriteShort(mPixelsToWorld);
+	buffer.WriteShort(mLoopFrame);
+	buffer.WriteZeroes(28);
+	for (unsigned int i = 0; i < mFrameIndexes.size(); i++)
+		buffer.WriteShort(mFrameIndexes[i]);
+	buffer.WriteShort(0);
+	
+	return buffer;
+}
+
+BigEndianBuffer& ShapesSequence::LoadObject(BigEndianBuffer& buffer, long offset)
+{
+	short namelen;
+	
+	buffer.Position(offset);
+	mType = buffer.ReadShort();
+	mFlags = buffer.ReadUShort();
+	
+	// the name is a Mac Pascal string, not a C string (length,chars)
+	namelen = buffer.ReadUChar();
+	
+	if (namelen > 33)
+	{
+		wxLogError("[ShapesSequence] error in loading sequence name : name too long (%d/32)", namelen);
+		return buffer;
+	}
+	
+	for (int i = 0; i < 33; i++)
+	{
+		char c = buffer.ReadUChar();
+		if (i <= namelen)
+			mName.Append(c);
+	}
+	
+	mNumberOfViews = buffer.ReadShort();
+	mFramesPerView = buffer.ReadShort();
+	mTicksPerFrame = buffer.ReadShort();
+	mKeyFrame = buffer.ReadShort();
+	mTransferMode = buffer.ReadShort();
+	mTransferModePeriod = buffer.ReadShort();
+	mFirstFrameSound = buffer.ReadShort();
+	mKeyFrameSound = buffer.ReadShort();
+	mLastFrameSound = buffer.ReadShort();
+	mPixelsToWorld = buffer.ReadShort();
+	mLoopFrame = buffer.ReadShort();
+	
+	if (IsVerbose()) {
+		wxLogDebug("[ShapesSequence]         Type:					%d", mType);
+		wxLogDebug("[ShapesSequence]         Flags:					%d", mFlags);
+		wxLogDebug("[ShapesSequence]         Name:					%s", mName.c_str());
+		wxLogDebug("[ShapesSequence]         Number of Views:		%d", mNumberOfViews);
+		wxLogDebug("[ShapesSequence]         Frames/Views:			%d", mFramesPerView);
+		wxLogDebug("[ShapesSequence]         Ticks/Frame:			%d", mTicksPerFrame);
+		wxLogDebug("[ShapesSequence]         Key Frame:				%d", mKeyFrame);
+		wxLogDebug("[ShapesSequence]         Transfer Mode:			%d", mTransferMode);
+		wxLogDebug("[ShapesSequence]         Transfer Mode Period:	%d", mTransferModePeriod);
+		wxLogDebug("[ShapesSequence]         First Frame Sound:		%d", mFirstFrameSound);
+		wxLogDebug("[ShapesSequence]         Key Frame Sound:		%d", mKeyFrameSound);
+		wxLogDebug("[ShapesSequence]         Last Frame Sound:		%d", mLastFrameSound);
+		wxLogDebug("[ShapesSequence]         Pixels to World:		%d", mPixelsToWorld);
+		wxLogDebug("[ShapesSequence]         Loop Frame:			%d", mLoopFrame);
+	}
+	
+	if (mNumberOfViews < 0 || mFramesPerView < 0 || mKeyFrame < 0 || mFirstFrameSound < -1 || mKeyFrameSound < -1 || mLastFrameSound < -1 || mLoopFrame < -1)
+	{
+		wxLogError("[ShapesSequence] error in loading sequence : incorrect value");
+		return buffer;
+	}
+	
+	wxInt32 oldpos = buffer.Position();
+	
+	buffer.Position(buffer.Position() + 28);
+	
+	oldpos = buffer.Position();
+	// load frame indexes
+	int	n = ActualNumberOfViews(mNumberOfViews) * mFramesPerView;
+	
+	if (n > 0) {
+		for (int k = 0; k < n; k++)
+		{
+			mFrameIndexes.push_back(buffer.ReadShort());
+		}
+	}
+	
+	buffer.ReadShort();	// terminating index (usually 0 but can be garbage)
+	
+	mGoodData = true;
+	return buffer;
+}
+
+// given a high_level_shape_definition.number_of_views value,
+// return the real number of views
+int ActualNumberOfViews(int t)
+{
+	switch (t) {
+		case UNANIMATED:
+		case ANIMATED_1:
+			return 1;
+		case ANIMATED_3TO4:
+		case ANIMATED_4:
+			return 4;
+		case ANIMATED_3TO5:
+		case ANIMATED_5:
+			return 5;
+		case ANIMATED_2TO8:
+		case ANIMATED_5TO8:
+		case ANIMATED_8:
+			return 8;
+		default:
+			wxLogError("[ShapesSequence] Unknown sequence type %d, don't know the number of views", t);
+			return t;
+	}
+	return -1;
+}
+
+// chunk types. Bitmap encoding seems to depend on this setting
+enum {
+	_unused_collection = 0,	// plain
+	_wall_collection,		// plain
+	_object_collection,		// RLE
+	_interface_collection,	// plain
+	_scenery_collection		// RLE
+};
+
+ShapesColorTable* ShapesChunk::GetColorTable(unsigned int index) const
+{
+	if (index < 0 || index > mColorTables.size())
+		return NULL;
+	return mColorTables[index];
+}
+
+ShapesBitmap* ShapesChunk::GetBitmap(unsigned int index) const
+{
+	if (index < 0 || index > mBitmaps.size())
+		return NULL;
+	return mBitmaps[index];
+}
+
+ShapesFrame* ShapesChunk::GetFrame(unsigned int index) const
+{
+	if (index < 0 || index > mFrames.size())
+		return NULL;
+	return mFrames[index];
+}
+
+ShapesSequence* ShapesChunk::GetSequence(unsigned int index) const
+{
+	if (index < 0 || index > mSequences.size())
+		return NULL;
+	return mSequences[index];
+}
+
+void ShapesChunk::InsertColorTable(ShapesColorTable *ct)
+{
+	mColorTables.push_back(ct);
+}
+
+void ShapesChunk::DeleteColorTable(unsigned int ct)
+{
+	mColorTables.erase(mColorTables.begin() + ct);
+}
+
+void ShapesChunk::InsertBitmap(ShapesBitmap *b)
+{
+	mBitmaps.push_back(b);
+}
+
+void ShapesChunk::DeleteBitmap(unsigned int b)
+{
+	// preserve existing frame-bitmap associations and associate
+	// a null bitmap to frames using the bitmap we're deleting
+	for (unsigned int i = 0; i < mFrames.size(); i++) {
+		if (mFrames[i]->BitmapIndex() == (int)b)
+			mFrames[i]->SetBitmapIndex(-1);
+		else if (mFrames[i]->BitmapIndex() > (int)b)
+			mFrames[i]->SetBitmapIndex(mFrames[i]->BitmapIndex() - 1);
+	}
+	// now actually delete the bitmap
+	mBitmaps.erase(mBitmaps.begin() + b);
+}
+
+void ShapesChunk::InsertFrame(ShapesFrame *f)
+{
+	mFrames.push_back(f);
+}
+
+void ShapesChunk::DeleteFrame(unsigned int f)
+{
+	// preserve existing sequence-frame associations and
+	// unreference this frame index from any sequence using it
+	for (unsigned int i = 0; i < mSequences.size(); i++) {
+		
+		for (unsigned int j = 0; j < mSequences[i]->FrameIndexCount(); j++) {
+			short frame_index = mSequences[i]->GetFrameIndex(j);
+			if (frame_index == (int)f)
+				mSequences[i]->SetFrameIndex(j, -1);
+			else if (frame_index > (int)f)
+				mSequences[i]->SetFrameIndex(j, mSequences[i]->GetFrameIndex(j) - 1);
+		}
+	}
+}
+
+void ShapesChunk::InsertSequence(ShapesSequence *s)
+{
+	mSequences.push_back(s);
+}
+
+void ShapesChunk::DeleteSequence(unsigned int s)
+{
+	mSequences.erase(mSequences.begin() + s);
+}
+
+
+unsigned int ShapesChunk::SizeInFile(void) const
+{
+	unsigned int	bitmap_count = BitmapCount(),
+					frame_count = FrameCount(),
+					sequence_count = SequenceCount(),
+					color_table_count = ColorTableCount(),
+					size;
+	unsigned int i;
+	
+	// Size of our definition
+	size = SIZEOF_collection_definition;
+	
+	// add contribute of sequence offset table
+	size += 4 * sequence_count;
+	// add contribute of bitmap offset table
+	size += 4 * bitmap_count;
+	// add contribute of frame offset table
+	size += 4 * frame_count;
+	
+	// add contribute of color tables
+	if (color_table_count > 0)
+		size += SIZEOF_rgb_color_value * color_table_count * GetColorTable(0)->ColorCount();
+	
+	size += SIZEOF_bitmap_definition * bitmap_count;
+	
+	// add contribute of bitmaps (we'll have to compress them if necessary)
+	for (i = 0; i < bitmap_count; i++)
+	{
+		ShapesBitmap	*bitmap = mBitmaps[i];
+		size += bitmap->SizeInFile();
+	}
+		
+	// add contribute of frame definitions
+	size += SIZEOF_low_level_shape_definition * frame_count;
+	
+	size += SIZEOF_high_level_shape_definition * sequence_count;
+	
+	// add contribute of sequence definitions (and following frame indexes)
+	for (i = 0 ; i < sequence_count ; i++)
+	{
+		ShapesSequence *seq = mSequences[i];
+		size += seq->SizeInFile();
+	}
+
+	return size;
+}
+
+BigEndianBuffer& ShapesChunk::SaveObject(BigEndianBuffer& buffer)
+{
+	
+	unsigned int	bitmap_count = BitmapCount(),
+					frame_count = FrameCount(),
+					sequence_count = SequenceCount(),
+					i;
+	long			sequence_table_offset,
+					sequence_offsets[sequence_count],
+					frame_table_offset,
+					frame_offsets[frame_count],
+					bitmap_table_offset,
+					bitmap_offsets[bitmap_count];
+				
+	// skip the collection definition, we'll fill it at the end
+	buffer.Position(SIZEOF_collection_definition);
+	// write color tables
+	for (i = 0; i < ColorTableCount(); i++) {
+		mColorTables[i]->SaveObject(buffer);
+	}
+	
+	// write sequences
+	sequence_table_offset = buffer.Position();
+	if (sequence_count > 0) {
+		buffer.Position(buffer.Position() + sequence_count * 4);
+		
+		for (i = 0; i < sequence_count; i++) {
+			sequence_offsets[i] = buffer.Position();
+			
+			mSequences[i]->SaveObject(buffer);
+		}
+	}
+	// write frames
+	frame_table_offset = buffer.Position();
+	buffer.Position(buffer.Position() + frame_count * 4);
+	for (i = 0; i < frame_count; i++) {
+		frame_offsets[i] = buffer.Position();
+		
+		mFrames[i]->SaveObject(buffer);
+	}
+	
+	// write bitmaps
+	bitmap_table_offset = buffer.Position();
+	buffer.Position(buffer.Position() + bitmap_count * 4);
+	for (i = 0; i < bitmap_count; i++) {
+		bitmap_offsets[i] = buffer.Position();
+		
+		mBitmaps[i]->SaveObject(buffer);
+	}
+	
+	// go back and write the collection definition (with correct offsets)
+	buffer.Position(0);
+	buffer.WriteShort(mVersion);
+	buffer.WriteShort(mType);
+	buffer.WriteUShort(mFlags);
+	buffer.WriteShort(GetColorTable(0)->ColorCount());
+	buffer.WriteShort(ColorTableCount());
+	buffer.WriteLong(SIZEOF_collection_definition);
+	buffer.WriteShort(sequence_count);
+	buffer.WriteLong(sequence_table_offset);
+	buffer.WriteShort(frame_count);
+	buffer.WriteLong(frame_table_offset);
+	buffer.WriteShort(bitmap_count);
+	buffer.WriteLong(bitmap_table_offset);
+	buffer.WriteShort(mPixelsToWorld);
+	buffer.WriteLong(SizeInFile());
+	buffer.WriteZeroes(506);
+	
+	// fill offset tables
+	if (bitmap_count > 0) {
+		buffer.Position(bitmap_table_offset);
+		for (i = 0; i < bitmap_count; i++)
+			buffer.WriteLong(bitmap_offsets[i]);
+	}
+	if (frame_count > 0) {
+		buffer.Position(frame_table_offset);
+		for (i = 0; i < frame_count; i++)
+			buffer.WriteLong(frame_offsets[i]);
+	}
+	if (sequence_count > 0) {
+		buffer.Position(sequence_table_offset);
+		for (i = 0; i < sequence_count; i++)
+			buffer.WriteLong(sequence_offsets[i]);
+	}
+	
+	return buffer;
+}
+
+BigEndianBuffer& ShapesChunk::LoadObject(BigEndianBuffer& buffer)
+{
+	wxInt32 
+	
+	short	color_count,
+			clut_count,
+			bitmap_count,
+			high_level_shape_count,
+			low_level_shape_count,
+			i;
+	long	color_table_offset,
+			high_level_shape_offset_table_offset,
+			low_level_shape_offset_table_offset,
+			bitmap_offset_table_offset,
+			oldpos,
+			offset,
+			size;
+	
+	mVersion = buffer.ReadShort();
+	mType = buffer.ReadShort();
+	mFlags = buffer.ReadUShort();
+	color_count = buffer.ReadShort();
+	clut_count = buffer.ReadShort();
+	color_table_offset = buffer.ReadLong();
+	high_level_shape_count = buffer.ReadShort();
+	high_level_shape_offset_table_offset = buffer.ReadLong();
+	low_level_shape_count = buffer.ReadShort();
+	low_level_shape_offset_table_offset = buffer.ReadLong();
+	bitmap_count = buffer.ReadShort();
+	bitmap_offset_table_offset = buffer.ReadLong();
+	mPixelsToWorld = buffer.ReadShort();
+	size = buffer.ReadLong();
+	
+	// validate values
+	if (mVersion != COLLECTION_VERSION) {
+		wxLogError("[ShapesChunk] Unknown collection version %d", mVersion);
+		return buffer;
+	}
+	
+	if ((unsigned long)size != buffer.Size()) {
+		wxLogError("[ShapesChunk] Chunk size mismatch (%d/%d): this may not be a Marathon shapes file", size, buffer.Size());
+		return buffer;
+	}
+	if (color_table_offset < SIZEOF_collection_definition
+		|| color_table_offset >= size
+		|| high_level_shape_offset_table_offset < SIZEOF_collection_definition
+		|| high_level_shape_offset_table_offset >= size
+		|| low_level_shape_offset_table_offset < SIZEOF_collection_definition
+		|| low_level_shape_offset_table_offset >= size
+		|| bitmap_offset_table_offset < SIZEOF_collection_definition
+		|| bitmap_offset_table_offset >= size) {
+		wxLogError("[ShapesChunk] Invalid offsets in collection definition: this may not be a Marathon shapes file");
+		return buffer;
+	}
+	if (color_count < 0 || clut_count < 0 || high_level_shape_count < 0 || low_level_shape_count < 0 || bitmap_count < 0) {
+		wxLogError("[ShapesChunk] Invalid object counts in collection definition: this may not be a Marathon shapes file");
+		return buffer;
+	}
+
+	if (IsVerbose()) {
+		wxLogDebug("[ShapesChunk]         Version: %d", mVersion);
+		wxLogDebug("[ShapesChunk]         Type:    %d", mType);
+		wxLogDebug("[ShapesChunk]         Flags:   %d", mFlags);
+		wxLogDebug("[ShapesChunk]         %d color tables, %d colors per table", clut_count, color_count);
+		wxLogDebug("[ShapesChunk]         %d sequences", high_level_shape_count);
+		wxLogDebug("[ShapesChunk]         %d frames", low_level_shape_count);
+		wxLogDebug("[ShapesChunk]         %d bitmaps", bitmap_count);
+	}
+	
+	
+	// load color tables
+	for (i = 0; i < clut_count; i++) {
+		ShapesColorTable	*color_table = new ShapesColorTable(IsVerbose());
+		if (IsVerbose())
+			wxLogDebug("[ShapesChunk] Loading colortable %d/%d", i+1, clut_count);
+			
+		oldpos = buffer.Position();
+		
+		color_table->LoadObject(buffer, color_table_offset, color_count);
+		
+		buffer.Position(oldpos);
+		
+		//store if correct
+		if (color_table->IsGood())
+			mColorTables.push_back(color_table);
+		else
+			wxLogError("[ShapesChunk] Error loading colortable... Dropped");
+	}
+	
+	// load bitmaps, decoding compressed ones
+	buffer.Position(bitmap_offset_table_offset);
+	
+	for (i = 0; i < bitmap_count; i++) {
+		ShapesBitmap	*bitmap;
+		
+		offset = buffer.ReadLong();
+		
+		if (offset < SIZEOF_collection_definition || offset >= size) {
+			wxLogError("[ShapesChunk] Invalid bitmap offset: this may not be a Marathon shapes file");
+			return buffer;
+		}
+		
+		bitmap = new ShapesBitmap(IsVerbose());
+		if (IsVerbose())
+			wxLogDebug("[ShapesChunk] Loading bitmap %d/%d", i+1, bitmap_count);
+			
+		oldpos = buffer.Position();
+		
+		bitmap->LoadObject(buffer, offset);
+		
+		buffer.Position(oldpos);
+		// store if correct
+		if (bitmap->IsGood())
+			mBitmaps.push_back(bitmap);
+		else
+			wxLogError("[ShapesDocument] Error loading bitmap... Dropped");
+		
+	}
+	
+	buffer.Position(high_level_shape_offset_table_offset);
+	
+	for (i = 0; i < high_level_shape_count; i++) {
+		ShapesSequence	*sequence;
+		
+		offset = buffer.ReadLong();
+		
+		if (offset < SIZEOF_collection_definition || offset >= size) {
+			wxLogError("[ShapesChunk] Invalid sequence offset: this may not be a Marathon shapes file");
+			return buffer;
+		}
+		
+		sequence = new ShapesSequence(IsVerbose());
+		if (IsVerbose())
+			wxLogDebug("[ShapesChunk] Loading sequence %d/%d", i+1, high_level_shape_count);
+		
+		oldpos = buffer.Position();
+		
+		sequence->LoadObject(buffer, offset);
+		
+		buffer.Position(oldpos);
+		
+		// store if correct
+		if (sequence->IsGood())
+			mSequences.push_back(sequence);
+		else
+			wxLogError("[ShapesDocument] Error loading sequence... Dropped");
+		
+	}
+	
+	buffer.Position(low_level_shape_offset_table_offset);
+	
+	for (i = 0; i < low_level_shape_count; i++) {
+		ShapesFrame	*frame;
+		
+		offset = buffer.ReadLong();
+		
+		if (offset < SIZEOF_collection_definition || offset >= size) {
+			wxLogError("[ShapesChunk] Invalid frame offset: this may not be a Marathon shapes file");
+			return buffer;
+		}
+		
+		frame = new ShapesFrame(IsVerbose());
+		if (IsVerbose())
+			wxLogDebug("[ShapesChunk] Loading frame %d/%d", i+1, low_level_shape_count);
+		
+		oldpos = buffer.Position();
+		
+		frame->LoadObject(buffer, offset);
+		
+		buffer.Position(oldpos);
+		// calculate scale factor from world_* fields and associated bitmap dimensions.
+		// If this fails, default to collection global scale factor
+		if (frame->BitmapIndex() >= 0 && frame->BitmapIndex() < (int)mBitmaps.size())
+		{
+			int	bitmapWidth = mBitmaps[frame->BitmapIndex()]->Width();
+			
+			if (bitmapWidth > 0)
+				frame->SetScaleFactor((frame->WorldRight() - frame->WorldLeft()) / bitmapWidth);
+			else
+				frame->SetScaleFactor(mPixelsToWorld);
+		} else {
+				frame->SetScaleFactor(mPixelsToWorld);
+		}
+		
+		// store if correct
+		if (frame->IsGood())
+			mFrames.push_back(frame);
+		else
+			wxLogError("[ShapesDocument] Error loading frame... Dropped");
+		
+	}
+	
+	mGoodData = true;
+	return buffer;
+}
 
 ShapesCollection::ShapesCollection(bool verbose): 
 	ShapesElement(verbose)
@@ -37,81 +1010,149 @@ ShapesCollection::~ShapesCollection(void)
 		delete mChunks[1];
 }
 
+bool ShapesCollection::Defined(unsigned int chunk) const
+{
+	if (chunk > COLL_VERSION_TRUECOLOR)
+		return false;
+	return mChunks[chunk] != NULL;
+}
+
+int ShapesCollection::Version(unsigned int chunk) const
+{
+	return (Defined(chunk) ? mChunks[chunk]->Version() : 0);
+}
+
+int ShapesCollection::Type(unsigned int chunk) const
+{
+	return (Defined(chunk) ? mChunks[chunk]->Type() : 0);
+}
+
+int ShapesCollection::Flags(unsigned int chunk) const
+{
+	return (Defined(chunk) ? mChunks[chunk]->Flags() : 0);
+}
+
+int ShapesCollection::ScaleFactor(unsigned int chunk) const
+{
+	return (Defined(chunk) ? mChunks[chunk]->ScaleFactor() : 0);
+}
+
+int ShapesCollection::ColorTableCount(unsigned int chunk) const
+{
+	return (Defined(chunk) ? mChunks[chunk]->ColorTableCount() : 0);
+}
+
+int ShapesCollection::BitmapCount(unsigned int chunk) const
+{
+	return (Defined(chunk) ? mChunks[chunk]->BitmapCount() : 0);
+}
+
+int ShapesCollection::FrameCount(unsigned int chunk) const
+{
+	return (Defined(chunk) ? mChunks[chunk]->FrameCount() : 0);
+}
+
+int ShapesCollection::SequenceCount(unsigned int chunk) const
+{
+	return (Defined(chunk) ? mChunks[chunk]->SequenceCount() : 0);
+}
+
+ShapesColorTable* ShapesCollection::GetColorTable(unsigned int chunk, unsigned int index) const
+{
+	return (Defined(chunk) ? mChunks[chunk]->GetColorTable(index) : NULL);
+}
+
+ShapesBitmap* ShapesCollection::GetBitmap(unsigned int chunk, unsigned int index) const
+{
+	return (Defined(chunk) ? mChunks[chunk]->GetBitmap(index) : NULL);
+}
+
+ShapesFrame* ShapesCollection::GetFrame(unsigned int chunk, unsigned int index) const
+{
+	return (Defined(chunk) ? mChunks[chunk]->GetFrame(index) : NULL);
+}
+
+ShapesSequence* ShapesCollection::GetSequence(unsigned int chunk, unsigned int index) const
+{
+	return (Defined(chunk) ? mChunks[chunk]->GetSequence(index) : NULL);
+}
+
+void ShapesCollection::InsertColorTable(ShapesColorTable *ct, unsigned int chunk)
+{
+	if (Defined(chunk))
+		return;
+
+	mChunks[chunk]->InsertColorTable(ct);
+}
+
+void ShapesCollection::DeleteColorTable(unsigned int chunk, unsigned int ct)
+{
+	if (Defined(chunk))
+		return;
+
+	mChunks[chunk]->DeleteColorTable(ct);
+}
+
+void ShapesCollection::InsertBitmap(ShapesBitmap *b, unsigned int chunk)
+{
+	if (Defined(chunk))
+		return;
+
+	mChunks[chunk]->InsertBitmap(b);
+}
+
+void ShapesCollection::DeleteBitmap(unsigned int chunk, unsigned int b)
+{
+	if (Defined(chunk))
+		return;
+
+	mChunks[chunk]->DeleteBitmap(b);
+}
+
+void ShapesCollection::InsertFrame(ShapesFrame *f, unsigned int chunk)
+{
+	if (Defined(chunk))
+		return;
+
+	mChunks[chunk]->InsertFrame(f);
+}
+
+void ShapesCollection::DeleteFrame(unsigned int chunk, unsigned int f)
+{
+	if (Defined(chunk))
+		return;
+
+	mChunks[chunk]->DeleteFrame(f);
+}
+
+void ShapesCollection::InsertSequence(ShapesSequence *s, unsigned int chunk)
+{
+	if (Defined(chunk))
+		return;
+
+	mChunks[chunk]->InsertSequence(s);
+}
+
+void ShapesCollection::DeleteSequence(unsigned int chunk, unsigned int s)
+{
+	if (Defined(chunk))
+		return;
+
+	mChunks[chunk]->DeleteSequence(s);
+}
 
 // calculate how much space a collection is going
 // to take when encoded to its on-file format.
-unsigned int ShapesCollection::CollectionSizeInFile(unsigned int version) const
+unsigned int ShapesCollection::SizeInFile(unsigned int chunk) const
 {
-	if (version > COLL_VERSION_TRUECOLOR)
+	if (Defined(chunk))
 		return 0;
-	if (!CollectionDefined(version))
+	if (!Defined(chunk))
 		return 0;
-
-	ShapesChunk		*chunkp = collections[id].chunks[version];
-	unsigned int	size = SIZEOF_collection_definition,
-					bitmap_count = chunkp->bitmaps.size(),
-					frame_count = chunkp->frames.size(),
-					sequence_count = chunkp->sequences.size();
-
-	// add contribute of color tables
-	if (chunkp->ctabs.size() > 0)
-		size += SIZEOF_rgb_color_value * chunkp->ctabs.size() * chunkp->ctabs[0].colors.size();
-	// add contribute of bitmap offset table
-	size += 4 * bitmap_count;
-	// add contribute of bitmaps (we'll have to compress them if necessary)
-	size += SIZEOF_bitmap_definition * bitmap_count;
-	for (unsigned int i = 0; i < bitmap_count; i++) {
-		ShpBitmap	*bitmapp = &chunkp->bitmaps[i];
-
-		// scanline pointer placeholder
-		if (bitmapp->column_order)
-			size += 4 * bitmapp->width;
-		else
-			size += 4 * bitmapp->height;
-		if (bitmapp->bytes_per_row == -1) {
-			// compressed
-			size += bitmapp->width * 4;
-			for (int x = 0; x < bitmapp->width; x++) {
-				unsigned char	*pp = bitmapp->pixels + x;
-				int				p0 = -1,
-								p1;
-
-				for (int y = 0; y < bitmapp->height; y++) {
-					if (*pp != 0) {
-						p0 = y;
-						break;
-					}
-					pp += bitmapp->width;
-				}
-				if (p0 == -1)
-					continue;	// no opaque pixels in this column
-				p1 = p0;
-				pp = bitmapp->pixels + x + bitmapp->width * (bitmapp->height - 1);
-				for (int y = bitmapp->height - 1; y >= 0; y--) {
-					if (*pp != 0) {
-						p1 = y;
-						break;
-					}
-					pp -= bitmapp->width;
-				}
-				size += p1 - p0 + 1;
-			}
-		} else {
-			// plain
-			size += bitmapp->width * bitmapp->height;
-		}
-	}
-	// add contribute of frame offset table
-	size += 4 * frame_count;
-	// add contribute of frame definitions
-	size += SIZEOF_low_level_shape_definition * frame_count;
-	// add contribute of sequence offset table
-	size += 4 * sequence_count;
-	// add contribute of sequence definitions (and following frame indexes)
-	size += SIZEOF_high_level_shape_definition * sequence_count;
-	for (unsigned int i = 0; i < sequence_count; i++)
-		size += 2 * (chunkp->sequences[i].frame_indexes.size() + 1);
-
+		
+	unsigned int size = 0;//SIZEOF_collection_definition;
+	size += mChunks[chunk]->SizeInFile();
+	 
 	return size;
 }
 
@@ -121,7 +1162,16 @@ wxSTD ostream& ShapesCollection::SaveObject(wxSTD ostream& stream)
 wxOutputStream& ShapesCollection::SaveObject(wxOutputStream& stream)
 #endif
 {
-
+	for (int i = 0; i < 2 ; i++)
+	{
+		if (Defined(i))
+		{
+			BigEndianBuffer chunkbuffer(mChunks[i]->SizeInFile());
+			mChunks[i]->SaveObject(chunkbuffer);
+			stream.Write((char *)chunkbuffer.Data(), chunkbuffer.Size());
+		}
+	}
+	return stream;
 }
 
 #if wxUSE_STD_IOSTREAM
@@ -177,8 +1227,13 @@ wxInputStream& ShapesCollection::LoadObject(wxInputStream& stream)
 		if (IsVerbose())
 			wxLogDebug("[ShapesCollection]     8-bit chunk present");
 		
-		ShapesChunk	*pc = new ShapesChunk(offset8, length8);
-		pc->LoadObject(stream);
+		BigEndianBuffer chunkbuffer(length8);
+		
+		stream.SeekI(offset8, wxFromStart);
+		stream.Read((char *)chunkbuffer.Data(), chunkbuffer.Size());
+		
+		ShapesChunk	*pc = new ShapesChunk(IsVerbose());
+		pc->LoadObject(chunkbuffer);
 		
 		if (pc->IsGood())
 			mChunks[0] = pc;
@@ -191,8 +1246,13 @@ wxInputStream& ShapesCollection::LoadObject(wxInputStream& stream)
 		if (IsVerbose())
 			wxLogDebug("[ShapesCollection]     16/32-bit chunk present");
 		
-		ShapesChunk	*pc = new ShapesChunk(offset16, length16);
-		pc->LoadObject(stream);
+		BigEndianBuffer chunkbuffer(length16);
+		
+		stream.SeekI(offset16, wxFromStart);
+		stream.Read((char *)chunkbuffer.Data(), chunkbuffer.Size());
+		
+		ShapesChunk	*pc = new ShapesChunk(IsVerbose());
+		pc->LoadObject(chunkbuffer);
 		
 		if (pc->IsGood())
 			mChunks[1] = pc;

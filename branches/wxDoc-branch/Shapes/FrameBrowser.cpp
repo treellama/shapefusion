@@ -269,7 +269,7 @@ void FrameBrowser::AddFrame(ShapesFrame *fp)
 void FrameBrowser::AddBitmap(ShapesBitmap *bp)
 {
 	if (bp != NULL) {
-		if (bp->pixels != NULL)
+		if (bp->Pixels() != NULL)
 			bitmaps.push_back(bp);
 		else
 			std::cerr << "FrameBrowser: someone tried to add a bitmap with NULL pixels\n";
@@ -324,14 +324,14 @@ void FrameBrowser::UpdateVirtualSize(void)
 		SetScrollRate(0, 0);
 		// find greatest dimension among all referenced bitmaps
 		for (unsigned int i = 0; i < frames.size(); i++) {
-			int	bitmapindex = frames[i]->bitmap_index;
+			int	bitmapindex = frames[i]->BitmapIndex();
 
 			if (bitmapindex < 0 || bitmapindex >= (int)bitmaps.size())
 				continue;
-			if (bitmaps[bitmapindex]->width > max_bitmap_dimension)
-				max_bitmap_dimension = bitmaps[bitmapindex]->width;
-			if (bitmaps[bitmapindex]->height > max_bitmap_dimension)
-				max_bitmap_dimension = bitmaps[bitmapindex]->height;
+			if (bitmaps[bitmapindex]->Width() > max_bitmap_dimension)
+				max_bitmap_dimension = bitmaps[bitmapindex]->Width();
+			if (bitmaps[bitmapindex]->Height() > max_bitmap_dimension)
+				max_bitmap_dimension = bitmaps[bitmapindex]->Height();
 		}
 		// start with a small size (margin) and increase it until overflow
 		for (new_tn_size = margin; ; new_tn_size++) {
@@ -389,22 +389,22 @@ void FrameBrowser::UpdateVirtualSize(void)
 // transform an ShapesFrame to a wxBitmap thumbnail
 wxBitmap FrameBrowser::CreateThumbnail(ShapesFrame *fp)
 {
-	if (fp->bitmap_index < 0 || fp->bitmap_index >= (int)bitmaps.size()) {
+	if (fp->BitmapIndex() < 0 || fp->BitmapIndex() >= (int)bitmaps.size()) {
 		// invalid or unset bitmap
 		return BadThumbnail(tn_size);
 	} else {
 		// valid bitmap
-		ShapesBitmap	*bp = bitmaps[fp->bitmap_index];
-		wxImage		newimg(bp->width, bp->height);
+		ShapesBitmap	*bp = bitmaps[fp->BitmapIndex()];
+		wxImage		newimg(bp->Width(), bp->Height());
 
 		// decode the bitmap to a wxImage
 		if (ctable)
-			newimg = ShapesBitmapToImage(bp, ctable, white_transparency);
+			newimg = bp->ShapesBitmapToImage(ctable, white_transparency);
 
 		// apply frame transformations
-		if (fp->x_mirror)
+		if (fp->IsXmirrored())
 			newimg = newimg.Mirror(true);
-		if (fp->y_mirror)
+		if (fp->IsYmirrored())
 			newimg = newimg.Mirror(false);
 
 		return ImageThumbnail(newimg, tn_size, true);

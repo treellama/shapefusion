@@ -78,8 +78,8 @@ void BitmapView::OnDrag(wxMouseEvent &e)
 void BitmapView::OnSize(wxSizeEvent &e)
 {
 	int cw, ch,
-		vw = (enc_bmp == NULL) ? 0 : enc_bmp->width,
-		vh = (enc_bmp == NULL) ? 0 : enc_bmp->height;
+		vw = (enc_bmp == NULL) ? 0 : enc_bmp->Width(),
+		vh = (enc_bmp == NULL) ? 0 : enc_bmp->Height();
 	
 	GetClientSize(&cw, &ch);
 	if (vw < cw)
@@ -92,8 +92,8 @@ void BitmapView::OnSize(wxSizeEvent &e)
 void BitmapView::SetTranspPixelsDisplay(bool show)
 {
 	white_transparency = show;
-	if (enc_bmp != NULL && enc_bmp->pixels != NULL && ctable != NULL)
-		dec_bmp = wxBitmap(ShapesBitmapToImage(enc_bmp, ctable, white_transparency));
+	if (enc_bmp != NULL && enc_bmp->Pixels() != NULL && ctable != NULL)
+		dec_bmp = wxBitmap(enc_bmp->ShapesBitmapToImage(ctable, white_transparency));
 	Refresh();
 }
 
@@ -101,12 +101,12 @@ void BitmapView::SetTranspPixelsDisplay(bool show)
 void BitmapView::SetBitmap(ShapesBitmap *bp)
 {
 	if (bp != NULL) {
-		if (bp->pixels != NULL) {
+		if (bp->Pixels() != NULL) {
 			enc_bmp = bp;
 			// adjust sizes
 			int	cw, ch,
-				vw = enc_bmp->width,
-				vh = enc_bmp->height;
+				vw = enc_bmp->Width(),
+				vh = enc_bmp->Height();
 
 			GetClientSize(&cw, &ch);
 			if (vw < cw)
@@ -116,7 +116,7 @@ void BitmapView::SetBitmap(ShapesBitmap *bp)
 			SetVirtualSize(vw, vh);
 			// decode bitmap
 			if (ctable != NULL)
-				dec_bmp = wxBitmap(ShapesBitmapToImage(bp, ctable, white_transparency));
+				dec_bmp = wxBitmap(bp->ShapesBitmapToImage(ctable, white_transparency));
 			Refresh();
 		} else {
 			std::cerr << "BitmapView: someone tried to add a bitmap with NULL pixels\n";
@@ -136,8 +136,8 @@ ShapesBitmap *BitmapView::GetBitmap(void) const
 void BitmapView::SetColorTable(ShapesColorTable *ct)
 {
 	ctable = ct;
-	if (enc_bmp != NULL && enc_bmp->pixels != NULL && ctable != NULL)
-		dec_bmp = wxBitmap(ShapesBitmapToImage(enc_bmp, ctable, white_transparency));
+	if (enc_bmp != NULL && enc_bmp->Pixels() != NULL && ctable != NULL)
+		dec_bmp = wxBitmap(enc_bmp->ShapesBitmapToImage(ctable, white_transparency));
 	Refresh();
 }
 

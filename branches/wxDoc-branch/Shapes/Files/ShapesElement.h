@@ -16,18 +16,24 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+#ifndef SHAPESELEMENT_H
+#define SHAPESELEMENT_H
+
 class ShapesElement /*: public wxObject*/
 {
 private:
 	bool	mVerboseLoading;
 
 protected:
+	// So that subclasses can change their status
 	bool	mGoodData;
 	
 public:
-	ShapesElement(bool verbose);
-	~ShapesElement(void);
+	ShapesElement(bool verbose) : mVerboseLoading(verbose), mGoodData(false) {}
+	~ShapesElement(void) {}
 	
-	bool IsGood();
-	bool IsVerbose();
+	bool IsGood() const {return mGoodData;}
+	bool IsVerbose() const {return mVerboseLoading;}
 };
+
+#endif
