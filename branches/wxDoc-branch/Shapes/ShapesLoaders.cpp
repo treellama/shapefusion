@@ -19,7 +19,7 @@
 #include <vector>
 using std::vector;
 
-#include "ShapesCollection.h"
+#include "ShapesLoaders.h"
 #include "BigEndianBuffer.h"
 #include "ShapesElement.h"
 

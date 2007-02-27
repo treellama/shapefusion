@@ -16,8 +16,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#ifndef SHAPESCOLLECTION_H
-#define SHAPESCOLLECTION_H
+#ifndef SHAPESLOADERS_H
+#define SHAPESLOADERS_H
 
 #include <vector>
 using std::vector;
