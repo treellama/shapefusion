@@ -72,6 +72,7 @@ BEGIN_EVENT_TABLE(ShapesEditor, wxFrame)
 	EVT_COMMAND(wxID_ANY, wxEVT_CTBROWSER, ShapesEditor::CTSelect)
 	// frames
 	EVT_COMMAND(FRAME_BROWSER, wxEVT_FRAMEBROWSER, ShapesEditor::FrameSelect)
+	EVT_COMMAND(FRAME_BROWSER, wxEVT_FRAMEBROWSER_DELETE, ShapesEditor::FrameDelete)
 	EVT_SPINCTRL(FIELD_BITMAP_INDEX, ShapesEditor::BitmapIndexSpin)
 	EVT_COMMAND_RANGE(CB_XMIRROR, CB_KEYPOINT, wxEVT_COMMAND_CHECKBOX_CLICKED, ShapesEditor::ToggleFrameCheckboxes)
 	EVT_TEXT(FIELD_ORIGIN_X, ShapesEditor::EditFrameFields)
@@ -524,13 +525,34 @@ void ShapesEditor::MenuFileOpen(wxCommandEvent &e)
 		wxEndBusyCursor();
 
 		if (newshapes->GoodData()) {
-			// delete the old shapes block and insert the new one
+			// make sure the user interface drops all pointers to the old shapes
+			mainbox->Show(coll_sizer, false);
+			mainbox->Show(chunk_sizer, false);
+			mainbox->Show(b_outer_sizer, false);
+			mainbox->Show(ct_outer_sizer, false);
+			mainbox->Show(f_outer_sizer, false);
+			mainbox->Show(s_outer_sizer, false);
+			mainbox->Show(dummy_sizer, true);
+			mainbox->Layout();
+			ctb->Clear();
+			bb->Clear();
+			bb->SetColorTable(NULL);
+			b_view->SetBitmap(NULL);
+			b_view->SetColorTable(NULL);
+			fb->Clear();
+			fb->SetColorTable(NULL);
+			f_view->SetFrame(NULL);
+			f_view->SetBitmap(NULL);
+			f_view->SetColorTable(NULL);
+			s_fb->Clear();
+			s_fb->SetColorTable(NULL);
+			colltree->DeleteAllItems();
+			// delete the old shapes
 			if (payload != NULL)
 				delete payload;
 			payload = newshapes;
 			filepath = s;
-			// update all levels of the tree control
-			colltree->DeleteAllItems();
+			// rebuild all levels of the tree control
 			wxTreeItemId	treeroot = colltree->AddRoot(filepath.AfterLast('/'));
 
 			for (unsigned int i = 0; i < COLLECTIONS_PER_FILE; i++) {
@@ -1365,6 +1387,36 @@ void ShapesEditor::FrameSelect(wxCommandEvent &e)
 		edit_menu->Enable(wxID_DELETE, true);
 	}
 	f_outer_sizer->Layout();
+}
+
+void ShapesEditor::FrameDelete(wxCommandEvent &e)
+{
+	if (e.GetSelection() < 0)
+		return;
+	
+	fb->Freeze();
+	fb->Clear();    // FIXME just remove THAT frame
+	f_outer_sizer->Show(f_count_label, true);
+	f_outer_sizer->Show(f_edit_box, false);
+	f_view->SetFrame(NULL);
+	payload->DeleteFrame(selected_coll, selected_vers, e.GetSelection());
+	
+	unsigned int	frame_count = payload->CollFrameCount(selected_coll, selected_vers),
+					bitmap_count = payload->CollBitmapCount(selected_coll, selected_vers);
+	
+	for (unsigned int i = 0; i < bitmap_count; i++)
+		fb->AddBitmap(payload->GetBitmap(selected_coll, selected_vers, i));
+	for (unsigned int i = 0; i < frame_count; i++)
+		fb->AddFrame(payload->GetFrame(selected_coll, selected_vers, i));
+	fb->Thaw();
+
+	wxString    count_string;
+
+	count_string << frame_count << wxT(" frame");
+	if (frame_count != 1)
+		count_string << wxT("s");
+	f_count_label->SetLabel(count_string);
+	Layout();
 }
 
 void ShapesEditor::AskSaveBitmap(wxCommandEvent &e)
