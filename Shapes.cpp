@@ -628,12 +628,20 @@ int Shapes::WriteToFile(std::string path)
 
 Shapes::~Shapes(void)
 {
-	// TODO free bitmaps pixels
 	for (unsigned int i = 0; i < collections.size(); i++) {
-		if (collections[i].chunks[0] != NULL)
-			delete collections[i].chunks[0];
-		if (collections[i].chunks[1] != NULL)
-			delete collections[i].chunks[1];
+		for (unsigned int j = 0; j < 2; j++) {
+			ShpChunk	*chunkp = collections[i].chunks[j];
+
+			if (chunkp != NULL) {
+				// free bitmap pixels
+				for (unsigned int k = 0; k < chunkp->bitmaps.size(); k++) {
+					if (chunkp->bitmaps[k].pixels != NULL)
+						delete chunkp->bitmaps[k].pixels;
+				}
+				// free collection chunk
+				delete chunkp;
+			}
+		}
 	}
 }
 
@@ -821,6 +829,8 @@ void Shapes::DeleteBitmap(unsigned int coll, unsigned int version, unsigned int 
 				chunk->frames[i].bitmap_index--;
 		}
 		// now actually delete the bitmap
+		if (chunk->bitmaps[b].pixels != NULL)
+			delete chunk->bitmaps[b].pixels;
 		chunk->bitmaps.erase(chunk->bitmaps.begin() + b);
 	}
 }

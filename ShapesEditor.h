@@ -259,6 +259,7 @@ public:
 	void ToggleBitmapCheckboxes(wxCommandEvent &e);
 	void AskSaveBitmap(wxCommandEvent &e);
 	void FrameSelect(wxCommandEvent &e);
+	void FrameDelete(wxCommandEvent &e);
 	void BitmapIndexSpin(wxSpinEvent &e);
 	void ToggleFrameCheckboxes(wxCommandEvent &e);
 	void EditFrameFields(wxCommandEvent &e);

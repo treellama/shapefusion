@@ -128,7 +128,7 @@ invalid data very well, but I plan to implement some consistency checks in the f
 Changelog
 ---------
 0.3
-	Implemented bitmap deleting.
+	Implemented bitmap and frame deletion.
 	Frame and sequence user interface cleanup.
 	One can now edit frame scale factors.
 	Assorted changes and fixes.
