@@ -22,11 +22,27 @@
 #include <vector>
 using std::vector;
 #include "BigEndianBuffer.h"
-#include "ShapesElement.h"
 
 #define COLLECTIONS_PER_FILE				32
 
 #define SIZEOF_collection_header			32
+
+class ShapesElement /*: public wxObject*/
+{
+private:
+	bool	mVerboseLoading;
+
+protected:
+	// So that subclasses can change their status
+	bool	mGoodData;
+	
+public:
+	ShapesElement(bool verbose) : mVerboseLoading(verbose), mGoodData(false) {}
+	~ShapesElement(void) {}
+	
+	bool IsGood() const {return mGoodData;}
+	bool IsVerbose() const {return mVerboseLoading;}
+};
 
 // internal-use utility constants
 enum {
@@ -45,7 +61,7 @@ private:
 public:
 
 	// Constructor / Destructor
-	ShapesColor(bool verbose) : ShapesElement(verbose) {}
+	ShapesColor(bool verbose = false) : ShapesElement(verbose) {}
 	~ShapesColor(void) {}
 	
 	// Accessors
@@ -67,7 +83,7 @@ private:
 	
 public:
 
-	ShapesColorTable(bool verbose) : ShapesElement(verbose) {}
+	ShapesColorTable(bool verbose = false) : ShapesElement(verbose) {}
 	~ShapesColorTable(void) {}
 
 	int ColorCount(void) const {return mColors.size();}
@@ -92,20 +108,31 @@ private:
 	// list of frames referencing this bitmap
 	vector<int>		mUsers;
 	
+	
 public:
 
 	// Constructor / Destructor
-	ShapesBitmap(bool verbose) : ShapesElement(verbose) {}
+	ShapesBitmap(bool verbose = false) : ShapesElement(verbose) {}
 	~ShapesBitmap(void) {}
 
 	// Accessors
 	short Width(void) const {return mWidth;}
 	short Height(void) const {return mHeight;}
-	unsigned char* ShapesBitmap::Pixels(void) const {return mPixels;}
+	short BytesPerRow(void) const {return mBytesPerRow;}
+	short BitDepth(void) const {return mBitDepth;}
+	bool IsColumnOrdered(void) const {return mColumnOrder;}
+	bool IsTransparent(void) const {return mTransparent;}
+	unsigned char* Pixels(void) const {return mPixels;}
+	
+	// Mutators
+	void SetWidth(short w) {mWidth = w;}
+	void SetHeight(short h) {mHeight = h;}
+	void SetBitDepth(short b) {mBitDepth = b;}
+	void SetColumnOrdered(bool b) {mColumnOrder = b;}
+	void SetTransparent(bool n) {mTransparent = n;}
 
 	// Utilities
 	unsigned int SizeInFile() const;
-	wxImage ShapesBitmapToImage(ShapesColorTable *ct, bool white_transparency);
 	
     BigEndianBuffer& SaveObject(BigEndianBuffer& buffer);
     BigEndianBuffer& LoadObject(BigEndianBuffer& buffer, long offset);
@@ -145,8 +172,7 @@ private:
 public:
 		
 	// Constructor / Destructor
-		
-	ShapesFrame(bool verbose) : ShapesElement(verbose) {}
+	ShapesFrame(bool verbose = false);
 	~ShapesFrame(void) {}
 	
 	// Accessors
@@ -171,7 +197,7 @@ public:
 	void SetXmirrored(bool b) {mXmirror = b;}
 	void SetYmirrored(bool b) {mYmirror = b;}
 	void SetKeypointObscured(bool b) {mKeypointObscured = b;}
-	void SetMinimiumLightIntensity(double v) {mMinimumLightIntensity = v;}
+	void SetMinimumLightIntensity(double v) {mMinimumLightIntensity = v;}
 	void SetBitmapIndex(short i) {mBitmapIndex = i;}
 	void SetScaleFactor(int s) {mScaleFactor = s;}
 	void SetOriginX(short x) {mOriginX = x;}
@@ -186,7 +212,6 @@ public:
 	void SetWorldY0(short s) {mWorldY0 = s;}
 	
 	// Utilities
-	
 	unsigned int SizeInFile() const;
 	
     BigEndianBuffer& SaveObject(BigEndianBuffer& buffer);
@@ -226,20 +251,53 @@ private:
 					mLastFrameSound,
 					mPixelsToWorld,
 					mLoopFrame;
+//FIXME This could be made private
+public:
 	vector<short>	mFrameIndexes;
 	
 public:
 
 	// Constructor / Destructor
-	ShapesSequence(bool verbose) : ShapesElement(verbose) {}
+	ShapesSequence(bool verbose = false);
 	~ShapesSequence(void) {}
 	
 	// Accessors
+	short Type(void) const {return mType;}
+	unsigned short Flags(void) const {return mFlags;}
 	wxString Name(void) const {return mName;}
+	short NumberOfViews(void) const {return mNumberOfViews;}
+	short FramesPerView(void) const {return mFramesPerView;}
+	short TicksPerFrame(void) const {return mTicksPerFrame;}
+	short KeyFrame(void) const {return mKeyFrame;}
+	short TransferMode(void) const {return mTransferMode;}
+	short TransferModePeriod(void) const {return mTransferModePeriod;}
+	short FirstFrameSound(void) const {return mFirstFrameSound;}
+	short KeyFrameSound(void) const {return mKeyFrameSound;}
+	short LastFrameSound(void) const {return mLastFrameSound;}
+	short PixelsToWorld(void) const {return mPixelsToWorld;}
+	short LoopFrame(void) const {return mLoopFrame;}
+
+	// Mutators
+	void SetType(short t) {mType = t;}
+	void SetFlags(unsigned short f) {mFlags = f;}
+	void SetName(wxString name) {mName = name;}
+	void SetNumberOfViews(short n) {mNumberOfViews = n;}
+	void SetFramesPerView(short n) {mFramesPerView = n;}
+	void SetTicksPerFrame(short n) {mTicksPerFrame = n;}
+	void SetKeyFrame(short n) {mKeyFrame = n;}
+	void SetTransferMode(short n) {mTransferMode = n;}
+	void SetTransferModePeriod(short n) {mTransferModePeriod = n;}
+	void SetFirstFrameSound(short n) {mFirstFrameSound = n;}
+	void SetKeyFrameSound(short n) {mKeyFrameSound = n;}
+	void SetLastFrameSound(short n) {mLastFrameSound = n;}
+	void SetPixelsToWorld(short n) {mPixelsToWorld = n;}
+	void SetLoopFrame(short n) {mLoopFrame = n;}
+	
 	unsigned int FrameIndexCount(void) const {return mFrameIndexes.size();} 
 	short GetFrameIndex(unsigned int index) const {return mFrameIndexes[index];} 
 	void SetFrameIndex(unsigned int index, short value) {mFrameIndexes[index] = value;} 
-		
+	
+	// Utilities
 	unsigned int SizeInFile() const;
 	
     BigEndianBuffer& SaveObject(BigEndianBuffer& buffer);

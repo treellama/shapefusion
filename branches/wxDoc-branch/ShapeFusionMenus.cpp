@@ -21,11 +21,12 @@
 void CreateFileMenu(wxMenuBar *menu_bar)
 {
 	wxMenu	*file_menu,
-			*file_new_menu,
-			*file_open_menu;
+			*recent_file_menu;
+/*			*file_new_menu,
+			*file_open_menu;*/
 	
 	// We create our two submenus
-	file_new_menu = new wxMenu();
+/*	file_new_menu = new wxMenu();
 	file_new_menu->Append(FILE_MENU_NEW_SHAPES, wxT("Shapes file"));
 	file_new_menu->Append(FILE_MENU_NEW_PHYSICS, wxT("Physics file"));
 	file_new_menu->Append(FILE_MENU_NEW_MAP, wxT("Map file"));
@@ -34,7 +35,9 @@ void CreateFileMenu(wxMenuBar *menu_bar)
 	file_open_menu->Append(FILE_MENU_OPEN_SHAPES, wxT("Shapes file"));
 	file_open_menu->Append(FILE_MENU_OPEN_PHYSICS, wxT("Physics file"));
 	file_open_menu->Append(FILE_MENU_OPEN_MAP, wxT("Map file"));
-	file_open_menu->Append(FILE_MENU_OPEN_SOUNDS, wxT("Sounds file"));
+	file_open_menu->Append(FILE_MENU_OPEN_SOUNDS, wxT("Sounds file"));*/
+	// We create the recent menu here...
+	recent_file_menu = new wxMenu();
 	
 	// We create the 'main' File menu
 	file_menu = new wxMenu();
@@ -42,10 +45,12 @@ void CreateFileMenu(wxMenuBar *menu_bar)
 //	file_menu->Append(FILE_MENU_OPEN, wxT("Open..."), file_open_menu);
 	file_menu->Append(FILE_MENU_NEW, wxT("New...\tCtrl+N"));
 	file_menu->Append(FILE_MENU_OPEN, wxT("Open...\tCtrl+O"));
+	file_menu->Append(FILE_MENU_OPEN_RECENT, wxT("Open Recent..."), recent_file_menu);
+	file_menu->Append(FILE_MENU_CLOSE, wxT("&Close\tCtrl+W"));
 	file_menu->AppendSeparator();
 	file_menu->Append(FILE_MENU_SAVE, wxT("&Save\tCtrl+S"));
 	file_menu->Append(FILE_MENU_SAVEAS, wxT("Save as...\tCtrl+Shift+S"));
-	file_menu->Append(FILE_MENU_CLOSE, wxT("&Close\tCtrl+W"));
+	file_menu->Append(FILE_MENU_REVERT, wxT("&Revert"));
 	file_menu->AppendSeparator();
 	file_menu->Append(FILE_MENU_PRINT, _T("&Print..."));
 	file_menu->Append(FILE_MENU_PRINT_SETUP, _T("Print &Setup..."));

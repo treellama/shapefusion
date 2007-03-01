@@ -32,9 +32,9 @@
 
 class FrameView: public wxScrolledWindow {
 private:
-	ShapesFrame		*frame;				// frame data
+	ShapesFrame			*frame;				// frame data
 	ShapesBitmap		*enc_bmp;			// encoded bitmap
-	wxBitmap		dec_bmp;			// ready-to-draw associated frame bitmap
+	wxBitmap			dec_bmp;			// ready-to-draw associated frame bitmap
 	ShapesColorTable	*ctable;			// which palette to use for display
 	bool			white_transparency;	// hide transparent pixels
 	wxPen			origin_pen,

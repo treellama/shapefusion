@@ -19,9 +19,7 @@
 #include <vector>
 using std::vector;
 
-#include "ShapesLoaders.h"
-#include "BigEndianBuffer.h"
-#include "ShapesElement.h"
+#include "ShapesElements.h"
 
 // on-file struct sizes
 #define SIZEOF_collection_definition		544
@@ -109,35 +107,6 @@ BigEndianBuffer& ShapesColorTable::LoadObject(BigEndianBuffer& buffer, long offs
 	return buffer;
 }
 
-// convert an 8-bit ShapesBitmap to a RGB wxImage using the provided color table.
-// <white_transparency> renders transparent pixels as white instead of using
-// the chroma-key color. NOTE: this routine assumes valid pointers.
-wxImage ShapesBitmap::ShapesBitmapToImage(ShapesColorTable *ct, bool white_transparency)
-{
-	int				w = mWidth,
-					h = mHeight;
-	bool			transparency_enabled = mTransparent;
-	wxImage			img(w, h);
-	unsigned char	*imgbuf = img.GetData(),
-					*inp = mPixels,
-					*outp = imgbuf;
-
-	for (int i = 0; i < w * h; i++) {
-		unsigned char	value = *inp++;
-
-		if (value == 0 && transparency_enabled && white_transparency) {
-			*outp++ = 255;
-			*outp++ = 255;
-			*outp++ = 255;
-		} else {
-			*outp++ = ct->GetColor(value)->Red() >> 8;
-			*outp++ = ct->GetColor(value)->Green() >> 8;
-			*outp++ = ct->GetColor(value)->Blue() >> 8;
-		}
-	}
-	return img;
-}
-
 unsigned int ShapesBitmap::SizeInFile(void) const
 {
 	unsigned int size = 0;
@@ -165,7 +134,7 @@ unsigned int ShapesBitmap::SizeInFile(void) const
 				pp += mWidth;
 			}
 			if (p0 == -1)
-				continue;	// no opaque pixels in this column
+				continue;	// no opaque mPixels in this column
 			p1 = p0;
 			pp = mPixels + x + mWidth * (mHeight - 1);
 			for (int y = mHeight - 1; y >= 0; y--) {
@@ -214,11 +183,11 @@ BigEndianBuffer& ShapesBitmap::SaveObject(BigEndianBuffer& buffer)
 				pp += mWidth;
 			}
 			if (p0 == -1) {
-				// no opaque pixels in this column
+				// no opaque mPixels in this column
 				buffer.WriteShort(0);
 				buffer.WriteShort(0);
 			} else {
-				// found opaque pixels, go on
+				// found opaque mPixels, go on
 				p1 = p0;
 				pp = mPixels + x + mWidth * (mHeight - 1);
 				for (int y = mHeight - 1; y >= 0; y--) {
@@ -260,11 +229,11 @@ BigEndianBuffer& ShapesBitmap::LoadObject(BigEndianBuffer& buffer, long offset)
 	mBytesPerRow = buffer.ReadShort();
 	
 	if (mWidth < 0) {
-		wxLogError("[ShapesBitmap] Invalid bitmap width");
+		wxLogError("[ShapesBitmap] Invalid bitmap mWidth");
 		return buffer;
 	}
 	if (mHeight < 0) {
-		wxLogError("[ShapesBitmap] Invalid bitmap height");
+		wxLogError("[ShapesBitmap] Invalid bitmap mHeight");
 		return buffer;
 	}
 	if (mBytesPerRow < -1) {
@@ -287,7 +256,7 @@ BigEndianBuffer& ShapesBitmap::LoadObject(BigEndianBuffer& buffer, long offset)
 
 	if (IsVerbose()) {
 		wxLogDebug("[ShapesBitmap]         Width:		%d", mWidth);
-		wxLogDebug("[ShapesBitmap]         Height:	%d", mHeight);
+		wxLogDebug("[ShapesBitmap]         Height:		%d", mHeight);
 		wxLogDebug("[ShapesBitmap]         Bytes/Row:	%d", mBytesPerRow);
 		wxLogDebug("[ShapesBitmap]         Flags:		%d", flags);
 		wxLogDebug("[ShapesBitmap]         Bit Depth:	%d", mBitDepth);
@@ -295,7 +264,7 @@ BigEndianBuffer& ShapesBitmap::LoadObject(BigEndianBuffer& buffer, long offset)
 
 	
 	// skip unused fields and placeholders
-	unsigned int	numscanlines = mColumnOrder ? mWidth : mHeight;
+	unsigned int	numscanlines = (mColumnOrder ? mWidth : mHeight);
 	
 	buffer.Position(buffer.Position() + 20 + numscanlines * 4);
 	
@@ -338,6 +307,18 @@ BigEndianBuffer& ShapesBitmap::LoadObject(BigEndianBuffer& buffer, long offset)
 	
 	mGoodData = true;
 	return buffer;
+}
+
+ShapesFrame::ShapesFrame(bool verbose) : ShapesElement(verbose)
+{
+		// initialize values to something reasonable
+		mBitmapIndex = -1;
+		mXmirror = mYmirror = mKeypointObscured = false;
+		mMinimumLightIntensity = 0;
+		mOriginX = mOriginY = mKeyX = mKeyX = 0;
+		mScaleFactor = 0;
+		mWorldLeft = mWorldRight = mWorldTop = mWorldBottom = 0;
+		mWorldX0 = mWorldY0 = 0;
 }
 
 BigEndianBuffer& ShapesFrame::SaveObject(BigEndianBuffer& buffer)
@@ -424,6 +405,23 @@ BigEndianBuffer& ShapesFrame::LoadObject(BigEndianBuffer& buffer, long offset)
 	return buffer;
 }
 
+ShapesSequence::ShapesSequence(bool verbose) : ShapesElement(verbose)
+{
+	// initialize values to something reasonable
+	mType = 0;
+	mFlags = 0;
+	mName = _T("new sequence");
+	mNumberOfViews = UNANIMATED;
+	mFramesPerView = 0;
+	mTicksPerFrame = 1;
+	mKeyFrame = 0;
+	mTransferMode = 0;
+	mTransferModePeriod = 1;
+	mFirstFrameSound = mKeyFrameSound = mLastFrameSound = -1;
+	mPixelsToWorld = 0;
+	mLoopFrame = 0;
+}
+
 unsigned int ShapesSequence::SizeInFile() const
 {
 	unsigned int size = 0;
@@ -440,7 +438,8 @@ BigEndianBuffer& ShapesSequence::SaveObject(BigEndianBuffer& buffer)
 	buffer.WriteShort(mType);
 	buffer.WriteUShort(mFlags);
 	buffer.WriteChar(mName.Length());
-	buffer.WriteBlock(33, (unsigned char *)mName.c_str());
+	//XXX: Convert this correctly
+	buffer.WriteBlock(33, (unsigned char *)mName.mb_str(wxCSConv(_T(""))));
 	buffer.WriteShort(mNumberOfViews);
 	buffer.WriteShort(mFramesPerView);
 	buffer.WriteShort(mTicksPerFrame);
@@ -468,21 +467,22 @@ BigEndianBuffer& ShapesSequence::LoadObject(BigEndianBuffer& buffer, long offset
 	mType = buffer.ReadShort();
 	mFlags = buffer.ReadUShort();
 	
-	// the name is a Mac Pascal string, not a C string (length,chars)
+	// the mName is a Mac Pascal string, not a C string (length,chars)
 	namelen = buffer.ReadUChar();
 	
 	if (namelen > 33)
 	{
-		wxLogError("[ShapesSequence] error in loading sequence name : name too long (%d/32)", namelen);
+		wxLogError("[ShapesSequence] error in loading sequence mName : mName too long (%d/32)", namelen);
 		return buffer;
 	}
 	
+	char seqname[33];
 	for (int i = 0; i < 33; i++)
 	{
-		char c = buffer.ReadUChar();
-		if (i <= namelen)
-			mName.Append(c);
+		seqname[i] = buffer.ReadUChar();
 	}
+	//XXX: need to convert this appropriately
+	mName = wxString(seqname, wxCSConv(_T("")), namelen);
 	
 	mNumberOfViews = buffer.ReadShort();
 	mFramesPerView = buffer.ReadShort();
@@ -540,7 +540,7 @@ BigEndianBuffer& ShapesSequence::LoadObject(BigEndianBuffer& buffer, long offset
 	return buffer;
 }
 
-// given a high_level_shape_definition.number_of_views value,
+// given a high_level_shape_definition.mNumberOfViews value,
 // return the real number of views
 int ActualNumberOfViews(int t)
 {
@@ -559,13 +559,13 @@ int ActualNumberOfViews(int t)
 		case ANIMATED_8:
 			return 8;
 		default:
-			wxLogError("[ShapesSequence] Unknown sequence type %d, don't know the number of views", t);
+			wxLogError("[ShapesSequence] Unknown sequence mType %d, don't know the number of views", t);
 			return t;
 	}
 	return -1;
 }
 
-// chunk types. Bitmap encoding seems to depend on this setting
+// chunk mTypes. Bitmap encoding seems to depend on this setting
 enum {
 	_unused_collection = 0,	// plain
 	_wall_collection,		// plain

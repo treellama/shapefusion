@@ -44,21 +44,6 @@ class ShapesEditor: public wxFrame {
 private:
 	// control ids
 	enum {
-		// menus
-		MVIEW_COLOR_TABLE,
-		MVIEW_THUMBNAIL_SIZE,
-		MVIEW_TNSIZE_SMALL,
-		MVIEW_TNSIZE_MEDIUM,
-		MVIEW_TNSIZE_LARGE,
-		MVIEW_TNSIZE_AUTO,
-		MVIEW_TRANSPARENCY,
-		MSHAPES_ADDCOLORTABLE,
-		MSHAPES_SAVECOLORTABLE,
-		MSHAPES_SAVECOLORTABLETOPS,
-		MSHAPES_ADDBITMAP,
-		MSHAPES_EXPORTBITMAPS,
-		MSHAPES_ADDFRAME,
-		MSHAPES_ADDSEQUENCE,
 		// bitmaps
 		BITMAP_BROWSER,
 		CB_COLUMN_ORDER,
@@ -93,9 +78,6 @@ private:
 		FIELD_SEQ_KEY_FRAME_SND,
 		FIELD_SEQ_LAST_FRAME_SND,
 		FIELD_SEQ_SCALE_FACTOR,
-		// color table menus
-		MVIEW_COLORTABLE_0 = 100,
-		MVIEW_COLORTABLE_7 = 107
 	};
 
 	wxBoxSizer			*mainbox;
@@ -218,22 +200,19 @@ private:
 	wxTextCtrl					*s_sf_field;
 	SequenceView		*s_fb;
 
-	// Mac-wxString charset converter, for sequence names
-	wxCSConv		seqnameconv;
-
 	wxString		filepath;
-	Shapes			*payload;
+	wxView			*view;
 	int				selected_coll,
 					selected_vers,
 					selected_sequence,
 					view_ct;
 	bool			show_transparent_pixels;
-
+	
 protected:
 	DECLARE_EVENT_TABLE();
 
 public:
-	ShapesEditor(wxView *v, wxFrame *frame, const wxChar *t,  const wxPoint& pos, const wxSize& size);
+	ShapesEditor(wxView *view, wxFrame *frame, wxPoint pos, wxSize size);
 	~ShapesEditor(void);
 	wxTreeItemId GetSequencesTreeItem(unsigned int collection, unsigned int version) const;
 	// menu event callbacks

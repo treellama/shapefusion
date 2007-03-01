@@ -26,6 +26,7 @@
 IMPLEMENT_CLASS(ShapeFusionMain, wxDocParentFrame)
 BEGIN_EVENT_TABLE(ShapeFusionMain, wxDocParentFrame)
     EVT_MENU(ABOUT_MENU, ShapeFusionMain::OnAbout)
+    EVT_MENU_RANGE(FILE_HISTORY_FILE1, FILE_HISTORY_FILE9, ShapeFusionMain::OnMRUFile)
 END_EVENT_TABLE()
 
 ShapeFusionMain::ShapeFusionMain(wxDocManager *manager, wxFrame *frame, wxWindowID id, const wxString& title,
@@ -35,7 +36,7 @@ wxDocParentFrame(manager, frame, id, title, pos, size, type)
     editMenu = (wxMenu *) NULL;
 }
 
-void ShapeFusionMain::OnAbout(wxCommandEvent& WXUNUSED(event) )
+void ShapeFusionMain::OnAbout(wxCommandEvent& WXUNUSED(event))
 {
 	 wxMessageDialog *dlg = new wxMessageDialog(this,
 								wxT("ShapeFusion 0.2\nhttp://shapefusion.sourceforge.net\n\nCopyright 2000-2007, Tito Dal Canton\n\n"
@@ -47,23 +48,9 @@ void ShapeFusionMain::OnAbout(wxCommandEvent& WXUNUSED(event) )
 	 dlg->Destroy();
 }
 
-// Creates a canvas. Called either from view.cc when a new drawing
-// view is created, or in OnInit as a child of the main window,
-// if in 'single window' mode.
-MyCanvas *ShapeFusionMain::CreateCanvas(wxView *view, wxFrame *parent)
+void ShapeFusionMain::OnMenuHistory(wxCommandEvent& event)
 {
-    int width, height;
-    parent->GetClientSize(&width, &height);
-    
-/*    // Non-retained canvas
-    MyCanvas *canvas = new MyCanvas(view, parent, wxPoint(0, 0), wxSize(width, height), 0);
-    canvas->SetCursor(wxCursor(wxCURSOR_PENCIL));
-    
-    // Give it scrollbars
-    canvas->SetScrollbars(20, 20, 50, 50);
-    canvas->SetBackgroundColour(*wxWHITE);
-    canvas->ClearBackground();
-    
-    return canvas;*/
-	return NULL;
+	wxString f(m_docManager->GetHistoryFile(event.GetId() - wxID_FILE1));
+	if (!f.empty())
+		(void)m_docManager->CreateDocument(f, wxDOC_SILENT);
 }

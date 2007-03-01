@@ -57,7 +57,7 @@ private:
 	int					number_of_views,
 						frames_per_view,
 						animation_type;
-	vector<short>			*frame_indexes;
+	vector<short>		*frame_indexes;
 
 	wxBitmap CreateThumbnail(ShapesFrame *fp);
 	void UpdateVirtualSize(void);

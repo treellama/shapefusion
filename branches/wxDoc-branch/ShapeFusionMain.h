@@ -33,7 +33,7 @@ public:
         const long type);
     
     void OnAbout(wxCommandEvent& event);
-    MyCanvas *CreateCanvas(wxView *view, wxFrame *parent);
+	void OnMenuHistory(wxCommandEvent& event);
     
     DECLARE_EVENT_TABLE()
 };

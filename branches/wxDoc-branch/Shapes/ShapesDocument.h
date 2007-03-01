@@ -31,7 +31,7 @@
 #define SHAPESDOCUMENT_H
 
 #include "wx/docview.h"
-#include "ShapesLoaders.h"
+#include "ShapesElements.h"
 
 // class representing the contents of a Marathon shapes file
 class ShapesDocument: public wxDocument

@@ -93,7 +93,7 @@ void BitmapView::SetTranspPixelsDisplay(bool show)
 {
 	white_transparency = show;
 	if (enc_bmp != NULL && enc_bmp->Pixels() != NULL && ctable != NULL)
-		dec_bmp = wxBitmap(enc_bmp->ShapesBitmapToImage(ctable, white_transparency));
+		dec_bmp = wxBitmap(ShapesBitmapToImage(enc_bmp, ctable, white_transparency));
 	Refresh();
 }
 
@@ -116,7 +116,7 @@ void BitmapView::SetBitmap(ShapesBitmap *bp)
 			SetVirtualSize(vw, vh);
 			// decode bitmap
 			if (ctable != NULL)
-				dec_bmp = wxBitmap(bp->ShapesBitmapToImage(ctable, white_transparency));
+				dec_bmp = wxBitmap(ShapesBitmapToImage(bp, ctable, white_transparency));
 			Refresh();
 		} else {
 			std::cerr << "BitmapView: someone tried to add a bitmap with NULL pixels\n";
@@ -132,12 +132,12 @@ ShapesBitmap *BitmapView::GetBitmap(void) const
 	return enc_bmp;
 }
 
-// call this before Set'tingBitmap!
+// call this before SettingBitmap!
 void BitmapView::SetColorTable(ShapesColorTable *ct)
 {
 	ctable = ct;
 	if (enc_bmp != NULL && enc_bmp->Pixels() != NULL && ctable != NULL)
-		dec_bmp = wxBitmap(enc_bmp->ShapesBitmapToImage(ctable, white_transparency));
+		dec_bmp = wxBitmap(ShapesBitmapToImage(enc_bmp, ctable, white_transparency));
 	Refresh();
 }
 

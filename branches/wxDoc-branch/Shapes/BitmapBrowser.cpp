@@ -369,10 +369,9 @@ void BitmapBrowser::UpdateVirtualSize(void)
 // transform an ShapesBitmap to a wxBitmap thumbnail
 wxBitmap BitmapBrowser::CreateThumbnail(ShapesBitmap *bp)
 {
-	wxImage	newimg(bp->Width(), bp->Height());
-
+	wxImage newimg;
 	if (ctable)
-		newimg = bp->ShapesBitmapToImage(ctable, white_transparency);
+		newimg = ShapesBitmapToImage(bp, ctable, white_transparency);
 	return ImageThumbnail(newimg, tn_size, true);
 }
 

@@ -23,12 +23,7 @@
 #include "wx/treectrl.h"
 #include "wx/spinctrl.h"
 #include "wx/statline.h"
-#include "BitmapBrowser.h"
-#include "BitmapView.h"
-#include "CTBrowser.h"
-#include "FrameBrowser.h"
-#include "FrameView.h"
-#include "SequenceView.h"
+#include "ShapesEditor.h"
 #include "ShapeFusionMenus.h"
 
 class ShapesView: public wxView
@@ -72,8 +67,16 @@ private:
 		FIELD_SEQ_LAST_FRAME_SND,
 		FIELD_SEQ_SCALE_FACTOR,
 	};
-	
+
 	wxBoxSizer			*mainbox;
+	wxMenuBar			*menubar;
+	wxMenu				*file_menu,
+						*edit_menu,
+						*view_menu,
+						*view_colortable_submenu,
+						*view_tnsize_submenu,
+						*shapes_menu,
+						*help_menu;
 	wxTreeCtrl			*colltree;
 	wxBoxSizer			*dummy_sizer;
 	// widgets for collection info
@@ -81,7 +84,6 @@ private:
 	wxStaticBox			*coll_static_box;
 	wxStaticBoxSizer	*coll_inner_box;
 	wxStaticText		*coll_text;
-
 	// widgets for chunk info
 	wxBoxSizer			*chunk_sizer;
 	wxStaticBox			*chunk_static_box;
@@ -185,9 +187,18 @@ private:
 	wxStaticText				*s_sf_label;
 	wxTextCtrl					*s_sf_field;
 	SequenceView		*s_fb;
-    wxFrame				*frame;
+
+	wxString		filepath;
+	int				selected_coll,
+					selected_vers,
+					selected_sequence,
+					view_ct;
+	bool			show_transparent_pixels;
+    wxFrame			*frame;
 	
-	wxCSConv		seqnameconv;
+protected:
+	DECLARE_EVENT_TABLE();
+
 public:
     
     ShapesView();
@@ -197,6 +208,37 @@ public:
     void OnDraw(wxDC *dc);
     void OnUpdate(wxView *sender, wxObject *hint = (wxObject *) NULL);
     bool OnClose(bool deleteWindow = true);
+	wxTreeItemId GetSequencesTreeItem(unsigned int collection, unsigned int version) const;
+	// menu event callbacks
+	void MenuFileOpen(wxCommandEvent &e);
+	void MenuFileSave(wxCommandEvent&);
+	void MenuFileQuit(wxCommandEvent &e);
+	void MenuEditDelete(wxCommandEvent &e);
+	void MenuViewCT(wxCommandEvent &e);
+	void MenuViewTNSize(wxCommandEvent &e);
+	void MenuViewTransparency(wxCommandEvent &e);
+	void MenuShapesAddColorTable(wxCommandEvent &e);
+	void MenuShapesSaveColorTable(wxCommandEvent &e);
+	void MenuShapesSaveColorTableToPS(wxCommandEvent &e);
+	void MenuShapesAddBitmap(wxCommandEvent &e);
+	void MenuShapesExportBitmaps(wxCommandEvent &e);
+	void MenuShapesNewFrame(wxCommandEvent &e);
+	void MenuShapesNewSequence(wxCommandEvent &e);
+	// control callbacks
+	void TreeSelect(wxTreeEvent &e);
+	void BitmapSelect(wxCommandEvent &e);
+	void BitmapDelete(wxCommandEvent &e);
+	void CTSelect(wxCommandEvent &e);
+	void ToggleBitmapCheckboxes(wxCommandEvent &e);
+	void AskSaveBitmap(wxCommandEvent &e);
+	void FrameSelect(wxCommandEvent &e);
+	void BitmapIndexSpin(wxSpinEvent &e);
+	void ToggleFrameCheckboxes(wxCommandEvent &e);
+	void EditFrameFields(wxCommandEvent &e);
+	void DeleteSequence(wxCommandEvent &e);
+	void EditSequenceType(wxCommandEvent &e);
+	void EditSequenceXferMode(wxCommandEvent &e);
+	void EditSequenceFields(wxCommandEvent &e);
 };
 
 #endif

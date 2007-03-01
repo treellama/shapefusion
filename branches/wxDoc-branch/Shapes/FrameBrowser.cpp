@@ -395,11 +395,11 @@ wxBitmap FrameBrowser::CreateThumbnail(ShapesFrame *fp)
 	} else {
 		// valid bitmap
 		ShapesBitmap	*bp = bitmaps[fp->BitmapIndex()];
-		wxImage		newimg(bp->Width(), bp->Height());
+		wxImage			newimg(bp->Width(), bp->Height());
 
 		// decode the bitmap to a wxImage
 		if (ctable)
-			newimg = bp->ShapesBitmapToImage(ctable, white_transparency);
+			newimg = ShapesBitmapToImage(bp, ctable, white_transparency);
 
 		// apply frame transformations
 		if (fp->IsXmirrored())

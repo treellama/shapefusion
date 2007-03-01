@@ -414,7 +414,7 @@ wxBitmap SequenceView::CreateThumbnail(ShapesFrame *fp)
 
 		// decode the bitmap to a wxImage
 		if (ctable)
-			newimg = bp->ShapesBitmapToImage(ctable, white_transparency);
+			newimg = ShapesBitmapToImage(bp, ctable, white_transparency);
 
 		// apply frame transformations
 		if (fp->IsXmirrored())

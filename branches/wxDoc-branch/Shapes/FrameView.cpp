@@ -256,7 +256,7 @@ void FrameView::SetBitmap(ShapesBitmap *bp)
 			SetVirtualSize(vw, vh);
 			// decode bitmap
 			if (ctable != NULL) {
-				wxImage	img = bp->ShapesBitmapToImage(ctable, white_transparency);
+				wxImage	img = ShapesBitmapToImage(bp, ctable, white_transparency);
 
 				// apply transformations
 				if (frame) {

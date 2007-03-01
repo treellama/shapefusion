@@ -66,6 +66,11 @@ bool ShapeFusionApp::OnInit(void)
     
     //// Associate the menu bar with the frame
     frame->SetMenuBar(menu_bar);
+
+	//FIXME : this doesn't work
+	/*wxMenu *menu = NULL;
+	menu_bar->FindItem(FILE_MENU_OPEN_RECENT, &menu);
+	m_docManager->FileHistoryUseMenu(menu);*/
     
     frame->Centre(wxBOTH);
     frame->Show(true);
@@ -86,7 +91,7 @@ int ShapeFusionApp::OnExit(void)
 */
 wxFrame *ShapeFusionApp::CreateChildFrame(wxDocument *doc, wxView *view, const wxString title, wxPoint point, wxSize size)
 {
-    //// Make a child frame
+    // Make a child frame
     wxDocChildFrame *subframe = new wxDocChildFrame(doc, view, GetMainFrame(), wxID_ANY, title,
         point, size, wxDEFAULT_FRAME_STYLE);
     
@@ -95,9 +100,15 @@ wxFrame *ShapeFusionApp::CreateChildFrame(wxDocument *doc, wxView *view, const w
 	CreateFileMenu(menu_bar);
     CreateEditMenu(menu_bar);
 	CreateHelpMenu(menu_bar);
-    //// Associate the menu bar with the frame
+	
+    // Associate the menu bar with the frame
     subframe->SetMenuBar(menu_bar);
-    
+	
+	//FIXME : this doesn't work
+	/*wxMenu *menu = NULL;
+	menu_bar->FindItem(FILE_MENU_OPEN_RECENT, &menu);
+	m_docManager->FileHistoryUseMenu(menu);*/
+	
     subframe->Centre(wxBOTH);
     
     return subframe;

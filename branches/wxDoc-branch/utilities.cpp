@@ -18,6 +18,35 @@
 #include <iostream>
 #include "utilities.h"
 
+// convert an 8-bit ShapesBitmap to a RGB wxImage using the provided color table.
+// <white_transparency> renders transparent pixels as white instead of using
+// the chroma-key color. NOTE: this routine assumes valid pointers.
+wxImage ShapesBitmapToImage(ShapesBitmap *bp, ShapesColorTable *ct, bool white_transparency)
+{
+	int				w = bp->Width(),
+					h = bp->Height();
+	bool			transparency_enabled = bp->IsTransparent();
+	wxImage			img(w, h);
+	unsigned char	*imgbuf = img.GetData(),
+					*inp = bp->Pixels(),
+					*outp = imgbuf;
+
+	for (int i = 0; i < w * h; i++) {
+		unsigned char	value = *inp++;
+
+		if (value == 0 && transparency_enabled && white_transparency) {
+			*outp++ = 255;
+			*outp++ = 255;
+			*outp++ = 255;
+		} else {
+			*outp++ = ct->GetColor(value)->Red() >> 8;
+			*outp++ = ct->GetColor(value)->Green() >> 8;
+			*outp++ = ct->GetColor(value)->Blue() >> 8;
+		}
+	}
+	return img;
+}
+
 // create a wxBitmap thumbnail of the given wxImage. If the major wxImage
 // dimension is greater than the specified thumbnail size, the wxImage
 // will be scaled down (keeping its aspect ratio). If the wxImage is smaller,
