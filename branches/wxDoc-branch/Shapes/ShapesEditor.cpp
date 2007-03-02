@@ -51,7 +51,7 @@ BEGIN_EVENT_TABLE(ShapesEditor, wxFrame)
 	EVT_MENU(wxID_SAVE, ShapesEditor::MenuFileSave)
 	EVT_MENU(wxID_SAVEAS, ShapesEditor::MenuFileSave)
 	EVT_MENU(wxID_EXIT, ShapesEditor::MenuFileQuit)
-	EVT_MENU(wxID_DELETE, ShapesEditor::MenuEditDelete)*/
+	EVT_MENU(EDIT_MENU_DELETE, ShapesEditor::MenuEditDelete)*/
 	EVT_MENU_RANGE(VIEW_MENU_COLORTABLE_0, VIEW_MENU_COLORTABLE_7, ShapesEditor::MenuViewCT)
 	EVT_MENU_RANGE(VIEW_MENU_TNSIZE_SMALL, VIEW_MENU_TNSIZE_AUTO, ShapesEditor::MenuViewTNSize)
 	EVT_MENU(VIEW_MENU_TRANSPARENCY, ShapesEditor::MenuViewTransparency)
@@ -928,8 +928,8 @@ void ShapesEditor::TreeSelect(wxTreeEvent &e)
 			fb->Clear();
 			f_view->SetFrame(NULL);
 			f_view->SetBitmap(NULL);
-			edit_menu->SetLabel(wxID_DELETE, wxT("Delete"));
-			edit_menu->Enable(wxID_DELETE, false);
+			edit_menu->SetLabel(EDIT_MENU_DELETE, wxT("Delete"));
+			edit_menu->Enable(EDIT_MENU_DELETE, false);
 			for (int i = 0; i < ctmenucount; i++)
 				view_colortable_submenu->Enable(VIEW_MENU_COLORTABLE_0 + i, false);
 			shapes_menu->Enable(SHAPES_MENU_SAVECOLORTABLE, false);
@@ -1080,8 +1080,8 @@ void ShapesEditor::TreeSelect(wxTreeEvent &e)
 				s_fb->AddFrame(((ShapesDocument*)view->GetDocument())->GetFrame(selected_coll, selected_vers, i));
 			s_fb->SetSeqParameters(seq->NumberOfViews(), seq->FramesPerView(), &seq->mFrameIndexes);
 			s_fb->Thaw();
-			edit_menu->SetLabel(wxID_DELETE, wxT("Delete sequence"));
-			edit_menu->Enable(wxID_DELETE, true);
+			edit_menu->SetLabel(EDIT_MENU_DELETE, wxT("Delete sequence"));
+			edit_menu->Enable(EDIT_MENU_DELETE, true);
 			wxEndBusyCursor();
 		}
 
@@ -1136,8 +1136,8 @@ void ShapesEditor::BitmapSelect(wxCommandEvent &e)
 		b_view->SetBitmap(NULL);
 		b_outer_sizer->Show(b_count_label, true);
 		b_outer_sizer->Show(b_edit_box, false);
-		edit_menu->SetLabel(wxID_DELETE, wxT("Delete"));
-		edit_menu->Enable(wxID_DELETE, false);
+		edit_menu->SetLabel(EDIT_MENU_DELETE, wxT("Delete"));
+		edit_menu->Enable(EDIT_MENU_DELETE, false);
 	} else {
 		ShapesBitmap	*sel_bitmap = ((ShapesDocument*)view->GetDocument())->GetBitmap(selected_coll, selected_vers, selection);
 		
@@ -1158,8 +1158,8 @@ void ShapesEditor::BitmapSelect(wxCommandEvent &e)
 		b_view->SetBitmap(sel_bitmap);
 		b_outer_sizer->Show(b_count_label, false);
 		b_outer_sizer->Show(b_edit_box, true);
-		edit_menu->SetLabel(wxID_DELETE, wxT("Delete bitmap"));
-		edit_menu->Enable(wxID_DELETE, true);
+		edit_menu->SetLabel(EDIT_MENU_DELETE, wxT("Delete bitmap"));
+		edit_menu->Enable(EDIT_MENU_DELETE, true);
 	}
 	b_outer_sizer->Layout();
 }
@@ -1219,14 +1219,14 @@ void ShapesEditor::CTSelect(wxCommandEvent &e)
 		// deselection
 		shapes_menu->Enable(SHAPES_MENU_SAVECOLORTABLE, false);
 		shapes_menu->Enable(SHAPES_MENU_SAVECOLORTABLETOPS, false);
-		edit_menu->SetLabel(wxID_DELETE, wxT("Delete"));
-		edit_menu->Enable(wxID_DELETE, false);
+		edit_menu->SetLabel(EDIT_MENU_DELETE, wxT("Delete"));
+		edit_menu->Enable(EDIT_MENU_DELETE, false);
 	} else {
 		// selection
 		shapes_menu->Enable(SHAPES_MENU_SAVECOLORTABLE, true);
 		shapes_menu->Enable(SHAPES_MENU_SAVECOLORTABLETOPS, true);
-		edit_menu->SetLabel(wxID_DELETE, wxT("Delete color table"));
-		edit_menu->Enable(wxID_DELETE, true);
+		edit_menu->SetLabel(EDIT_MENU_DELETE, wxT("Delete color table"));
+		edit_menu->Enable(EDIT_MENU_DELETE, true);
 	}
 }
 
@@ -1240,8 +1240,8 @@ void ShapesEditor::FrameSelect(wxCommandEvent &e)
 		f_view->SetBitmap(NULL);
 		f_outer_sizer->Show(f_count_label, true);
 		f_outer_sizer->Show(f_edit_box, false);
-		edit_menu->SetLabel(wxID_DELETE, wxT("Delete"));
-		edit_menu->Enable(wxID_DELETE, false);
+		edit_menu->SetLabel(EDIT_MENU_DELETE, wxT("Delete"));
+		edit_menu->Enable(EDIT_MENU_DELETE, false);
 	} else {
 		ShapesFrame	*sel_frame = ((ShapesDocument*)view->GetDocument())->GetFrame(selected_coll, selected_vers, selection);
 		ShapesBitmap	*assoc_bitmap = NULL;
@@ -1268,8 +1268,8 @@ void ShapesEditor::FrameSelect(wxCommandEvent &e)
 		f_mli_field->SetValue(INT_TO_WXSTRING((int)(sel_frame->MinimumLightIntensity() * 100.0)));
 		f_outer_sizer->Show(f_count_label, false);
 		f_outer_sizer->Show(f_edit_box, true);
-		edit_menu->SetLabel(wxID_DELETE, wxT("Delete frame"));
-		edit_menu->Enable(wxID_DELETE, true);
+		edit_menu->SetLabel(EDIT_MENU_DELETE, wxT("Delete frame"));
+		edit_menu->Enable(EDIT_MENU_DELETE, true);
 	}
 	f_outer_sizer->Layout();
 }

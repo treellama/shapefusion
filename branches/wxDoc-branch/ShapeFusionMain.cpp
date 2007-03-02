@@ -50,7 +50,7 @@ void ShapeFusionMain::OnAbout(wxCommandEvent& WXUNUSED(event))
 
 void ShapeFusionMain::OnMenuHistory(wxCommandEvent& event)
 {
-	wxString f(m_docManager->GetHistoryFile(event.GetId() - wxID_FILE1));
+	wxString f(m_docManager->GetHistoryFile(event.GetId() - FILE_HISTORY_FILE1));
 	if (!f.empty())
 		(void)m_docManager->CreateDocument(f, wxDOC_SILENT);
 }

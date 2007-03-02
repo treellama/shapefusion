@@ -70,13 +70,6 @@ private:
 
 	wxBoxSizer			*mainbox;
 	wxMenuBar			*menubar;
-	wxMenu				*file_menu,
-						*edit_menu,
-						*view_menu,
-						*view_colortable_submenu,
-						*view_tnsize_submenu,
-						*shapes_menu,
-						*help_menu;
 	wxTreeCtrl			*colltree;
 	wxBoxSizer			*dummy_sizer;
 	// widgets for collection info
@@ -188,7 +181,6 @@ private:
 	wxTextCtrl					*s_sf_field;
 	SequenceView		*s_fb;
 
-	wxString		filepath;
 	int				selected_coll,
 					selected_vers,
 					selected_sequence,
@@ -232,6 +224,7 @@ public:
 	void ToggleBitmapCheckboxes(wxCommandEvent &e);
 	void AskSaveBitmap(wxCommandEvent &e);
 	void FrameSelect(wxCommandEvent &e);
+	void FrameDelete(wxCommandEvent &e);
 	void BitmapIndexSpin(wxSpinEvent &e);
 	void ToggleFrameCheckboxes(wxCommandEvent &e);
 	void EditFrameFields(wxCommandEvent &e);

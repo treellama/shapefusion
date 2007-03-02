@@ -52,6 +52,16 @@ enum {
 	KEYPOINT_OBSCURED	= 1 << 13	// "host obscures parasite" (RenderPlaceObjs.cpp)
 };
 
+ShapesColor::ShapesColor(bool verbose) : ShapesElement(verbose)
+{
+
+}
+
+ShapesColor::~ShapesColor(void)
+{
+
+}
+
 BigEndianBuffer& ShapesColor::SaveObject(BigEndianBuffer& buffer)
 {
 	unsigned char	flags = (mLuminescent ? SELF_LUMINESCENT_COLOR : 0);
@@ -81,6 +91,18 @@ BigEndianBuffer& ShapesColor::LoadObject(BigEndianBuffer& buffer)
 	return buffer;
 }
 
+ShapesColorTable::ShapesColorTable(bool verbose) : ShapesElement(verbose)
+{
+
+}
+
+ShapesColorTable::~ShapesColorTable(void)
+{
+	unsigned int i;
+	for (i = 0; i < mColors.size(); i++)
+		delete mColors[i];
+}
+	
 BigEndianBuffer& ShapesColorTable::SaveObject(BigEndianBuffer& stream)
 {
 	for (unsigned int i = 0; i < mColors.size(); i++) {
@@ -105,6 +127,17 @@ BigEndianBuffer& ShapesColorTable::LoadObject(BigEndianBuffer& buffer, long offs
 	
 	mGoodData = true;
 	return buffer;
+}
+
+ShapesBitmap::ShapesBitmap(bool verbose) : ShapesElement(verbose)
+{
+	mPixels = NULL;
+}
+
+ShapesBitmap::~ShapesBitmap(void)
+{
+	if (mPixels)
+		delete mPixels;
 }
 
 unsigned int ShapesBitmap::SizeInFile(void) const
@@ -321,6 +354,11 @@ ShapesFrame::ShapesFrame(bool verbose) : ShapesElement(verbose)
 		mWorldX0 = mWorldY0 = 0;
 }
 
+ShapesFrame::~ShapesFrame(void)
+{
+
+}
+
 BigEndianBuffer& ShapesFrame::SaveObject(BigEndianBuffer& buffer)
 {
 	unsigned short	flags = 0;
@@ -420,6 +458,12 @@ ShapesSequence::ShapesSequence(bool verbose) : ShapesElement(verbose)
 	mFirstFrameSound = mKeyFrameSound = mLastFrameSound = -1;
 	mPixelsToWorld = 0;
 	mLoopFrame = 0;
+}
+
+
+ShapesSequence::~ShapesSequence(void)
+{
+
 }
 
 unsigned int ShapesSequence::SizeInFile() const
@@ -573,6 +617,27 @@ enum {
 	_interface_collection,	// plain
 	_scenery_collection		// RLE
 };
+
+ShapesChunk::ShapesChunk(bool verbose) : ShapesElement(verbose)
+{
+	
+}
+
+ShapesChunk::~ShapesChunk(void)
+{
+	unsigned int i;
+	for (i = 0; i < mColorTables.size(); i++)
+		delete mColorTables[i];
+		
+	for (i = 0; i < mSequences.size(); i++)
+		delete mSequences[i];
+		
+	for (i = 0; i < mFrames.size(); i++)
+		delete mFrames[i];
+		
+	for (i = 0; i < mBitmaps.size(); i++)
+		delete mBitmaps[i];
+}
 
 ShapesColorTable* ShapesChunk::GetColorTable(unsigned int index) const
 {

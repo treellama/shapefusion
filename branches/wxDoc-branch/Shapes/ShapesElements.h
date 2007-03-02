@@ -61,8 +61,8 @@ private:
 public:
 
 	// Constructor / Destructor
-	ShapesColor(bool verbose = false) : ShapesElement(verbose) {}
-	~ShapesColor(void) {}
+	ShapesColor(bool verbose = false);
+	~ShapesColor(void);
 	
 	// Accessors
 	bool Luminescent(void) const {return mLuminescent;}
@@ -83,8 +83,8 @@ private:
 	
 public:
 
-	ShapesColorTable(bool verbose = false) : ShapesElement(verbose) {}
-	~ShapesColorTable(void) {}
+	ShapesColorTable(bool verbose = false);
+	~ShapesColorTable(void);
 
 	int ColorCount(void) const {return mColors.size();}
 	ShapesColor *GetColor(unsigned int index) const {return mColors[index];}
@@ -112,8 +112,8 @@ private:
 public:
 
 	// Constructor / Destructor
-	ShapesBitmap(bool verbose = false) : ShapesElement(verbose) {}
-	~ShapesBitmap(void) {}
+	ShapesBitmap(bool verbose = false);
+	~ShapesBitmap(void);
 
 	// Accessors
 	short Width(void) const {return mWidth;}
@@ -173,7 +173,7 @@ public:
 		
 	// Constructor / Destructor
 	ShapesFrame(bool verbose = false);
-	~ShapesFrame(void) {}
+	~ShapesFrame(void);
 	
 	// Accessors
 	bool IsXmirrored(void) const {return mXmirror;}
@@ -259,7 +259,7 @@ public:
 
 	// Constructor / Destructor
 	ShapesSequence(bool verbose = false);
-	~ShapesSequence(void) {}
+	~ShapesSequence(void);
 	
 	// Accessors
 	short Type(void) const {return mType;}
@@ -323,8 +323,8 @@ private:
 public:
 
 	// Constructor / Destructor
-	ShapesChunk(bool verbose = false) : ShapesElement(verbose) {}
-	~ShapesChunk(void) {}
+	ShapesChunk(bool verbose = false);
+	~ShapesChunk(void);
 	
 	// Chunk Data access
 	int Version() const {return mVersion;}
