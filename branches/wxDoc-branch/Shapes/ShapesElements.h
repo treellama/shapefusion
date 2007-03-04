@@ -19,9 +19,13 @@
 #ifndef SHAPESLOADERS_H
 #define SHAPESLOADERS_H
 
+#include "wx/wxprec.h"
+#ifndef WX_PRECOMP
+    #include "wx/wx.h"
+#endif
 #include <vector>
 using std::vector;
-#include "BigEndianBuffer.h"
+#include "../BigEndianBuffer.h"
 
 #define COLLECTIONS_PER_FILE				32
 
@@ -410,3 +414,4 @@ public:
 };
 
 #endif
+

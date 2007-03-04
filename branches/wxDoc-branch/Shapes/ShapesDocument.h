@@ -70,8 +70,8 @@ public:
 	void DeleteSequence(unsigned int coll, unsigned int chunk, unsigned int s);
 	
 #if wxUSE_STD_IOSTREAM
-    wxSTD ostream& SaveObject(wxSTD ostream& text_stream);
-    wxSTD istream& LoadObject(wxSTD istream& text_stream);
+    wxSTD ostream& SaveObject(wxSTD ostream& stream);
+    wxSTD istream& LoadObject(wxSTD istream& stream);
 #else
     wxOutputStream& SaveObject(wxOutputStream& stream);
     wxInputStream& LoadObject(wxInputStream& stream);

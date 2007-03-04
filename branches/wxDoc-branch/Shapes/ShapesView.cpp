@@ -408,12 +408,12 @@ bool ShapesView::OnCreate(wxDocument *doc, long WXUNUSED(flags) )
 
 void ShapesView::OnDraw(wxDC *WXUNUSED(dc) )
 {
-	wxLogDebug("Got OnDraw();");
+	wxLogDebug(wxT("Got OnDraw();"));
 }
 
 void ShapesView::OnUpdate(wxView *WXUNUSED(sender), wxObject *WXUNUSED(hint) )
 {
-	wxLogDebug("Got OnUpdate();");
+	wxLogDebug(wxT("Got OnUpdate();"));
 	// update all levels of the tree control
 	
 	for (unsigned int i = 0; i < COLLECTIONS_PER_FILE; i++) {

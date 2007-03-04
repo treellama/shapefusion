@@ -262,15 +262,15 @@ BigEndianBuffer& ShapesBitmap::LoadObject(BigEndianBuffer& buffer, long offset)
 	mBytesPerRow = buffer.ReadShort();
 	
 	if (mWidth < 0) {
-		wxLogError("[ShapesBitmap] Invalid bitmap mWidth");
+		wxLogError(wxT("[ShapesBitmap] Invalid bitmap mWidth"));
 		return buffer;
 	}
 	if (mHeight < 0) {
-		wxLogError("[ShapesBitmap] Invalid bitmap mHeight");
+		wxLogError(wxT("[ShapesBitmap] Invalid bitmap mHeight"));
 		return buffer;
 	}
 	if (mBytesPerRow < -1) {
-		wxLogError("[ShapesBitmap] Invalid bitmap bytes-per-row");
+		wxLogError(wxT("[ShapesBitmap] Invalid bitmap bytes-per-row"));
 		return buffer;
 	}
 	
@@ -283,16 +283,16 @@ BigEndianBuffer& ShapesBitmap::LoadObject(BigEndianBuffer& buffer, long offset)
 	
 	mBitDepth = buffer.ReadShort();
 	if (mBitDepth != 8) {
-		wxLogError("[ShapesBitmap] Invalid bitmap depth %d", mBitDepth);
+		wxLogError(wxT("[ShapesBitmap] Invalid bitmap depth %d"), mBitDepth);
 		return buffer;
 	}
 
 	if (IsVerbose()) {
-		wxLogDebug("[ShapesBitmap]         Width:		%d", mWidth);
-		wxLogDebug("[ShapesBitmap]         Height:		%d", mHeight);
-		wxLogDebug("[ShapesBitmap]         Bytes/Row:	%d", mBytesPerRow);
-		wxLogDebug("[ShapesBitmap]         Flags:		%d", flags);
-		wxLogDebug("[ShapesBitmap]         Bit Depth:	%d", mBitDepth);
+		wxLogDebug(wxT("[ShapesBitmap]         Width:		%d"), mWidth);
+		wxLogDebug(wxT("[ShapesBitmap]         Height:		%d"), mHeight);
+		wxLogDebug(wxT("[ShapesBitmap]         Bytes/Row:	%d"), mBytesPerRow);
+		wxLogDebug(wxT("[ShapesBitmap]         Flags:		%d"), flags);
+		wxLogDebug(wxT("[ShapesBitmap]         Bit Depth:	%d"), mBitDepth);
 	}
 
 	
@@ -344,14 +344,14 @@ BigEndianBuffer& ShapesBitmap::LoadObject(BigEndianBuffer& buffer, long offset)
 
 ShapesFrame::ShapesFrame(bool verbose) : ShapesElement(verbose)
 {
-		// initialize values to something reasonable
-		mBitmapIndex = -1;
-		mXmirror = mYmirror = mKeypointObscured = false;
-		mMinimumLightIntensity = 0;
-		mOriginX = mOriginY = mKeyX = mKeyX = 0;
-		mScaleFactor = 0;
-		mWorldLeft = mWorldRight = mWorldTop = mWorldBottom = 0;
-		mWorldX0 = mWorldY0 = 0;
+	// initialize values to something reasonable
+	mBitmapIndex = -1;
+	mXmirror = mYmirror = mKeypointObscured = false;
+	mMinimumLightIntensity = 0;
+	mOriginX = mOriginY = mKeyX = mKeyX = 0;
+	mScaleFactor = 0;
+	mWorldLeft = mWorldRight = mWorldTop = mWorldBottom = 0;
+	mWorldX0 = mWorldY0 = 0;
 }
 
 ShapesFrame::~ShapesFrame(void)
@@ -424,19 +424,19 @@ BigEndianBuffer& ShapesFrame::LoadObject(BigEndianBuffer& buffer, long offset)
 	mWorldY0 = buffer.ReadShort();
 	
 	if (IsVerbose()) {
-		wxLogDebug("[ShapesFrame]         Flags:			%d", flags);
-		wxLogDebug("[ShapesFrame]         Min. Light Intensity:	%f", mMinimumLightIntensity);
-		wxLogDebug("[ShapesFrame]         Bitmap Index:	%d", mBitmapIndex);
-		wxLogDebug("[ShapesFrame]         Origin (X):		%d", mOriginX);
-		wxLogDebug("[ShapesFrame]         Origin (Y):		%d", mOriginY);
-		wxLogDebug("[ShapesFrame]         Key (X):		%d", mKeyX);
-		wxLogDebug("[ShapesFrame]         Key (Y):		%d", mKeyY);
-		wxLogDebug("[ShapesFrame]         World (Left):	%d", mWorldLeft);
-		wxLogDebug("[ShapesFrame]         World (Right):	%d", mWorldRight);
-		wxLogDebug("[ShapesFrame]         World (Top):	%d", mWorldTop);
-		wxLogDebug("[ShapesFrame]         World (Bottom):	%d", mWorldBottom);
-		wxLogDebug("[ShapesFrame]         World (X0):		%d", mWorldX0);
-		wxLogDebug("[ShapesFrame]         World (Y0):		%d", mWorldY0);
+		wxLogDebug(wxT("[ShapesFrame]         Flags:			%d"), flags);
+		wxLogDebug(wxT("[ShapesFrame]         Min. Light Intensity:	%f"), mMinimumLightIntensity);
+		wxLogDebug(wxT("[ShapesFrame]         Bitmap Index:	%d"), mBitmapIndex);
+		wxLogDebug(wxT("[ShapesFrame]         Origin (X):		%d"), mOriginX);
+		wxLogDebug(wxT("[ShapesFrame]         Origin (Y):		%d"), mOriginY);
+		wxLogDebug(wxT("[ShapesFrame]         Key (X):		%d"), mKeyX);
+		wxLogDebug(wxT("[ShapesFrame]         Key (Y):		%d"), mKeyY);
+		wxLogDebug(wxT("[ShapesFrame]         World (Left):	%d"), mWorldLeft);
+		wxLogDebug(wxT("[ShapesFrame]         World (Right):	%d"), mWorldRight);
+		wxLogDebug(wxT("[ShapesFrame]         World (Top):	%d"), mWorldTop);
+		wxLogDebug(wxT("[ShapesFrame]         World (Bottom):	%d"), mWorldBottom);
+		wxLogDebug(wxT("[ShapesFrame]         World (X0):		%d"), mWorldX0);
+		wxLogDebug(wxT("[ShapesFrame]         World (Y0):		%d"), mWorldY0);
 	}
 
 	mGoodData = true;
@@ -479,11 +479,13 @@ unsigned int ShapesSequence::SizeInFile() const
 
 BigEndianBuffer& ShapesSequence::SaveObject(BigEndianBuffer& buffer)
 {
+	wxCSConv	seqnameconv(wxT("macintosh"));
+
 	buffer.WriteShort(mType);
 	buffer.WriteUShort(mFlags);
 	buffer.WriteChar(mName.Length());
 	//XXX: Convert this correctly
-	buffer.WriteBlock(33, (unsigned char *)mName.mb_str(wxCSConv(_T(""))));
+	buffer.WriteBlock(33, mName.mb_str(seqnameconv));
 	buffer.WriteShort(mNumberOfViews);
 	buffer.WriteShort(mFramesPerView);
 	buffer.WriteShort(mTicksPerFrame);
@@ -505,7 +507,8 @@ BigEndianBuffer& ShapesSequence::SaveObject(BigEndianBuffer& buffer)
 
 BigEndianBuffer& ShapesSequence::LoadObject(BigEndianBuffer& buffer, long offset)
 {
-	short namelen;
+	short		namelen;
+	wxCSConv	seqnameconv(wxT("macintosh"));
 	
 	buffer.Position(offset);
 	mType = buffer.ReadShort();
@@ -516,7 +519,7 @@ BigEndianBuffer& ShapesSequence::LoadObject(BigEndianBuffer& buffer, long offset
 	
 	if (namelen > 33)
 	{
-		wxLogError("[ShapesSequence] error in loading sequence mName : mName too long (%d/32)", namelen);
+		wxLogError(wxT("[ShapesSequence] error in loading sequence mName : mName too long (%d/32)"), namelen);
 		return buffer;
 	}
 	
@@ -526,7 +529,7 @@ BigEndianBuffer& ShapesSequence::LoadObject(BigEndianBuffer& buffer, long offset
 		seqname[i] = buffer.ReadUChar();
 	}
 	//XXX: need to convert this appropriately
-	mName = wxString(seqname, wxCSConv(_T("")), namelen);
+	mName = wxString(seqname, seqnameconv, namelen);
 	
 	mNumberOfViews = buffer.ReadShort();
 	mFramesPerView = buffer.ReadShort();
@@ -541,25 +544,25 @@ BigEndianBuffer& ShapesSequence::LoadObject(BigEndianBuffer& buffer, long offset
 	mLoopFrame = buffer.ReadShort();
 	
 	if (IsVerbose()) {
-		wxLogDebug("[ShapesSequence]         Type:					%d", mType);
-		wxLogDebug("[ShapesSequence]         Flags:					%d", mFlags);
-		wxLogDebug("[ShapesSequence]         Name:					%s", mName.c_str());
-		wxLogDebug("[ShapesSequence]         Number of Views:		%d", mNumberOfViews);
-		wxLogDebug("[ShapesSequence]         Frames/Views:			%d", mFramesPerView);
-		wxLogDebug("[ShapesSequence]         Ticks/Frame:			%d", mTicksPerFrame);
-		wxLogDebug("[ShapesSequence]         Key Frame:				%d", mKeyFrame);
-		wxLogDebug("[ShapesSequence]         Transfer Mode:			%d", mTransferMode);
-		wxLogDebug("[ShapesSequence]         Transfer Mode Period:	%d", mTransferModePeriod);
-		wxLogDebug("[ShapesSequence]         First Frame Sound:		%d", mFirstFrameSound);
-		wxLogDebug("[ShapesSequence]         Key Frame Sound:		%d", mKeyFrameSound);
-		wxLogDebug("[ShapesSequence]         Last Frame Sound:		%d", mLastFrameSound);
-		wxLogDebug("[ShapesSequence]         Pixels to World:		%d", mPixelsToWorld);
-		wxLogDebug("[ShapesSequence]         Loop Frame:			%d", mLoopFrame);
+		wxLogDebug(wxT("[ShapesSequence]         Type:					%d"), mType);
+		wxLogDebug(wxT("[ShapesSequence]         Flags:					%d"), mFlags);
+		wxLogDebug(wxT("[ShapesSequence]         Name:					%s"), mName.c_str());
+		wxLogDebug(wxT("[ShapesSequence]         Number of Views:		%d"), mNumberOfViews);
+		wxLogDebug(wxT("[ShapesSequence]         Frames/Views:			%d"), mFramesPerView);
+		wxLogDebug(wxT("[ShapesSequence]         Ticks/Frame:			%d"), mTicksPerFrame);
+		wxLogDebug(wxT("[ShapesSequence]         Key Frame:				%d"), mKeyFrame);
+		wxLogDebug(wxT("[ShapesSequence]         Transfer Mode:			%d"), mTransferMode);
+		wxLogDebug(wxT("[ShapesSequence]         Transfer Mode Period:	%d"), mTransferModePeriod);
+		wxLogDebug(wxT("[ShapesSequence]         First Frame Sound:		%d"), mFirstFrameSound);
+		wxLogDebug(wxT("[ShapesSequence]         Key Frame Sound:		%d"), mKeyFrameSound);
+		wxLogDebug(wxT("[ShapesSequence]         Last Frame Sound:		%d"), mLastFrameSound);
+		wxLogDebug(wxT("[ShapesSequence]         Pixels to World:		%d"), mPixelsToWorld);
+		wxLogDebug(wxT("[ShapesSequence]         Loop Frame:			%d"), mLoopFrame);
 	}
 	
 	if (mNumberOfViews < 0 || mFramesPerView < 0 || mKeyFrame < 0 || mFirstFrameSound < -1 || mKeyFrameSound < -1 || mLastFrameSound < -1 || mLoopFrame < -1)
 	{
-		wxLogError("[ShapesSequence] error in loading sequence : incorrect value");
+		wxLogError(wxT("[ShapesSequence] error in loading sequence : incorrect value"));
 		return buffer;
 	}
 	
@@ -603,7 +606,7 @@ int ActualNumberOfViews(int t)
 		case ANIMATED_8:
 			return 8;
 		default:
-			wxLogError("[ShapesSequence] Unknown sequence mType %d, don't know the number of views", t);
+			wxLogError(wxT("[ShapesSequence] Unknown sequence mType %d, don't know the number of views"), t);
 			return t;
 	}
 	return -1;
@@ -898,12 +901,12 @@ BigEndianBuffer& ShapesChunk::LoadObject(BigEndianBuffer& buffer)
 	
 	// validate values
 	if (mVersion != COLLECTION_VERSION) {
-		wxLogError("[ShapesChunk] Unknown collection version %d", mVersion);
+		wxLogError(wxT("[ShapesChunk] Unknown collection version %d"), mVersion);
 		return buffer;
 	}
 	
 	if ((unsigned long)size != buffer.Size()) {
-		wxLogError("[ShapesChunk] Chunk size mismatch (%d/%d): this may not be a Marathon shapes file", size, buffer.Size());
+		wxLogError(wxT("[ShapesChunk] Chunk size mismatch (%d/%d): this may not be a Marathon shapes file"), size, buffer.Size());
 		return buffer;
 	}
 	if (color_table_offset < SIZEOF_collection_definition
@@ -914,22 +917,22 @@ BigEndianBuffer& ShapesChunk::LoadObject(BigEndianBuffer& buffer)
 		|| low_level_shape_offset_table_offset >= size
 		|| bitmap_offset_table_offset < SIZEOF_collection_definition
 		|| bitmap_offset_table_offset >= size) {
-		wxLogError("[ShapesChunk] Invalid offsets in collection definition: this may not be a Marathon shapes file");
+		wxLogError(wxT("[ShapesChunk] Invalid offsets in collection definition: this may not be a Marathon shapes file"));
 		return buffer;
 	}
 	if (color_count < 0 || clut_count < 0 || high_level_shape_count < 0 || low_level_shape_count < 0 || bitmap_count < 0) {
-		wxLogError("[ShapesChunk] Invalid object counts in collection definition: this may not be a Marathon shapes file");
+		wxLogError(wxT("[ShapesChunk] Invalid object counts in collection definition: this may not be a Marathon shapes file"));
 		return buffer;
 	}
 
 	if (IsVerbose()) {
-		wxLogDebug("[ShapesChunk]         Version: %d", mVersion);
-		wxLogDebug("[ShapesChunk]         Type:    %d", mType);
-		wxLogDebug("[ShapesChunk]         Flags:   %d", mFlags);
-		wxLogDebug("[ShapesChunk]         %d color tables, %d colors per table", clut_count, color_count);
-		wxLogDebug("[ShapesChunk]         %d sequences", high_level_shape_count);
-		wxLogDebug("[ShapesChunk]         %d frames", low_level_shape_count);
-		wxLogDebug("[ShapesChunk]         %d bitmaps", bitmap_count);
+		wxLogDebug(wxT("[ShapesChunk]         Version: %d"), mVersion);
+		wxLogDebug(wxT("[ShapesChunk]         Type:    %d"), mType);
+		wxLogDebug(wxT("[ShapesChunk]         Flags:   %d"), mFlags);
+		wxLogDebug(wxT("[ShapesChunk]         %d color tables, %d colors per table"), clut_count, color_count);
+		wxLogDebug(wxT("[ShapesChunk]         %d sequences"), high_level_shape_count);
+		wxLogDebug(wxT("[ShapesChunk]         %d frames"), low_level_shape_count);
+		wxLogDebug(wxT("[ShapesChunk]         %d bitmaps"), bitmap_count);
 	}
 	
 	
@@ -937,7 +940,7 @@ BigEndianBuffer& ShapesChunk::LoadObject(BigEndianBuffer& buffer)
 	for (i = 0; i < clut_count; i++) {
 		ShapesColorTable	*color_table = new ShapesColorTable(IsVerbose());
 		if (IsVerbose())
-			wxLogDebug("[ShapesChunk] Loading colortable %d/%d", i+1, clut_count);
+			wxLogDebug(wxT("[ShapesChunk] Loading colortable %d/%d"), i+1, clut_count);
 			
 		oldpos = buffer.Position();
 		
@@ -949,7 +952,7 @@ BigEndianBuffer& ShapesChunk::LoadObject(BigEndianBuffer& buffer)
 		if (color_table->IsGood())
 			mColorTables.push_back(color_table);
 		else
-			wxLogError("[ShapesChunk] Error loading colortable... Dropped");
+			wxLogError(wxT("[ShapesChunk] Error loading colortable... Dropped"));
 	}
 	
 	// load bitmaps, decoding compressed ones
@@ -961,13 +964,13 @@ BigEndianBuffer& ShapesChunk::LoadObject(BigEndianBuffer& buffer)
 		offset = buffer.ReadLong();
 		
 		if (offset < SIZEOF_collection_definition || offset >= size) {
-			wxLogError("[ShapesChunk] Invalid bitmap offset: this may not be a Marathon shapes file");
+			wxLogError(wxT("[ShapesChunk] Invalid bitmap offset: this may not be a Marathon shapes file"));
 			return buffer;
 		}
 		
 		bitmap = new ShapesBitmap(IsVerbose());
 		if (IsVerbose())
-			wxLogDebug("[ShapesChunk] Loading bitmap %d/%d", i+1, bitmap_count);
+			wxLogDebug(wxT("[ShapesChunk] Loading bitmap %d/%d"), i+1, bitmap_count);
 			
 		oldpos = buffer.Position();
 		
@@ -978,7 +981,7 @@ BigEndianBuffer& ShapesChunk::LoadObject(BigEndianBuffer& buffer)
 		if (bitmap->IsGood())
 			mBitmaps.push_back(bitmap);
 		else
-			wxLogError("[ShapesDocument] Error loading bitmap... Dropped");
+			wxLogError(wxT("[ShapesDocument] Error loading bitmap... Dropped"));
 		
 	}
 	
@@ -990,13 +993,13 @@ BigEndianBuffer& ShapesChunk::LoadObject(BigEndianBuffer& buffer)
 		offset = buffer.ReadLong();
 		
 		if (offset < SIZEOF_collection_definition || offset >= size) {
-			wxLogError("[ShapesChunk] Invalid sequence offset: this may not be a Marathon shapes file");
+			wxLogError(wxT("[ShapesChunk] Invalid sequence offset: this may not be a Marathon shapes file"));
 			return buffer;
 		}
 		
 		sequence = new ShapesSequence(IsVerbose());
 		if (IsVerbose())
-			wxLogDebug("[ShapesChunk] Loading sequence %d/%d", i+1, high_level_shape_count);
+			wxLogDebug(wxT("[ShapesChunk] Loading sequence %d/%d"), i+1, high_level_shape_count);
 		
 		oldpos = buffer.Position();
 		
@@ -1008,7 +1011,7 @@ BigEndianBuffer& ShapesChunk::LoadObject(BigEndianBuffer& buffer)
 		if (sequence->IsGood())
 			mSequences.push_back(sequence);
 		else
-			wxLogError("[ShapesDocument] Error loading sequence... Dropped");
+			wxLogError(wxT("[ShapesDocument] Error loading sequence... Dropped"));
 		
 	}
 	
@@ -1020,13 +1023,13 @@ BigEndianBuffer& ShapesChunk::LoadObject(BigEndianBuffer& buffer)
 		offset = buffer.ReadLong();
 		
 		if (offset < SIZEOF_collection_definition || offset >= size) {
-			wxLogError("[ShapesChunk] Invalid frame offset: this may not be a Marathon shapes file");
+			wxLogError(wxT("[ShapesChunk] Invalid frame offset: this may not be a Marathon shapes file"));
 			return buffer;
 		}
 		
 		frame = new ShapesFrame(IsVerbose());
 		if (IsVerbose())
-			wxLogDebug("[ShapesChunk] Loading frame %d/%d", i+1, low_level_shape_count);
+			wxLogDebug(wxT("[ShapesChunk] Loading frame %d/%d"), i+1, low_level_shape_count);
 		
 		oldpos = buffer.Position();
 		
@@ -1051,7 +1054,7 @@ BigEndianBuffer& ShapesChunk::LoadObject(BigEndianBuffer& buffer)
 		if (frame->IsGood())
 			mFrames.push_back(frame);
 		else
-			wxLogError("[ShapesDocument] Error loading frame... Dropped");
+			wxLogError(wxT("[ShapesDocument] Error loading frame... Dropped"));
 		
 	}
 	
@@ -1233,7 +1236,11 @@ wxOutputStream& ShapesCollection::SaveObject(wxOutputStream& stream)
 		{
 			BigEndianBuffer chunkbuffer(mChunks[i]->SizeInFile());
 			mChunks[i]->SaveObject(chunkbuffer);
+#if wxUSE_STD_IOSTREAM
+			stream.write((char *)chunkbuffer.Data(), chunkbuffer.Size());
+#else
 			stream.Write((char *)chunkbuffer.Data(), chunkbuffer.Size());
+#endif
 		}
 	}
 	return stream;
@@ -1247,9 +1254,19 @@ wxInputStream& ShapesCollection::LoadObject(wxInputStream& stream)
 {
 	BigEndianBuffer	coll_header(SIZEOF_collection_header);
 
+#if wxUSE_STD_IOSTREAM
+	stream.read((char *)coll_header.Data(), coll_header.Size());
+#else
 	stream.Read((char *)coll_header.Data(), coll_header.Size());
+#endif
 	
+#if wxUSE_STD_IOSTREAM
+	stream.seekg(0, std::ios::end);
+	wxInt32	filesize = stream.tellg();
+	stream.seekg(0, std::ios::beg);
+#else
 	wxInt32 filesize = stream.GetSize();
+#endif
 	
 	long		offset8, length8,
 				offset16, length16;
@@ -1264,38 +1281,43 @@ wxInputStream& ShapesCollection::LoadObject(wxInputStream& stream)
 	length16 = coll_header.ReadLong();
 	
 	if (offset8 < -1 || length8 < 0 || offset16 < -1 || length16 < 0) {
-		wxLogError("[ShapesCollection] Invalid collection header: incorrect offsets");
-		wxLogError("[ShapesCollection] Invalid collection header: this may not be a Marathon shapes file");
+		wxLogError(wxT("[ShapesCollection] Invalid collection header: incorrect offsets"));
+		wxLogError(wxT("[ShapesCollection] Invalid collection header: this may not be a Marathon shapes file"));
 		return stream;
 	}
 	
 	if ((offset8 + length8) > filesize) {
-		wxLogError("[ShapesCollection] Invalid collection header: 8 bit offsets out-of-bounds");
-		wxLogError("[ShapesCollection] Invalid collection header: this may not be a Marathon shapes file");
+		wxLogError(wxT("[ShapesCollection] Invalid collection header: 8 bit offsets out-of-bounds"));
+		wxLogError(wxT("[ShapesCollection] Invalid collection header: this may not be a Marathon shapes file"));
 		return stream;
 	}
 	
 	if ((offset16 + length16) > filesize) {
-		wxLogError("[ShapesCollection] Invalid collection header: 16 bit offsets out-of-bounds");
-		wxLogError("[ShapesCollection] Invalid collection header: this may not be a Marathon shapes file");
+		wxLogError(wxT("[ShapesCollection] Invalid collection header: 16 bit offsets out-of-bounds"));
+		wxLogError(wxT("[ShapesCollection] Invalid collection header: this may not be a Marathon shapes file"));
 		return stream;
 	}
 	
 	if (IsVerbose()) {
-		wxLogDebug("[ShapesCollection]     Status: %d", mStatus);
-		wxLogDebug("[ShapesCollection]     Flags:  %d", mFlags);
+		wxLogDebug(wxT("[ShapesCollection]     Status: %d"), mStatus);
+		wxLogDebug(wxT("[ShapesCollection]     Flags:  %d"), mFlags);
 	}
 	
 	// is there the 8-bit version?
 	if (offset8 != -1)
 	{
 		if (IsVerbose())
-			wxLogDebug("[ShapesCollection]     8-bit chunk present");
+			wxLogDebug(wxT("[ShapesCollection]     8-bit chunk present"));
 		
 		BigEndianBuffer chunkbuffer(length8);
 		
+#if wxUSE_STD_IOSTREAM
+		stream.seekg(offset8, std::ios::beg);
+		stream.read((char *)chunkbuffer.Data(), chunkbuffer.Size());
+#else
 		stream.SeekI(offset8, wxFromStart);
 		stream.Read((char *)chunkbuffer.Data(), chunkbuffer.Size());
+#endif
 		
 		ShapesChunk	*pc = new ShapesChunk(IsVerbose());
 		pc->LoadObject(chunkbuffer);
@@ -1303,18 +1325,23 @@ wxInputStream& ShapesCollection::LoadObject(wxInputStream& stream)
 		if (pc->IsGood())
 			mChunks[0] = pc;
 		else
-			wxLogError("[ShapesCollection] Error loading 8-bit chunk... Dropped");
+			wxLogError(wxT("[ShapesCollection] Error loading 8-bit chunk... Dropped"));
 	}
 	
 	// is there the 16-bit version?
 	if (offset16 != -1) {
 		if (IsVerbose())
-			wxLogDebug("[ShapesCollection]     16/32-bit chunk present");
+			wxLogDebug(wxT("[ShapesCollection]     16/32-bit chunk present"));
 		
 		BigEndianBuffer chunkbuffer(length16);
 		
+#if wxUSE_STD_IOSTREAM
+		stream.seekg(offset16, std::ios::beg);
+		stream.read((char *)chunkbuffer.Data(), chunkbuffer.Size());
+#else
 		stream.SeekI(offset16, wxFromStart);
 		stream.Read((char *)chunkbuffer.Data(), chunkbuffer.Size());
+#endif
 		
 		ShapesChunk	*pc = new ShapesChunk(IsVerbose());
 		pc->LoadObject(chunkbuffer);
@@ -1322,9 +1349,10 @@ wxInputStream& ShapesCollection::LoadObject(wxInputStream& stream)
 		if (pc->IsGood())
 			mChunks[1] = pc;
 		else
-			wxLogError("[ShapesCollection] Error loading 16/32-bit chunk... Dropped");
+			wxLogError(wxT("[ShapesCollection] Error loading 16/32-bit chunk... Dropped"));
 	}
 	
 	mGoodData = true;
 	return stream;
 }
+

@@ -54,3 +54,4 @@ void ShapeFusionMain::OnMenuHistory(wxCommandEvent& event)
 	if (!f.empty())
 		(void)m_docManager->CreateDocument(f, wxDOC_SILENT);
 }
+

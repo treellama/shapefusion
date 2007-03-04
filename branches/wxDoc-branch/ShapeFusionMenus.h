@@ -87,3 +87,4 @@ void CreateHelpMenu(wxMenuBar *menu_bar);
 void CreateViewMenu(wxMenuBar *menu_bar);
 void CreateShapesMenu(wxMenuBar *menu_bar);
 #endif
+

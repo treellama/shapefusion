@@ -97,7 +97,7 @@ BEGIN_EVENT_TABLE(ShapesEditor, wxFrame)
 	EVT_TEXT(FIELD_SEQ_SCALE_FACTOR, ShapesEditor::EditSequenceFields)
 END_EVENT_TABLE()
 
-char	*collnames[] = {	"Interface graphics",
+/*char	*collnames[] = {	"Interface graphics",
 							"Weapons in hand",
 							"Juggernaut",
 							"Tick",
@@ -128,7 +128,7 @@ char	*collnames[] = {	"Interface graphics",
 							"Landscape 2",
 							"Landscape 3",
 							"Landscape 4",
-							"Cyborg" };
+							"Cyborg" };*/
 
 ShapesEditor::ShapesEditor(wxView *v, wxFrame *frame, wxPoint pos, wxSize size):
 		wxFrame(frame, wxID_ANY, wxT(""), pos, size, wxDEFAULT_FRAME_STYLE, wxT("shapefusion")),

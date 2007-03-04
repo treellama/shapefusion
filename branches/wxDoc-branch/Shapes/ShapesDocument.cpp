@@ -196,7 +196,11 @@ wxOutputStream& ShapesDocument::SaveObject(wxOutputStream& stream)
 			}
 			raw_headers.WriteZeroes(12);
 		}
+#if wxUSE_STD_IOSTREAM
+		stream.write((char *)raw_headers.Data(), raw_headers.Size());
+#else
 		stream.Write((char *)raw_headers.Data(), raw_headers.Size());
+#endif
 	}
 	
 	for (unsigned int i = 0; i < COLLECTIONS_PER_FILE; i++) {
@@ -207,7 +211,7 @@ wxOutputStream& ShapesDocument::SaveObject(wxOutputStream& stream)
 }
 
 #if wxUSE_STD_IOSTREAM
-wxSTD istream& ShapesDocument::LoadObject(wxSTD istream& data_stream)
+wxSTD istream& ShapesDocument::LoadObject(wxSTD istream& stream)
 #else
 wxInputStream& ShapesDocument::LoadObject(wxInputStream& stream)
 #endif
@@ -218,17 +222,20 @@ wxInputStream& ShapesDocument::LoadObject(wxInputStream& stream)
 		ShapesCollection	*c = new ShapesCollection(mVerboseLoading);
 		
 		if (mVerboseLoading)
-			wxLogDebug("[ShapesDocument] Loading collection %d", i);
+			wxLogDebug(wxT("[ShapesDocument] Loading collection %d"), i);
 		
+#if wxUSE_STD_IOSTREAM
+		stream.seekg(i * SIZEOF_collection_header, std::ios::beg);
+#else
 		stream.SeekI(i * SIZEOF_collection_header);
-		
+#endif
 		c->LoadObject(stream);
 		
 		// store if correct
 		if (c->IsGood())
 			mCollections.push_back(c);
 		else
-			wxLogError("[ShapesDocument] Error loading collection... Dropped");
+			wxLogError(wxT("[ShapesDocument] Error loading collection... Dropped"));
 		
 	}
 	mGoodData = true;

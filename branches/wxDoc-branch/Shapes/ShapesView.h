@@ -24,7 +24,7 @@
 #include "wx/spinctrl.h"
 #include "wx/statline.h"
 #include "ShapesEditor.h"
-#include "ShapeFusionMenus.h"
+#include "../ShapeFusionMenus.h"
 
 class ShapesView: public wxView
 {
