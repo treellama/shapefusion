@@ -640,34 +640,76 @@ void ShapesEditor::MenuFileQuit(wxCommandEvent &e)
 	Close(false);
 }
 
-// TODO
+// handle the Edit->Delete command (which is context-sensitive)
 void ShapesEditor::MenuEditDelete(wxCommandEvent &e)
 {
-	// delete selected color table, bitmap, frame or sequence
-	int	selection = bb->GetSelection();
+	wxTreeItemId	selected_item = colltree->GetSelection();
+	MyTreeItemData	*item_data = dynamic_cast<MyTreeItemData *>(colltree->GetItemData(selected_item));
 
-	if (selection > -1) {
-		// the user interface update should be nearly identical to the TreeSelect case
-		bb->Freeze();
-		bb->Clear();	// FIXME just remove THAT bitmap!
-		b_outer_sizer->Show(b_count_label, true);
-		b_outer_sizer->Show(b_edit_box, false);
-		b_view->SetBitmap(NULL);
-		payload->DeleteBitmap(selected_coll, selected_vers, selection);
+	if (item_data != NULL) {
+		int	selection;
 
-		unsigned int	bitmap_count = payload->CollBitmapCount(selected_coll, selected_vers);
+		// what should we delete?
+		switch (item_data->Section()) {
+			case TREESECTION_BITMAPS:
+				// delete selected bitmap if any
+				selection = bb->GetSelection();
+				if (selection > -1) {
+					// the user interface update should be nearly identical to the TreeSelect case
+					bb->Freeze();
+					bb->Clear();	// FIXME just remove THAT bitmap!
+					b_outer_sizer->Show(b_count_label, true);
+					b_outer_sizer->Show(b_edit_box, false);
+					b_view->SetBitmap(NULL);
+					payload->DeleteBitmap(selected_coll, selected_vers, selection);
 
-		for (unsigned int i = 0; i < bitmap_count; i++)
-			bb->AddBitmap(payload->GetBitmap(selected_coll, selected_vers, i));
-		bb->Thaw();
+					unsigned int	bitmap_count = payload->CollBitmapCount(selected_coll, selected_vers);
 
-		wxString	count_string;
+					for (unsigned int i = 0; i < bitmap_count; i++)
+						bb->AddBitmap(payload->GetBitmap(selected_coll, selected_vers, i));
+					bb->Thaw();
+
+					wxString	count_string;
 		
-		count_string << bitmap_count << wxT(" bitmap");
-		if (bitmap_count != 1)
-			count_string << wxT("s");
-		b_count_label->SetLabel(count_string);
-		Layout();
+					count_string << bitmap_count << wxT(" bitmap");
+					if (bitmap_count != 1)
+						count_string << wxT("s");
+					b_count_label->SetLabel(count_string);
+					Layout();
+				}
+				break;
+			case TREESECTION_FRAMES:
+				// delete selected frame if any
+				selection = fb->GetSelection();
+				if (selection > -1) {
+					fb->Freeze();
+					fb->Clear();    // FIXME just remove THAT frame
+					f_outer_sizer->Show(f_count_label, true);
+					f_outer_sizer->Show(f_edit_box, false);
+					f_view->SetFrame(NULL);
+					payload->DeleteFrame(selected_coll, selected_vers, selection);
+
+					unsigned int	frame_count = payload->CollFrameCount(selected_coll, selected_vers),
+									bitmap_count = payload->CollBitmapCount(selected_coll, selected_vers);
+
+					for (unsigned int i = 0; i < bitmap_count; i++)
+						fb->AddBitmap(payload->GetBitmap(selected_coll, selected_vers, i));
+					for (unsigned int i = 0; i < frame_count; i++)
+						fb->AddFrame(payload->GetFrame(selected_coll, selected_vers, i));
+					fb->Thaw();
+
+					wxString    count_string;
+
+					count_string << frame_count << wxT(" frame");
+					if (frame_count != 1)
+						count_string << wxT("s");
+					f_count_label->SetLabel(count_string);
+					Layout();
+				}
+				break;
+			case TREESECTION_SEQUENCES:
+				break;
+		}
 	}
 }
 
@@ -1211,11 +1253,15 @@ void ShapesEditor::TreeSelect(wxTreeEvent &e)
 		switch (new_section) {
 			case TREESECTION_COLLECTION:
 				mainbox->Show(coll_sizer, true);
+				edit_menu->SetLabel(wxID_DELETE, wxT("Delete"));
+				edit_menu->Enable(wxID_DELETE, false);
 				break;
 			case TREESECTION_VERSION:
 				mainbox->Show(chunk_sizer, true);
 				chunk_inner_box->Show(chunk_undef_label, !payload->CollDefined(selected_coll, selected_vers));
 				chunk_inner_box->Show(chunk_grid, payload->CollDefined(selected_coll, selected_vers));
+				edit_menu->SetLabel(wxID_DELETE, wxT("Delete"));
+				edit_menu->Enable(wxID_DELETE, false);
 				break;
 			case TREESECTION_BITMAPS:
 				mainbox->Show(b_outer_sizer, true);
@@ -1231,10 +1277,13 @@ void ShapesEditor::TreeSelect(wxTreeEvent &e)
 				f_outer_sizer->Show(f_count_label, fb->GetSelection() == -1);
 				break;
 			case TREESECTION_SEQUENCES:
-				if (selected_sequence > -1)
+				if (selected_sequence > -1) {
 					mainbox->Show(s_outer_sizer, true);
-				else
+				} else {
 					mainbox->Show(dummy_sizer, true);
+					edit_menu->SetLabel(wxID_DELETE, wxT("Delete"));
+					edit_menu->Enable(wxID_DELETE, false);
+				}
 				break;
 		}
 		mainbox->Layout();
