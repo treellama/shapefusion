@@ -18,7 +18,7 @@
 
 //
 // CTBrowser
-// Widget for displaying a list of ShpColorTable's. Each color table
+// Widget for displaying a list of ShapesColorTable's. Each color table
 // is show as a matrix of color samples. The width of each sample will
 // adjust to fit inside the available widget width, while the sample
 // height is fixed.
@@ -31,21 +31,19 @@
 #ifndef WX_PRECOMP
     #include "wx/wx.h"
 #endif
-#include <vector>
-#include "Shapes.h"
-using std::vector;
+#include "ShapesDocument.h"
 
 DECLARE_EVENT_TYPE(wxEVT_CTBROWSER, -1)
 
 class CTBrowser: public wxScrolledWindow {
 private:
-	vector<ShpColorTable *>	cts;				// array of pointers to color tables
-	unsigned int			colors_per_table;
-	wxCoord					sample_w, sample_h,	// size of color samples
-							margin;
-	wxPen					invisible_pen,
-							selection_pen;
-	int						selection;
+	vector<ShapesColorTable*>	cts;				// array of pointers to color tables
+	unsigned int				colors_per_table;
+	wxCoord						sample_w, sample_h,	// size of color samples
+								margin;
+	wxPen						invisible_pen,
+								selection_pen;
+	int							selection;
 
 	void UpdateVirtualSize(void);
 
@@ -59,7 +57,7 @@ public:
 	void OnMouseDown(wxMouseEvent& e);
 	void OnKeyDown(wxKeyEvent &e);
 
-	void AddColorTable(ShpColorTable *ctp);
+	void AddColorTable(ShapesColorTable *ctp);
 	void Clear(void);
 
 	int GetSelection(void) const;

@@ -15,31 +15,19 @@
  * along with ShapeFusion; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
-
-#ifndef SHAPEFUSIONAPP_H
-#define SHAPEFUSIONAPP_H
+#ifndef UTILITIES_H
+#define UTILITIES_H
 
 #include "wx/wxprec.h"
 #ifndef WX_PRECOMP
     #include "wx/wx.h"
 #endif
-#include "wx/docview.h"
-#include "ShapeFusionMain.h"
+#include "wx/image.h"
+#include "ShapesDocument.h"
 
-class ShapeFusionApp: public wxApp {
-public:
-    ShapeFusionApp(void);
-    bool OnInit(void);
-    int OnExit(void);
-    
-	wxFrame *CreateChildFrame(wxDocument *doc, wxView *view, const wxString title, wxPoint point, wxSize size);
-    
-protected:
-    wxDocManager* m_docManager;
-};
-
-DECLARE_APP(ShapeFusionApp);
-
-ShapeFusionMain *GetMainFrame(void);
+wxImage ShapesBitmapToImage(ShapesBitmap *bp, ShapesColorTable *ct, bool white_transparency);
+wxBitmap ImageThumbnail(wxImage &img, int tn_size, bool filtering);
+wxBitmap BadThumbnail(int tn_size);
+void RGB2HSV(float r, float g, float b, float *hue, float *sat, float *val);
 
 #endif

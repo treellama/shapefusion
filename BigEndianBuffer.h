@@ -56,7 +56,7 @@ public:
 	void WriteUShort(unsigned short v);
 	void WriteLong(long v);
 	void WriteULong(unsigned long v);
-	void WriteBlock(unsigned long _size, unsigned char *src);
+	void WriteBlock(unsigned long _size, const void *src);
 	void WriteZeroes(unsigned int n);
 	// stuff access
 	unsigned char *Data(void) const;

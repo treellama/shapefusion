@@ -16,48 +16,22 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-//
-// ShapesEditor
-// The main ShapeFusion window. Just lots of awful GUI code here.
-//
+#ifndef __TEXTVIEW_H__
+#define __TEXTVIEW_H__
 
-#ifndef SHAPESEDITOR_H
-#define SHAPESEDITOR_H
-
-#include "wx/wxprec.h"
-#ifndef WX_PRECOMP
-    #include "wx/wx.h"
-#endif
+#include "wx/docview.h"
 #include "wx/treectrl.h"
 #include "wx/spinctrl.h"
 #include "wx/statline.h"
-#include "Shapes.h"
-#include "BitmapBrowser.h"
-#include "BitmapView.h"
-#include "CTBrowser.h"
-#include "FrameBrowser.h"
-#include "FrameView.h"
-#include "SequenceView.h"
+#include "ShapesEditor.h"
+#include "../ShapeFusionMenus.h"
 
-class ShapesEditor: public wxFrame {
+class ShapesView: public wxView
+{
+    DECLARE_DYNAMIC_CLASS(ShapesView)
 private:
 	// control ids
 	enum {
-		// menus
-		MVIEW_COLOR_TABLE,
-		MVIEW_THUMBNAIL_SIZE,
-		MVIEW_TNSIZE_SMALL,
-		MVIEW_TNSIZE_MEDIUM,
-		MVIEW_TNSIZE_LARGE,
-		MVIEW_TNSIZE_AUTO,
-		MVIEW_TRANSPARENCY,
-		MSHAPES_ADDCOLORTABLE,
-		MSHAPES_SAVECOLORTABLE,
-		MSHAPES_SAVECOLORTABLETOPS,
-		MSHAPES_ADDBITMAP,
-		MSHAPES_EXPORTBITMAPS,
-		MSHAPES_ADDFRAME,
-		MSHAPES_ADDSEQUENCE,
 		// bitmaps
 		BITMAP_BROWSER,
 		CB_COLUMN_ORDER,
@@ -92,20 +66,10 @@ private:
 		FIELD_SEQ_KEY_FRAME_SND,
 		FIELD_SEQ_LAST_FRAME_SND,
 		FIELD_SEQ_SCALE_FACTOR,
-		// color table menus
-		MVIEW_COLORTABLE_0 = 100,
-		MVIEW_COLORTABLE_7 = 107
 	};
 
 	wxBoxSizer			*mainbox;
 	wxMenuBar			*menubar;
-	wxMenu				*file_menu,
-						*edit_menu,
-						*view_menu,
-						*view_colortable_submenu,
-						*view_tnsize_submenu,
-						*shapes_menu,
-						*help_menu;
 	wxTreeCtrl			*colltree;
 	wxBoxSizer			*dummy_sizer;
 	// widgets for collection info
@@ -217,23 +181,25 @@ private:
 	wxTextCtrl					*s_sf_field;
 	SequenceView		*s_fb;
 
-	// Mac-wxString charset converter, for sequence names
-	wxCSConv		seqnameconv;
-
-	wxString		filepath;
-	Shapes			*payload;
 	int				selected_coll,
 					selected_vers,
 					selected_sequence,
 					view_ct;
 	bool			show_transparent_pixels;
-
+    wxFrame			*frame;
+	
 protected:
 	DECLARE_EVENT_TABLE();
 
 public:
-	ShapesEditor(const wxChar *t, int x, int y, int w, int h);
-	~ShapesEditor(void);
+    
+    ShapesView();
+    ~ShapesView(void);
+    
+    bool OnCreate(wxDocument *doc, long flags);
+    void OnDraw(wxDC *dc);
+    void OnUpdate(wxView *sender, wxObject *hint = (wxObject *) NULL);
+    bool OnClose(bool deleteWindow = true);
 	wxTreeItemId GetSequencesTreeItem(unsigned int collection, unsigned int version) const;
 	// menu event callbacks
 	void MenuFileOpen(wxCommandEvent &e);
@@ -250,7 +216,6 @@ public:
 	void MenuShapesExportBitmaps(wxCommandEvent &e);
 	void MenuShapesNewFrame(wxCommandEvent &e);
 	void MenuShapesNewSequence(wxCommandEvent &e);
-	void MenuHelpAbout(wxCommandEvent &e);
 	// control callbacks
 	void TreeSelect(wxTreeEvent &e);
 	void BitmapSelect(wxCommandEvent &e);

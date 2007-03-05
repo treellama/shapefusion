@@ -198,7 +198,7 @@ void BigEndianBuffer::WriteULong(unsigned long v)
 	}
 }
 
-void BigEndianBuffer::WriteBlock(unsigned long _size, unsigned char *src)
+void BigEndianBuffer::WriteBlock(unsigned long _size, const void *src)
 {
 	if ((unsigned int)(position - data + _size - 1) < size) {
 		memcpy(position, src, _size);
@@ -242,3 +242,4 @@ unsigned int BigEndianBuffer::Position(void) const
 {
 	return position - data;
 }
+

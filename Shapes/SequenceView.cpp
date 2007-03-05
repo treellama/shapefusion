@@ -265,18 +265,18 @@ void SequenceView::SetTranspPixelsDisplay(bool show)
 	Refresh();
 }
 
-// add a new ShpFrame to the thumbnail list
-void SequenceView::AddFrame(ShpFrame *fp)
+// add a new ShapesFrame to the thumbnail list
+void SequenceView::AddFrame(ShapesFrame *fp)
 {
 	if (fp != NULL)
 		frames.push_back(fp);
 }
 
-// add a ShpBitmap to the bitmap pointer list. Call before adding frames!
-void SequenceView::AddBitmap(ShpBitmap *bp)
+// add a ShapesBitmap to the bitmap pointer list. Call before adding frames!
+void SequenceView::AddBitmap(ShapesBitmap *bp)
 {
 	if (bp != NULL) {
-		if (bp->pixels != NULL)
+		if (bp->Pixels() != NULL)
 			bitmaps.push_back(bp);
 		else
 			std::cerr << "SequenceView: someone tried to add a bitmap with NULL pixels\n";
@@ -289,7 +289,7 @@ void SequenceView::AddBitmap(ShpBitmap *bp)
 void SequenceView::SetSeqParameters(int animtype, int fpv, vector<short> *indexes)
 {
 	animation_type = animtype;
-	number_of_views = CalcActualNumberOfViews(animtype);
+	number_of_views = ActualNumberOfViews(animtype);
 	frames_per_view = fpv;
 	frame_indexes = indexes;
 	RebuildThumbnails();
@@ -310,7 +310,7 @@ void SequenceView::Clear(void)
 }
 
 // call before adding frames!
-void SequenceView::SetColorTable(ShpColorTable *ct)
+void SequenceView::SetColorTable(ShapesColorTable *ct)
 {
 	ctable = ct;
 	RebuildThumbnails();
@@ -349,14 +349,14 @@ void SequenceView::UpdateVirtualSize(void)
 			if (frame_index < 0 || frame_index >= (int)frames.size())
 				continue;
 
-			int	bitmap_index = frames[frame_index]->bitmap_index;
+			int	bitmap_index = frames[frame_index]->BitmapIndex();
 
 			if (bitmap_index < 0 || bitmap_index >= (int)bitmaps.size())
 				continue;
-			if (bitmaps[bitmap_index]->width > max_bitmap_dimension)
-				max_bitmap_dimension = bitmaps[bitmap_index]->width;
-			if (bitmaps[bitmap_index]->height > max_bitmap_dimension)
-				max_bitmap_dimension = bitmaps[bitmap_index]->height;
+			if (bitmaps[bitmap_index]->Width() > max_bitmap_dimension)
+				max_bitmap_dimension = bitmaps[bitmap_index]->Width();
+			if (bitmaps[bitmap_index]->Height() > max_bitmap_dimension)
+				max_bitmap_dimension = bitmaps[bitmap_index]->Height();
 		}
 		// start with a minimum size and increase it until overflow
 		for (new_tn_size = 2*margin; ; new_tn_size++) {
@@ -399,27 +399,27 @@ void SequenceView::UpdateVirtualSize(void)
 	}
 }
 
-// transform an ShpFrame to a wxBitmap thumbnail
-wxBitmap SequenceView::CreateThumbnail(ShpFrame *fp)
+// transform an ShapesFrame to a wxBitmap thumbnail
+wxBitmap SequenceView::CreateThumbnail(ShapesFrame *fp)
 {
-	if (fp->bitmap_index < 0 || fp->bitmap_index >= (int)bitmaps.size()) {
+	if (fp->BitmapIndex() < 0 || fp->BitmapIndex() >= (int)bitmaps.size()) {
 		// invalid or unset bitmap
 		// FIXME we are rebuilding this wxBitmap each time! Build it once
 		// and store it somewhere (rebuild upon tn_size change)
 		return BadThumbnail(tn_size);
 	} else {
 		// valid bitmap
-		ShpBitmap	*bp = bitmaps[fp->bitmap_index];
-		wxImage		newimg(bp->width, bp->height);
+		ShapesBitmap	*bp = bitmaps[fp->BitmapIndex()];
+		wxImage		newimg(bp->Width(), bp->Height());
 
 		// decode the bitmap to a wxImage
 		if (ctable)
-			newimg = ShpBitmapToImage(bp, ctable, white_transparency);
+			newimg = ShapesBitmapToImage(bp, ctable, white_transparency);
 
 		// apply frame transformations
-		if (fp->x_mirror)
+		if (fp->IsXmirrored())
 			newimg = newimg.Mirror(true);
-		if (fp->y_mirror)
+		if (fp->IsYmirrored())
 			newimg = newimg.Mirror(false);
 
 		// TODO apply transfer mode

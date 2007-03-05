@@ -39,6 +39,7 @@
 #include <string>
 #include "wx/image.h"
 #include "wx/progdlg.h"
+#include "ShapeFusionMenus.h"
 #include "ShapesEditor.h"
 #include "MyTreeItemData.h"
 #include "utilities.h"
@@ -46,21 +47,21 @@
 #define INT_TO_WXSTRING(a)	wxString::Format(wxT("%d"), a)
 
 BEGIN_EVENT_TABLE(ShapesEditor, wxFrame)
-	EVT_MENU(wxID_OPEN, ShapesEditor::MenuFileOpen)
+/*	EVT_MENU(wxID_OPEN, ShapesEditor::MenuFileOpen)
 	EVT_MENU(wxID_SAVE, ShapesEditor::MenuFileSave)
 	EVT_MENU(wxID_SAVEAS, ShapesEditor::MenuFileSave)
 	EVT_MENU(wxID_EXIT, ShapesEditor::MenuFileQuit)
-	EVT_MENU(wxID_DELETE, ShapesEditor::MenuEditDelete)
-	EVT_MENU_RANGE(MVIEW_COLORTABLE_0, MVIEW_COLORTABLE_7, ShapesEditor::MenuViewCT)
-	EVT_MENU_RANGE(MVIEW_TNSIZE_SMALL, MVIEW_TNSIZE_AUTO, ShapesEditor::MenuViewTNSize)
-	EVT_MENU(MVIEW_TRANSPARENCY, ShapesEditor::MenuViewTransparency)
-	EVT_MENU(MSHAPES_ADDCOLORTABLE, ShapesEditor::MenuShapesAddColorTable)
-	EVT_MENU(MSHAPES_SAVECOLORTABLE, ShapesEditor::MenuShapesSaveColorTable)
-	EVT_MENU(MSHAPES_SAVECOLORTABLETOPS, ShapesEditor::MenuShapesSaveColorTable)
-	EVT_MENU(MSHAPES_ADDBITMAP, ShapesEditor::MenuShapesAddBitmap)
-	EVT_MENU(MSHAPES_EXPORTBITMAPS, ShapesEditor::MenuShapesExportBitmaps)
-	EVT_MENU(MSHAPES_ADDFRAME, ShapesEditor::MenuShapesNewFrame)
-	EVT_MENU(MSHAPES_ADDSEQUENCE, ShapesEditor::MenuShapesNewSequence)
+	EVT_MENU(EDIT_MENU_DELETE, ShapesEditor::MenuEditDelete)*/
+	EVT_MENU_RANGE(VIEW_MENU_COLORTABLE_0, VIEW_MENU_COLORTABLE_7, ShapesEditor::MenuViewCT)
+	EVT_MENU_RANGE(VIEW_MENU_TNSIZE_SMALL, VIEW_MENU_TNSIZE_AUTO, ShapesEditor::MenuViewTNSize)
+	EVT_MENU(VIEW_MENU_TRANSPARENCY, ShapesEditor::MenuViewTransparency)
+	EVT_MENU(SHAPES_MENU_ADDCOLORTABLE, ShapesEditor::MenuShapesAddColorTable)
+	EVT_MENU(SHAPES_MENU_SAVECOLORTABLE, ShapesEditor::MenuShapesSaveColorTable)
+	EVT_MENU(SHAPES_MENU_SAVECOLORTABLETOPS, ShapesEditor::MenuShapesSaveColorTable)
+	EVT_MENU(SHAPES_MENU_ADDBITMAP, ShapesEditor::MenuShapesAddBitmap)
+	EVT_MENU(SHAPES_MENU_EXPORTBITMAPS, ShapesEditor::MenuShapesExportBitmaps)
+	EVT_MENU(SHAPES_MENU_ADDFRAME, ShapesEditor::MenuShapesNewFrame)
+	EVT_MENU(SHAPES_MENU_ADDSEQUENCE, ShapesEditor::MenuShapesNewSequence)
 	EVT_MENU(wxID_ABOUT, ShapesEditor::MenuHelpAbout)
 	EVT_TREE_SEL_CHANGED(-1, ShapesEditor::TreeSelect)
 	// bitmaps
@@ -72,7 +73,6 @@ BEGIN_EVENT_TABLE(ShapesEditor, wxFrame)
 	EVT_COMMAND(wxID_ANY, wxEVT_CTBROWSER, ShapesEditor::CTSelect)
 	// frames
 	EVT_COMMAND(FRAME_BROWSER, wxEVT_FRAMEBROWSER, ShapesEditor::FrameSelect)
-	EVT_COMMAND(FRAME_BROWSER, wxEVT_FRAMEBROWSER_DELETE, ShapesEditor::FrameDelete)
 	EVT_SPINCTRL(FIELD_BITMAP_INDEX, ShapesEditor::BitmapIndexSpin)
 	EVT_COMMAND_RANGE(CB_XMIRROR, CB_KEYPOINT, wxEVT_COMMAND_CHECKBOX_CLICKED, ShapesEditor::ToggleFrameCheckboxes)
 	EVT_TEXT(FIELD_ORIGIN_X, ShapesEditor::EditFrameFields)
@@ -97,7 +97,7 @@ BEGIN_EVENT_TABLE(ShapesEditor, wxFrame)
 	EVT_TEXT(FIELD_SEQ_SCALE_FACTOR, ShapesEditor::EditSequenceFields)
 END_EVENT_TABLE()
 
-char	*collnames[] = {	"Interface graphics",
+/*char	*collnames[] = {	"Interface graphics",
 							"Weapons in hand",
 							"Juggernaut",
 							"Tick",
@@ -128,18 +128,17 @@ char	*collnames[] = {	"Interface graphics",
 							"Landscape 2",
 							"Landscape 3",
 							"Landscape 4",
-							"Cyborg" };
+							"Cyborg" };*/
 
-ShapesEditor::ShapesEditor(const wxChar *t, int x, int y, int w, int h):
-		wxFrame(0, wxID_ANY, t, wxPoint(x, y), wxSize(w, h), wxDEFAULT_FRAME_STYLE, wxT("shapefusion")),
-		seqnameconv(wxT("macintosh")),
-		payload(NULL), selected_coll(-1), selected_vers(-1), selected_sequence(-1), view_ct(-1), show_transparent_pixels(false)
+ShapesEditor::ShapesEditor(wxView *v, wxFrame *frame, wxPoint pos, wxSize size):
+		wxFrame(frame, wxID_ANY, wxT(""), pos, size, wxDEFAULT_FRAME_STYLE, wxT("shapefusion")),
+		view(v), selected_coll(-1), selected_vers(-1), selected_sequence(-1), view_ct(-1), show_transparent_pixels(false)
 {
 	SetSizeHints(200, 200);
 
 	mainbox = new wxBoxSizer(wxHORIZONTAL);
 	// create the collection tree
-	colltree = new wxTreeCtrl(this, -1, wxDefaultPosition, wxDefaultSize, wxTR_DEFAULT_STYLE | wxTR_HIDE_ROOT);
+	colltree = new wxTreeCtrl(frame, -1, wxDefaultPosition, wxDefaultSize, wxTR_DEFAULT_STYLE | wxTR_HIDE_ROOT);
 	wxTreeItemId	treeroot = colltree->AddRoot(wxT("No file loaded"));
 	mainbox->Add(colltree, 2, wxEXPAND);
 	// empty space (e.g. what is displayed when selecting the Sequences node)
@@ -147,8 +146,8 @@ ShapesEditor::ShapesEditor(const wxChar *t, int x, int y, int w, int h):
 	mainbox->Add(dummy_sizer, 5, wxEXPAND);
 	// collection section
 	coll_sizer = new wxBoxSizer(wxVERTICAL);
-	coll_text = new wxStaticText(this, -1, wxT("Collection info"));
-	coll_static_box = new wxStaticBox(this, -1, wxT("Collection info"));
+	coll_text = new wxStaticText(frame, -1, wxT("Collection info"));
+	coll_static_box = new wxStaticBox(frame, -1, wxT("Collection info"));
 	coll_inner_box = new wxStaticBoxSizer(coll_static_box, wxVERTICAL);
 	coll_inner_box->Add(coll_text, 0, wxALL, 5);
 	coll_sizer->AddStretchSpacer();
@@ -158,25 +157,25 @@ ShapesEditor::ShapesEditor(const wxChar *t, int x, int y, int w, int h):
 	mainbox->Show(coll_sizer, false);
 	// chunk section
 	chunk_sizer = new wxBoxSizer(wxVERTICAL);
-	chunk_static_box = new wxStaticBox(this, -1, wxT("Version info"));
+	chunk_static_box = new wxStaticBox(frame, -1, wxT("Version info"));
 	chunk_inner_box = new wxStaticBoxSizer(chunk_static_box, wxVERTICAL);
-	chunk_undef_label = new wxStaticText(this, -1, wxT("Not defined"));
+	chunk_undef_label = new wxStaticText(frame, -1, wxT("Not defined"));
 	chunk_inner_box->Add(chunk_undef_label, 0, wxCENTER | wxALL, 5);
 	chunk_grid = new wxFlexGridSizer(2, 4);
 	chunk_inner_box->Add(chunk_grid, 0, wxCENTER | wxALL, 5);
-	chunk_version_label = new wxStaticText(this, -1, wxT("Version:"));
-	chunk_type_label = new wxStaticText(this, -1, wxT("Collection type:"));
-	chunk_flags_label = new wxStaticText(this, -1, wxT("Flags:"));
-	chunk_sf_label = new wxStaticText(this, -1, wxT("Collection scale factor:"));
-	chunk_version_field = new wxTextCtrl(this, -1, wxT("0"));
+	chunk_version_label = new wxStaticText(frame, -1, wxT("Version:"));
+	chunk_type_label = new wxStaticText(frame, -1, wxT("Collection type:"));
+	chunk_flags_label = new wxStaticText(frame, -1, wxT("Flags:"));
+	chunk_sf_label = new wxStaticText(frame, -1, wxT("Collection scale factor:"));
+	chunk_version_field = new wxTextCtrl(frame, -1, wxT("0"));
 	wxString	coll_type_labels[] = {	wxT("Unused"),
 										wxT("Wall textures"),
 										wxT("Objects"),
 										wxT("Interface graphics"),
 										wxT("Scenery objects") };
-	chunk_type_menu = new wxChoice(this, -1, wxDefaultPosition, wxDefaultSize, 5, coll_type_labels, 0);
-	chunk_flags_field = new wxTextCtrl(this, -1, wxT("0"));
-	chunk_sf_field = new wxTextCtrl(this, -1, wxT("0"));
+	chunk_type_menu = new wxChoice(frame, -1, wxDefaultPosition, wxDefaultSize, 5, coll_type_labels, 0);
+	chunk_flags_field = new wxTextCtrl(frame, -1, wxT("0"));
+	chunk_sf_field = new wxTextCtrl(frame, -1, wxT("0"));
 	chunk_grid->Add(chunk_version_label, 0, wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL | wxRIGHT, 5);
 	chunk_grid->Add(chunk_version_field, 0, wxALIGN_LEFT);
 	chunk_grid->Add(chunk_type_label, 0, wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL | wxRIGHT, 5);
@@ -196,26 +195,26 @@ ShapesEditor::ShapesEditor(const wxChar *t, int x, int y, int w, int h):
 	mainbox->Show(chunk_sizer, false);
 	// create the color tables section
 	ct_outer_sizer = new wxBoxSizer(wxVERTICAL);
-	ctb = new CTBrowser(this);
-	ct_count_label = new wxStaticText(this, -1, wxT("N color tables"));
+	ctb = new CTBrowser(frame);
+	ct_count_label = new wxStaticText(frame, -1, wxT("N color tables"));
 	ct_outer_sizer->Add(ctb, 1, wxGROW);
 	ct_outer_sizer->Add(ct_count_label, 0, wxALIGN_LEFT | wxLEFT | wxTOP | wxBOTTOM, 10);
 	mainbox->Add(ct_outer_sizer, 5, wxEXPAND);
 	mainbox->Show(ct_outer_sizer, false);
 	// create the bitmaps section
 	b_outer_sizer = new wxBoxSizer(wxVERTICAL);
-	bb = new BitmapBrowser(this, BITMAP_BROWSER);
+	bb = new BitmapBrowser(frame, BITMAP_BROWSER);
 	bb->SetThumbnailSize(64);
-	b_count_label = new wxStaticText(this, -1, wxT("N bitmaps"));
-	b_edit_static_box = new wxStaticBox(this, -1, wxT("Bitmap N of M"));
+	b_count_label = new wxStaticText(frame, -1, wxT("N bitmaps"));
+	b_edit_static_box = new wxStaticBox(frame, -1, wxT("Bitmap N of M"));
 	b_edit_box = new wxStaticBoxSizer(b_edit_static_box, wxHORIZONTAL);
 	b_edit_inner_box = new wxBoxSizer(wxVERTICAL);
-	b_info_label = new wxStaticText(this, -1, wxT("AxB pixels"));
-	b_order_checkbox = new wxCheckBox(this, CB_COLUMN_ORDER, wxT("Store pixels in column order"));
-	b_transparency_checkbox = new wxCheckBox(this, CB_ENABLE_TRANSPARENCY, wxT("Enable transparency"));
-	b_view = new BitmapView(this);
-	b_save = new wxButton(this, BTN_SAVE_BITMAP, wxT("Save bitmap as..."));
-	b_replace = new wxButton(this, BTN_REPLACE_BITMAP, wxT("Replace bitmap..."));
+	b_info_label = new wxStaticText(frame, -1, wxT("AxB pixels"));
+	b_order_checkbox = new wxCheckBox(frame, CB_COLUMN_ORDER, wxT("Store pixels in column order"));
+	b_transparency_checkbox = new wxCheckBox(frame, CB_ENABLE_TRANSPARENCY, wxT("Enable transparency"));
+	b_view = new BitmapView(frame);
+	b_save = new wxButton(frame, BTN_SAVE_BITMAP, wxT("Save bitmap as..."));
+	b_replace = new wxButton(frame, BTN_REPLACE_BITMAP, wxT("Replace bitmap..."));
 	b_edit_inner_box->Add(b_info_label, 0, wxALIGN_LEFT | wxBOTTOM, 10);
 	b_edit_inner_box->Add(b_order_checkbox, 0, wxALIGN_LEFT);
 	b_edit_inner_box->Add(b_transparency_checkbox, 0, wxALIGN_LEFT);
@@ -232,29 +231,29 @@ ShapesEditor::ShapesEditor(const wxChar *t, int x, int y, int w, int h):
 	mainbox->Show(b_outer_sizer, false);
 	// create the frames section
 	f_outer_sizer = new wxBoxSizer(wxVERTICAL);
-	fb = new FrameBrowser(this, FRAME_BROWSER);
+	fb = new FrameBrowser(frame, FRAME_BROWSER);
 	fb->SetThumbnailSize(64);
-	f_count_label = new wxStaticText(this, -1, wxT("N frames"));
-	f_edit_static_box = new wxStaticBox(this, -1, wxT("Frame N"));
+	f_count_label = new wxStaticText(frame, -1, wxT("N frames"));
+	f_edit_static_box = new wxStaticBox(frame, -1, wxT("Frame N"));
 	f_edit_box = new wxStaticBoxSizer(f_edit_static_box, wxHORIZONTAL);
-	f_bitmap_label = new wxStaticText(this, -1, wxT("Associated bitmap:"));
-	f_bitmap_id = new wxSpinCtrl(this, FIELD_BITMAP_INDEX, wxT("0"), wxDefaultPosition, wxSize(60, -1));
-	f_xmirror_checkbox = new wxCheckBox(this, CB_XMIRROR, wxT("X mirror"));
+	f_bitmap_label = new wxStaticText(frame, -1, wxT("Associated bitmap:"));
+	f_bitmap_id = new wxSpinCtrl(frame, FIELD_BITMAP_INDEX, wxT("0"), wxDefaultPosition, wxSize(60, -1));
+	f_xmirror_checkbox = new wxCheckBox(frame, CB_XMIRROR, wxT("X mirror"));
 //	f_xmirror_checkbox->SetToolTip(wxT("Flip the bitmap horizontally"));
-	f_ymirror_checkbox = new wxCheckBox(this, CB_YMIRROR, wxT("Y mirror"));
-	f_keypoint_checkbox = new wxCheckBox(this, CB_KEYPOINT, wxT("Keypoint obscured"));
-	f_origin_x_label = new wxStaticText(this, -1, wxT("Origin X:"), wxDefaultPosition, wxSize(150, -1));
-	f_origin_x_field = new wxTextCtrl(this, FIELD_ORIGIN_X, wxT("0"), wxDefaultPosition, wxSize(60, -1));
-	f_origin_y_label = new wxStaticText(this, -1, wxT("Origin Y:"), wxDefaultPosition, wxSize(150, -1));
-	f_origin_y_field = new wxTextCtrl(this, FIELD_ORIGIN_Y, wxT("0"), wxDefaultPosition, wxSize(60, -1));
-	f_key_x_label = new wxStaticText(this, -1, wxT("Keypoint X:"), wxDefaultPosition, wxSize(150, -1));
-	f_key_x_field = new wxTextCtrl(this, FIELD_KEY_X, wxT("0"), wxDefaultPosition, wxSize(60, -1));
-	f_key_y_label = new wxStaticText(this, -1, wxT("Keypoint Y:"), wxDefaultPosition, wxSize(150, -1));
-	f_key_y_field = new wxTextCtrl(this, FIELD_KEY_Y, wxT("0"), wxDefaultPosition, wxSize(60, -1));
-	f_scalefactor_label = new wxStaticText(this, -1, wxT("Scale factor:"), wxDefaultPosition, wxSize(150, -1));
-	f_scalefactor_field = new wxTextCtrl(this, FIELD_FRAME_SCALEFACTOR, wxT("0"), wxDefaultPosition, wxSize(60, -1));
-	f_mli_label = new wxStaticText(this, -1, wxT("Minimum lightness (%):"), wxDefaultPosition, wxSize(150, -1));
-	f_mli_field = new wxTextCtrl(this, FIELD_MIN_LIGHT_INT, wxT("0"), wxDefaultPosition, wxSize(60, -1));
+	f_ymirror_checkbox = new wxCheckBox(frame, CB_YMIRROR, wxT("Y mirror"));
+	f_keypoint_checkbox = new wxCheckBox(frame, CB_KEYPOINT, wxT("Keypoint obscured"));
+	f_origin_x_label = new wxStaticText(frame, -1, wxT("Origin X:"), wxDefaultPosition, wxSize(150, -1));
+	f_origin_x_field = new wxTextCtrl(frame, FIELD_ORIGIN_X, wxT("0"), wxDefaultPosition, wxSize(60, -1));
+	f_origin_y_label = new wxStaticText(frame, -1, wxT("Origin Y:"), wxDefaultPosition, wxSize(150, -1));
+	f_origin_y_field = new wxTextCtrl(frame, FIELD_ORIGIN_Y, wxT("0"), wxDefaultPosition, wxSize(60, -1));
+	f_key_x_label = new wxStaticText(frame, -1, wxT("Keypoint X:"), wxDefaultPosition, wxSize(150, -1));
+	f_key_x_field = new wxTextCtrl(frame, FIELD_KEY_X, wxT("0"), wxDefaultPosition, wxSize(60, -1));
+	f_key_y_label = new wxStaticText(frame, -1, wxT("Keypoint Y:"), wxDefaultPosition, wxSize(150, -1));
+	f_key_y_field = new wxTextCtrl(frame, FIELD_KEY_Y, wxT("0"), wxDefaultPosition, wxSize(60, -1));
+	f_scalefactor_label = new wxStaticText(frame, -1, wxT("Scale factor:"), wxDefaultPosition, wxSize(150, -1));
+	f_scalefactor_field = new wxTextCtrl(frame, FIELD_FRAME_SCALEFACTOR, wxT("0"), wxDefaultPosition, wxSize(60, -1));
+	f_mli_label = new wxStaticText(frame, -1, wxT("Minimum lightness (%):"), wxDefaultPosition, wxSize(150, -1));
+	f_mli_field = new wxTextCtrl(frame, FIELD_MIN_LIGHT_INT, wxT("0"), wxDefaultPosition, wxSize(60, -1));
 	f_origin_box = new wxFlexGridSizer(10, 2, 5, 0);
 	f_origin_box->Add(f_bitmap_label, 1, wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
 	f_origin_box->Add(f_bitmap_id, 0, wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
@@ -276,7 +275,7 @@ ShapesEditor::ShapesEditor(const wxChar *t, int x, int y, int w, int h):
 	f_origin_box->AddStretchSpacer();
 	f_origin_box->Add(f_mli_label, 1, wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
 	f_origin_box->Add(f_mli_field, 0, wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
-	f_view = new FrameView(this);
+	f_view = new FrameView(frame);
 	f_edit_inner_box = new wxBoxSizer(wxVERTICAL);
 	f_edit_inner_box->Add(f_origin_box, 0, wxALIGN_LEFT);
 	f_edit_box->Add(f_edit_inner_box, 0, wxEXPAND | wxLEFT | wxRIGHT | wxTOP | wxBOTTOM, 5);
@@ -288,15 +287,15 @@ ShapesEditor::ShapesEditor(const wxChar *t, int x, int y, int w, int h):
 	mainbox->Add(f_outer_sizer, 5, wxEXPAND);
 	mainbox->Show(f_outer_sizer, false);
 	// create the sequences section
-	s_outer_static_box = new wxStaticBox(this, -1, wxT("Sequence"));
+	s_outer_static_box = new wxStaticBox(frame, -1, wxT("Sequence"));
 	s_outer_sizer = new wxStaticBoxSizer(s_outer_static_box, wxVERTICAL);
 	mainbox->Add(s_outer_sizer, 5, wxEXPAND | wxLEFT | wxRIGHT | wxTOP | wxBOTTOM, 10);
 
 	s_box1 = new wxBoxSizer(wxHORIZONTAL);
 	s_outer_sizer->Add(s_box1, 0, wxEXPAND | wxALIGN_TOP | wxALL, 5);
-	s_name_label = new wxStaticText(this, -1, wxT("Name:"));
-	s_name_field = new wxTextCtrl(this, FIELD_SEQ_NAME, wxT("foobar"));
-	s_delete_button = new wxButton(this, BTN_DELETE_SEQ, wxT("Delete sequence"));
+	s_name_label = new wxStaticText(frame, -1, wxT("Name:"));
+	s_name_field = new wxTextCtrl(frame, FIELD_SEQ_NAME, wxT("foobar"));
+	s_delete_button = new wxButton(frame, BTN_DELETE_SEQ, wxT("Delete sequence"));
 	s_box1->Add(s_name_label, 0, wxALIGN_CENTER | wxRIGHT, 5);
 	s_box1->Add(s_name_field, 1, wxALIGN_CENTER);
 	s_box1->Add(s_delete_button, 0, wxALIGN_CENTER | wxLEFT, 20);
@@ -305,21 +304,21 @@ ShapesEditor::ShapesEditor(const wxChar *t, int x, int y, int w, int h):
 	s_outer_sizer->Add(s_box2, 0, wxEXPAND | wxALIGN_TOP | wxALL, 5);
 	s_grid_box = new wxFlexGridSizer(5, 2, 4, 0);
 	s_box2->Add(s_grid_box, 0, wxEXPAND | wxALIGN_TOP);
-	s_type_label = new wxStaticText(this, -1, wxT("Sequence type:"), wxDefaultPosition, wxSize(120, -1));
+	s_type_label = new wxStaticText(frame, -1, wxT("Sequence type:"), wxDefaultPosition, wxSize(120, -1));
 	wxString	anim_type_labels[] = { wxT("Display a random frame"),
 										wxT("Animation with 1 view"),
 										wxT("Animation with 4 views"),
 										wxT("Animation with 5 views"),
 										wxT("Animation with 8 views") };
-	s_type_menu = new wxChoice(this, MENU_SEQ_TYPE, wxDefaultPosition, wxDefaultSize, 5, anim_type_labels, 0);
-	s_fpv_label = new wxStaticText(this, -1, wxT("Frames per view:"), wxDefaultPosition, wxSize(120, -1));
-	s_fpv_field = new wxTextCtrl(this, FIELD_SEQ_FRAMES_PER_VIEW, wxT("1"));
-	s_tpf_label = new wxStaticText(this, -1, wxT("Ticks per frame:"), wxDefaultPosition, wxSize(120, -1));
-	s_tpf_field = new wxTextCtrl(this, FIELD_SEQ_TICKS_PER_FRAME, wxT("1"));
-	s_lf_label = new wxStaticText(this, -1, wxT("Loop at frame:"), wxDefaultPosition, wxSize(120, -1));
-	s_lf_field = new wxTextCtrl(this, FIELD_SEQ_LOOP_FRAME, wxT("0"));
-	s_kf_label = new wxStaticText(this, -1, wxT("Key frame:"), wxDefaultPosition, wxSize(120, -1));
-	s_kf_field = new wxTextCtrl(this, FIELD_SEQ_KEY_FRAME, wxT("0"));
+	s_type_menu = new wxChoice(frame, MENU_SEQ_TYPE, wxDefaultPosition, wxDefaultSize, 5, anim_type_labels, 0);
+	s_fpv_label = new wxStaticText(frame, -1, wxT("Frames per view:"), wxDefaultPosition, wxSize(120, -1));
+	s_fpv_field = new wxTextCtrl(frame, FIELD_SEQ_FRAMES_PER_VIEW, wxT("1"));
+	s_tpf_label = new wxStaticText(frame, -1, wxT("Ticks per frame:"), wxDefaultPosition, wxSize(120, -1));
+	s_tpf_field = new wxTextCtrl(frame, FIELD_SEQ_TICKS_PER_FRAME, wxT("1"));
+	s_lf_label = new wxStaticText(frame, -1, wxT("Loop at frame:"), wxDefaultPosition, wxSize(120, -1));
+	s_lf_field = new wxTextCtrl(frame, FIELD_SEQ_LOOP_FRAME, wxT("0"));
+	s_kf_label = new wxStaticText(frame, -1, wxT("Key frame:"), wxDefaultPosition, wxSize(120, -1));
+	s_kf_field = new wxTextCtrl(frame, FIELD_SEQ_KEY_FRAME, wxT("0"));
 	s_grid_box->Add(s_type_label, 1, wxALIGN_CENTER_VERTICAL | wxALIGN_LEFT);
 	s_grid_box->Add(s_type_menu, 0, wxALIGN_CENTER_VERTICAL | wxALIGN_LEFT);
 	s_grid_box->Add(s_fpv_label, 1, wxALIGN_CENTER_VERTICAL | wxALIGN_LEFT);
@@ -331,12 +330,12 @@ ShapesEditor::ShapesEditor(const wxChar *t, int x, int y, int w, int h):
 	s_grid_box->Add(s_kf_label, 1, wxALIGN_CENTER_VERTICAL | wxALIGN_LEFT);
 	s_grid_box->Add(s_kf_field, 0, wxALIGN_CENTER_VERTICAL | wxALIGN_LEFT);
 
-	s_separator = new wxStaticLine(this, -1, wxDefaultPosition, wxDefaultSize, wxLI_VERTICAL);
+	s_separator = new wxStaticLine(frame, -1, wxDefaultPosition, wxDefaultSize, wxLI_VERTICAL);
 	s_box2->Add(s_separator, 1, wxEXPAND);
 
 	s_grid_box2 = new wxFlexGridSizer(6, 2, 4, 0);
 	s_box2->Add(s_grid_box2, 0, wxEXPAND | wxALIGN_TOP);
-	s_xfermode_label = new wxStaticText(this, -1, wxT("Transfer mode:"), wxDefaultPosition, wxSize(140, -1));
+	s_xfermode_label = new wxStaticText(frame, -1, wxT("Transfer mode:"), wxDefaultPosition, wxSize(140, -1));
 	wxString	xfermode_labels[] = {	wxT("Normal"),
 										wxT("Fade out to black"),
 										wxT("50% invisibility"),
@@ -360,17 +359,17 @@ ShapesEditor::ShapesEditor(const wxChar *t, int x, int y, int w, int h):
 										wxT("Fast wander"),
 										wxT("Big landscape")
 									};
-	s_xfermode_menu = new wxChoice(this, MENU_SEQ_XFER_MODE, wxDefaultPosition, wxDefaultSize, 22, xfermode_labels, 0);
-	s_xferperiod_label = new wxStaticText(this, -1, wxT("Transfer mode period:"), wxDefaultPosition, wxSize(150, -1));
-	s_xferperiod_field = new wxTextCtrl(this, FIELD_SEQ_XFER_MODE_PERIOD, wxT("1"));
-	s_ffs_label = new wxStaticText(this, -1, wxT("First frame sound:"), wxDefaultPosition, wxSize(150, -1));
-	s_ffs_field = new wxTextCtrl(this, FIELD_SEQ_FIRST_FRAME_SND, wxT("0"));
-	s_kfs_label = new wxStaticText(this, -1, wxT("Key frame sound:"), wxDefaultPosition, wxSize(150, -1));
-	s_kfs_field = new wxTextCtrl(this, FIELD_SEQ_KEY_FRAME_SND, wxT("0"));
-	s_lfs_label = new wxStaticText(this, -1, wxT("Last frame sound:"), wxDefaultPosition, wxSize(150, -1));
-	s_lfs_field = new wxTextCtrl(this, FIELD_SEQ_LAST_FRAME_SND, wxT("0"));
-	s_sf_label = new wxStaticText(this, -1, wxT("Shape scale factor:"), wxDefaultPosition, wxSize(150, -1));
-	s_sf_field = new wxTextCtrl(this, FIELD_SEQ_SCALE_FACTOR, wxT("1"));
+	s_xfermode_menu = new wxChoice(frame, MENU_SEQ_XFER_MODE, wxDefaultPosition, wxDefaultSize, 22, xfermode_labels, 0);
+	s_xferperiod_label = new wxStaticText(frame, -1, wxT("Transfer mode period:"), wxDefaultPosition, wxSize(150, -1));
+	s_xferperiod_field = new wxTextCtrl(frame, FIELD_SEQ_XFER_MODE_PERIOD, wxT("1"));
+	s_ffs_label = new wxStaticText(frame, -1, wxT("First frame sound:"), wxDefaultPosition, wxSize(150, -1));
+	s_ffs_field = new wxTextCtrl(frame, FIELD_SEQ_FIRST_FRAME_SND, wxT("0"));
+	s_kfs_label = new wxStaticText(frame, -1, wxT("Key frame sound:"), wxDefaultPosition, wxSize(150, -1));
+	s_kfs_field = new wxTextCtrl(frame, FIELD_SEQ_KEY_FRAME_SND, wxT("0"));
+	s_lfs_label = new wxStaticText(frame, -1, wxT("Last frame sound:"), wxDefaultPosition, wxSize(150, -1));
+	s_lfs_field = new wxTextCtrl(frame, FIELD_SEQ_LAST_FRAME_SND, wxT("0"));
+	s_sf_label = new wxStaticText(frame, -1, wxT("Shape scale factor:"), wxDefaultPosition, wxSize(150, -1));
+	s_sf_field = new wxTextCtrl(frame, FIELD_SEQ_SCALE_FACTOR, wxT("1"));
 	s_grid_box2->Add(s_xfermode_label, 1, wxALIGN_CENTER_VERTICAL | wxALIGN_LEFT | wxRIGHT, 5);
 	s_grid_box2->Add(s_xfermode_menu, 0, wxALIGN_CENTER_VERTICAL | wxALIGN_LEFT);
 	s_grid_box2->Add(s_xferperiod_label, 1, wxALIGN_CENTER_VERTICAL | wxALIGN_LEFT | wxRIGHT, 5);
@@ -384,84 +383,12 @@ ShapesEditor::ShapesEditor(const wxChar *t, int x, int y, int w, int h):
 	s_grid_box2->Add(s_sf_label, 1, wxALIGN_CENTER_VERTICAL | wxALIGN_LEFT);
 	s_grid_box2->Add(s_sf_field, 0, wxALIGN_CENTER_VERTICAL | wxALIGN_LEFT);
 
-	s_fb = new SequenceView(this, wxID_ANY);
+	s_fb = new SequenceView(frame, wxID_ANY);
 	s_outer_sizer->Add(s_fb, 1, wxEXPAND | wxALL, 5);
 	mainbox->Show(s_outer_sizer, false);
 	
 	mainbox->Layout();
-
-	// create the menu bar
-	menubar = new wxMenuBar();
-	// file menu
-	file_menu = new wxMenu();
-	file_menu->Append(wxID_OPEN, wxT("Open..."));
-	file_menu->AppendSeparator();
-	file_menu->Append(wxID_SAVE, wxT("Save"));
-	file_menu->Append(wxID_SAVEAS, wxT("Save as..."));
-	file_menu->AppendSeparator();
-	file_menu->Append(wxID_EXIT, wxT("Quit"));
-	file_menu->Enable(wxID_SAVE, false);
-	file_menu->Enable(wxID_SAVEAS, false);
-	// edit menu
-	edit_menu = new wxMenu();
-	edit_menu->Append(wxID_CUT, wxT("Cut"));
-	edit_menu->Append(wxID_COPY, wxT("Copy"));
-	edit_menu->Append(wxID_PASTE, wxT("Paste"));
-	edit_menu->AppendSeparator();
-	edit_menu->Append(wxID_DELETE, wxT("Delete"));
-	edit_menu->Enable(wxID_CUT, false);
-	edit_menu->Enable(wxID_COPY, false);
-	edit_menu->Enable(wxID_PASTE, false);
-	edit_menu->Enable(wxID_DELETE, false);
-	// view menu
-	view_menu = new wxMenu();
-	view_colortable_submenu = new wxMenu();
-	for (unsigned int i = 0; i < 8; i++) {
-		view_colortable_submenu->AppendRadioItem(MVIEW_COLORTABLE_0 + i, INT_TO_WXSTRING(i));
-		view_colortable_submenu->Enable(MVIEW_COLORTABLE_0 + i, false);
-	}
-	view_menu->Append(MVIEW_COLOR_TABLE, wxT("Use color table"), view_colortable_submenu);
-	view_tnsize_submenu = new wxMenu();
-	view_tnsize_submenu->AppendRadioItem(MVIEW_TNSIZE_SMALL, wxT("Small"));
-	view_tnsize_submenu->AppendRadioItem(MVIEW_TNSIZE_MEDIUM, wxT("Medium"));
-	view_tnsize_submenu->AppendRadioItem(MVIEW_TNSIZE_LARGE, wxT("Large"));
-	view_tnsize_submenu->AppendRadioItem(MVIEW_TNSIZE_AUTO, wxT("Best fit"));
-	for (unsigned int i = MVIEW_TNSIZE_SMALL; i <= MVIEW_TNSIZE_AUTO; i++)
-		view_tnsize_submenu->Check(i, i == MVIEW_TNSIZE_MEDIUM);
-	view_menu->Append(MVIEW_COLOR_TABLE, wxT("Thumbnail size"), view_tnsize_submenu);
-	view_menu->AppendCheckItem(MVIEW_TRANSPARENCY, wxT("Show transparent pixels"));
-	// shapes menu
-	shapes_menu = new wxMenu();
-	shapes_menu->Append(MSHAPES_ADDCOLORTABLE, wxT("New color table..."));
-	shapes_menu->Append(MSHAPES_SAVECOLORTABLE, wxT("Save color table to GIMP..."));
-	shapes_menu->Append(MSHAPES_SAVECOLORTABLETOPS, wxT("Save color table to PhotoShop..."));
-	shapes_menu->AppendSeparator();
-	shapes_menu->Append(MSHAPES_ADDBITMAP, wxT("New bitmap..."));
-	shapes_menu->Append(MSHAPES_EXPORTBITMAPS, wxT("Save all bitmaps..."));
-	shapes_menu->AppendSeparator();
-	shapes_menu->Append(MSHAPES_ADDFRAME, wxT("New frame"));
-	shapes_menu->AppendSeparator();
-	shapes_menu->Append(MSHAPES_ADDSEQUENCE, wxT("New sequence"));
-	shapes_menu->Enable(MSHAPES_ADDCOLORTABLE, false);
-	shapes_menu->Enable(MSHAPES_SAVECOLORTABLE, false);
-	shapes_menu->Enable(MSHAPES_SAVECOLORTABLETOPS, false);
-	shapes_menu->Enable(MSHAPES_ADDBITMAP, false);
-	shapes_menu->Enable(MSHAPES_EXPORTBITMAPS, false);
-	shapes_menu->Enable(MSHAPES_ADDFRAME, false);
-	shapes_menu->Enable(MSHAPES_ADDSEQUENCE, false);
-	// help menu
-	help_menu = new wxMenu();
-	help_menu->Append(wxID_ABOUT, wxT("About..."));
-	menubar->Append(file_menu, wxT("&File"));
-	menubar->Append(edit_menu, wxT("&Edit"));
-	menubar->Append(view_menu, wxT("&View"));
-	menubar->Append(shapes_menu, wxT("&Shapes"));
-	menubar->Append(help_menu, wxT("&Help"));
-
 	SetSizer(mainbox);
-	SetMenuBar(menubar);
-	
-	menubar->EnableTop(menubar->FindMenu(wxT("Shapes")), false);
 }
 
 ShapesEditor::~ShapesEditor(void)
@@ -512,7 +439,7 @@ wxTreeItemId ShapesEditor::GetSequencesTreeItem(unsigned int collection, unsigne
 	return wxTreeItemId();	// ctor makes it invalid, so ok
 }
 
-void ShapesEditor::MenuFileOpen(wxCommandEvent &e)
+/*void ShapesEditor::MenuFileOpen(wxCommandEvent &e)
 {
 	// let user choose the file
 	wxFileDialog	*dlg = new wxFileDialog(this, wxT("Select a Marathon shapes file:"),
@@ -525,34 +452,13 @@ void ShapesEditor::MenuFileOpen(wxCommandEvent &e)
 		wxEndBusyCursor();
 
 		if (newshapes->GoodData()) {
-			// make sure the user interface drops all pointers to the old shapes
-			mainbox->Show(coll_sizer, false);
-			mainbox->Show(chunk_sizer, false);
-			mainbox->Show(b_outer_sizer, false);
-			mainbox->Show(ct_outer_sizer, false);
-			mainbox->Show(f_outer_sizer, false);
-			mainbox->Show(s_outer_sizer, false);
-			mainbox->Show(dummy_sizer, true);
-			mainbox->Layout();
-			ctb->Clear();
-			bb->Clear();
-			bb->SetColorTable(NULL);
-			b_view->SetBitmap(NULL);
-			b_view->SetColorTable(NULL);
-			fb->Clear();
-			fb->SetColorTable(NULL);
-			f_view->SetFrame(NULL);
-			f_view->SetBitmap(NULL);
-			f_view->SetColorTable(NULL);
-			s_fb->Clear();
-			s_fb->SetColorTable(NULL);
-			colltree->DeleteAllItems();
-			// delete the old shapes
-			if (payload != NULL)
-				delete payload;
-			payload = newshapes;
+			// delete the old shapes block and insert the new one
+			if (((ShapesDocument*)((ShapesDocument*)view->GetDocument())) != NULL)
+				delete ((ShapesDocument*)view->GetDocument());
+			((ShapesDocument*)view->GetDocument()) = newshapes;
 			filepath = s;
-			// rebuild all levels of the tree control
+			// update all levels of the tree control
+			colltree->DeleteAllItems();
 			wxTreeItemId	treeroot = colltree->AddRoot(filepath.AfterLast('/'));
 
 			for (unsigned int i = 0; i < COLLECTIONS_PER_FILE; i++) {
@@ -571,7 +477,7 @@ void ShapesEditor::MenuFileOpen(wxCommandEvent &e)
 						label = wxT("True color version");
 					wxTreeItemId	coll2 = colltree->AppendItem(coll, label, -1, -1, id);
 	
-					if (payload->CollDefined(i, j)) {
+					if (((ShapesDocument*)view->GetDocument())->CollectionDefined(i, j)) {
 						// section nodes
 						MyTreeItemData	*id_b = new MyTreeItemData(i, j, TREESECTION_BITMAPS),
 										*id_ct = new MyTreeItemData(i, j, TREESECTION_COLORTABLES),
@@ -582,9 +488,9 @@ void ShapesEditor::MenuFileOpen(wxCommandEvent &e)
 										coll_f = colltree->AppendItem(coll2, wxT("Frames"), -1, -1, id_f),
 										coll_s = colltree->AppendItem(coll2, wxT("Sequences"), -1, -1, id_s);
 	
-						for (unsigned int k = 0; k < payload->CollSeqCount(i, j); k++) {
+						for (unsigned int k = 0; k < ((ShapesDocument*)view->GetDocument())->CollectionSeqCount(i, j); k++) {
 							// sequence nodes
-							ShpSequence		*seq = payload->GetSeq(i, j, k);
+							ShapesSequence		*seq = ((ShapesDocument*)view->GetDocument())->GetSeq(i, j, k);
 							wxString    	blabel;
 							MyTreeItemData	*id_seq = new MyTreeItemData(i, j, TREESECTION_SEQUENCES, k);
 	
@@ -612,9 +518,9 @@ void ShapesEditor::MenuFileOpen(wxCommandEvent &e)
 		}
 	}
 	dlg->Destroy();
-}
+}*/
 
-void ShapesEditor::MenuFileSave(wxCommandEvent &e)
+/*void ShapesEditor::MenuFileSave(wxCommandEvent &e)
 {
 	if (e.GetId() == wxID_SAVEAS) {
 		// "save as" command: ask a new file name and save to it
@@ -623,14 +529,14 @@ void ShapesEditor::MenuFileSave(wxCommandEvent &e)
 
 		if (!newpath.empty()) {
 			wxBeginBusyCursor();
-			payload->WriteToFile((std::string)newpath.fn_str());
+			((ShapesDocument*)view->GetDocument())->WriteToFile((std::string)newpath.fn_str());
 			wxEndBusyCursor();
 			filepath = newpath;
 		}
 	} else {
 		// save to the current file path
 		wxBeginBusyCursor();
-		payload->WriteToFile((std::string)filepath.fn_str());
+		((ShapesDocument*)view->GetDocument())->WriteToFile((std::string)filepath.fn_str());
 		wxEndBusyCursor();
 	}
 }
@@ -638,78 +544,36 @@ void ShapesEditor::MenuFileSave(wxCommandEvent &e)
 void ShapesEditor::MenuFileQuit(wxCommandEvent &e)
 {
 	Close(false);
-}
+}*/
 
-// handle the Edit->Delete command (which is context-sensitive)
+// TODO
 void ShapesEditor::MenuEditDelete(wxCommandEvent &e)
 {
-	wxTreeItemId	selected_item = colltree->GetSelection();
-	MyTreeItemData	*item_data = dynamic_cast<MyTreeItemData *>(colltree->GetItemData(selected_item));
+	// delete selected color table, bitmap, frame or sequence
+	int	selection = bb->GetSelection();
 
-	if (item_data != NULL) {
-		int	selection;
+	if (selection > -1) {
+		// the user interface update should be nearly identical to the TreeSelect case
+		bb->Freeze();
+		bb->Clear();	// FIXME just remove THAT bitmap!
+		b_outer_sizer->Show(b_count_label, true);
+		b_outer_sizer->Show(b_edit_box, false);
+		b_view->SetBitmap(NULL);
+		((ShapesDocument*)view->GetDocument())->DeleteBitmap(selected_coll, selected_vers, selection);
 
-		// what should we delete?
-		switch (item_data->Section()) {
-			case TREESECTION_BITMAPS:
-				// delete selected bitmap if any
-				selection = bb->GetSelection();
-				if (selection > -1) {
-					// the user interface update should be nearly identical to the TreeSelect case
-					bb->Freeze();
-					bb->Clear();	// FIXME just remove THAT bitmap!
-					b_outer_sizer->Show(b_count_label, true);
-					b_outer_sizer->Show(b_edit_box, false);
-					b_view->SetBitmap(NULL);
-					payload->DeleteBitmap(selected_coll, selected_vers, selection);
+		unsigned int	bitmap_count = ((ShapesDocument*)((ShapesDocument*)view->GetDocument()))->CollectionBitmapCount(selected_coll, selected_vers);
 
-					unsigned int	bitmap_count = payload->CollBitmapCount(selected_coll, selected_vers);
+		for (unsigned int i = 0; i < bitmap_count; i++)
+			bb->AddBitmap(((ShapesDocument*)view->GetDocument())->GetBitmap(selected_coll, selected_vers, i));
+		bb->Thaw();
 
-					for (unsigned int i = 0; i < bitmap_count; i++)
-						bb->AddBitmap(payload->GetBitmap(selected_coll, selected_vers, i));
-					bb->Thaw();
-
-					wxString	count_string;
+		wxString	count_string;
 		
-					count_string << bitmap_count << wxT(" bitmap");
-					if (bitmap_count != 1)
-						count_string << wxT("s");
-					b_count_label->SetLabel(count_string);
-					Layout();
-				}
-				break;
-			case TREESECTION_FRAMES:
-				// delete selected frame if any
-				selection = fb->GetSelection();
-				if (selection > -1) {
-					fb->Freeze();
-					fb->Clear();    // FIXME just remove THAT frame
-					f_outer_sizer->Show(f_count_label, true);
-					f_outer_sizer->Show(f_edit_box, false);
-					f_view->SetFrame(NULL);
-					payload->DeleteFrame(selected_coll, selected_vers, selection);
-
-					unsigned int	frame_count = payload->CollFrameCount(selected_coll, selected_vers),
-									bitmap_count = payload->CollBitmapCount(selected_coll, selected_vers);
-
-					for (unsigned int i = 0; i < bitmap_count; i++)
-						fb->AddBitmap(payload->GetBitmap(selected_coll, selected_vers, i));
-					for (unsigned int i = 0; i < frame_count; i++)
-						fb->AddFrame(payload->GetFrame(selected_coll, selected_vers, i));
-					fb->Thaw();
-
-					wxString    count_string;
-
-					count_string << frame_count << wxT(" frame");
-					if (frame_count != 1)
-						count_string << wxT("s");
-					f_count_label->SetLabel(count_string);
-					Layout();
-				}
-				break;
-			case TREESECTION_SEQUENCES:
-				break;
-		}
+		count_string << bitmap_count << wxT(" bitmap");
+		if (bitmap_count != 1)
+			count_string << wxT("s");
+		b_count_label->SetLabel(count_string);
+		Layout();
 	}
 }
 
@@ -728,9 +592,9 @@ void ShapesEditor::MenuViewTransparency(wxCommandEvent &e)
 // view->color table menu handler
 void ShapesEditor::MenuViewCT(wxCommandEvent &e)
 {
-	view_ct = e.GetId() - MVIEW_COLORTABLE_0;
+	view_ct = e.GetId() - VIEW_MENU_COLORTABLE_0;
 
-	ShpColorTable	*ctp = payload->GetColorTable(selected_coll, selected_vers, view_ct);
+	ShapesColorTable	*ctp = ((ShapesDocument*)view->GetDocument())->GetColorTable(selected_coll, selected_vers, view_ct);
 
 	wxBeginBusyCursor();
 	bb->SetColorTable(ctp);
@@ -747,16 +611,16 @@ void ShapesEditor::MenuViewTNSize(wxCommandEvent &e)
 	int	size = -1;
 
 	switch (e.GetId()) {
-		case MVIEW_TNSIZE_SMALL:
+		case VIEW_MENU_TNSIZE_SMALL:
 			size = 32;
 			break;
-		case MVIEW_TNSIZE_MEDIUM:
+		case VIEW_MENU_TNSIZE_MEDIUM:
 			size = 64;
 			break;
-		case MVIEW_TNSIZE_LARGE:
+		case VIEW_MENU_TNSIZE_LARGE:
 			size = 128;
 			break;
-		case MVIEW_TNSIZE_AUTO:
+		case VIEW_MENU_TNSIZE_AUTO:
 			size = -1;
 			break;
 	}
@@ -775,7 +639,7 @@ void ShapesEditor::MenuShapesAddColorTable(wxCommandEvent &e)
 
 	if (dlg->ShowModal() == wxID_OK) {
 		wxString		filename = dlg->GetPath();
-		std::ifstream	fstream(filename.mb_str(), std::ios::in);
+/*		std::ifstream	fstream(filename.mb_str(), std::ios::in);
 
 		if (fstream.good()) {
 			// TODO handle both GIMP and Photoshop palettes
@@ -785,7 +649,7 @@ void ShapesEditor::MenuShapesAddColorTable(wxCommandEvent &e)
 			fstream.close();
 		} else {
 			std::cerr << "Error loading palette " << filename.mb_str() << "\n";
-		}
+		}*/
 	}
 	dlg->Destroy();
 }
@@ -794,11 +658,11 @@ void ShapesEditor::MenuShapesAddColorTable(wxCommandEvent &e)
 // Gimp or PhotoShop format (depending on event id)
 void ShapesEditor::MenuShapesSaveColorTable(wxCommandEvent &e)
 {
-	if (payload != NULL && selected_coll != -1 && selected_vers != -1) {
+	if (((ShapesDocument*)view->GetDocument()) != NULL && selected_coll != -1 && selected_vers != -1) {
 		int	selection = ctb->GetSelection();
 
 		if (selection >= 0) {
-			bool		ps = (e.GetId() == MSHAPES_SAVECOLORTABLETOPS);
+			bool		ps = (e.GetId() == SHAPES_MENU_SAVECOLORTABLETOPS);
 			wxString	prompt = wxString::Format(wxT("Save color table %d"), selection),
 						name, ctpath;
 
@@ -815,7 +679,7 @@ void ShapesEditor::MenuShapesSaveColorTable(wxCommandEvent &e)
 			}
 
 			if (!ctpath.empty()) {
-				ShpColorTable	*ct = payload->GetColorTable(selected_coll, selected_vers, selection);
+/*				ShapesColorTable	*ct = ((ShapesDocument*)view->GetDocument())->GetColorTable(selected_coll, selected_vers, selection);
 				std::ofstream	cts(ctpath.fn_str());
 
 				if (cts.good()) {
@@ -868,7 +732,7 @@ void ShapesEditor::MenuShapesSaveColorTable(wxCommandEvent &e)
 
 					errormsg << wxT("Sorry, could not save color table to ") << ctpath << wxT(".");
 					wxMessageBox(errormsg, wxT("Error saving color table"), wxOK | wxICON_ERROR, this);
-				}
+				}*/
 			}
 		}
 	}
@@ -876,7 +740,7 @@ void ShapesEditor::MenuShapesSaveColorTable(wxCommandEvent &e)
 
 void ShapesEditor::MenuShapesAddBitmap(wxCommandEvent &e)
 {
-	if (payload != NULL && selected_coll != -1 && selected_vers != -1) {
+	if (((ShapesDocument*)view->GetDocument()) != NULL && selected_coll != -1 && selected_vers != -1) {
 		wxFileDialog	*dlg = new wxFileDialog(this, wxT("Choose a bitmap to add"),
 													wxT(""), wxT(""), wxT("BMP files|*.bmp"), wxOPEN);
 
@@ -886,18 +750,18 @@ void ShapesEditor::MenuShapesAddBitmap(wxCommandEvent &e)
 
 			if (img.LoadFile(filename)) {
 				// we have the wxImage now. Encode it to a new bitmap
-				ShpBitmap		newbmp;
-				ShpColorTable	*ct = payload->GetColorTable(selected_coll, selected_vers, view_ct);
+				/*ShapesBitmap		newbmp;
+				ShapesColorTable	*ct = ((ShapesDocument*)view->GetDocument())->GetColorTable(selected_coll, selected_vers, view_ct);
 				unsigned char	*srcpixels = img.GetData(),
 								*src = srcpixels,
 								*dst;
 
 				wxBeginBusyCursor();
-				newbmp.column_order = newbmp.enable_transparency = false;
+				newbmp.IsColumnOrdered() = newbmp.IsTransparent() = false;
 				newbmp.width = img.GetWidth();
 				newbmp.height = img.GetHeight();
 				newbmp.bit_depth = 8;
-				newbmp.bytes_per_row = img.GetWidth();
+				newbmp.BytesPerRow() = img.GetWidth();
 				newbmp.pixels = new unsigned char[newbmp.width * newbmp.height];
 				if (newbmp.pixels == NULL) {
 					std::cerr << "Could not allocate new " << newbmp.width << "x" << newbmp.height << " bitmap\n";
@@ -906,10 +770,10 @@ void ShapesEditor::MenuShapesAddBitmap(wxCommandEvent &e)
 				}
 				dst = newbmp.pixels;
 				// automagically initialize bitmap flags
-				if (payload->CollType(selected_coll, selected_vers) == _object_collection ||
-						payload->CollType(selected_coll, selected_vers) == _scenery_collection) {
-					newbmp.bytes_per_row = -1;
-					newbmp.column_order = true;
+				if (((ShapesDocument*)view->GetDocument())->CollectionType(selected_coll, selected_vers) == _object_collection ||
+						((ShapesDocument*)view->GetDocument())->CollectionType(selected_coll, selected_vers) == _scenery_collection) {
+					newbmp.BytesPerRow() = -1;
+					newbmp.IsColumnOrdered() = true;
 				}
 				// quantize from 8-bit RGB pixels to an indexed bitmap. We need to transform
 				// RGB to HSV and perform the comparison in that space to get good results.
@@ -943,13 +807,13 @@ void ShapesEditor::MenuShapesAddBitmap(wxCommandEvent &e)
 					}
 					*dst++ = best_value;
 					if (best_value == 0)
-						newbmp.enable_transparency = true;	// guess the user will want transparency
+						newbmp.IsTransparent() = true;	// guess the user will want transparency
 				}
-				payload->InsertBitmap(newbmp, selected_coll, selected_vers);
+				((ShapesDocument*)view->GetDocument())->InsertBitmap(newbmp, selected_coll, selected_vers);
 
 				// update the GUI
-				unsigned int	bitmap_count = payload->CollBitmapCount(selected_coll, selected_vers);
-				ShpBitmap		*pnewbitmap = payload->GetBitmap(selected_coll, selected_vers, bitmap_count-1);
+				unsigned int	bitmap_count = ((ShapesDocument*)view->GetDocument())->CollectionBitmapCount(selected_coll, selected_vers);
+				ShapesBitmap		*pnewbitmap = ((ShapesDocument*)view->GetDocument())->GetBitmap(selected_coll, selected_vers, bitmap_count-1);
 				wxString		count_string = wxString::Format(wxT("%u bitmap"), bitmap_count);
 
 				bb->AddBitmap(pnewbitmap);
@@ -963,7 +827,7 @@ void ShapesEditor::MenuShapesAddBitmap(wxCommandEvent &e)
 				wxString	errormsg;
 
 				errormsg << wxT("Sorry, could not load bitmap from ") << filename << wxT(".");
-				wxMessageBox(errormsg, wxT("Error adding bitmap"), wxOK | wxICON_ERROR, this);
+				wxMessageBox(errormsg, wxT("Error adding bitmap"), wxOK | wxICON_ERROR, this);*/
 			}
 		}
 		dlg->Destroy();
@@ -976,10 +840,10 @@ void ShapesEditor::MenuShapesExportBitmaps(wxCommandEvent &e)
 	wxString	dir = wxDirSelector(wxT("Select destination folder"));
 
 	if (!dir.empty()) {
-		for (unsigned int i = 0; i < payload->CollBitmapCount(selected_coll, selected_vers); i++) {
+		for (unsigned int i = 0; i < ((ShapesDocument*)view->GetDocument())->CollectionBitmapCount(selected_coll, selected_vers); i++) {
 			wxString	file_name = wxString::Format(wxT("bitmap%.3d.bmp"), i);
-			wxImage		img = ShpBitmapToImage(payload->GetBitmap(selected_coll, selected_vers, i),
-							payload->GetColorTable(selected_coll, selected_vers, view_ct),
+			wxImage		img = ShapesBitmapToImage(((ShapesDocument*)view->GetDocument())->GetBitmap(selected_coll, selected_vers, i),
+										((ShapesDocument*)view->GetDocument())->GetColorTable(selected_coll, selected_vers, view_ct),
 							!show_transparent_pixels);
 
 			img.SaveFile(dir + wxT("/") + file_name, wxBITMAP_TYPE_BMP);
@@ -989,22 +853,14 @@ void ShapesEditor::MenuShapesExportBitmaps(wxCommandEvent &e)
 
 void ShapesEditor::MenuShapesNewFrame(wxCommandEvent &e)
 {
-	if (payload != NULL && selected_coll != -1 && selected_vers != -1) {
+	if (((ShapesDocument*)view->GetDocument()) != NULL && selected_coll != -1 && selected_vers != -1) {
 		// append an empty frame
-		ShpFrame	newframe;
-
-		// initialize values to something reasonable
-		newframe.bitmap_index = -1;
-		newframe.x_mirror = newframe.y_mirror = newframe.keypoint_obscured = false;
-		newframe.minimum_light_intensity = 0;
-		newframe.origin_x = newframe.origin_y = newframe.key_x = newframe.key_y = 0;
-		newframe.scale_factor = payload->CollScaleFactor(selected_coll, selected_vers);
-		newframe.world_left = newframe.world_right = newframe.world_top = newframe.world_bottom = 0;
-		newframe.world_x0 = newframe.world_y0 = 0;
-		payload->InsertFrame(newframe, selected_coll, selected_vers);
-		fb->AddFrame(payload->GetFrame(selected_coll, selected_vers, payload->CollFrameCount(selected_coll, selected_vers)-1));
+		ShapesFrame	*newframe = new ShapesFrame();
+		newframe->SetScaleFactor(((ShapesDocument*)view->GetDocument())->CollectionScaleFactor(selected_coll, selected_vers));
+		((ShapesDocument*)view->GetDocument())->InsertFrame(newframe, selected_coll, selected_vers);
+		fb->AddFrame(((ShapesDocument*)view->GetDocument())->GetFrame(selected_coll, selected_vers, ((ShapesDocument*)view->GetDocument())->CollectionFrameCount(selected_coll, selected_vers)-1));
 		// update frame count label
-		unsigned int	frame_count = payload->CollFrameCount(selected_coll, selected_vers);
+		unsigned int	frame_count = ((ShapesDocument*)view->GetDocument())->CollectionFrameCount(selected_coll, selected_vers);
 		wxString		count_string = wxString::Format(wxT("%u frame"), frame_count);
 		
 		if (frame_count != 1)
@@ -1015,35 +871,22 @@ void ShapesEditor::MenuShapesNewFrame(wxCommandEvent &e)
 
 void ShapesEditor::MenuShapesNewSequence(wxCommandEvent &e)
 {
-	if (payload != NULL && selected_coll != -1 && selected_vers != -1) {
+	if (((ShapesDocument*)view->GetDocument()) != NULL && selected_coll != -1 && selected_vers != -1) {
 		// append an empty sequence
-		ShpSequence		newseq;
-
-		// initialize values to something reasonable
-		newseq.type = 0;
-		newseq.flags = 0;
-		strcpy(newseq.name, "new sequence");
-		newseq.number_of_views = UNANIMATED;
-		newseq.frames_per_view = 0;
-		newseq.ticks_per_frame = 1;
-		newseq.key_frame = 0;
-		newseq.transfer_mode = 0;
-		newseq.transfer_mode_period = 1;
-		newseq.first_frame_sound = newseq.key_frame_sound = newseq.last_frame_sound = -1;
-		newseq.pixels_to_world = 0;
-		newseq.loop_frame = 0;
-		payload->InsertSequence(newseq, selected_coll, selected_vers);
+		ShapesSequence		*newseq = new ShapesSequence();
+		
+		((ShapesDocument*)view->GetDocument())->InsertSequence(newseq, selected_coll, selected_vers);
 		
 		// insert the new entry in the main tree
 		wxTreeItemId	thenode = GetSequencesTreeItem(selected_coll, selected_vers);
-		int				seq_id = payload->CollSeqCount(selected_coll, selected_vers) - 1;
-		ShpSequence     *seq = payload->GetSeq(selected_coll, selected_vers, seq_id);
+		int				seq_id = ((ShapesDocument*)view->GetDocument())->CollectionSequenceCount(selected_coll, selected_vers) - 1;
+		ShapesSequence     *seq = ((ShapesDocument*)view->GetDocument())->GetSequence(selected_coll, selected_vers, seq_id);
 		MyTreeItemData  *itemdata = new MyTreeItemData(selected_coll, selected_vers, TREESECTION_SEQUENCES, seq_id);
 		wxString		label;
 
 		label << seq_id;
-		if (strlen(seq->name) > 0)
-			label << wxT(" - ") << wxString(seq->name, seqnameconv);
+		if (seq->Name().Length() > 0)
+			label << wxT(" - ") << seq->Name();
 		colltree->AppendItem(thenode, label, -1, -1, itemdata);
 	}
 }
@@ -1085,24 +928,24 @@ void ShapesEditor::TreeSelect(wxTreeEvent &e)
 			fb->Clear();
 			f_view->SetFrame(NULL);
 			f_view->SetBitmap(NULL);
-			edit_menu->SetLabel(wxID_DELETE, wxT("Delete"));
-			edit_menu->Enable(wxID_DELETE, false);
+			edit_menu->SetLabel(EDIT_MENU_DELETE, wxT("Delete"));
+			edit_menu->Enable(EDIT_MENU_DELETE, false);
 			for (int i = 0; i < ctmenucount; i++)
-				view_colortable_submenu->Enable(MVIEW_COLORTABLE_0 + i, false);
-			shapes_menu->Enable(MSHAPES_SAVECOLORTABLE, false);
-			shapes_menu->Enable(MSHAPES_SAVECOLORTABLETOPS, false);
+				view_colortable_submenu->Enable(VIEW_MENU_COLORTABLE_0 + i, false);
+			shapes_menu->Enable(SHAPES_MENU_SAVECOLORTABLE, false);
+			shapes_menu->Enable(SHAPES_MENU_SAVECOLORTABLETOPS, false);
 
 			// set collection info panel
 			coll_static_box->SetLabel(wxString::Format(wxT("Global info for collection %d"), new_coll));
 
 			wxString	collinfo_s;
-			collinfo_s << wxT("Status: ") << payload->CollGlobalStatus(new_coll) << wxT("\n");
-			collinfo_s << wxT("Flags: ") << payload->CollGlobalFlags(new_coll) << wxT("\n\n");
-			if (payload->CollDefined(new_coll, COLL_VERSION_8BIT))
+			collinfo_s << wxT("Status: ") << ((ShapesDocument*)view->GetDocument())->CollectionStatus(new_coll) << wxT("\n");
+			collinfo_s << wxT("Flags: ") << ((ShapesDocument*)view->GetDocument())->CollectionFlags(new_coll) << wxT("\n\n");
+			if (((ShapesDocument*)view->GetDocument())->CollectionDefined(new_coll, COLL_VERSION_8BIT))
 				collinfo_s << wxT("8-bit color version present\n");
 			else
 				collinfo_s << wxT("No 8-bit color version\n");
-			if (payload->CollDefined(new_coll, COLL_VERSION_TRUECOLOR))
+			if (((ShapesDocument*)view->GetDocument())->CollectionDefined(new_coll, COLL_VERSION_TRUECOLOR))
 				collinfo_s << wxT("True color version present");
 			else
 				collinfo_s << wxT("No true color version");
@@ -1114,45 +957,45 @@ void ShapesEditor::TreeSelect(wxTreeEvent &e)
 				else
 					chunk_static_box->SetLabel(wxT("Shapes for 8-bit color display"));
 
-				if (payload->CollDefined(new_coll, new_vers)) {
+				if (((ShapesDocument*)view->GetDocument())->CollectionDefined(new_coll, new_vers)) {
 					// a defined collection has been selected
-					unsigned int	ct_count = payload->CollCTCount(new_coll, new_vers),
-									bitmap_count = payload->CollBitmapCount(new_coll, new_vers),
-									frame_count = payload->CollFrameCount(new_coll, new_vers);
+					unsigned int	ct_count = ((ShapesDocument*)view->GetDocument())->CollectionColorTableCount(new_coll, new_vers),
+									bitmap_count = ((ShapesDocument*)view->GetDocument())->CollectionBitmapCount(new_coll, new_vers),
+									frame_count = ((ShapesDocument*)view->GetDocument())->CollectionFrameCount(new_coll, new_vers);
 					wxString		count_string;
 
 					wxBeginBusyCursor();
-					shapes_menu->Enable(MSHAPES_ADDBITMAP, true);
-					shapes_menu->Enable(MSHAPES_EXPORTBITMAPS, true);
-					shapes_menu->Enable(MSHAPES_ADDFRAME, true);
-					shapes_menu->Enable(MSHAPES_ADDSEQUENCE, true);
+					shapes_menu->Enable(SHAPES_MENU_ADDBITMAP, true);
+					shapes_menu->Enable(SHAPES_MENU_EXPORTBITMAPS, true);
+					shapes_menu->Enable(SHAPES_MENU_ADDFRAME, true);
+					shapes_menu->Enable(SHAPES_MENU_ADDSEQUENCE, true);
 
 					// chunk info panel
-					chunk_version_field->SetValue(INT_TO_WXSTRING(payload->CollVersion(new_coll, new_vers)));
-					chunk_type_menu->SetSelection(payload->CollType(new_coll, new_vers));
-					chunk_flags_field->SetValue(INT_TO_WXSTRING(payload->CollFlags(new_coll, new_vers)));
-					chunk_sf_field->SetValue(INT_TO_WXSTRING(payload->CollScaleFactor(new_coll, new_vers)));
+					chunk_version_field->SetValue(INT_TO_WXSTRING(((ShapesDocument*)view->GetDocument())->CollectionVersion(new_coll, new_vers)));
+					chunk_type_menu->SetSelection(((ShapesDocument*)view->GetDocument())->CollectionType(new_coll, new_vers));
+					chunk_flags_field->SetValue(INT_TO_WXSTRING(((ShapesDocument*)view->GetDocument())->CollectionFlags(new_coll, new_vers)));
+					chunk_sf_field->SetValue(INT_TO_WXSTRING(((ShapesDocument*)view->GetDocument())->CollectionScaleFactor(new_coll, new_vers)));
 
 					// color tables
 					view_ct = 0;
 					for (unsigned int i = 0; i < ct_count; i++)
-						ctb->AddColorTable(payload->GetColorTable(new_coll, new_vers, i));
+						ctb->AddColorTable(((ShapesDocument*)view->GetDocument())->GetColorTable(new_coll, new_vers, i));
 					for (int i = 0; i < ctmenucount; i++)
-						view_colortable_submenu->Enable(MVIEW_COLORTABLE_0 + i, i < (int)ct_count);
+						view_colortable_submenu->Enable(VIEW_MENU_COLORTABLE_0 + i, i < (int)ct_count);
 					if (ct_count > 0)
-						view_colortable_submenu->Check(MVIEW_COLORTABLE_0, true);
+						view_colortable_submenu->Check(VIEW_MENU_COLORTABLE_0, true);
 					count_string << ct_count << wxT(" color table");
 					if (ct_count != 1)
 						count_string << wxT("s");
 					if (ct_count > 0)
-						count_string << wxT(", ") << payload->GetColorTable(new_coll, new_vers, 0)->colors.size() << wxT(" colors per table");
+						count_string << wxT(", ") << ((ShapesDocument*)view->GetDocument())->GetColorTable(new_coll, new_vers, 0)->ColorCount() << wxT(" colors per table");
 					ct_count_label->SetLabel(count_string);
 
 					// bitmaps
-					bb->SetColorTable(payload->GetColorTable(new_coll, new_vers, 0));
-					b_view->SetColorTable(payload->GetColorTable(new_coll, new_vers, 0));
+					bb->SetColorTable(((ShapesDocument*)view->GetDocument())->GetColorTable(new_coll, new_vers, 0));
+					b_view->SetColorTable(((ShapesDocument*)view->GetDocument())->GetColorTable(new_coll, new_vers, 0));
 					for (unsigned int i = 0; i < bitmap_count; i++)
-						bb->AddBitmap(payload->GetBitmap(new_coll, new_vers, i));
+						bb->AddBitmap(((ShapesDocument*)view->GetDocument())->GetBitmap(new_coll, new_vers, i));
 					count_string.Clear();
 					count_string << bitmap_count << wxT(" bitmap");
 					if (bitmap_count != 1)
@@ -1160,12 +1003,12 @@ void ShapesEditor::TreeSelect(wxTreeEvent &e)
 					b_count_label->SetLabel(count_string);
 
 					// frames
-					fb->SetColorTable(payload->GetColorTable(new_coll, new_vers, 0));
-					f_view->SetColorTable(payload->GetColorTable(new_coll, new_vers, 0));
+					fb->SetColorTable(((ShapesDocument*)view->GetDocument())->GetColorTable(new_coll, new_vers, 0));
+					f_view->SetColorTable(((ShapesDocument*)view->GetDocument())->GetColorTable(new_coll, new_vers, 0));
 					for (unsigned int i = 0; i < bitmap_count; i++)
-						fb->AddBitmap(payload->GetBitmap(new_coll, new_vers, i));
+						fb->AddBitmap(((ShapesDocument*)view->GetDocument())->GetBitmap(new_coll, new_vers, i));
 					for (unsigned int i = 0; i < frame_count; i++)
-						fb->AddFrame(payload->GetFrame(new_coll, new_vers, i));
+						fb->AddFrame(((ShapesDocument*)view->GetDocument())->GetFrame(new_coll, new_vers, i));
 					count_string.Clear();
 					count_string << frame_count << wxT(" frame");
 					if (frame_count != 1)
@@ -1174,16 +1017,16 @@ void ShapesEditor::TreeSelect(wxTreeEvent &e)
 
 					wxEndBusyCursor();
 				} else {
-					shapes_menu->Enable(MSHAPES_ADDBITMAP, false);
-					shapes_menu->Enable(MSHAPES_EXPORTBITMAPS, false);
-					shapes_menu->Enable(MSHAPES_ADDFRAME, false);
-					shapes_menu->Enable(MSHAPES_ADDSEQUENCE, false);
+					shapes_menu->Enable(SHAPES_MENU_ADDBITMAP, false);
+					shapes_menu->Enable(SHAPES_MENU_EXPORTBITMAPS, false);
+					shapes_menu->Enable(SHAPES_MENU_ADDFRAME, false);
+					shapes_menu->Enable(SHAPES_MENU_ADDSEQUENCE, false);
 				}
 			} else {
-				shapes_menu->Enable(MSHAPES_ADDBITMAP, false);
-				shapes_menu->Enable(MSHAPES_EXPORTBITMAPS, false);
-				shapes_menu->Enable(MSHAPES_ADDFRAME, false);
-				shapes_menu->Enable(MSHAPES_ADDSEQUENCE, false);
+				shapes_menu->Enable(SHAPES_MENU_ADDBITMAP, false);
+				shapes_menu->Enable(SHAPES_MENU_EXPORTBITMAPS, false);
+				shapes_menu->Enable(SHAPES_MENU_ADDFRAME, false);
+				shapes_menu->Enable(SHAPES_MENU_ADDSEQUENCE, false);
 			}
 			selected_coll = new_coll;
 			selected_vers = new_vers;
@@ -1194,13 +1037,13 @@ void ShapesEditor::TreeSelect(wxTreeEvent &e)
 		// handle sequence selection
 		selected_sequence = data->Sequence();
 		if (selected_sequence > -1) {
-			ShpSequence *seq = payload->GetSeq(new_coll, new_vers, selected_sequence);
+			ShapesSequence *seq = ((ShapesDocument*)view->GetDocument())->GetSequence(new_coll, new_vers, selected_sequence);
 
 			// setup sequence panel controls
 			s_outer_static_box->SetLabel(wxString::Format(wxT("Sequence %d of %u"),
-									selected_sequence, payload->CollSeqCount(new_coll, new_vers)));
-			s_name_field->SetValue(wxString(seq->name, seqnameconv));
-			switch (seq->number_of_views) {
+									selected_sequence, ((ShapesDocument*)view->GetDocument())->CollectionSequenceCount(new_coll, new_vers)));
+			s_name_field->SetValue(seq->Name());
+			switch (seq->NumberOfViews()) {
 				case UNANIMATED:	s_type_menu->SetSelection(0);	break;
 				case ANIMATED_1:	s_type_menu->SetSelection(1);	break;
 				case ANIMATED_3TO4:	s_type_menu->SetSelection(2);	break;
@@ -1212,33 +1055,33 @@ void ShapesEditor::TreeSelect(wxTreeEvent &e)
 				case ANIMATED_8:	s_type_menu->SetSelection(4);	break;
 				default:
 					s_type_menu->SetSelection(0);
-					wxMessageBox(wxString::Format(wxT("This sequence has an unknown type %d, and ShapeFusion can not handle it. Something strange may happen now!"), seq->number_of_views),
+					wxMessageBox(wxString::Format(wxT("This sequence has an unknown type %d, and ShapeFusion can not handle it. Something strange may happen now!"), seq->NumberOfViews()),
 									wxT("Warning"), wxOK | wxICON_ERROR, this);
 					break;
 			}
-			s_fpv_field->SetValue(INT_TO_WXSTRING(seq->frames_per_view));
-			s_tpf_field->SetValue(INT_TO_WXSTRING(seq->ticks_per_frame));
-			s_lf_field->SetValue(INT_TO_WXSTRING(seq->loop_frame));
-			s_kf_field->SetValue(INT_TO_WXSTRING(seq->key_frame));
-			s_xfermode_menu->SetSelection(seq->transfer_mode);
-			s_xferperiod_field->SetValue(INT_TO_WXSTRING(seq->transfer_mode_period));
-			s_ffs_field->SetValue(INT_TO_WXSTRING(seq->first_frame_sound));
-			s_kfs_field->SetValue(INT_TO_WXSTRING(seq->key_frame_sound));
-			s_lfs_field->SetValue(INT_TO_WXSTRING(seq->last_frame_sound));
-			s_sf_field->SetValue(INT_TO_WXSTRING(seq->pixels_to_world));
+			s_fpv_field->SetValue(INT_TO_WXSTRING(seq->FramesPerView()));
+			s_tpf_field->SetValue(INT_TO_WXSTRING(seq->TicksPerFrame()));
+			s_lf_field->SetValue(INT_TO_WXSTRING(seq->LoopFrame()));
+			s_kf_field->SetValue(INT_TO_WXSTRING(seq->KeyFrame()));
+			s_xfermode_menu->SetSelection(seq->TransferMode());
+			s_xferperiod_field->SetValue(INT_TO_WXSTRING(seq->TransferModePeriod()));
+			s_ffs_field->SetValue(INT_TO_WXSTRING(seq->FirstFrameSound()));
+			s_kfs_field->SetValue(INT_TO_WXSTRING(seq->KeyFrameSound()));
+			s_lfs_field->SetValue(INT_TO_WXSTRING(seq->LastFrameSound()));
+			s_sf_field->SetValue(INT_TO_WXSTRING(seq->PixelsToWorld()));
 			// setup the sequence view
 			wxBeginBusyCursor();
 			s_fb->Freeze();
 			s_fb->Clear();
-			s_fb->SetColorTable(payload->GetColorTable(new_coll, new_vers, view_ct));
-			for (unsigned int i = 0; i < payload->CollBitmapCount(selected_coll, selected_vers); i++)
-				s_fb->AddBitmap(payload->GetBitmap(selected_coll, selected_vers, i));
-			for (unsigned int i = 0; i < payload->CollFrameCount(selected_coll, selected_vers); i++)
-				s_fb->AddFrame(payload->GetFrame(selected_coll, selected_vers, i));
-			s_fb->SetSeqParameters(seq->number_of_views, seq->frames_per_view, &seq->frame_indexes);
+			s_fb->SetColorTable(((ShapesDocument*)view->GetDocument())->GetColorTable(new_coll, new_vers, view_ct));
+			for (unsigned int i = 0; i < ((ShapesDocument*)view->GetDocument())->CollectionBitmapCount(selected_coll, selected_vers); i++)
+				s_fb->AddBitmap(((ShapesDocument*)view->GetDocument())->GetBitmap(selected_coll, selected_vers, i));
+			for (unsigned int i = 0; i < ((ShapesDocument*)view->GetDocument())->CollectionFrameCount(selected_coll, selected_vers); i++)
+				s_fb->AddFrame(((ShapesDocument*)view->GetDocument())->GetFrame(selected_coll, selected_vers, i));
+			s_fb->SetSeqParameters(seq->NumberOfViews(), seq->FramesPerView(), &seq->mFrameIndexes);
 			s_fb->Thaw();
-			edit_menu->SetLabel(wxID_DELETE, wxT("Delete sequence"));
-			edit_menu->Enable(wxID_DELETE, true);
+			edit_menu->SetLabel(EDIT_MENU_DELETE, wxT("Delete sequence"));
+			edit_menu->Enable(EDIT_MENU_DELETE, true);
 			wxEndBusyCursor();
 		}
 
@@ -1253,15 +1096,11 @@ void ShapesEditor::TreeSelect(wxTreeEvent &e)
 		switch (new_section) {
 			case TREESECTION_COLLECTION:
 				mainbox->Show(coll_sizer, true);
-				edit_menu->SetLabel(wxID_DELETE, wxT("Delete"));
-				edit_menu->Enable(wxID_DELETE, false);
 				break;
 			case TREESECTION_VERSION:
 				mainbox->Show(chunk_sizer, true);
-				chunk_inner_box->Show(chunk_undef_label, !payload->CollDefined(selected_coll, selected_vers));
-				chunk_inner_box->Show(chunk_grid, payload->CollDefined(selected_coll, selected_vers));
-				edit_menu->SetLabel(wxID_DELETE, wxT("Delete"));
-				edit_menu->Enable(wxID_DELETE, false);
+				chunk_inner_box->Show(chunk_undef_label, !((ShapesDocument*)view->GetDocument())->CollectionDefined(selected_coll, selected_vers));
+				chunk_inner_box->Show(chunk_grid, ((ShapesDocument*)view->GetDocument())->CollectionDefined(selected_coll, selected_vers));
 				break;
 			case TREESECTION_BITMAPS:
 				mainbox->Show(b_outer_sizer, true);
@@ -1277,13 +1116,10 @@ void ShapesEditor::TreeSelect(wxTreeEvent &e)
 				f_outer_sizer->Show(f_count_label, fb->GetSelection() == -1);
 				break;
 			case TREESECTION_SEQUENCES:
-				if (selected_sequence > -1) {
+				if (selected_sequence > -1)
 					mainbox->Show(s_outer_sizer, true);
-				} else {
+				else
 					mainbox->Show(dummy_sizer, true);
-					edit_menu->SetLabel(wxID_DELETE, wxT("Delete"));
-					edit_menu->Enable(wxID_DELETE, false);
-				}
 				break;
 		}
 		mainbox->Layout();
@@ -1300,30 +1136,30 @@ void ShapesEditor::BitmapSelect(wxCommandEvent &e)
 		b_view->SetBitmap(NULL);
 		b_outer_sizer->Show(b_count_label, true);
 		b_outer_sizer->Show(b_edit_box, false);
-		edit_menu->SetLabel(wxID_DELETE, wxT("Delete"));
-		edit_menu->Enable(wxID_DELETE, false);
+		edit_menu->SetLabel(EDIT_MENU_DELETE, wxT("Delete"));
+		edit_menu->Enable(EDIT_MENU_DELETE, false);
 	} else {
-		ShpBitmap	*sel_bitmap = payload->GetBitmap(selected_coll, selected_vers, selection);
+		ShapesBitmap	*sel_bitmap = ((ShapesDocument*)view->GetDocument())->GetBitmap(selected_coll, selected_vers, selection);
 		
 		// set labels
-		wxString	info_label = wxString::Format(wxT("%dx%d pixels, "), sel_bitmap->width, sel_bitmap->height);
+		wxString	info_label = wxString::Format(wxT("%dx%d pixels, "), sel_bitmap->Width(), sel_bitmap->Height());
 
-		if (sel_bitmap->bytes_per_row > 0)
+		if (sel_bitmap->BytesPerRow() > 0)
 			info_label << wxT("plain encoding");
 		else
 			info_label << wxT("RLE");
 		b_info_label->SetLabel(info_label);
 		b_edit_static_box->SetLabel(wxString::Format(wxT("Bitmap %d of %d"),
-								selection, payload->CollBitmapCount(selected_coll, selected_vers)));
+								selection, ((ShapesDocument*)view->GetDocument())->CollectionBitmapCount(selected_coll, selected_vers)));
 		// set flag check boxes
-		b_order_checkbox->SetValue(sel_bitmap->column_order);
-		b_transparency_checkbox->SetValue(sel_bitmap->enable_transparency);
+		b_order_checkbox->SetValue(sel_bitmap->IsColumnOrdered());
+		b_transparency_checkbox->SetValue(sel_bitmap->IsTransparent());
 		// set bitmap view
 		b_view->SetBitmap(sel_bitmap);
 		b_outer_sizer->Show(b_count_label, false);
 		b_outer_sizer->Show(b_edit_box, true);
-		edit_menu->SetLabel(wxID_DELETE, wxT("Delete bitmap"));
-		edit_menu->Enable(wxID_DELETE, true);
+		edit_menu->SetLabel(EDIT_MENU_DELETE, wxT("Delete bitmap"));
+		edit_menu->Enable(EDIT_MENU_DELETE, true);
 	}
 	b_outer_sizer->Layout();
 }
@@ -1338,12 +1174,12 @@ void ShapesEditor::BitmapDelete(wxCommandEvent &e)
 	b_outer_sizer->Show(b_count_label, true);
 	b_outer_sizer->Show(b_edit_box, false);
 	b_view->SetBitmap(NULL);
-	payload->DeleteBitmap(selected_coll, selected_vers, e.GetSelection());
+	((ShapesDocument*)view->GetDocument())->DeleteBitmap(selected_coll, selected_vers, e.GetSelection());
 	
-	unsigned int    bitmap_count = payload->CollBitmapCount(selected_coll, selected_vers);
+	unsigned int    bitmap_count = ((ShapesDocument*)view->GetDocument())->CollectionBitmapCount(selected_coll, selected_vers);
 	
 	for (unsigned int i = 0; i < bitmap_count; i++)
-		bb->AddBitmap(payload->GetBitmap(selected_coll, selected_vers, i));
+		bb->AddBitmap(((ShapesDocument*)view->GetDocument())->GetBitmap(selected_coll, selected_vers, i));
 	bb->Thaw();
 	
 	wxString    count_string;
@@ -1357,15 +1193,15 @@ void ShapesEditor::BitmapDelete(wxCommandEvent &e)
 
 void ShapesEditor::ToggleBitmapCheckboxes(wxCommandEvent &e)
 {
-	ShpBitmap	*sel_bitmap = b_view->GetBitmap();
+	ShapesBitmap	*sel_bitmap = b_view->GetBitmap();
 
 	if (sel_bitmap != NULL) {
 		switch (e.GetId()) {
 			case CB_COLUMN_ORDER:
-				sel_bitmap->column_order = e.IsChecked();
+				sel_bitmap->SetColumnOrdered(e.IsChecked());
 				break;
 			case CB_ENABLE_TRANSPARENCY:
-				sel_bitmap->enable_transparency = e.IsChecked();
+				sel_bitmap->SetTransparent(e.IsChecked());
 				bb->RebuildThumbnail(bb->GetSelection());
 				bb->Refresh();
 				b_view->SetBitmap(sel_bitmap);
@@ -1381,16 +1217,16 @@ void ShapesEditor::CTSelect(wxCommandEvent &e)
 
 	if (selection < 0) {
 		// deselection
-		shapes_menu->Enable(MSHAPES_SAVECOLORTABLE, false);
-		shapes_menu->Enable(MSHAPES_SAVECOLORTABLETOPS, false);
-		edit_menu->SetLabel(wxID_DELETE, wxT("Delete"));
-		edit_menu->Enable(wxID_DELETE, false);
+		shapes_menu->Enable(SHAPES_MENU_SAVECOLORTABLE, false);
+		shapes_menu->Enable(SHAPES_MENU_SAVECOLORTABLETOPS, false);
+		edit_menu->SetLabel(EDIT_MENU_DELETE, wxT("Delete"));
+		edit_menu->Enable(EDIT_MENU_DELETE, false);
 	} else {
 		// selection
-		shapes_menu->Enable(MSHAPES_SAVECOLORTABLE, true);
-		shapes_menu->Enable(MSHAPES_SAVECOLORTABLETOPS, true);
-		edit_menu->SetLabel(wxID_DELETE, wxT("Delete color table"));
-		edit_menu->Enable(wxID_DELETE, true);
+		shapes_menu->Enable(SHAPES_MENU_SAVECOLORTABLE, true);
+		shapes_menu->Enable(SHAPES_MENU_SAVECOLORTABLETOPS, true);
+		edit_menu->SetLabel(EDIT_MENU_DELETE, wxT("Delete color table"));
+		edit_menu->Enable(EDIT_MENU_DELETE, true);
 	}
 }
 
@@ -1404,68 +1240,38 @@ void ShapesEditor::FrameSelect(wxCommandEvent &e)
 		f_view->SetBitmap(NULL);
 		f_outer_sizer->Show(f_count_label, true);
 		f_outer_sizer->Show(f_edit_box, false);
-		edit_menu->SetLabel(wxID_DELETE, wxT("Delete"));
-		edit_menu->Enable(wxID_DELETE, false);
+		edit_menu->SetLabel(EDIT_MENU_DELETE, wxT("Delete"));
+		edit_menu->Enable(EDIT_MENU_DELETE, false);
 	} else {
-		ShpFrame	*sel_frame = payload->GetFrame(selected_coll, selected_vers, selection);
-		ShpBitmap	*assoc_bitmap = NULL;
+		ShapesFrame	*sel_frame = ((ShapesDocument*)view->GetDocument())->GetFrame(selected_coll, selected_vers, selection);
+		ShapesBitmap	*assoc_bitmap = NULL;
 
 		// set labels
 		f_edit_static_box->SetLabel(wxString::Format(wxT("Frame %d of %u"),
-								selection, payload->CollFrameCount(selected_coll, selected_vers)));
+								selection, ((ShapesDocument*)view->GetDocument())->CollectionFrameCount(selected_coll, selected_vers)));
 		// set frame view
 		f_view->SetFrame(sel_frame);
-		if (sel_frame->bitmap_index >= 0)
-			assoc_bitmap = payload->GetBitmap(selected_coll, selected_vers, sel_frame->bitmap_index);
+		if (sel_frame->BitmapIndex() >= 0)
+			assoc_bitmap = ((ShapesDocument*)view->GetDocument())->GetBitmap(selected_coll, selected_vers, sel_frame->BitmapIndex());
 		f_view->SetBitmap(assoc_bitmap);
 		// set controls
-		f_bitmap_id->SetRange(-1, payload->CollBitmapCount(selected_coll, selected_vers) - 1);
-		f_bitmap_id->SetValue(sel_frame->bitmap_index);
-		f_xmirror_checkbox->SetValue(sel_frame->x_mirror);
-		f_ymirror_checkbox->SetValue(sel_frame->y_mirror);
-		f_keypoint_checkbox->SetValue(sel_frame->keypoint_obscured);
-		f_origin_x_field->SetValue(INT_TO_WXSTRING(sel_frame->origin_x));
-		f_origin_y_field->SetValue(INT_TO_WXSTRING(sel_frame->origin_y));
-		f_key_x_field->SetValue(INT_TO_WXSTRING(sel_frame->key_x));
-		f_key_y_field->SetValue(INT_TO_WXSTRING(sel_frame->key_y));
-		f_scalefactor_field->SetValue(INT_TO_WXSTRING(sel_frame->scale_factor));
-		f_mli_field->SetValue(INT_TO_WXSTRING((int)(sel_frame->minimum_light_intensity * 100.0)));
+		f_bitmap_id->SetRange(-1, ((ShapesDocument*)view->GetDocument())->CollectionBitmapCount(selected_coll, selected_vers) - 1);
+		f_bitmap_id->SetValue(sel_frame->BitmapIndex());
+		f_xmirror_checkbox->SetValue(sel_frame->IsXmirrored());
+		f_ymirror_checkbox->SetValue(sel_frame->IsYmirrored());
+		f_keypoint_checkbox->SetValue(sel_frame->IsKeypointObscured());
+		f_origin_x_field->SetValue(INT_TO_WXSTRING(sel_frame->OriginX()));
+		f_origin_y_field->SetValue(INT_TO_WXSTRING(sel_frame->OriginY()));
+		f_key_x_field->SetValue(INT_TO_WXSTRING(sel_frame->KeyX()));
+		f_key_y_field->SetValue(INT_TO_WXSTRING(sel_frame->KeyY()));
+		f_scalefactor_field->SetValue(INT_TO_WXSTRING(sel_frame->ScaleFactor()));
+		f_mli_field->SetValue(INT_TO_WXSTRING((int)(sel_frame->MinimumLightIntensity() * 100.0)));
 		f_outer_sizer->Show(f_count_label, false);
 		f_outer_sizer->Show(f_edit_box, true);
-		edit_menu->SetLabel(wxID_DELETE, wxT("Delete frame"));
-		edit_menu->Enable(wxID_DELETE, true);
+		edit_menu->SetLabel(EDIT_MENU_DELETE, wxT("Delete frame"));
+		edit_menu->Enable(EDIT_MENU_DELETE, true);
 	}
 	f_outer_sizer->Layout();
-}
-
-void ShapesEditor::FrameDelete(wxCommandEvent &e)
-{
-	if (e.GetSelection() < 0)
-		return;
-	
-	fb->Freeze();
-	fb->Clear();    // FIXME just remove THAT frame
-	f_outer_sizer->Show(f_count_label, true);
-	f_outer_sizer->Show(f_edit_box, false);
-	f_view->SetFrame(NULL);
-	payload->DeleteFrame(selected_coll, selected_vers, e.GetSelection());
-	
-	unsigned int	frame_count = payload->CollFrameCount(selected_coll, selected_vers),
-					bitmap_count = payload->CollBitmapCount(selected_coll, selected_vers);
-	
-	for (unsigned int i = 0; i < bitmap_count; i++)
-		fb->AddBitmap(payload->GetBitmap(selected_coll, selected_vers, i));
-	for (unsigned int i = 0; i < frame_count; i++)
-		fb->AddFrame(payload->GetFrame(selected_coll, selected_vers, i));
-	fb->Thaw();
-
-	wxString    count_string;
-
-	count_string << frame_count << wxT(" frame");
-	if (frame_count != 1)
-		count_string << wxT("s");
-	f_count_label->SetLabel(count_string);
-	Layout();
 }
 
 void ShapesEditor::AskSaveBitmap(wxCommandEvent &e)
@@ -1483,8 +1289,8 @@ void ShapesEditor::AskSaveBitmap(wxCommandEvent &e)
 	if (dlg->ShowModal() == wxID_OK) {
 		// FIXME create an 8-bit bitmap with the exact color table,
 		// instead of wasting space with an RGB one
-		wxImage	img = ShpBitmapToImage(payload->GetBitmap(selected_coll, selected_vers, selected_bmp),
-										payload->GetColorTable(selected_coll, selected_vers, view_ct),
+		wxImage	img = ShapesBitmapToImage(((ShapesDocument*)view->GetDocument())->GetBitmap(selected_coll, selected_vers, selected_bmp),
+										((ShapesDocument*)view->GetDocument())->GetColorTable(selected_coll, selected_vers, view_ct),
 										!show_transparent_pixels);
 
 		img.SaveFile(dlg->GetPath(), wxBITMAP_TYPE_BMP);
@@ -1496,11 +1302,11 @@ void ShapesEditor::AskSaveBitmap(wxCommandEvent &e)
 void ShapesEditor::BitmapIndexSpin(wxSpinEvent &e)
 {
 	int			newid = e.GetPosition();
-	ShpFrame	*sel_frame = f_view->GetFrame();
+	ShapesFrame	*sel_frame = f_view->GetFrame();
 
 	if (sel_frame != NULL) {
-		sel_frame->bitmap_index = newid;
-		f_view->SetBitmap(payload->GetBitmap(selected_coll, selected_vers, newid));
+		sel_frame->SetBitmapIndex(newid);
+		f_view->SetBitmap(((ShapesDocument*)view->GetDocument())->GetBitmap(selected_coll, selected_vers, newid));
 		f_view->SetFrame(sel_frame);
 		fb->RebuildThumbnail(fb->GetSelection());
 		fb->Refresh();
@@ -1510,13 +1316,13 @@ void ShapesEditor::BitmapIndexSpin(wxSpinEvent &e)
 // checkbox toggle in the frame panel
 void ShapesEditor::ToggleFrameCheckboxes(wxCommandEvent &e)
 {
-	ShpFrame	*sel_frame = f_view->GetFrame();
+	ShapesFrame	*sel_frame = f_view->GetFrame();
 
 	if (sel_frame != NULL) {
 		switch (e.GetId()) {
-			case CB_XMIRROR:	sel_frame->x_mirror = e.IsChecked();			break;
-			case CB_YMIRROR:	sel_frame->y_mirror = e.IsChecked();			break;
-			case CB_KEYPOINT:	sel_frame->keypoint_obscured = e.IsChecked();	break;
+			case CB_XMIRROR:	sel_frame->SetXmirrored(e.IsChecked());			break;
+			case CB_YMIRROR:	sel_frame->SetYmirrored(e.IsChecked());			break;
+			case CB_KEYPOINT:	sel_frame->SetKeypointObscured(e.IsChecked());	break;
 		}
 		// update display
 		if (e.GetId() != CB_KEYPOINT) {
@@ -1530,7 +1336,7 @@ void ShapesEditor::ToggleFrameCheckboxes(wxCommandEvent &e)
 // user messed with fields in the frame panel
 void ShapesEditor::EditFrameFields(wxCommandEvent &e)
 {
-	ShpFrame	*sel_frame = f_view->GetFrame();
+	ShapesFrame	*sel_frame = f_view->GetFrame();
 	wxString	s = e.GetString();
 
 	if (sel_frame != NULL) {
@@ -1541,23 +1347,23 @@ void ShapesEditor::EditFrameFields(wxCommandEvent &e)
 
 			switch (e.GetId()) {
 				case FIELD_ORIGIN_X:
-					sel_frame->origin_x = v;
+					sel_frame->SetOriginX(v);
 					recalculate_world_fields = true;
 					break;
 				case FIELD_ORIGIN_Y:
-					sel_frame->origin_y = v;
+					sel_frame->SetOriginY(v);
 					recalculate_world_fields = true;
 					break;
 				case FIELD_KEY_X:
-					sel_frame->key_x = v;
+					sel_frame->SetKeyX(v);
 					recalculate_world_fields = true;
 					break;
 				case FIELD_KEY_Y:
-					sel_frame->key_y = v;
+					sel_frame->SetKeyY(v);
 					recalculate_world_fields = true;
 					break;
 				case FIELD_FRAME_SCALEFACTOR:
-					sel_frame->scale_factor = v;
+					sel_frame->SetScaleFactor(v);
 					recalculate_world_fields = true;
 					break;
 				case FIELD_MIN_LIGHT_INT:
@@ -1570,23 +1376,23 @@ void ShapesEditor::EditFrameFields(wxCommandEvent &e)
 						f_mli_field->SetValue(wxT("0"));
 						v = 0;
 					}
-					sel_frame->minimum_light_intensity = v / 100.0;
+					sel_frame->SetMinimumLightIntensity(v / 100.0);
 					break;
 			}
 			// recalculate world_* fields if needed and possible
-			if (recalculate_world_fields && sel_frame->bitmap_index >= 0
-					&& sel_frame->bitmap_index < (int)payload->CollBitmapCount(selected_coll, selected_vers)) {
-				ShpBitmap	*assoc_bitmap = payload->GetBitmap(selected_coll, selected_vers, sel_frame->bitmap_index);
-				int			w = assoc_bitmap->width,
-							h = assoc_bitmap->height,
-							scale_factor = sel_frame->scale_factor;
+			if (recalculate_world_fields && sel_frame->BitmapIndex() >= 0
+					&& sel_frame->BitmapIndex() < (int)((ShapesDocument*)view->GetDocument())->CollectionBitmapCount(selected_coll, selected_vers)) {
+				ShapesBitmap	*assoc_bitmap = ((ShapesDocument*)view->GetDocument())->GetBitmap(selected_coll, selected_vers, sel_frame->BitmapIndex());
+				int			w = assoc_bitmap->Width(),
+							h = assoc_bitmap->Height(),
+							scale_factor = sel_frame->ScaleFactor();
 
-				sel_frame->world_left = -scale_factor * sel_frame->origin_x;
-				sel_frame->world_top = scale_factor * sel_frame->origin_y;
-				sel_frame->world_right = scale_factor * (w - sel_frame->origin_x);
-				sel_frame->world_bottom = -scale_factor * (h - sel_frame->origin_y);
-				sel_frame->world_x0 = scale_factor * (sel_frame->key_x - sel_frame->origin_x);
-				sel_frame->world_y0 = -scale_factor * (sel_frame->key_y - sel_frame->origin_y);
+				sel_frame->SetWorldLeft(-scale_factor * sel_frame->OriginX());
+				sel_frame->SetWorldTop(scale_factor * sel_frame->OriginY());
+				sel_frame->SetWorldRight(scale_factor * (w - sel_frame->OriginX()));
+				sel_frame->SetWorldBottom(-scale_factor * (h - sel_frame->OriginY()));
+				sel_frame->SetWorldX0(scale_factor * (sel_frame->KeyX() - sel_frame->OriginX()));
+				sel_frame->SetWorldY0(-scale_factor * (sel_frame->KeyY() - sel_frame->OriginY()));
 			}
 			f_view->Refresh();
 		}
@@ -1597,7 +1403,7 @@ void ShapesEditor::EditFrameFields(wxCommandEvent &e)
 void ShapesEditor::DeleteSequence(wxCommandEvent &e)
 {
 	// first delete the sequence for real
-	payload->DeleteSequence(selected_coll, selected_vers, selected_sequence);
+	((ShapesDocument*)view->GetDocument())->DeleteSequence(selected_coll, selected_vers, selected_sequence);
 
 	// for updating the tree control we could just delete the selected
 	// sequence item, but then MyTreeItemData structures associated
@@ -1607,14 +1413,14 @@ void ShapesEditor::DeleteSequence(wxCommandEvent &e)
 
 	colltree->SelectItem(seqnode);
 	colltree->DeleteChildren(seqnode);
-	for (unsigned int k = 0; k < payload->CollSeqCount(selected_coll, selected_vers); k++) {
-		ShpSequence		*seq = payload->GetSeq(selected_coll, selected_vers, k);
+	for (unsigned int k = 0; k < ((ShapesDocument*)view->GetDocument())->CollectionSequenceCount(selected_coll, selected_vers); k++) {
+		ShapesSequence		*seq = ((ShapesDocument*)view->GetDocument())->GetSequence(selected_coll, selected_vers, k);
 		wxString		label;
 		MyTreeItemData	*seqdata = new MyTreeItemData(selected_coll, selected_vers, TREESECTION_SEQUENCES, k);
 
 		label << k;
-		if (strlen(seq->name) > 0)
-			label << wxT(" - ") << wxString(seq->name, seqnameconv);
+		if (seq->Name().Len() > 0)
+			label << wxT(" - ") << seq->Name();
 		colltree->AppendItem(seqnode, label, -1, -1, seqdata);
 	}
 
@@ -1625,27 +1431,27 @@ void ShapesEditor::DeleteSequence(wxCommandEvent &e)
 void ShapesEditor::EditSequenceType(wxCommandEvent &e)
 {
 	if (selected_sequence >= 0) {
-		ShpSequence	*sel_seq = payload->GetSeq(selected_coll, selected_vers, selected_sequence);
+		ShapesSequence	*sel_seq = ((ShapesDocument*)view->GetDocument())->GetSequence(selected_coll, selected_vers, selected_sequence);
 		int			real_nov;
 
 		// always use ANIMATED_4, ANIMATED_5, ANIMATED_8
 		// and never other values like ANIMATED_3TO4. Apparently
 		// nobody knows the real meaning of these values
 		switch (s_type_menu->GetSelection()) {
-			case 0:	sel_seq->number_of_views = UNANIMATED;	break;
-			case 1:	sel_seq->number_of_views = ANIMATED_1;	break;
-			case 2: sel_seq->number_of_views = ANIMATED_4;	break;
-			case 3:	sel_seq->number_of_views = ANIMATED_5;	break;
-			case 4:	sel_seq->number_of_views = ANIMATED_8;	break;
+			case 0:	sel_seq->SetNumberOfViews(UNANIMATED);	break;
+			case 1:	sel_seq->SetNumberOfViews(ANIMATED_1);	break;
+			case 2: sel_seq->SetNumberOfViews(ANIMATED_4);	break;
+			case 3:	sel_seq->SetNumberOfViews(ANIMATED_5);	break;
+			case 4:	sel_seq->SetNumberOfViews(ANIMATED_8);	break;
 		}
-		real_nov = CalcActualNumberOfViews(sel_seq->number_of_views);
+		real_nov = ActualNumberOfViews(sel_seq->NumberOfViews());
 //		s_nov_field->SetValue(INT_TO_WXSTRING(real_nov));
 		// init frame indexes to all invalid frames
 		// FIXME very annoying for the user, do better
-		sel_seq->frame_indexes.clear();
-		for (int i = 0; i < real_nov * sel_seq->frames_per_view; i++)
-			sel_seq->frame_indexes.push_back(-1);
-		s_fb->SetSeqParameters(sel_seq->number_of_views, sel_seq->frames_per_view, &sel_seq->frame_indexes);
+		sel_seq->mFrameIndexes.clear();
+		for (int i = 0; i < real_nov * sel_seq->FramesPerView(); i++)
+			sel_seq->mFrameIndexes.push_back(-1);
+		s_fb->SetSeqParameters(sel_seq->NumberOfViews(), sel_seq->FramesPerView(), &sel_seq->mFrameIndexes);
 	}
 }
 
@@ -1653,9 +1459,9 @@ void ShapesEditor::EditSequenceType(wxCommandEvent &e)
 void ShapesEditor::EditSequenceXferMode(wxCommandEvent &e)
 {
 	if (selected_sequence >= 0) {
-		ShpSequence	*sel_seq = payload->GetSeq(selected_coll, selected_vers, selected_sequence);
+		ShapesSequence	*sel_seq = ((ShapesDocument*)view->GetDocument())->GetSequence(selected_coll, selected_vers, selected_sequence);
 
-		sel_seq->transfer_mode = s_xfermode_menu->GetSelection();
+		sel_seq->SetTransferMode(s_xfermode_menu->GetSelection());
 	}
 }
 
@@ -1663,12 +1469,12 @@ void ShapesEditor::EditSequenceXferMode(wxCommandEvent &e)
 void ShapesEditor::EditSequenceFields(wxCommandEvent &e)
 {
 	if (selected_sequence >= 0) {
-		ShpSequence	*sel_seq = payload->GetSeq(selected_coll, selected_vers, selected_sequence);
+		ShapesSequence	*sel_seq = ((ShapesDocument*)view->GetDocument())->GetSequence(selected_coll, selected_vers, selected_sequence);
 		wxString	s = e.GetString();
 
 		if (sel_seq != NULL) {
 			if (e.GetId() == FIELD_SEQ_NAME) {
-				strncpy(sel_seq->name, s.mb_str(seqnameconv), 32);
+				sel_seq->SetName(s.Left(32));
 				// update the tree item label
 				wxTreeItemId		seqnode = GetSequencesTreeItem(selected_coll, selected_vers);
 				wxTreeItemIdValue	cookie;
@@ -1682,8 +1488,8 @@ void ShapesEditor::EditSequenceFields(wxCommandEvent &e)
 						wxString	blabel;
 
 						blabel << selected_sequence;
-						if (strlen(sel_seq->name) > 0)
-							blabel << wxT(" - ") << wxString(sel_seq->name, seqnameconv);
+						if (sel_seq->Name().Length() > 0)
+							blabel << wxT(" - ") << sel_seq->Name();
 						colltree->SetItemText(id, blabel);
 						break;
 					}
@@ -1697,51 +1503,51 @@ void ShapesEditor::EditSequenceFields(wxCommandEvent &e)
 					switch (e.GetId()) {
 						case FIELD_SEQ_FRAMES_PER_VIEW:
 							// must update the SequenceView too
-							if (v != sel_seq->frames_per_view) {
-								int		real_nov = CalcActualNumberOfViews(sel_seq->number_of_views),
-										old_fpv = sel_seq->frames_per_view;
+							if (v != sel_seq->FramesPerView()) {
+								int		real_nov = ActualNumberOfViews(sel_seq->NumberOfViews()),
+										old_fpv = sel_seq->FramesPerView();
 								short	old_indexes[real_nov * old_fpv];
 
 								for (int i = 0; i < real_nov * old_fpv; i++)
-									old_indexes[i] = sel_seq->frame_indexes[i];
-								sel_seq->frames_per_view = v;
+									old_indexes[i] = sel_seq->mFrameIndexes[i];
+								sel_seq->SetFramesPerView(v);
 								// try to preserve existing frame
 								// references as much as possible
-								sel_seq->frame_indexes.clear();
+								sel_seq->mFrameIndexes.clear();
 								for (int i = 0; i < real_nov; i++) {
 									for (int j = 0; j < v; j++) {
 										if (j < old_fpv)
-											sel_seq->frame_indexes.push_back(old_indexes[i*old_fpv + j]);
+											sel_seq->mFrameIndexes.push_back(old_indexes[i*old_fpv + j]);
 										else
-											sel_seq->frame_indexes.push_back(-1);
+											sel_seq->mFrameIndexes.push_back(-1);
 									}
 								}
-								s_fb->SetSeqParameters(sel_seq->number_of_views, v, &sel_seq->frame_indexes);
+								s_fb->SetSeqParameters(sel_seq->NumberOfViews(), v, &sel_seq->mFrameIndexes);
 							}
 							break;
 						case FIELD_SEQ_TICKS_PER_FRAME:
-							sel_seq->ticks_per_frame = v;
+							sel_seq->SetTicksPerFrame(v);
 							break;
 						case FIELD_SEQ_LOOP_FRAME:
-							sel_seq->loop_frame = v;
+							sel_seq->SetLoopFrame(v);
 							break;
 						case FIELD_SEQ_KEY_FRAME:
-							sel_seq->key_frame = v;
+							sel_seq->SetKeyFrame(v);
 							break;
 						case FIELD_SEQ_XFER_MODE_PERIOD:
-							sel_seq->transfer_mode_period = v;
+							sel_seq->SetTransferModePeriod(v);
 							break;
 						case FIELD_SEQ_FIRST_FRAME_SND:
-							sel_seq->first_frame_sound = v;
+							sel_seq->SetFirstFrameSound(v);
 							break;
 						case FIELD_SEQ_KEY_FRAME_SND:
-							sel_seq->key_frame_sound = v;
+							sel_seq->SetKeyFrameSound(v);
 							break;
 						case FIELD_SEQ_LAST_FRAME_SND:
-							sel_seq->last_frame_sound = v;
+							sel_seq->SetLastFrameSound(v);
 							break;
 						case FIELD_SEQ_SCALE_FACTOR:
-							sel_seq->pixels_to_world = v;
+							sel_seq->SetPixelsToWorld(v);
 							break;
 					}
 				}

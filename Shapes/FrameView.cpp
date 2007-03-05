@@ -67,12 +67,12 @@ void FrameView::OnPaint(wxPaintEvent& e)
 			tempdc.DrawBitmap(dec_bmp, origin_x, origin_y);
 			// mark bitmap origin
 			tempdc.SetPen(origin_pen);
-			tempdc.CrossHair(frame->origin_x + origin_x, frame->origin_y + origin_y);
-			tempdc.DrawCircle(frame->origin_x + origin_x, frame->origin_y + origin_y, 2);
+			tempdc.CrossHair(frame->OriginX() + origin_x, frame->OriginY() + origin_y);
+			tempdc.DrawCircle(frame->OriginX() + origin_x, frame->OriginY() + origin_y, 2);
 			// mark bitmap keypoint
 			tempdc.SetPen(key_pen);
-			tempdc.CrossHair(frame->key_x + origin_x, frame->key_y + origin_y);
-			tempdc.DrawCircle(frame->key_x + origin_x, frame->key_y + origin_y, 2);
+			tempdc.CrossHair(frame->KeyX() + origin_x, frame->KeyY() + origin_y);
+			tempdc.DrawCircle(frame->KeyX() + origin_x, frame->KeyY() + origin_y, 2);
 			// origin & key labels
 			wxString	origin_label = wxT("Origin"),
 						key_label = wxT("Keypoint");
@@ -82,15 +82,15 @@ void FrameView::OnPaint(wxPaintEvent& e)
 			tempdc.GetTextExtent(origin_label, &text1w, &text1h);
 			tempdc.GetTextExtent(key_label, &text2w, &text2h);
 			tempdc.SetTextForeground(wxColour(0, 128, 128));
-			if (frame->origin_y + origin_y >= text1h + 2)
-				tempdc.DrawText(origin_label, vw - text1w - 2, frame->origin_y + origin_y - text1h - 2);
+			if (frame->OriginY() + origin_y >= text1h + 2)
+				tempdc.DrawText(origin_label, vw - text1w - 2, frame->OriginY() + origin_y - text1h - 2);
 			else
-				tempdc.DrawText(origin_label, vw - text1w - 2, frame->origin_y + origin_y + 2);
+				tempdc.DrawText(origin_label, vw - text1w - 2, frame->OriginY() + origin_y + 2);
 			tempdc.SetTextForeground(wxColour(128, 0, 128));
-			if (frame->key_y + origin_y >= text2h + 2)
-				tempdc.DrawText(key_label, vw - text2w - 2, frame->key_y + origin_y - text2h - 2);
+			if (frame->KeyY() + origin_y >= text2h + 2)
+				tempdc.DrawText(key_label, vw - text2w - 2, frame->KeyY() + origin_y - text2h - 2);
 			else
-				tempdc.DrawText(key_label, vw - text2w - 2, frame->key_y + origin_y + 2);
+				tempdc.DrawText(key_label, vw - text2w - 2, frame->KeyY() + origin_y + 2);
 		} else {
 			wxString	no_bmp_label = wxT("No associated bitmap");
 			int			text_w, text_h,
@@ -139,8 +139,8 @@ void FrameView::OnDrag(wxMouseEvent &e)
 			GetViewStart(&scroll_x, &scroll_y);
 			origin_x = vw/2 - dec_bmp.GetWidth()/2;
 			origin_y = vh/2 - dec_bmp.GetHeight()/2;
-			frame->origin_x = e.GetPosition().x + scroll_x - origin_x;
-			frame->origin_y = e.GetPosition().y + scroll_y - origin_y;
+			frame->SetOriginX(e.GetPosition().x + scroll_x - origin_x);
+			frame->SetOriginY(e.GetPosition().y + scroll_y - origin_y);
 			// TODO generate event
 			Refresh();
 		} else if (dragging_key) {
@@ -151,8 +151,8 @@ void FrameView::OnDrag(wxMouseEvent &e)
 			GetViewStart(&scroll_x, &scroll_y);
 			origin_x = vw/2 - dec_bmp.GetWidth()/2;
 			origin_y = vh/2 - dec_bmp.GetHeight()/2;
-			frame->key_x = e.GetPosition().x + scroll_x - origin_x;
-			frame->key_y = e.GetPosition().y + scroll_y - origin_y;
+			frame->SetKeyX(e.GetPosition().x + scroll_x - origin_x);
+			frame->SetKeyY(e.GetPosition().y + scroll_y - origin_y);
 			// TODO generate event
 			Refresh();
 		}
@@ -174,11 +174,11 @@ void FrameView::OnDrag(wxMouseEvent &e)
 			dist_origin,
 			dist_keypoint;
 
-		delta_x = x - (frame->origin_x + origin_x);
-		delta_y = y - (frame->origin_y + origin_y);
+		delta_x = x - (frame->OriginX() + origin_x);
+		delta_y = y - (frame->OriginY() + origin_y);
 		dist_origin = delta_x*delta_x + delta_y*delta_y;
-		delta_x = x - (frame->key_x + origin_x);
-		delta_y = y - (frame->key_y + origin_y);
+		delta_x = x - (frame->KeyX() + origin_x);
+		delta_y = y - (frame->KeyY() + origin_y);
 		dist_keypoint = delta_x*delta_x + delta_y*delta_y;
 		// are we near origin or keypoint?
 		if (dist_origin < 25) {
@@ -199,11 +199,11 @@ void FrameView::OnDrag(wxMouseEvent &e)
 void FrameView::OnSize(wxSizeEvent &e)
 {
 	int cw, ch,
-		vw = (frame == NULL || enc_bmp == NULL) ? 0 : enc_bmp->width,
-		vh = (frame == NULL || enc_bmp == NULL) ? 0 : enc_bmp->height;
+		vw = (frame == NULL || enc_bmp == NULL) ? 0 : enc_bmp->Width(),
+		vh = (frame == NULL || enc_bmp == NULL) ? 0 : enc_bmp->Height();
 
 	GetClientSize(&cw, &ch);
-	if (enc_bmp != NULL && enc_bmp->pixels != NULL) {
+	if (enc_bmp != NULL && enc_bmp->Pixels() != NULL) {
 		if (vw < cw)
 			vw = cw;
 		if (vh < ch)
@@ -223,31 +223,31 @@ void FrameView::SetTranspPixelsDisplay(bool show)
 }
 
 // associate a frame
-void FrameView::SetFrame(ShpFrame *fp)
+void FrameView::SetFrame(ShapesFrame *fp)
 {
 	frame = fp;
 	SetBitmap(enc_bmp);
 	Refresh();
 }
 
-ShpFrame *FrameView::GetFrame(void) const
+ShapesFrame *FrameView::GetFrame(void) const
 {
 	return frame;
 }
 
 // associate a bitmap to display (we could do this in SetFrame
 // but we would need a pointer to the original Shapes object)
-void FrameView::SetBitmap(ShpBitmap *bp)
+void FrameView::SetBitmap(ShapesBitmap *bp)
 {
 	int	cw, ch;
 
 	GetClientSize(&cw, &ch);
 	if (bp != NULL) {
-		if (bp->pixels != NULL) {
+		if (bp->Pixels() != NULL) {
 			enc_bmp = bp;
 			// adjust sizes
-			int	vw = enc_bmp->width,
-				vh = enc_bmp->height;
+			int	vw = enc_bmp->Width(),
+				vh = enc_bmp->Height();
 
 			if (vw < cw)
 				vw = cw;
@@ -256,13 +256,13 @@ void FrameView::SetBitmap(ShpBitmap *bp)
 			SetVirtualSize(vw, vh);
 			// decode bitmap
 			if (ctable != NULL) {
-				wxImage	img = ShpBitmapToImage(bp, ctable, white_transparency);
+				wxImage	img = ShapesBitmapToImage(bp, ctable, white_transparency);
 
 				// apply transformations
 				if (frame) {
-					if (frame->x_mirror)
+					if (frame->IsXmirrored())
 						img = img.Mirror(true);
-					if (frame->y_mirror)
+					if (frame->IsYmirrored())
 						img = img.Mirror(false);
 				}
 				dec_bmp = wxBitmap(img);
@@ -279,7 +279,7 @@ void FrameView::SetBitmap(ShpBitmap *bp)
 }
 
 // call this before Set'tingBitmap!
-void FrameView::SetColorTable(ShpColorTable *ct)
+void FrameView::SetColorTable(ShapesColorTable *ct)
 {
 	ctable = ct;
 	SetBitmap(enc_bmp);

@@ -15,72 +15,64 @@
  * along with ShapeFusion; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
-//
-// FrameBrowser
-// A widget for displaying a list of ShpFrame's
-// as a scrollable list of selectable thumbnails. Each thumbnail
-// displays the frame's associated bitmap, altered with
-// the specified mirror transformations.
-// 
 #include <iostream>
 #include <math.h>
 #include "wx/image.h"
-#include "FrameBrowser.h"
+#include "BitmapBrowser.h"
 #include "utilities.h"
 
-DEFINE_EVENT_TYPE(wxEVT_FRAMEBROWSER)
-DEFINE_EVENT_TYPE(wxEVT_FRAMEBROWSER_DELETE)
+DEFINE_EVENT_TYPE(wxEVT_BITMAPBROWSER)
+DEFINE_EVENT_TYPE(wxEVT_BITMAPBROWSER_DELETE)
 
-BEGIN_EVENT_TABLE(FrameBrowser, wxScrolledWindow)
-	EVT_PAINT(FrameBrowser::OnPaint)
-	EVT_SIZE(FrameBrowser::OnSize)
-	EVT_LEFT_DOWN(FrameBrowser::OnMouseDown)
-	EVT_RIGHT_DOWN(FrameBrowser::OnMouseDown)
-	EVT_KEY_DOWN(FrameBrowser::OnKeyDown)
+BEGIN_EVENT_TABLE(BitmapBrowser, wxScrolledWindow)
+	EVT_PAINT(BitmapBrowser::OnPaint)
+	EVT_SIZE(BitmapBrowser::OnSize)
+	EVT_LEFT_DOWN(BitmapBrowser::OnMouseDown)
+	EVT_RIGHT_DOWN(BitmapBrowser::OnMouseDown)
+	EVT_KEY_DOWN(BitmapBrowser::OnKeyDown)
 END_EVENT_TABLE()
 
-FrameBrowser::FrameBrowser(wxWindow *parent, wxWindowID id):
+BitmapBrowser::BitmapBrowser(wxWindow *parent, wxWindowID id):
 	wxScrolledWindow(parent, id, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER),
-	ctable(NULL), num_cols(0), num_rows(0), frozen_count(0)
+	ctable(NULL), selection(-1), num_cols(0), num_rows(0), frozen_count(0)
 {
 	SetBackgroundColour(wxColour(255, 255, 255));
 	tn_pen.SetColour(200, 200, 200);
 	selection_pen.SetColour(0, 0, 0);
 	selection_pen.SetWidth(3);
-	invisible_pen.SetColour(255, 255, 255);
+	invisible_pen.SetColour(0, 0, 0);
+	invisible_pen.SetStyle(wxTRANSPARENT);
 	SetScrollRate(0, 2);
 	tn_size = 64;
-	auto_size = false;
 	margin = 7;
 	white_transparency = true;
-	selection = -1;
+	auto_size = false;
 }
 
-void FrameBrowser::OnPaint(wxPaintEvent& e)
+void BitmapBrowser::OnPaint(wxPaintEvent& e)
 {
 	wxPaintDC   tempdc(this);
 	int			cw, ch, rx, ry;
 
 	DoPrepareDC(tempdc);
-	// fill with white
 	GetClientSize(&cw, &ch);
 	CalcUnscrolledPosition(0, 0, &rx, &ry);
 	// draw thumbnails
 	tempdc.SetPen(tn_pen);
 	tempdc.SetBrush(*wxTRANSPARENT_BRUSH);
-	for (unsigned int i = 0; i < thumbnails.size(); i++) {
+	for (int i = 0; i < (int)thumbnails.size(); i++) {
 		int	x = tn_positions[i].x,
 			y = tn_positions[i].y;
-			
+
 		if (y + tn_size < ry)
 			continue;
 		if (y > ry + ch)
 			break;
-
+			
 		int	bw = thumbnails[i].GetWidth(),
 			bh = thumbnails[i].GetHeight();
 
-		if ((int)i == selection) {
+		if (i == selection) {
 			tempdc.DrawBitmap(thumbnails[i], x + tn_size/2 - bw/2, y + tn_size/2 - bh/2);
 			tempdc.SetPen(selection_pen);
 			tempdc.DrawRectangle(x-2, y-2, tn_size+4, tn_size+4);
@@ -93,12 +85,13 @@ void FrameBrowser::OnPaint(wxPaintEvent& e)
 }
 
 // widget resized, recalculate virtual size to correctly wrap thumbnails
-void FrameBrowser::OnSize(wxSizeEvent& e)
+void BitmapBrowser::OnSize(wxSizeEvent& e)
 {
 	UpdateVirtualSize();
 }
 
-void FrameBrowser::OnMouseDown(wxMouseEvent& e)
+// handle clicks received by the widget
+void BitmapBrowser::OnMouseDown(wxMouseEvent& e)
 {
 	wxClientDC	dc(this);
 	wxPoint		mouse;
@@ -107,7 +100,7 @@ void FrameBrowser::OnMouseDown(wxMouseEvent& e)
 	mouse = e.GetLogicalPosition(dc);
 	switch (e.GetButton()) {
 		case wxMOUSE_BTN_LEFT:
-			// handle frame selection
+			// handle bitmap selection
 			{
 				int	new_selection = -1;
 
@@ -124,7 +117,7 @@ void FrameBrowser::OnMouseDown(wxMouseEvent& e)
 					Refresh();
 
 					// send selection event
-					wxCommandEvent	event(wxEVT_FRAMEBROWSER, GetId());
+					wxCommandEvent	event(wxEVT_BITMAPBROWSER, GetId());
 
 					event.SetEventObject(this);
 					event.SetInt(selection);
@@ -138,7 +131,8 @@ void FrameBrowser::OnMouseDown(wxMouseEvent& e)
 	e.Skip();
 }
 
-void FrameBrowser::OnKeyDown(wxKeyEvent &e)
+// handle keydown events
+void BitmapBrowser::OnKeyDown(wxKeyEvent &e)
 {
 	switch (e.GetKeyCode()) {
 		case WXK_LEFT:
@@ -146,9 +140,9 @@ void FrameBrowser::OnKeyDown(wxKeyEvent &e)
 		case WXK_UP:
 		case WXK_DOWN:
 			{
-				int new_selection = selection;
+				int	new_selection = selection;
 
-				if (selection >= 0 && selection < (int)frames.size()) {
+				if (selection >= 0 && selection < (int)shp_bitmaps.size()) {
 					switch (e.GetKeyCode()) {
 						case WXK_LEFT:
 							if (selection % num_cols > 0)
@@ -167,18 +161,18 @@ void FrameBrowser::OnKeyDown(wxKeyEvent &e)
 								new_selection += num_cols;
 							break;
 					}
-				} else if (frames.size() > 0) {
+				} else if (shp_bitmaps.size() > 0) {
 					new_selection = 0;
 				}
 				if (new_selection != selection && new_selection >= 0
-						&& new_selection < (int)frames.size()) {
+						&& new_selection < (int)shp_bitmaps.size()) {
 					// TODO scroll to show the new selection
 					selection = new_selection;
 					Refresh();
-					
-					// send frame selection event
-					wxCommandEvent  event(wxEVT_FRAMEBROWSER, GetId());
-					
+
+					// send bitmap selection event
+					wxCommandEvent	event(wxEVT_BITMAPBROWSER, GetId());
+
 					event.SetEventObject(this);
 					event.SetInt(selection);
 					GetEventHandler()->ProcessEvent(event);
@@ -186,9 +180,9 @@ void FrameBrowser::OnKeyDown(wxKeyEvent &e)
 			}
 			break;
 		case WXK_DELETE:
-			// send a frame delete event
-			if (selection >= 0 && selection < (int)frames.size()) {
-				wxCommandEvent	event(wxEVT_FRAMEBROWSER_DELETE, GetId());
+			// send a bitmap delete event
+			if (selection >= 0 && selection < (int)shp_bitmaps.size()) {
+				wxCommandEvent	event(wxEVT_BITMAPBROWSER_DELETE, GetId());
 
 				event.SetEventObject(this);
 				event.SetInt(selection);
@@ -205,12 +199,12 @@ void FrameBrowser::OnKeyDown(wxKeyEvent &e)
 // responsive interface. Otherwise we would be doing bursts
 // of UpdateVirtualSize() and potentially RebuildThumbnails()
 // every time the user changes collection
-void FrameBrowser::Freeze(void)
+void BitmapBrowser::Freeze(void)
 {
 	frozen_count++;
 }
 
-void FrameBrowser::Thaw(void)
+void BitmapBrowser::Thaw(void)
 {
 	if (frozen_count > 0) {
 		frozen_count--;
@@ -221,12 +215,13 @@ void FrameBrowser::Thaw(void)
 	}
 }
 
-int FrameBrowser::GetSelection(void) const
+int BitmapBrowser::GetSelection(void) const
 {
 	return selection;
 }
 
-void FrameBrowser::SetThumbnailSize(int size)
+// set the thumbnail size in pixels. Specify -1 to enable best-fit mode.
+void BitmapBrowser::SetThumbnailSize(int size)
 {
 	if (size > 0) {
 		tn_size = size;
@@ -242,7 +237,7 @@ void FrameBrowser::SetThumbnailSize(int size)
 	}
 }
 
-void FrameBrowser::SetTranspPixelsDisplay(bool show)
+void BitmapBrowser::SetTranspPixelsDisplay(bool show)
 {
 	white_transparency = show;
 	if (frozen_count == 0) {
@@ -251,47 +246,37 @@ void FrameBrowser::SetTranspPixelsDisplay(bool show)
 	}
 }
 
-// add a new ShpFrame to the thumbnail list
-void FrameBrowser::AddFrame(ShpFrame *fp)
+// add a new ShapesBitmap to the thumbnail list
+void BitmapBrowser::AddBitmap(ShapesBitmap *bp)
 {
-	if (fp != NULL) {
-		frames.push_back(fp);
-		thumbnails.push_back(CreateThumbnail(fp));
-		if (frozen_count == 0) {
-			UpdateVirtualSize();
-			Refresh();
+	if (bp != NULL) {
+		if (bp->Pixels() != NULL) {
+			shp_bitmaps.push_back(bp);
+			thumbnails.push_back(CreateThumbnail(bp));
+			if (frozen_count == 0) {
+				UpdateVirtualSize();
+				Refresh();
+			}
+		} else {
+			std::cerr << "[BitmapBrowser] Someone tried to add a bitmap with NULL pixels\n";
 		}
 	}
 }
 
-// add a ShpBitmap to the bitmap pointer list.
-// Call before adding frames!
-void FrameBrowser::AddBitmap(ShpBitmap *bp)
-{
-	if (bp != NULL) {
-		if (bp->pixels != NULL)
-			bitmaps.push_back(bp);
-		else
-			std::cerr << "FrameBrowser: someone tried to add a bitmap with NULL pixels\n";
-	}
-}
-
 // clear the thumbnail list
-void FrameBrowser::Clear(void)
+void BitmapBrowser::Clear(void)
 {
 	thumbnails.clear();
-	frames.clear();
-	bitmaps.clear();
+	shp_bitmaps.clear();
 	tn_positions.clear();
 	selection = -1;
-	if (frozen_count == 0) {
-		UpdateVirtualSize();
+	UpdateVirtualSize();
+	if (frozen_count == 0)
 		Refresh();
-	}
 }
 
-// call before adding frames!
-void FrameBrowser::SetColorTable(ShpColorTable *ct)
+// call before adding bitmaps!
+void BitmapBrowser::SetColorTable(ShapesColorTable *ct)
 {
 	ctable = ct;
 	if (frozen_count == 0) {
@@ -303,47 +288,42 @@ void FrameBrowser::SetColorTable(ShpColorTable *ct)
 // calculate and set the wxWindow virtual size, based on the
 // number of thumbnails, thumbnail dimensions and given visible
 // size. Also pre-calculate thumbnail positions
-void FrameBrowser::UpdateVirtualSize(void)
+void BitmapBrowser::UpdateVirtualSize(void)
 {
 	wxClientDC	dc(this);
-	int			numframes = thumbnails.size(),
+	int			numbitmaps = thumbnails.size(),
 				width, height;
 
 	GetClientSize(&width, &height);
-	if (numframes < 1) {
+	if (numbitmaps < 1) {
 		SetVirtualSize(0, 0);
 		return;
 	}
 
-	if (auto_size && numframes > 0) {
+	if (auto_size) {
 		// calculate the best tn_size
 		// (its maximum value not requiring window scrolling)
 		int	max_bitmap_dimension = 10,
 			new_tn_size;
 
 		SetScrollRate(0, 0);
-		// find greatest dimension among all referenced bitmaps
-		for (unsigned int i = 0; i < frames.size(); i++) {
-			int	bitmapindex = frames[i]->bitmap_index;
-
-			if (bitmapindex < 0 || bitmapindex >= (int)bitmaps.size())
-				continue;
-			if (bitmaps[bitmapindex]->width > max_bitmap_dimension)
-				max_bitmap_dimension = bitmaps[bitmapindex]->width;
-			if (bitmaps[bitmapindex]->height > max_bitmap_dimension)
-				max_bitmap_dimension = bitmaps[bitmapindex]->height;
+		// find greatest dimension among all bitmaps
+		for (unsigned int i = 0; i < shp_bitmaps.size(); i++) {
+			if (shp_bitmaps[i]->Width() > max_bitmap_dimension)
+				max_bitmap_dimension = shp_bitmaps[i]->Width();
+			if (shp_bitmaps[i]->Height() > max_bitmap_dimension)
+				max_bitmap_dimension = shp_bitmaps[i]->Height();
 		}
-		// start with a small size (margin) and increase it until overflow
+		// FIXME a better algorythm, without looping?
 		for (new_tn_size = margin; ; new_tn_size++) {
 			int	numcols = (width - margin) / (new_tn_size + margin),
-				numrows = (numcols > 0) ? (numframes / numcols) : numframes;
+				numrows = (numcols > 0) ? (numbitmaps / numcols) : numbitmaps;
 
-			if (numrows * numcols < numframes)
+			if (numrows * numcols < numbitmaps)
 				numrows++;
 			int	total_height = numrows * (new_tn_size + margin) + margin;
 
 			if (total_height > height || (new_tn_size + 2 * margin) > width) {
-				// here we are
 				new_tn_size--;
 				break;
 			}
@@ -363,9 +343,9 @@ void FrameBrowser::UpdateVirtualSize(void)
 	}
 
 	num_cols = (width - margin) / (tn_size + margin);
-	num_rows = (num_cols > 0) ? (numframes / num_cols) : numframes;
+	num_rows = (num_cols > 0) ? (numbitmaps / num_cols) : numbitmaps;
 
-	if (num_rows * num_cols < numframes)
+	if (num_rows * num_cols < numbitmaps)
 		num_rows++;
 
 	SetVirtualSize(width, num_rows * (tn_size + margin) + margin);
@@ -375,7 +355,7 @@ void FrameBrowser::UpdateVirtualSize(void)
 		y = margin;
 
 	tn_positions.clear();
-	for (int i = 0; i < numframes; i++) {
+	for (unsigned int i = 0; i < thumbnails.size(); i++) {
 		tn_positions.push_back(wxPoint(x, y));
 
 		x += tn_size + margin;
@@ -386,41 +366,28 @@ void FrameBrowser::UpdateVirtualSize(void)
 	}
 }
 
-// transform an ShpFrame to a wxBitmap thumbnail
-wxBitmap FrameBrowser::CreateThumbnail(ShpFrame *fp)
+// transform an ShapesBitmap to a wxBitmap thumbnail
+wxBitmap BitmapBrowser::CreateThumbnail(ShapesBitmap *bp)
 {
-	if (fp->bitmap_index < 0 || fp->bitmap_index >= (int)bitmaps.size()) {
-		// invalid or unset bitmap
-		return BadThumbnail(tn_size);
-	} else {
-		// valid bitmap
-		ShpBitmap	*bp = bitmaps[fp->bitmap_index];
-		wxImage		newimg(bp->width, bp->height);
-
-		// decode the bitmap to a wxImage
-		if (ctable)
-			newimg = ShpBitmapToImage(bp, ctable, white_transparency);
-
-		// apply frame transformations
-		if (fp->x_mirror)
-			newimg = newimg.Mirror(true);
-		if (fp->y_mirror)
-			newimg = newimg.Mirror(false);
-
-		return ImageThumbnail(newimg, tn_size, true);
-	}
+	wxImage newimg;
+	if (ctable)
+		newimg = ShapesBitmapToImage(bp, ctable, white_transparency);
+	return ImageThumbnail(newimg, tn_size, true);
 }
 
-void FrameBrowser::RebuildThumbnail(unsigned int i)
+void BitmapBrowser::RebuildThumbnail(unsigned int i)
 {
-	if (i < thumbnails.size() && i < frames.size())
-		thumbnails[i] = CreateThumbnail(frames[i]);
+	if (i < thumbnails.size() && i < shp_bitmaps.size())
+		thumbnails[i] = CreateThumbnail(shp_bitmaps[i]);
 }
 
-// redecode frames to bitmaps (after color table change, frame parameter variations etc)
-void FrameBrowser::RebuildThumbnails(void)
+// just re-decode the ShapesBitmaps to their thumbnail previews,
+// without touching window sizes or thumbnail positions.
+// Useful to update the display at the end of SetColorTable or after
+// altering the ShapesBitmaps
+void BitmapBrowser::RebuildThumbnails(void)
 {
-	for (unsigned int i = 0; i < frames.size(); i++)
-		thumbnails[i] = CreateThumbnail(frames[i]);
+	for (unsigned int i = 0; i < shp_bitmaps.size(); i++)
+		thumbnails[i] = CreateThumbnail(shp_bitmaps[i]);
 }
 

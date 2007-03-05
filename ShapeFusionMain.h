@@ -15,19 +15,28 @@
  * along with ShapeFusion; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
-#ifndef UTILITIES_H
-#define UTILITIES_H
 
-#include "wx/wxprec.h"
-#ifndef WX_PRECOMP
-    #include "wx/wx.h"
+#ifndef __FUSIONMAIN_H__
+#define __FUSIONMAIN_H__
+
+#include "wx/docview.h"
+
+// Define a new frame
+class MyCanvas;
+class ShapeFusionMain: public wxDocParentFrame
+{
+    DECLARE_CLASS(FusionMain)
+public:
+    wxMenu *editMenu;
+    
+    ShapeFusionMain(wxDocManager *manager, wxFrame *frame, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size,
+        const long type);
+    
+    void OnAbout(wxCommandEvent& event);
+	void OnMenuHistory(wxCommandEvent& event);
+    
+    DECLARE_EVENT_TABLE()
+};
+
 #endif
-#include "wx/image.h"
-#include "Shapes.h"
 
-wxImage ShpBitmapToImage(ShpBitmap *bp, ShpColorTable *ct, bool white_transparency);
-wxBitmap ImageThumbnail(wxImage &img, int tn_size, bool filtering);
-wxBitmap BadThumbnail(int tn_size);
-void RGB2HSV(float r, float g, float b, float *hue, float *sat, float *val);
-
-#endif

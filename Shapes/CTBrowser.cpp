@@ -66,12 +66,12 @@ void CTBrowser::OnPaint(wxPaintEvent& e)
 		}
 		// draw a square for each color
 		for (unsigned int j = 0; j < colors_per_table; j++) {
-			brush.SetColour(cts[i]->colors[j].red >> 8,
-							cts[i]->colors[j].green >> 8,
-							cts[i]->colors[j].blue >> 8);
+			brush.SetColour(cts[i]->GetColor(j)->Red() >> 8,
+							cts[i]->GetColor(j)->Green() >> 8,
+							cts[i]->GetColor(j)->Blue() >> 8);
 			tempdc.SetBrush(brush);
 			tempdc.DrawRectangle(x, y, sample_w, sample_h);
-			if (cts[i]->colors[j].self_luminescent) {
+			if (cts[i]->GetColor(j)->Luminescent()) {
 				// display the self-luminescent color flag
 				tempdc.SetBrush(*wxWHITE_BRUSH);
 				tempdc.DrawRectangle(x + 2, y + 2, 2, 2);
@@ -158,12 +158,12 @@ void CTBrowser::OnKeyDown(wxKeyEvent &e)
 	}
 }
 
-// add a new ShpColorTable to the list
-void CTBrowser::AddColorTable(ShpColorTable *ctp)
+// add a new ShapesColorTable to the list
+void CTBrowser::AddColorTable(ShapesColorTable *ctp)
 {
 	if (ctp == NULL)
 		return;
-	colors_per_table = ctp->colors.size();
+	colors_per_table = ctp->ColorCount();
 	cts.push_back(ctp);
 	UpdateVirtualSize();
 	Refresh();
