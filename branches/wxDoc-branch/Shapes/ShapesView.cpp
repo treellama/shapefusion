@@ -625,34 +625,76 @@ void ShapesView::MenuFileQuit(wxCommandEvent &e)
 	Close(false);
 }*/
 
-// TODO
+// handle the Edit->Delete command (which is context-sensitive)
 void ShapesView::MenuEditDelete(wxCommandEvent &e)
 {
-	// delete selected color table, bitmap, frame or sequence
-	int	selection = bb->GetSelection();
+	wxTreeItemId	selected_item = colltree->GetSelection();
+	MyTreeItemData	*item_data = dynamic_cast<MyTreeItemData *>(colltree->GetItemData(selected_item));
 
-	if (selection > -1) {
-		// the user interface update should be nearly identical to the TreeSelect case
-		bb->Freeze();
-		bb->Clear();	// FIXME just remove THAT bitmap!
-		b_outer_sizer->Show(b_count_label, true);
-		b_outer_sizer->Show(b_edit_box, false);
-		b_view->SetBitmap(NULL);
-		((ShapesDocument*)GetDocument())->DeleteBitmap(selected_coll, selected_vers, selection);
+	if (item_data != NULL) {
+		int	selection;
 
-		unsigned int	bitmap_count = ((ShapesDocument*)((ShapesDocument*)GetDocument()))->CollectionBitmapCount(selected_coll, selected_vers);
+		// what should we delete?
+		switch (item_data->Section()) {
+			case TREESECTION_BITMAPS:
+				// delete selected bitmap if any
+				selection = bb->GetSelection();
+				if (selection > -1) {
+					// the user interface update should be nearly identical to the TreeSelect case
+					bb->Freeze();
+					bb->Clear();	// FIXME just remove THAT bitmap!
+					b_outer_sizer->Show(b_count_label, true);
+					b_outer_sizer->Show(b_edit_box, false);
+					b_view->SetBitmap(NULL);
+					((ShapesDocument*)GetDocument())->DeleteBitmap(selected_coll, selected_vers, selection);
 
-		for (unsigned int i = 0; i < bitmap_count; i++)
-			bb->AddBitmap(((ShapesDocument*)GetDocument())->GetBitmap(selected_coll, selected_vers, i));
-		bb->Thaw();
+					unsigned int	bitmap_count = ((ShapesDocument*)GetDocument())->CollectionBitmapCount(selected_coll, selected_vers);
 
-		wxString	count_string;
+					for (unsigned int i = 0; i < bitmap_count; i++)
+						bb->AddBitmap(((ShapesDocument*)GetDocument())->GetBitmap(selected_coll, selected_vers, i));
+					bb->Thaw();
+
+					wxString	count_string;
 		
-		count_string << bitmap_count << wxT(" bitmap");
-		if (bitmap_count != 1)
-			count_string << wxT("s");
-		b_count_label->SetLabel(count_string);
-		frame->Layout();
+					count_string << bitmap_count << wxT(" bitmap");
+					if (bitmap_count != 1)
+						count_string << wxT("s");
+					b_count_label->SetLabel(count_string);
+					frame->Layout();
+				}
+				break;
+			case TREESECTION_FRAMES:
+				// delete selected frame if any
+				selection = fb->GetSelection();
+				if (selection > -1) {
+					fb->Freeze();
+					fb->Clear();    // FIXME just remove THAT frame
+					f_outer_sizer->Show(f_count_label, true);
+					f_outer_sizer->Show(f_edit_box, false);
+					f_view->SetFrame(NULL);
+					((ShapesDocument*)GetDocument())->DeleteFrame(selected_coll, selected_vers, selection);
+
+					unsigned int	frame_count = ((ShapesDocument*)GetDocument())->CollectionFrameCount(selected_coll, selected_vers),
+									bitmap_count = ((ShapesDocument*)GetDocument())->CollectionBitmapCount(selected_coll, selected_vers);
+
+					for (unsigned int i = 0; i < bitmap_count; i++)
+						fb->AddBitmap(((ShapesDocument*)GetDocument())->GetBitmap(selected_coll, selected_vers, i));
+					for (unsigned int i = 0; i < frame_count; i++)
+						fb->AddFrame(((ShapesDocument*)GetDocument())->GetFrame(selected_coll, selected_vers, i));
+					fb->Thaw();
+
+					wxString    count_string;
+
+					count_string << frame_count << wxT(" frame");
+					if (frame_count != 1)
+						count_string << wxT("s");
+					f_count_label->SetLabel(count_string);
+					frame->Layout();
+				}
+				break;
+			case TREESECTION_SEQUENCES:
+				break;
+		}
 	}
 }
 

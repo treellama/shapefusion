@@ -7,14 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1F4F0F7E0B935530002777F8 /* MyTreeItemData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F08B4B790AB0AE4B00896399 /* MyTreeItemData.cpp */; };
 		1F536BAC0B93426B00F51E49 /* BitmapBrowser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F08B4B7E0AB0AE4B00896399 /* BitmapBrowser.cpp */; };
 		1F536BAD0B93426C00F51E49 /* BitmapView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F08B4B7D0AB0AE4B00896399 /* BitmapView.cpp */; };
 		1F536BAE0B93426C00F51E49 /* CTBrowser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F08B4B7C0AB0AE4B00896399 /* CTBrowser.cpp */; };
 		1F536BAF0B93426D00F51E49 /* FrameBrowser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F08B4B7B0AB0AE4B00896399 /* FrameBrowser.cpp */; };
 		1F536BB00B93426E00F51E49 /* FrameView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F08B4B7A0AB0AE4B00896399 /* FrameView.cpp */; };
 		1F536BB10B93426F00F51E49 /* SequenceView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F0966E020B551E4900820E4F /* SequenceView.cpp */; };
-		1F536BF20B9344B300F51E49 /* utilities.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F08B4B800AB0AE4B00896399 /* utilities.cpp */; };
 		1F6C5E070B80E37800628F07 /* wx.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F6C5E060B80E37800628F07 /* wx.framework */; };
 		1F9857330B8A2CDC00D0395F /* ShapeFusionMain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F98572F0B8A2CDC00D0395F /* ShapeFusionMain.cpp */; };
 		1F9857340B8A2CDC00D0395F /* ShapeFusionMenus.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F9857310B8A2CDC00D0395F /* ShapeFusionMenus.cpp */; };
@@ -22,6 +20,8 @@
 		1F9857EB0B8A39BF00D0395F /* ShapesView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F9857E80B8A39BF00D0395F /* ShapesView.cpp */; };
 		1FAD07400B94409100E04604 /* ShapesElements.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FAD073D0B94409100E04604 /* ShapesElements.cpp */; };
 		1FD941E10B92D5CD00DD1EEC /* BigEndianBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F096F44E0AD2DD97005A633A /* BigEndianBuffer.cpp */; };
+		1FEDD4630B9C3F9D00D69B62 /* MyTreeItemData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FEDD45F0B9C3F9D00D69B62 /* MyTreeItemData.cpp */; };
+		1FEDD4640B9C3F9D00D69B62 /* utilities.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FEDD4610B9C3F9D00D69B62 /* utilities.cpp */; };
 		F08B4C5A0AB0B31E00896399 /* ShapeFusionApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F08B4B780AB0AE4B00896399 /* ShapeFusionApp.cpp */; };
 		F08B4C650AB0B39200896399 /* wxmac.icns in Resources */ = {isa = PBXBuildFile; fileRef = F08B4B760AB0AE2000896399 /* wxmac.icns */; };
 /* End PBXBuildFile section */
@@ -50,24 +50,24 @@
 		1F9857E90B8A39BF00D0395F /* ShapesView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ShapesView.h; sourceTree = "<group>"; };
 		1FAD073D0B94409100E04604 /* ShapesElements.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = ShapesElements.cpp; sourceTree = "<group>"; };
 		1FAD073E0B94409100E04604 /* ShapesElements.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ShapesElements.h; sourceTree = "<group>"; };
+		1FEDD45F0B9C3F9D00D69B62 /* MyTreeItemData.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = MyTreeItemData.cpp; sourceTree = "<group>"; };
+		1FEDD4600B9C3F9D00D69B62 /* MyTreeItemData.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = MyTreeItemData.h; sourceTree = "<group>"; };
+		1FEDD4610B9C3F9D00D69B62 /* utilities.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = utilities.cpp; sourceTree = "<group>"; };
+		1FEDD4620B9C3F9D00D69B62 /* utilities.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = utilities.h; sourceTree = "<group>"; };
 		F08B4B760AB0AE2000896399 /* wxmac.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = wxmac.icns; path = /Library/Frameworks/wx.framework/Versions/2.8/Resources/wxmac.icns; sourceTree = "<absolute>"; };
 		F08B4B780AB0AE4B00896399 /* ShapeFusionApp.cpp */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.cpp.cpp; path = ShapeFusionApp.cpp; sourceTree = "<group>"; };
-		F08B4B790AB0AE4B00896399 /* MyTreeItemData.cpp */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.cpp.cpp; path = MyTreeItemData.cpp; sourceTree = "<group>"; };
 		F08B4B7A0AB0AE4B00896399 /* FrameView.cpp */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.cpp.cpp; path = FrameView.cpp; sourceTree = "<group>"; };
 		F08B4B7B0AB0AE4B00896399 /* FrameBrowser.cpp */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.cpp.cpp; path = FrameBrowser.cpp; sourceTree = "<group>"; };
 		F08B4B7C0AB0AE4B00896399 /* CTBrowser.cpp */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.cpp.cpp; path = CTBrowser.cpp; sourceTree = "<group>"; };
 		F08B4B7D0AB0AE4B00896399 /* BitmapView.cpp */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.cpp.cpp; path = BitmapView.cpp; sourceTree = "<group>"; };
 		F08B4B7E0AB0AE4B00896399 /* BitmapBrowser.cpp */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.cpp.cpp; path = BitmapBrowser.cpp; sourceTree = "<group>"; };
-		F08B4B800AB0AE4B00896399 /* utilities.cpp */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.cpp.cpp; path = utilities.cpp; sourceTree = "<group>"; };
 		F08B4B810AB0AE4B00896399 /* ShapesEditor.cpp */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.cpp.cpp; path = ShapesEditor.cpp; sourceTree = "<group>"; };
 		F08B4B820AB0AE6C00896399 /* ShapeFusionApp.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 5; path = ShapeFusionApp.h; sourceTree = "<group>"; };
-		F08B4B830AB0AE6C00896399 /* MyTreeItemData.h */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.c.h; path = MyTreeItemData.h; sourceTree = "<group>"; };
 		F08B4B840AB0AE6C00896399 /* FrameView.h */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.c.h; path = FrameView.h; sourceTree = "<group>"; };
 		F08B4B850AB0AE6C00896399 /* FrameBrowser.h */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.c.h; path = FrameBrowser.h; sourceTree = "<group>"; };
 		F08B4B860AB0AE6C00896399 /* CTBrowser.h */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.c.h; path = CTBrowser.h; sourceTree = "<group>"; };
 		F08B4B870AB0AE6C00896399 /* BitmapView.h */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.c.h; path = BitmapView.h; sourceTree = "<group>"; };
 		F08B4B880AB0AE6C00896399 /* BitmapBrowser.h */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.c.h; path = BitmapBrowser.h; sourceTree = "<group>"; };
-		F08B4B8A0AB0AE6C00896399 /* utilities.h */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.c.h; path = utilities.h; sourceTree = "<group>"; };
 		F08B4C360AB0B06D00896399 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
 		F08B4C370AB0B09A00896399 /* System.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = System.framework; path = /System/Library/Frameworks/System.framework; sourceTree = "<absolute>"; };
 		F08B4C440AB0B10000896399 /* ShapeFusion.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ShapeFusion.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -115,6 +115,10 @@
 				F08B4B880AB0AE6C00896399 /* BitmapBrowser.h */,
 				F0966E020B551E4900820E4F /* SequenceView.cpp */,
 				F0966E040B551E5100820E4F /* SequenceView.h */,
+				1FEDD45F0B9C3F9D00D69B62 /* MyTreeItemData.cpp */,
+				1FEDD4600B9C3F9D00D69B62 /* MyTreeItemData.h */,
+				1FEDD4610B9C3F9D00D69B62 /* utilities.cpp */,
+				1FEDD4620B9C3F9D00D69B62 /* utilities.h */,
 			);
 			path = Shapes;
 			sourceTree = "<group>";
@@ -142,10 +146,6 @@
 				1F9857300B8A2CDC00D0395F /* ShapeFusionMain.h */,
 				F096F44E0AD2DD97005A633A /* BigEndianBuffer.cpp */,
 				F096F4500AD2DD9F005A633A /* BigEndianBuffer.h */,
-				F08B4B790AB0AE4B00896399 /* MyTreeItemData.cpp */,
-				F08B4B830AB0AE6C00896399 /* MyTreeItemData.h */,
-				F08B4B800AB0AE4B00896399 /* utilities.cpp */,
-				F08B4B8A0AB0AE6C00896399 /* utilities.h */,
 			);
 			name = Sources;
 			path = ../..;
@@ -244,9 +244,9 @@
 				1F536BAF0B93426D00F51E49 /* FrameBrowser.cpp in Sources */,
 				1F536BB00B93426E00F51E49 /* FrameView.cpp in Sources */,
 				1F536BB10B93426F00F51E49 /* SequenceView.cpp in Sources */,
-				1F536BF20B9344B300F51E49 /* utilities.cpp in Sources */,
-				1F4F0F7E0B935530002777F8 /* MyTreeItemData.cpp in Sources */,
 				1FAD07400B94409100E04604 /* ShapesElements.cpp in Sources */,
+				1FEDD4630B9C3F9D00D69B62 /* MyTreeItemData.cpp in Sources */,
+				1FEDD4640B9C3F9D00D69B62 /* utilities.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
