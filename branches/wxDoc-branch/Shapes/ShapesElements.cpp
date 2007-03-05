@@ -1213,12 +1213,10 @@ void ShapesCollection::DeleteSequence(unsigned int chunk, unsigned int s)
 // to take when encoded to its on-file format.
 unsigned int ShapesCollection::SizeInFile(unsigned int chunk) const
 {
-	if (Defined(chunk))
-		return 0;
 	if (!Defined(chunk))
 		return 0;
 		
-	unsigned int size = 0;//SIZEOF_collection_definition;
+	unsigned int size = 0;
 	size += mChunks[chunk]->SizeInFile();
 	 
 	return size;

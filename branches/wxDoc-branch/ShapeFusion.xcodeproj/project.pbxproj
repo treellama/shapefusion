@@ -20,6 +20,8 @@
 		1F9857EB0B8A39BF00D0395F /* ShapesView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F9857E80B8A39BF00D0395F /* ShapesView.cpp */; };
 		1FAD07400B94409100E04604 /* ShapesElements.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FAD073D0B94409100E04604 /* ShapesElements.cpp */; };
 		1FD941E10B92D5CD00DD1EEC /* BigEndianBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F096F44E0AD2DD97005A633A /* BigEndianBuffer.cpp */; };
+		1FE8DF890B9C4431003EF856 /* COPYING.txt in Resources */ = {isa = PBXBuildFile; fileRef = 1FE8DF870B9C4431003EF856 /* COPYING.txt */; };
+		1FE8DF8A0B9C4431003EF856 /* README.txt in Resources */ = {isa = PBXBuildFile; fileRef = 1FE8DF880B9C4431003EF856 /* README.txt */; };
 		1FEDD4630B9C3F9D00D69B62 /* MyTreeItemData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FEDD45F0B9C3F9D00D69B62 /* MyTreeItemData.cpp */; };
 		1FEDD4640B9C3F9D00D69B62 /* utilities.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FEDD4610B9C3F9D00D69B62 /* utilities.cpp */; };
 		F08B4C5A0AB0B31E00896399 /* ShapeFusionApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F08B4B780AB0AE4B00896399 /* ShapeFusionApp.cpp */; };
@@ -50,6 +52,8 @@
 		1F9857E90B8A39BF00D0395F /* ShapesView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ShapesView.h; sourceTree = "<group>"; };
 		1FAD073D0B94409100E04604 /* ShapesElements.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = ShapesElements.cpp; sourceTree = "<group>"; };
 		1FAD073E0B94409100E04604 /* ShapesElements.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ShapesElements.h; sourceTree = "<group>"; };
+		1FE8DF870B9C4431003EF856 /* COPYING.txt */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = COPYING.txt; sourceTree = "<group>"; };
+		1FE8DF880B9C4431003EF856 /* README.txt */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = README.txt; sourceTree = "<group>"; };
 		1FEDD45F0B9C3F9D00D69B62 /* MyTreeItemData.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = MyTreeItemData.cpp; sourceTree = "<group>"; };
 		1FEDD4600B9C3F9D00D69B62 /* MyTreeItemData.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = MyTreeItemData.h; sourceTree = "<group>"; };
 		1FEDD4610B9C3F9D00D69B62 /* utilities.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = utilities.cpp; sourceTree = "<group>"; };
@@ -130,7 +134,6 @@
 				F08B4B750AB0AE1200896399 /* Resources */,
 				F08B4B9E0AB0B02A00896399 /* External things */,
 				F08B4C450AB0B10000896399 /* Products */,
-				F08B4C470AB0B10000896399 /* ShapeFusion-Info.plist */,
 			);
 			sourceTree = "<group>";
 		};
@@ -148,12 +151,14 @@
 				F096F4500AD2DD9F005A633A /* BigEndianBuffer.h */,
 			);
 			name = Sources;
-			path = ../..;
-			sourceTree = "<group>";
+			sourceTree = SOURCE_ROOT;
 		};
 		F08B4B750AB0AE1200896399 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				1FE8DF870B9C4431003EF856 /* COPYING.txt */,
+				1FE8DF880B9C4431003EF856 /* README.txt */,
+				F08B4C470AB0B10000896399 /* ShapeFusion-Info.plist */,
 				F08B4B760AB0AE2000896399 /* wxmac.icns */,
 			);
 			name = Resources;
@@ -222,6 +227,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				F08B4C650AB0B39200896399 /* wxmac.icns in Resources */,
+				1FE8DF890B9C4431003EF856 /* COPYING.txt in Resources */,
+				1FE8DF8A0B9C4431003EF856 /* README.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
