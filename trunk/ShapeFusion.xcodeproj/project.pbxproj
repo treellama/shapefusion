@@ -37,36 +37,36 @@
 /* Begin PBXFileReference section */
 		1F6C5E060B80E37800628F07 /* wx.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = wx.framework; path = /Library/Frameworks/wx.framework; sourceTree = "<absolute>"; };
 		F08B4B760AB0AE2000896399 /* wxmac.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = wxmac.icns; path = /Library/Frameworks/wx.framework/Versions/2.8/Resources/wxmac.icns; sourceTree = "<absolute>"; };
-		F08B4B770AB0AE4B00896399 /* Shapes.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 5; name = Shapes.cpp; path = ../../Shapes.cpp; sourceTree = SOURCE_ROOT; };
-		F08B4B780AB0AE4B00896399 /* ShapeFusionApp.cpp */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.cpp.cpp; name = ShapeFusionApp.cpp; path = ../../ShapeFusionApp.cpp; sourceTree = SOURCE_ROOT; };
-		F08B4B790AB0AE4B00896399 /* MyTreeItemData.cpp */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.cpp.cpp; name = MyTreeItemData.cpp; path = ../../MyTreeItemData.cpp; sourceTree = SOURCE_ROOT; };
-		F08B4B7A0AB0AE4B00896399 /* FrameView.cpp */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.cpp.cpp; name = FrameView.cpp; path = ../../FrameView.cpp; sourceTree = SOURCE_ROOT; };
-		F08B4B7B0AB0AE4B00896399 /* FrameBrowser.cpp */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.cpp.cpp; name = FrameBrowser.cpp; path = ../../FrameBrowser.cpp; sourceTree = SOURCE_ROOT; };
-		F08B4B7C0AB0AE4B00896399 /* CTBrowser.cpp */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.cpp.cpp; name = CTBrowser.cpp; path = ../../CTBrowser.cpp; sourceTree = SOURCE_ROOT; };
-		F08B4B7D0AB0AE4B00896399 /* BitmapView.cpp */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.cpp.cpp; name = BitmapView.cpp; path = ../../BitmapView.cpp; sourceTree = SOURCE_ROOT; };
-		F08B4B7E0AB0AE4B00896399 /* BitmapBrowser.cpp */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.cpp.cpp; name = BitmapBrowser.cpp; path = ../../BitmapBrowser.cpp; sourceTree = SOURCE_ROOT; };
-		F08B4B800AB0AE4B00896399 /* utilities.cpp */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.cpp.cpp; name = utilities.cpp; path = ../../utilities.cpp; sourceTree = SOURCE_ROOT; };
-		F08B4B810AB0AE4B00896399 /* ShapesEditor.cpp */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.cpp.cpp; name = ShapesEditor.cpp; path = ../../ShapesEditor.cpp; sourceTree = SOURCE_ROOT; };
-		F08B4B820AB0AE6C00896399 /* ShapeFusionApp.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 5; name = ShapeFusionApp.h; path = ../../ShapeFusionApp.h; sourceTree = SOURCE_ROOT; };
-		F08B4B830AB0AE6C00896399 /* MyTreeItemData.h */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.c.h; name = MyTreeItemData.h; path = ../../MyTreeItemData.h; sourceTree = SOURCE_ROOT; };
-		F08B4B840AB0AE6C00896399 /* FrameView.h */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.c.h; name = FrameView.h; path = ../../FrameView.h; sourceTree = SOURCE_ROOT; };
-		F08B4B850AB0AE6C00896399 /* FrameBrowser.h */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.c.h; name = FrameBrowser.h; path = ../../FrameBrowser.h; sourceTree = SOURCE_ROOT; };
-		F08B4B860AB0AE6C00896399 /* CTBrowser.h */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.c.h; name = CTBrowser.h; path = ../../CTBrowser.h; sourceTree = SOURCE_ROOT; };
-		F08B4B870AB0AE6C00896399 /* BitmapView.h */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.c.h; name = BitmapView.h; path = ../../BitmapView.h; sourceTree = SOURCE_ROOT; };
-		F08B4B880AB0AE6C00896399 /* BitmapBrowser.h */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.c.h; name = BitmapBrowser.h; path = ../../BitmapBrowser.h; sourceTree = SOURCE_ROOT; };
-		F08B4B8A0AB0AE6C00896399 /* utilities.h */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.c.h; name = utilities.h; path = ../../utilities.h; sourceTree = SOURCE_ROOT; };
-		F08B4B8B0AB0AE6C00896399 /* ShapesEditor.h */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.c.h; name = ShapesEditor.h; path = ../../ShapesEditor.h; sourceTree = SOURCE_ROOT; };
-		F08B4B8C0AB0AE6C00896399 /* Shapes.h */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.c.h; name = Shapes.h; path = ../../Shapes.h; sourceTree = SOURCE_ROOT; };
+		F08B4B770AB0AE4B00896399 /* Shapes.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 5; path = Shapes.cpp; sourceTree = "<group>"; };
+		F08B4B780AB0AE4B00896399 /* ShapeFusionApp.cpp */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.cpp.cpp; path = ShapeFusionApp.cpp; sourceTree = "<group>"; };
+		F08B4B790AB0AE4B00896399 /* MyTreeItemData.cpp */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.cpp.cpp; path = MyTreeItemData.cpp; sourceTree = "<group>"; };
+		F08B4B7A0AB0AE4B00896399 /* FrameView.cpp */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.cpp.cpp; path = FrameView.cpp; sourceTree = "<group>"; };
+		F08B4B7B0AB0AE4B00896399 /* FrameBrowser.cpp */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.cpp.cpp; path = FrameBrowser.cpp; sourceTree = "<group>"; };
+		F08B4B7C0AB0AE4B00896399 /* CTBrowser.cpp */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.cpp.cpp; path = CTBrowser.cpp; sourceTree = "<group>"; };
+		F08B4B7D0AB0AE4B00896399 /* BitmapView.cpp */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.cpp.cpp; path = BitmapView.cpp; sourceTree = "<group>"; };
+		F08B4B7E0AB0AE4B00896399 /* BitmapBrowser.cpp */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.cpp.cpp; path = BitmapBrowser.cpp; sourceTree = "<group>"; };
+		F08B4B800AB0AE4B00896399 /* utilities.cpp */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.cpp.cpp; path = utilities.cpp; sourceTree = "<group>"; };
+		F08B4B810AB0AE4B00896399 /* ShapesEditor.cpp */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.cpp.cpp; path = ShapesEditor.cpp; sourceTree = "<group>"; };
+		F08B4B820AB0AE6C00896399 /* ShapeFusionApp.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 5; path = ShapeFusionApp.h; sourceTree = "<group>"; };
+		F08B4B830AB0AE6C00896399 /* MyTreeItemData.h */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.c.h; path = MyTreeItemData.h; sourceTree = "<group>"; };
+		F08B4B840AB0AE6C00896399 /* FrameView.h */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.c.h; path = FrameView.h; sourceTree = "<group>"; };
+		F08B4B850AB0AE6C00896399 /* FrameBrowser.h */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.c.h; path = FrameBrowser.h; sourceTree = "<group>"; };
+		F08B4B860AB0AE6C00896399 /* CTBrowser.h */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.c.h; path = CTBrowser.h; sourceTree = "<group>"; };
+		F08B4B870AB0AE6C00896399 /* BitmapView.h */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.c.h; path = BitmapView.h; sourceTree = "<group>"; };
+		F08B4B880AB0AE6C00896399 /* BitmapBrowser.h */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.c.h; path = BitmapBrowser.h; sourceTree = "<group>"; };
+		F08B4B8A0AB0AE6C00896399 /* utilities.h */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.c.h; path = utilities.h; sourceTree = "<group>"; };
+		F08B4B8B0AB0AE6C00896399 /* ShapesEditor.h */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.c.h; path = ShapesEditor.h; sourceTree = "<group>"; };
+		F08B4B8C0AB0AE6C00896399 /* Shapes.h */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.c.h; path = Shapes.h; sourceTree = "<group>"; };
 		F08B4C360AB0B06D00896399 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
 		F08B4C370AB0B09A00896399 /* System.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = System.framework; path = /System/Library/Frameworks/System.framework; sourceTree = "<absolute>"; };
 		F08B4C440AB0B10000896399 /* ShapeFusion.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ShapeFusion.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F08B4C470AB0B10000896399 /* ShapeFusion-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "ShapeFusion-Info.plist"; sourceTree = "<group>"; };
 		F08B4C760AB0B7E300896399 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = /System/Library/Frameworks/IOKit.framework; sourceTree = "<absolute>"; };
 		F08B4CB30AB0C0E700896399 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
-		F0966E020B551E4900820E4F /* SequenceView.cpp */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.cpp.cpp; name = SequenceView.cpp; path = ../../SequenceView.cpp; sourceTree = SOURCE_ROOT; };
-		F0966E040B551E5100820E4F /* SequenceView.h */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.c.h; name = SequenceView.h; path = ../../SequenceView.h; sourceTree = SOURCE_ROOT; };
-		F096F44E0AD2DD97005A633A /* BigEndianBuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.cpp.cpp; name = BigEndianBuffer.cpp; path = ../../BigEndianBuffer.cpp; sourceTree = SOURCE_ROOT; };
-		F096F4500AD2DD9F005A633A /* BigEndianBuffer.h */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.c.h; name = BigEndianBuffer.h; path = ../../BigEndianBuffer.h; sourceTree = SOURCE_ROOT; };
+		F0966E020B551E4900820E4F /* SequenceView.cpp */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.cpp.cpp; path = SequenceView.cpp; sourceTree = "<group>"; };
+		F0966E040B551E5100820E4F /* SequenceView.h */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.c.h; path = SequenceView.h; sourceTree = "<group>"; };
+		F096F44E0AD2DD97005A633A /* BigEndianBuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.cpp.cpp; path = BigEndianBuffer.cpp; sourceTree = "<group>"; };
+		F096F4500AD2DD9F005A633A /* BigEndianBuffer.h */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.c.h; path = BigEndianBuffer.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -121,7 +121,7 @@
 				F08B4B800AB0AE4B00896399 /* utilities.cpp */,
 			);
 			name = Sources;
-			sourceTree = "<group>";
+			sourceTree = SOURCE_ROOT;
 		};
 		F08B4B750AB0AE1200896399 /* Resources */ = {
 			isa = PBXGroup;
