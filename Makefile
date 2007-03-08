@@ -8,7 +8,7 @@ OBJECTS =	BigEndianBuffer.o ShapeFusionApp.o \
 SHAPESOBJECTS = Shapes/BitmapBrowser.o Shapes/BitmapView.o \
 				Shapes/CTBrowser.o Shapes/FrameBrowser.o \
 				Shapes/FrameView.o Shapes/SequenceView.o \
-				Shapes/ShapesDocument.o Shapes/ShapesEditor.o \
+				Shapes/ShapesDocument.o \
 				Shapes/ShapesElements.o Shapes/ShapesView.o \
 				Shapes/MyTreeItemData.o Shapes/utilities.o
 

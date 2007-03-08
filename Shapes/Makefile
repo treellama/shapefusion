@@ -4,7 +4,7 @@ WXCFLAGS = `wx-config --cxxflags`
 
 OBJECTS = BitmapBrowser.o BitmapView.o CTBrowser.o FrameBrowser.o \
 			FrameView.o MyTreeItemData.o SequenceView.o ShapesDocument.o \
-			ShapesEditor.o ShapesElements.o ShapesView.o utilities.o
+			ShapesElements.o ShapesView.o utilities.o
 
 all: $(OBJECTS)
 

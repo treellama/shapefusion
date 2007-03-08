@@ -934,8 +934,7 @@ BigEndianBuffer& ShapesChunk::LoadObject(BigEndianBuffer& buffer)
 		wxLogDebug(wxT("[ShapesChunk]         %d frames"), low_level_shape_count);
 		wxLogDebug(wxT("[ShapesChunk]         %d bitmaps"), bitmap_count);
 	}
-	
-	
+
 	// load color tables
 	for (i = 0; i < clut_count; i++) {
 		ShapesColorTable	*color_table = new ShapesColorTable(IsVerbose());
@@ -944,7 +943,7 @@ BigEndianBuffer& ShapesChunk::LoadObject(BigEndianBuffer& buffer)
 			
 		oldpos = buffer.Position();
 		
-		color_table->LoadObject(buffer, color_table_offset, color_count);
+		color_table->LoadObject(buffer, color_table_offset + i * color_count * SIZEOF_rgb_color_value, color_count);
 		
 		buffer.Position(oldpos);
 		
@@ -982,7 +981,6 @@ BigEndianBuffer& ShapesChunk::LoadObject(BigEndianBuffer& buffer)
 			mBitmaps.push_back(bitmap);
 		else
 			wxLogError(wxT("[ShapesDocument] Error loading bitmap... Dropped"));
-		
 	}
 	
 	buffer.Position(high_level_shape_offset_table_offset);
@@ -1012,7 +1010,6 @@ BigEndianBuffer& ShapesChunk::LoadObject(BigEndianBuffer& buffer)
 			mSequences.push_back(sequence);
 		else
 			wxLogError(wxT("[ShapesDocument] Error loading sequence... Dropped"));
-		
 	}
 	
 	buffer.Position(low_level_shape_offset_table_offset);
@@ -1038,8 +1035,7 @@ BigEndianBuffer& ShapesChunk::LoadObject(BigEndianBuffer& buffer)
 		buffer.Position(oldpos);
 		// calculate scale factor from world_* fields and associated bitmap dimensions.
 		// If this fails, default to collection global scale factor
-		if (frame->BitmapIndex() >= 0 && frame->BitmapIndex() < (int)mBitmaps.size())
-		{
+		if (frame->BitmapIndex() >= 0 && frame->BitmapIndex() < (int)mBitmaps.size()) {
 			int	bitmapWidth = mBitmaps[frame->BitmapIndex()]->Width();
 			
 			if (bitmapWidth > 0)
@@ -1047,7 +1043,7 @@ BigEndianBuffer& ShapesChunk::LoadObject(BigEndianBuffer& buffer)
 			else
 				frame->SetScaleFactor(mPixelsToWorld);
 		} else {
-				frame->SetScaleFactor(mPixelsToWorld);
+			frame->SetScaleFactor(mPixelsToWorld);
 		}
 		
 		// store if correct
@@ -1055,7 +1051,6 @@ BigEndianBuffer& ShapesChunk::LoadObject(BigEndianBuffer& buffer)
 			mFrames.push_back(frame);
 		else
 			wxLogError(wxT("[ShapesDocument] Error loading frame... Dropped"));
-		
 	}
 	
 	mGoodData = true;
