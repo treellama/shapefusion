@@ -405,7 +405,6 @@ bool ShapesView::OnCreate(wxDocument *doc, long WXUNUSED(flags) )
     return true;
 }
 
-
 void ShapesView::OnDraw(wxDC *WXUNUSED(dc) )
 {
 	wxLogDebug(wxT("Got OnDraw();"));
@@ -462,17 +461,14 @@ void ShapesView::OnUpdate(wxView *WXUNUSED(sender), wxObject *WXUNUSED(hint) )
 
 bool ShapesView::OnClose(bool deleteWindow)
 {
-    if (!GetDocument()->Close())
-        return false;
-    
-    Activate(false);
-    
-    if (deleteWindow)
-    {
-        delete frame;
-        return true;
-    }
-    return true;
+	if (!GetDocument()->Close())
+		return false;
+	Activate(false);
+	if (deleteWindow) {
+		delete frame;
+		return true;
+	}
+	return true;
 }
 
 // return the id of the "Sequences" tree item relative to
@@ -1026,10 +1022,10 @@ void ShapesView::TreeSelect(wxTreeEvent &e)
 			// user has moved to another collection/version
 
 			// first clear the user interface
-			wxMenu *colortables_submenu;
-			menubar->FindItem(VIEW_MENU_COLOR_TABLE, &colortables_submenu);
-			int	ctmenucount = colortables_submenu->GetMenuItemCount();
-			
+			wxMenu			*colortables_submenu;
+			menubar->FindItem(VIEW_MENU_COLORTABLE_0, &colortables_submenu);
+			unsigned int	ctmenucount = colortables_submenu->GetMenuItemCount();
+
 			view_ct = -1;
 			ctb->Clear();
 			bb->Freeze();
@@ -1041,7 +1037,7 @@ void ShapesView::TreeSelect(wxTreeEvent &e)
 			f_view->SetBitmap(NULL);
 			menubar->SetLabel(EDIT_MENU_DELETE, wxT("Delete"));
 			menubar->Enable(EDIT_MENU_DELETE, false);
-			for (int i = 0; i < ctmenucount; i++)
+			for (unsigned int i = 0; i < ctmenucount; i++)
 				menubar->Enable(VIEW_MENU_COLORTABLE_0 + i, false);
 			menubar->Enable(SHAPES_MENU_SAVECOLORTABLE, false);
 			menubar->Enable(SHAPES_MENU_SAVECOLORTABLETOPS, false);
@@ -1091,8 +1087,8 @@ void ShapesView::TreeSelect(wxTreeEvent &e)
 					view_ct = 0;
 					for (unsigned int i = 0; i < ct_count; i++)
 						ctb->AddColorTable(((ShapesDocument*)GetDocument())->GetColorTable(new_coll, new_vers, i));
-					for (int i = 0; i < ctmenucount; i++)
-						menubar->Enable(VIEW_MENU_COLORTABLE_0 + i, i < (int)ct_count);
+					for (unsigned int i = 0; i < ctmenucount; i++)
+						menubar->Enable(VIEW_MENU_COLORTABLE_0 + i, i < ct_count);
 					if (ct_count > 0)
 						menubar->Check(VIEW_MENU_COLORTABLE_0, true);
 					count_string << ct_count << wxT(" color table");
@@ -1416,7 +1412,6 @@ void ShapesView::FrameDelete(wxCommandEvent &e)
 
 }
 
-
 void ShapesView::AskSaveBitmap(wxCommandEvent &e)
 {
 	int	selected_bmp = bb->GetSelection();
@@ -1588,7 +1583,6 @@ void ShapesView::EditSequenceType(wxCommandEvent &e)
 			case 4:	sel_seq->SetNumberOfViews(ANIMATED_8);	break;
 		}
 		real_nov = ActualNumberOfViews(sel_seq->NumberOfViews());
-//		s_nov_field->SetValue(INT_TO_WXSTRING(real_nov));
 		// init frame indexes to all invalid frames
 		// FIXME very annoying for the user, do better
 		sel_seq->mFrameIndexes.clear();

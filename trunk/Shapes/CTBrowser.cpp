@@ -174,6 +174,7 @@ void CTBrowser::Clear(void)
 {
 	cts.clear();
 	selection = -1;
+	colors_per_table = 0;
 	UpdateVirtualSize();
 //	Refresh();	// not needed since the ShapesEditor only clears before refilling
 }

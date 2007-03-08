@@ -23,6 +23,9 @@
 // the chroma-key color. NOTE: this routine assumes valid pointers.
 wxImage ShapesBitmapToImage(ShapesBitmap *bp, ShapesColorTable *ct, bool white_transparency)
 {
+	if (bp == NULL || ct == NULL || bp->Pixels() == NULL)
+		std::cerr << "[utilities] ShapesBitmapToImage: passed null pointers\n";
+
 	int				w = bp->Width(),
 					h = bp->Height();
 	bool			transparency_enabled = bp->IsTransparent();
@@ -30,6 +33,7 @@ wxImage ShapesBitmapToImage(ShapesBitmap *bp, ShapesColorTable *ct, bool white_t
 	unsigned char	*imgbuf = img.GetData(),
 					*inp = bp->Pixels(),
 					*outp = imgbuf;
+	unsigned int	colors_per_table = ct->ColorCount();
 
 	for (int i = 0; i < w * h; i++) {
 		unsigned char	value = *inp++;
@@ -38,10 +42,17 @@ wxImage ShapesBitmapToImage(ShapesBitmap *bp, ShapesColorTable *ct, bool white_t
 			*outp++ = 255;
 			*outp++ = 255;
 			*outp++ = 255;
+		} else if (value < colors_per_table) {
+			ShapesColor	*color = ct->GetColor(value);
+
+			*outp++ = color->Red() >> 8;
+			*outp++ = color->Green() >> 8;
+			*outp++ = color->Blue() >> 8;
 		} else {
-			*outp++ = ct->GetColor(value)->Red() >> 8;
-			*outp++ = ct->GetColor(value)->Green() >> 8;
-			*outp++ = ct->GetColor(value)->Blue() >> 8;
+			std::cerr << "[utilities ShapesBitmapToImage] pixel value " << (unsigned int)value << " with just " << colors_per_table << " colors/table\n";
+			*outp++ = 255;
+			*outp++ = 255;
+			*outp++ = 255;
 		}
 	}
 	return img;
