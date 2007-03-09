@@ -33,7 +33,6 @@ ShapeFusionMain::ShapeFusionMain(wxDocManager *manager, wxFrame *frame, wxWindow
                  const wxPoint& pos, const wxSize& size, const long type):
 wxDocParentFrame(manager, frame, id, title, pos, size, type)
 {
-    editMenu = (wxMenu *) NULL;
 }
 
 void ShapeFusionMain::OnAbout(wxCommandEvent& WXUNUSED(event))

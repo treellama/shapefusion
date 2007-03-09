@@ -15,35 +15,40 @@
  * along with ShapeFusion; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
-#include "MyTreeItemData.h"
+#ifndef SHAPESTREEITEMDATA_H
+#define SHAPESTREEITEMDATA_H
 
-MyTreeItemData::MyTreeItemData(int id, int vers, int sect, int seq):
-	coll_id(id), version(vers), section(sect), sequence(seq)
-{
+#include "wx/wxprec.h"
+#ifndef WX_PRECOMP
+    #include "wx/wx.h"
+#endif
+#include "wx/treectrl.h"
+#include "ShapesDocument.h"
 
-}
+enum {
+	TREESECTION_COLLECTION = 1,
+	TREESECTION_VERSION,
+	TREESECTION_BITMAPS,
+	TREESECTION_COLORTABLES,
+	TREESECTION_FRAMES,
+	TREESECTION_SEQUENCES
+};
 
-MyTreeItemData::~MyTreeItemData(void)
-{
+class ShapesTreeItemData: public wxTreeItemData {
+private:
+	int	coll_id;
+	int	version;
+	int section;
+	int	sequence;
 
-}
+public:
+	ShapesTreeItemData(int id=-1, int vers=-1, int sect=-1, int seq=-1);
+	~ShapesTreeItemData(void);
+	
+	int CollID(void) const;
+	int Version(void) const;
+	int Section(void) const;
+	int Sequence(void) const;
+};
 
-int MyTreeItemData::CollID(void) const
-{
-	return coll_id;
-}
-
-int MyTreeItemData::Version(void) const
-{
-	return version;
-}
-
-int MyTreeItemData::Section(void) const
-{
-	return section;
-}
-
-int MyTreeItemData::Sequence(void) const
-{
-	return sequence;
-}
+#endif

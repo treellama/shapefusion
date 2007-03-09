@@ -23,7 +23,15 @@
 #include "wx/treectrl.h"
 #include "wx/spinctrl.h"
 #include "wx/statline.h"
-#include "ShapesEditor.h"
+#include "ShapesView.h"
+#include "ShapeFusionApp.h"
+#include "ShapesTreeItemData.h"
+#include "CTBrowser.h"
+#include "BitmapBrowser.h"
+#include "BitmapView.h"
+#include "FrameBrowser.h"
+#include "FrameView.h"
+#include "SequenceView.h"
 #include "../ShapeFusionMenus.h"
 
 class ShapesView: public wxView

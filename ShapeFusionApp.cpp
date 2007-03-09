@@ -44,19 +44,16 @@ bool ShapeFusionApp::OnInit(void)
     (void) new wxDocTemplate(m_docManager, _T("Shapes"), _T("*"), _T(""), _T(""), _T("Shapes"), _T("Shapes"),
 		CLASSINFO(ShapesDocument), CLASSINFO(ShapesView));
 #ifdef __WXMAC__
-//    wxFileName::MacRegisterDefaultTypeAndCreator( wxT("*") , 'WXMB' , 'WXMA' ) ;
+//    wxFileName::MacRegisterDefaultTypeAndCreator( wxT("*") , 'WXMB' , 'WXMA' );
 #endif
     
     //// Create the main frame window
-    frame = new ShapeFusionMain(m_docManager, (wxFrame *) NULL, wxID_ANY, _T("ShapeFusion Workspace"), wxPoint(0, 0), wxSize(500, 400), wxDEFAULT_FRAME_STYLE);
+    frame = new ShapeFusionMain(m_docManager, (wxFrame *) NULL, wxID_ANY, _T("ShapeFusion Workspace"), wxPoint(0, 0), wxSize(0, 0), wxDEFAULT_FRAME_STYLE);
     
     //// Give it an icon (this is ignored in MDI mode: uses resources)
 #ifdef __WXMSW__
     frame->SetIcon(wxIcon(_T("doc_icn")));
 #endif
-    
-    // A nice touch: a history of files visited. Use this menu.
-//    m_docManager->FileHistoryUseMenu(file_menu);
 
     wxMenuBar *menu_bar = new wxMenuBar;
     
@@ -67,10 +64,9 @@ bool ShapeFusionApp::OnInit(void)
     //// Associate the menu bar with the frame
     frame->SetMenuBar(menu_bar);
 
-	//FIXME : this doesn't work
-	/*wxMenu *menu = NULL;
-	menu_bar->FindItem(FILE_MENU_OPEN_RECENT, &menu);
-	m_docManager->FileHistoryUseMenu(menu);*/
+	//FIXME: This doesn't work
+	//wxMenuItem *menuItem = menu_bar->FindItem(FILE_MENU_HISTORY);
+	//m_docManager->FileHistoryUseMenu(menuItem->GetMenu());
     
     frame->Centre(wxBOTH);
     frame->Show(true);
@@ -104,10 +100,9 @@ wxFrame *ShapeFusionApp::CreateChildFrame(wxDocument *doc, wxView *view, const w
     // Associate the menu bar with the frame
     subframe->SetMenuBar(menu_bar);
 	
-	//FIXME : this doesn't work
-	/*wxMenu *menu = NULL;
-	menu_bar->FindItem(FILE_MENU_OPEN_RECENT, &menu);
-	m_docManager->FileHistoryUseMenu(menu);*/
+	//FIXME: This doesn't work
+	//wxMenuItem *menuItem = menu_bar->FindItem(FILE_MENU_HISTORY);
+	//m_docManager->FileHistoryUseMenu(menuItem->GetMenu());
 	
     subframe->Centre(wxBOTH);
     

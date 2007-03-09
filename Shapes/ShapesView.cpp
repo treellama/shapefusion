@@ -17,18 +17,12 @@
 */
 
 #include "ShapesView.h"
-#include "ShapeFusionApp.h"
-#include "MyTreeItemData.h"
 #include "utilities.h"
 
 #define INT_TO_WXSTRING(a)	wxString::Format(wxT("%d"), a)
 
 BEGIN_EVENT_TABLE(ShapesView, wxView)
-/*	EVT_MENU(wxID_OPEN, ShapesView::MenuFileOpen)
-	EVT_MENU(wxID_SAVE, ShapesView::MenuFileSave)
-	EVT_MENU(wxID_SAVEAS, ShapesView::MenuFileSave)
-	EVT_MENU(wxID_EXIT, ShapesView::MenuFileQuit)
-	EVT_MENU(EDIT_MENU_DELETE, ShapesView::MenuEditDelete)*/
+	EVT_MENU(EDIT_MENU_DELETE, ShapesView::MenuEditDelete)
 	EVT_MENU_RANGE(VIEW_MENU_COLORTABLE_0, VIEW_MENU_COLORTABLE_7, ShapesView::MenuViewCT)
 	EVT_MENU_RANGE(VIEW_MENU_TNSIZE_SMALL, VIEW_MENU_TNSIZE_AUTO, ShapesView::MenuViewTNSize)
 	EVT_MENU(VIEW_MENU_TRANSPARENCY, ShapesView::MenuViewTransparency)
@@ -118,7 +112,6 @@ ShapesView::ShapesView(void):
 
 ShapesView::~ShapesView(void)
 {
-
 }
 
 bool ShapesView::OnCreate(wxDocument *doc, long WXUNUSED(flags) )
@@ -417,12 +410,12 @@ void ShapesView::OnUpdate(wxView *WXUNUSED(sender), wxObject *WXUNUSED(hint) )
 	
 	for (unsigned int i = 0; i < COLLECTIONS_PER_FILE; i++) {
 		// collection name nodes
-		MyTreeItemData	*itemdata = new MyTreeItemData(i, -1, TREESECTION_COLLECTION);
+		ShapesTreeItemData	*itemdata = new ShapesTreeItemData(i, -1, TREESECTION_COLLECTION);
 		wxTreeItemId	coll = colltree->AppendItem(colltree->GetRootItem(), wxString(collnames[i], wxConvUTF8), -1, -1, itemdata);
 		
 		for (unsigned int j = 0; j < 2; j++) {
 			// color version nodes
-			MyTreeItemData	*id = new MyTreeItemData(i, j, TREESECTION_VERSION);
+			ShapesTreeItemData	*id = new ShapesTreeItemData(i, j, TREESECTION_VERSION);
 			wxString		label;
 			
 			if (j == COLL_VERSION_8BIT)
@@ -433,20 +426,20 @@ void ShapesView::OnUpdate(wxView *WXUNUSED(sender), wxObject *WXUNUSED(hint) )
 			
 			if (((ShapesDocument*)GetDocument())->CollectionDefined(i, j)) {
 				// section nodes
-				MyTreeItemData	*id_b = new MyTreeItemData(i, j, TREESECTION_BITMAPS),
-				*id_ct = new MyTreeItemData(i, j, TREESECTION_COLORTABLES),
-				*id_f = new MyTreeItemData(i, j, TREESECTION_FRAMES),
-				*id_s = new MyTreeItemData(i, j, TREESECTION_SEQUENCES);
+				ShapesTreeItemData	*id_b = new ShapesTreeItemData(i, j, TREESECTION_BITMAPS),
+									*id_ct = new ShapesTreeItemData(i, j, TREESECTION_COLORTABLES),
+									*id_f = new ShapesTreeItemData(i, j, TREESECTION_FRAMES),
+									*id_s = new ShapesTreeItemData(i, j, TREESECTION_SEQUENCES);
 				wxTreeItemId	coll_b = colltree->AppendItem(coll2, wxT("Bitmaps"), -1, -1, id_b),
-					coll_ct = colltree->AppendItem(coll2, wxT("Color tables"), -1, -1, id_ct),
-					coll_f = colltree->AppendItem(coll2, wxT("Frames"), -1, -1, id_f),
-					coll_s = colltree->AppendItem(coll2, wxT("Sequences"), -1, -1, id_s);
+								coll_ct = colltree->AppendItem(coll2, wxT("Color tables"), -1, -1, id_ct),
+								coll_f = colltree->AppendItem(coll2, wxT("Frames"), -1, -1, id_f),
+								coll_s = colltree->AppendItem(coll2, wxT("Sequences"), -1, -1, id_s);
 				
 				for (unsigned int k = 0; k < ((ShapesDocument*)GetDocument())->CollectionSequenceCount(i, j); k++) {
 					// sequence nodes
 					ShapesSequence		*seq = ((ShapesDocument*)GetDocument())->GetSequence(i, j, k);
 					wxString    	blabel;
-					MyTreeItemData	*id_seq = new MyTreeItemData(i, j, TREESECTION_SEQUENCES, k);
+					ShapesTreeItemData	*id_seq = new ShapesTreeItemData(i, j, TREESECTION_SEQUENCES, k);
 					
 					blabel << k;
 					if (seq->Name().Length() > 0)
@@ -481,7 +474,7 @@ wxTreeItemId ShapesView::GetSequencesTreeItem(unsigned int collection, unsigned 
 
 	// descend into the tree towards the right item
 	while (collnameid.IsOk()) {
-		MyTreeItemData	*collname_data = dynamic_cast<MyTreeItemData *>(colltree->GetItemData(collnameid));
+		ShapesTreeItemData	*collname_data = dynamic_cast<ShapesTreeItemData *>(colltree->GetItemData(collnameid));
 
 		if (collname_data->CollID() == (int)collection) {
 			// found right collection branch
@@ -489,7 +482,7 @@ wxTreeItemId ShapesView::GetSequencesTreeItem(unsigned int collection, unsigned 
 			wxTreeItemId		collversid = colltree->GetFirstChild(collnameid, thecookieII);
 
 			while (collversid.IsOk()) {
-				MyTreeItemData	*collvers_data = dynamic_cast<MyTreeItemData *>(colltree->GetItemData(collversid));
+				ShapesTreeItemData	*collvers_data = dynamic_cast<ShapesTreeItemData *>(colltree->GetItemData(collversid));
 
 				if (collvers_data->Version() == (int)version) {
 					// found right version node
@@ -497,7 +490,7 @@ wxTreeItemId ShapesView::GetSequencesTreeItem(unsigned int collection, unsigned 
 					wxTreeItemId		sectid = colltree->GetFirstChild(collversid, thecookieIII);
 
 					while (sectid.IsOk()) {
-						MyTreeItemData	*sect_data = dynamic_cast<MyTreeItemData *>(colltree->GetItemData(sectid));
+						ShapesTreeItemData	*sect_data = dynamic_cast<ShapesTreeItemData *>(colltree->GetItemData(sectid));
 
 						if (sect_data->Section() == TREESECTION_SEQUENCES) {
 							// here we are
@@ -514,118 +507,11 @@ wxTreeItemId ShapesView::GetSequencesTreeItem(unsigned int collection, unsigned 
 	return wxTreeItemId();	// ctor makes it invalid, so ok
 }
 
-/*void ShapesView::MenuFileOpen(wxCommandEvent &e)
-{
-	// let user choose the file
-	wxFileDialog	*dlg = new wxFileDialog(this, wxT("Select a Marathon shapes file:"),
-								wxT(""), wxT(""), wxT("*"), wxOPEN);
-
-	if (dlg->ShowModal() == wxID_OK) {
-		wxString	s = dlg->GetPath();
-		wxBeginBusyCursor();
-		Shapes		*newshapes = new Shapes((std::string)s.fn_str());
-		wxEndBusyCursor();
-
-		if (newshapes->GoodData()) {
-			// delete the old shapes block and insert the new one
-			if (((ShapesDocument*)((ShapesDocument*)GetDocument())) != NULL)
-				delete ((ShapesDocument*)GetDocument());
-			((ShapesDocument*)GetDocument()) = newshapes;
-			filepath = s;
-			// update all levels of the tree control
-			colltree->DeleteAllItems();
-			wxTreeItemId	treeroot = colltree->AddRoot(filepath.AfterLast('/'));
-
-			for (unsigned int i = 0; i < COLLECTIONS_PER_FILE; i++) {
-				// collection name nodes
-				MyTreeItemData	*itemdata = new MyTreeItemData(i, -1, TREESECTION_COLLECTION);
-				wxTreeItemId	coll = colltree->AppendItem(treeroot, wxString(collnames[i], wxConvUTF8), -1, -1, itemdata);
-
-				for (unsigned int j = 0; j < 2; j++) {
-					// color version nodes
-					MyTreeItemData	*id = new MyTreeItemData(i, j, TREESECTION_VERSION);
-					wxString		label;
-
-					if (j == COLL_VERSION_8BIT)
-						label = wxT("8-bit color version");
-					else if (j == COLL_VERSION_TRUECOLOR)
-						label = wxT("True color version");
-					wxTreeItemId	coll2 = colltree->AppendItem(coll, label, -1, -1, id);
-	
-					if (((ShapesDocument*)GetDocument())->CollectionDefined(i, j)) {
-						// section nodes
-						MyTreeItemData	*id_b = new MyTreeItemData(i, j, TREESECTION_BITMAPS),
-										*id_ct = new MyTreeItemData(i, j, TREESECTION_COLORTABLES),
-										*id_f = new MyTreeItemData(i, j, TREESECTION_FRAMES),
-										*id_s = new MyTreeItemData(i, j, TREESECTION_SEQUENCES);
-						wxTreeItemId	coll_b = colltree->AppendItem(coll2, wxT("Bitmaps"), -1, -1, id_b),
-										coll_ct = colltree->AppendItem(coll2, wxT("Color tables"), -1, -1, id_ct),
-										coll_f = colltree->AppendItem(coll2, wxT("Frames"), -1, -1, id_f),
-										coll_s = colltree->AppendItem(coll2, wxT("Sequences"), -1, -1, id_s);
-	
-						for (unsigned int k = 0; k < ((ShapesDocument*)GetDocument())->CollectionSeqCount(i, j); k++) {
-							// sequence nodes
-							ShapesSequence		*seq = ((ShapesDocument*)GetDocument())->GetSeq(i, j, k);
-							wxString    	blabel;
-							MyTreeItemData	*id_seq = new MyTreeItemData(i, j, TREESECTION_SEQUENCES, k);
-	
-							blabel << k;
-							if (strlen(seq->name) > 0)
-								blabel << wxT(" - ") << wxString(seq->name, seqnameconv);
-							colltree->AppendItem(coll_s, blabel, -1, -1, id_seq);
-						}
-					}
-				}
-			}
-			colltree->Expand(colltree->GetRootItem());
-			SetTitle(s.AfterLast('/'));
-			file_menu->Enable(wxID_SAVE, true);
-			file_menu->Enable(wxID_SAVEAS, true);
-			menubar->EnableTop(menubar->FindMenu(wxT("Shapes")), true);
-		} else {
-			// the Shapes object failed to load data from file
-			wxString	errormsg;
-
-			errormsg << wxT("Sorry, could not open ");
-			errormsg << s;
-			errormsg << wxT(". Probably it is not a Marathon Shapes file, or it may be damaged.");
-			wxMessageBox(errormsg, wxT("Error opening file"), wxOK | wxICON_ERROR, this);
-		}
-	}
-	dlg->Destroy();
-}*/
-
-/*void ShapesView::MenuFileSave(wxCommandEvent &e)
-{
-	if (e.GetId() == wxID_SAVEAS) {
-		// "save as" command: ask a new file name and save to it
-		wxString	newpath = wxFileSelector(wxT("Save Shapes as"),
-						wxT(""), wxT("Shapes"), wxT(""), wxT("*.*"), wxSAVE | wxOVERWRITE_PROMPT);
-
-		if (!newpath.empty()) {
-			wxBeginBusyCursor();
-			((ShapesDocument*)GetDocument())->WriteToFile((std::string)newpath.fn_str());
-			wxEndBusyCursor();
-			filepath = newpath;
-		}
-	} else {
-		// save to the current file path
-		wxBeginBusyCursor();
-		((ShapesDocument*)GetDocument())->WriteToFile((std::string)filepath.fn_str());
-		wxEndBusyCursor();
-	}
-}
-
-void ShapesView::MenuFileQuit(wxCommandEvent &e)
-{
-	Close(false);
-}*/
-
 // handle the Edit->Delete command (which is context-sensitive)
 void ShapesView::MenuEditDelete(wxCommandEvent &e)
 {
 	wxTreeItemId	selected_item = colltree->GetSelection();
-	MyTreeItemData	*item_data = dynamic_cast<MyTreeItemData *>(colltree->GetItemData(selected_item));
+	ShapesTreeItemData	*item_data = dynamic_cast<ShapesTreeItemData *>(colltree->GetItemData(selected_item));
 
 	if (item_data != NULL) {
 		int	selection;
@@ -998,7 +884,7 @@ void ShapesView::MenuShapesNewSequence(wxCommandEvent &e)
 		wxTreeItemId	thenode = GetSequencesTreeItem(selected_coll, selected_vers);
 		int				seq_id = ((ShapesDocument*)GetDocument())->CollectionSequenceCount(selected_coll, selected_vers) - 1;
 		ShapesSequence     *seq = ((ShapesDocument*)GetDocument())->GetSequence(selected_coll, selected_vers, seq_id);
-		MyTreeItemData  *itemdata = new MyTreeItemData(selected_coll, selected_vers, TREESECTION_SEQUENCES, seq_id);
+		ShapesTreeItemData  *itemdata = new ShapesTreeItemData(selected_coll, selected_vers, TREESECTION_SEQUENCES, seq_id);
 		wxString		label;
 
 		label << seq_id;
@@ -1011,7 +897,7 @@ void ShapesView::MenuShapesNewSequence(wxCommandEvent &e)
 // user selected a tree entry
 void ShapesView::TreeSelect(wxTreeEvent &e)
 {
-	MyTreeItemData	*data = dynamic_cast<MyTreeItemData *>(colltree->GetItemData(e.GetItem()));
+	ShapesTreeItemData	*data = dynamic_cast<ShapesTreeItemData *>(colltree->GetItemData(e.GetItem()));
 
 	if (data) {
 		int	new_coll = data->CollID(),
@@ -1544,7 +1430,7 @@ void ShapesView::DeleteSequence(wxCommandEvent &e)
 	((ShapesDocument*)GetDocument())->DeleteSequence(selected_coll, selected_vers, selected_sequence);
 
 	// for updating the tree control we could just delete the selected
-	// sequence item, but then MyTreeItemData structures associated
+	// sequence item, but then ShapesTreeItemData structures associated
 	// to the following items would be broken and everything would crash.
 	// We could correct them, but reinserting all items is simpler.
 	wxTreeItemId	seqnode = GetSequencesTreeItem(selected_coll, selected_vers);
@@ -1554,7 +1440,7 @@ void ShapesView::DeleteSequence(wxCommandEvent &e)
 	for (unsigned int k = 0; k < ((ShapesDocument*)GetDocument())->CollectionSequenceCount(selected_coll, selected_vers); k++) {
 		ShapesSequence		*seq = ((ShapesDocument*)GetDocument())->GetSequence(selected_coll, selected_vers, k);
 		wxString		label;
-		MyTreeItemData	*seqdata = new MyTreeItemData(selected_coll, selected_vers, TREESECTION_SEQUENCES, k);
+		ShapesTreeItemData	*seqdata = new ShapesTreeItemData(selected_coll, selected_vers, TREESECTION_SEQUENCES, k);
 
 		label << k;
 		if (seq->Name().Len() > 0)
@@ -1618,7 +1504,7 @@ void ShapesView::EditSequenceFields(wxCommandEvent &e)
 				wxTreeItemId		id = colltree->GetFirstChild(seqnode, cookie);
 			
 				while (id.IsOk()) {
-					MyTreeItemData	*itemdata = dynamic_cast<MyTreeItemData *>(colltree->GetItemData(id));
+					ShapesTreeItemData	*itemdata = dynamic_cast<ShapesTreeItemData *>(colltree->GetItemData(id));
 
 					if (itemdata->Sequence() == selected_sequence) {
 						// here we are

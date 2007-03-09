@@ -27,7 +27,6 @@ class ShapeFusionMain: public wxDocParentFrame
 {
     DECLARE_CLASS(FusionMain)
 public:
-    wxMenu *editMenu;
     
     ShapeFusionMain(wxDocManager *manager, wxFrame *frame, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size,
         const long type);
