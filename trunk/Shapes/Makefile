@@ -3,7 +3,7 @@ CFLAGS = -Wall -g -O2 -I..
 WXCFLAGS = `wx-config --cxxflags`
 
 OBJECTS = BitmapBrowser.o BitmapView.o CTBrowser.o FrameBrowser.o \
-			FrameView.o MyTreeItemData.o SequenceView.o ShapesDocument.o \
+			FrameView.o ShapesTreeItemData.o SequenceView.o ShapesDocument.o \
 			ShapesElements.o ShapesView.o utilities.o
 
 all: $(OBJECTS)
@@ -28,8 +28,8 @@ FrameBrowser.o: FrameBrowser.cpp FrameBrowser.h utilities.h
 FrameView.o: FrameView.cpp FrameView.h utilities.h
 	g++ -c FrameView.cpp $(CFLAGS) $(WXCFLAGS)
 
-MyTreeItemData.o: MyTreeItemData.cpp MyTreeItemData.h
-	g++ -c MyTreeItemData.cpp $(CFLAGS) $(WXCFLAGS)
+ShapesTreeItemData.o: ShapesTreeItemData.cpp ShapesTreeItemData.h
+	g++ -c ShapesTreeItemData.cpp $(CFLAGS) $(WXCFLAGS)
 
 SequenceView.o: SequenceView.cpp SequenceView.h utilities.h
 	g++ -c SequenceView.cpp $(CFLAGS) $(WXCFLAGS)

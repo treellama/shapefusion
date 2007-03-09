@@ -24,7 +24,7 @@
 wxImage ShapesBitmapToImage(ShapesBitmap *bp, ShapesColorTable *ct, bool white_transparency)
 {
 	if (bp == NULL || ct == NULL || bp->Pixels() == NULL)
-		std::cerr << "[utilities] ShapesBitmapToImage: passed null pointers\n";
+		wxLogDebug("[utilities ShapesBitmapToImage]: passed null pointers\n");
 
 	int				w = bp->Width(),
 					h = bp->Height();
@@ -49,7 +49,7 @@ wxImage ShapesBitmapToImage(ShapesBitmap *bp, ShapesColorTable *ct, bool white_t
 			*outp++ = color->Green() >> 8;
 			*outp++ = color->Blue() >> 8;
 		} else {
-			std::cerr << "[utilities ShapesBitmapToImage] pixel value " << (unsigned int)value << " with just " << colors_per_table << " colors/table\n";
+			wxLogDebug("[utilities ShapesBitmapToImage] pixel value %d with just %d colors/table\n", value, colors_per_table);
 			*outp++ = 255;
 			*outp++ = 255;
 			*outp++ = 255;
