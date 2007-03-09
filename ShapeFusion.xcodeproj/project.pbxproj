@@ -1,0 +1,350 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 42;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		1F536BAC0B93426B00F51E49 /* BitmapBrowser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F08B4B7E0AB0AE4B00896399 /* BitmapBrowser.cpp */; };
+		1F536BAD0B93426C00F51E49 /* BitmapView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F08B4B7D0AB0AE4B00896399 /* BitmapView.cpp */; };
+		1F536BAE0B93426C00F51E49 /* CTBrowser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F08B4B7C0AB0AE4B00896399 /* CTBrowser.cpp */; };
+		1F536BAF0B93426D00F51E49 /* FrameBrowser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F08B4B7B0AB0AE4B00896399 /* FrameBrowser.cpp */; };
+		1F536BB00B93426E00F51E49 /* FrameView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F08B4B7A0AB0AE4B00896399 /* FrameView.cpp */; };
+		1F536BB10B93426F00F51E49 /* SequenceView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F0966E020B551E4900820E4F /* SequenceView.cpp */; };
+		1F6C5E070B80E37800628F07 /* wx.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F6C5E060B80E37800628F07 /* wx.framework */; };
+		1F9857330B8A2CDC00D0395F /* ShapeFusionMain.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F98572F0B8A2CDC00D0395F /* ShapeFusionMain.cpp */; };
+		1F9857340B8A2CDC00D0395F /* ShapeFusionMenus.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F9857310B8A2CDC00D0395F /* ShapeFusionMenus.cpp */; };
+		1F9857EA0B8A39BF00D0395F /* ShapesDocument.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F9857E60B8A39BF00D0395F /* ShapesDocument.cpp */; };
+		1F9857EB0B8A39BF00D0395F /* ShapesView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F9857E80B8A39BF00D0395F /* ShapesView.cpp */; };
+		1FAD07400B94409100E04604 /* ShapesElements.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FAD073D0B94409100E04604 /* ShapesElements.cpp */; };
+		1FD941E10B92D5CD00DD1EEC /* BigEndianBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F096F44E0AD2DD97005A633A /* BigEndianBuffer.cpp */; };
+		1FE8DF890B9C4431003EF856 /* COPYING.txt in Resources */ = {isa = PBXBuildFile; fileRef = 1FE8DF870B9C4431003EF856 /* COPYING.txt */; };
+		1FE8DF8A0B9C4431003EF856 /* README.txt in Resources */ = {isa = PBXBuildFile; fileRef = 1FE8DF880B9C4431003EF856 /* README.txt */; };
+		1FEDD4630B9C3F9D00D69B62 /* MyTreeItemData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FEDD45F0B9C3F9D00D69B62 /* MyTreeItemData.cpp */; };
+		1FEDD4640B9C3F9D00D69B62 /* utilities.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FEDD4610B9C3F9D00D69B62 /* utilities.cpp */; };
+		F08B4C5A0AB0B31E00896399 /* ShapeFusionApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F08B4B780AB0AE4B00896399 /* ShapeFusionApp.cpp */; };
+		F08B4C650AB0B39200896399 /* wxmac.icns in Resources */ = {isa = PBXBuildFile; fileRef = F08B4B760AB0AE2000896399 /* wxmac.icns */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXBuildRule section */
+		F08B4D9F0AB0CF7500896399 /* PBXBuildRule */ = {
+			isa = PBXBuildRule;
+			compilerSpec = com.apple.compilers.gcc;
+			fileType = sourcecode.cpp;
+			isEditable = 1;
+			outputFiles = (
+			);
+		};
+/* End PBXBuildRule section */
+
+/* Begin PBXFileReference section */
+		1F6C5E060B80E37800628F07 /* wx.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = wx.framework; path = /Library/Frameworks/wx.framework; sourceTree = "<absolute>"; };
+		1F84BCE00B8C7586000B4DC4 /* ShapesEditor.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ShapesEditor.h; sourceTree = "<group>"; };
+		1F84BCE90B8C760D000B4DC4 /* ShapesDocument.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ShapesDocument.h; sourceTree = "<group>"; };
+		1F98572F0B8A2CDC00D0395F /* ShapeFusionMain.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = ShapeFusionMain.cpp; sourceTree = "<group>"; };
+		1F9857300B8A2CDC00D0395F /* ShapeFusionMain.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ShapeFusionMain.h; sourceTree = "<group>"; };
+		1F9857310B8A2CDC00D0395F /* ShapeFusionMenus.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = ShapeFusionMenus.cpp; sourceTree = "<group>"; };
+		1F9857320B8A2CDC00D0395F /* ShapeFusionMenus.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ShapeFusionMenus.h; sourceTree = "<group>"; };
+		1F9857E60B8A39BF00D0395F /* ShapesDocument.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = ShapesDocument.cpp; sourceTree = "<group>"; };
+		1F9857E80B8A39BF00D0395F /* ShapesView.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = ShapesView.cpp; sourceTree = "<group>"; };
+		1F9857E90B8A39BF00D0395F /* ShapesView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ShapesView.h; sourceTree = "<group>"; };
+		1FAD073D0B94409100E04604 /* ShapesElements.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = ShapesElements.cpp; sourceTree = "<group>"; };
+		1FAD073E0B94409100E04604 /* ShapesElements.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ShapesElements.h; sourceTree = "<group>"; };
+		1FE8DF870B9C4431003EF856 /* COPYING.txt */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = COPYING.txt; sourceTree = "<group>"; };
+		1FE8DF880B9C4431003EF856 /* README.txt */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = README.txt; sourceTree = "<group>"; };
+		1FEDD45F0B9C3F9D00D69B62 /* MyTreeItemData.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = MyTreeItemData.cpp; sourceTree = "<group>"; };
+		1FEDD4600B9C3F9D00D69B62 /* MyTreeItemData.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = MyTreeItemData.h; sourceTree = "<group>"; };
+		1FEDD4610B9C3F9D00D69B62 /* utilities.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = utilities.cpp; sourceTree = "<group>"; };
+		1FEDD4620B9C3F9D00D69B62 /* utilities.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = utilities.h; sourceTree = "<group>"; };
+		F08B4B760AB0AE2000896399 /* wxmac.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = wxmac.icns; path = /Library/Frameworks/wx.framework/Versions/2.8/Resources/wxmac.icns; sourceTree = "<absolute>"; };
+		F08B4B780AB0AE4B00896399 /* ShapeFusionApp.cpp */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.cpp.cpp; path = ShapeFusionApp.cpp; sourceTree = "<group>"; };
+		F08B4B7A0AB0AE4B00896399 /* FrameView.cpp */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.cpp.cpp; path = FrameView.cpp; sourceTree = "<group>"; };
+		F08B4B7B0AB0AE4B00896399 /* FrameBrowser.cpp */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.cpp.cpp; path = FrameBrowser.cpp; sourceTree = "<group>"; };
+		F08B4B7C0AB0AE4B00896399 /* CTBrowser.cpp */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.cpp.cpp; path = CTBrowser.cpp; sourceTree = "<group>"; };
+		F08B4B7D0AB0AE4B00896399 /* BitmapView.cpp */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.cpp.cpp; path = BitmapView.cpp; sourceTree = "<group>"; };
+		F08B4B7E0AB0AE4B00896399 /* BitmapBrowser.cpp */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.cpp.cpp; path = BitmapBrowser.cpp; sourceTree = "<group>"; };
+		F08B4B810AB0AE4B00896399 /* ShapesEditor.cpp */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.cpp.cpp; path = ShapesEditor.cpp; sourceTree = "<group>"; };
+		F08B4B820AB0AE6C00896399 /* ShapeFusionApp.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 5; path = ShapeFusionApp.h; sourceTree = "<group>"; };
+		F08B4B840AB0AE6C00896399 /* FrameView.h */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.c.h; path = FrameView.h; sourceTree = "<group>"; };
+		F08B4B850AB0AE6C00896399 /* FrameBrowser.h */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.c.h; path = FrameBrowser.h; sourceTree = "<group>"; };
+		F08B4B860AB0AE6C00896399 /* CTBrowser.h */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.c.h; path = CTBrowser.h; sourceTree = "<group>"; };
+		F08B4B870AB0AE6C00896399 /* BitmapView.h */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.c.h; path = BitmapView.h; sourceTree = "<group>"; };
+		F08B4B880AB0AE6C00896399 /* BitmapBrowser.h */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.c.h; path = BitmapBrowser.h; sourceTree = "<group>"; };
+		F08B4C360AB0B06D00896399 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
+		F08B4C370AB0B09A00896399 /* System.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = System.framework; path = /System/Library/Frameworks/System.framework; sourceTree = "<absolute>"; };
+		F08B4C440AB0B10000896399 /* ShapeFusion.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ShapeFusion.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F08B4C470AB0B10000896399 /* ShapeFusion-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "ShapeFusion-Info.plist"; sourceTree = "<group>"; };
+		F08B4C760AB0B7E300896399 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = /System/Library/Frameworks/IOKit.framework; sourceTree = "<absolute>"; };
+		F08B4CB30AB0C0E700896399 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
+		F0966E020B551E4900820E4F /* SequenceView.cpp */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.cpp.cpp; path = SequenceView.cpp; sourceTree = "<group>"; };
+		F0966E040B551E5100820E4F /* SequenceView.h */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.c.h; path = SequenceView.h; sourceTree = "<group>"; };
+		F096F44E0AD2DD97005A633A /* BigEndianBuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.cpp.cpp; path = BigEndianBuffer.cpp; sourceTree = "<group>"; };
+		F096F4500AD2DD9F005A633A /* BigEndianBuffer.h */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.c.h; path = BigEndianBuffer.h; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		F08B4C420AB0B10000896399 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1F6C5E070B80E37800628F07 /* wx.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		1F84BF630B8C8F5C000B4DC4 /* Shapes */ = {
+			isa = PBXGroup;
+			children = (
+				1FAD073D0B94409100E04604 /* ShapesElements.cpp */,
+				1FAD073E0B94409100E04604 /* ShapesElements.h */,
+				1F9857E60B8A39BF00D0395F /* ShapesDocument.cpp */,
+				1F84BCE90B8C760D000B4DC4 /* ShapesDocument.h */,
+				1F9857E80B8A39BF00D0395F /* ShapesView.cpp */,
+				1F9857E90B8A39BF00D0395F /* ShapesView.h */,
+				F08B4B810AB0AE4B00896399 /* ShapesEditor.cpp */,
+				1F84BCE00B8C7586000B4DC4 /* ShapesEditor.h */,
+				F08B4B7A0AB0AE4B00896399 /* FrameView.cpp */,
+				F08B4B840AB0AE6C00896399 /* FrameView.h */,
+				F08B4B7B0AB0AE4B00896399 /* FrameBrowser.cpp */,
+				F08B4B850AB0AE6C00896399 /* FrameBrowser.h */,
+				F08B4B7C0AB0AE4B00896399 /* CTBrowser.cpp */,
+				F08B4B860AB0AE6C00896399 /* CTBrowser.h */,
+				F08B4B7D0AB0AE4B00896399 /* BitmapView.cpp */,
+				F08B4B870AB0AE6C00896399 /* BitmapView.h */,
+				F08B4B7E0AB0AE4B00896399 /* BitmapBrowser.cpp */,
+				F08B4B880AB0AE6C00896399 /* BitmapBrowser.h */,
+				F0966E020B551E4900820E4F /* SequenceView.cpp */,
+				F0966E040B551E5100820E4F /* SequenceView.h */,
+				1FEDD45F0B9C3F9D00D69B62 /* MyTreeItemData.cpp */,
+				1FEDD4600B9C3F9D00D69B62 /* MyTreeItemData.h */,
+				1FEDD4610B9C3F9D00D69B62 /* utilities.cpp */,
+				1FEDD4620B9C3F9D00D69B62 /* utilities.h */,
+			);
+			path = Shapes;
+			sourceTree = "<group>";
+		};
+		F08B4B580AB0ADBA00896399 = {
+			isa = PBXGroup;
+			children = (
+				F08B4B720AB0AE0B00896399 /* Sources */,
+				F08B4B750AB0AE1200896399 /* Resources */,
+				F08B4B9E0AB0B02A00896399 /* External things */,
+				F08B4C450AB0B10000896399 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		F08B4B720AB0AE0B00896399 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				1F84BF630B8C8F5C000B4DC4 /* Shapes */,
+				F08B4B780AB0AE4B00896399 /* ShapeFusionApp.cpp */,
+				F08B4B820AB0AE6C00896399 /* ShapeFusionApp.h */,
+				1F9857310B8A2CDC00D0395F /* ShapeFusionMenus.cpp */,
+				1F9857320B8A2CDC00D0395F /* ShapeFusionMenus.h */,
+				1F98572F0B8A2CDC00D0395F /* ShapeFusionMain.cpp */,
+				1F9857300B8A2CDC00D0395F /* ShapeFusionMain.h */,
+				F096F44E0AD2DD97005A633A /* BigEndianBuffer.cpp */,
+				F096F4500AD2DD9F005A633A /* BigEndianBuffer.h */,
+			);
+			name = Sources;
+			sourceTree = SOURCE_ROOT;
+		};
+		F08B4B750AB0AE1200896399 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				1FE8DF870B9C4431003EF856 /* COPYING.txt */,
+				1FE8DF880B9C4431003EF856 /* README.txt */,
+				F08B4C470AB0B10000896399 /* ShapeFusion-Info.plist */,
+				F08B4B760AB0AE2000896399 /* wxmac.icns */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		F08B4B9E0AB0B02A00896399 /* External things */ = {
+			isa = PBXGroup;
+			children = (
+				1F6C5E060B80E37800628F07 /* wx.framework */,
+				F08B4C360AB0B06D00896399 /* Carbon.framework */,
+				F08B4C370AB0B09A00896399 /* System.framework */,
+				F08B4C760AB0B7E300896399 /* IOKit.framework */,
+				F08B4CB30AB0C0E700896399 /* OpenGL.framework */,
+			);
+			name = "External things";
+			sourceTree = "<group>";
+		};
+		F08B4C450AB0B10000896399 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				F08B4C440AB0B10000896399 /* ShapeFusion.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		F08B4C430AB0B10000896399 /* ShapeFusion */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F08B4C480AB0B10000896399 /* Build configuration list for PBXNativeTarget "ShapeFusion" */;
+			buildPhases = (
+				F08B4C400AB0B10000896399 /* Resources */,
+				F08B4C410AB0B10000896399 /* Sources */,
+				F08B4C420AB0B10000896399 /* Frameworks */,
+			);
+			buildRules = (
+				F08B4D9F0AB0CF7500896399 /* PBXBuildRule */,
+			);
+			dependencies = (
+			);
+			name = ShapeFusion;
+			productName = carbon_static;
+			productReference = F08B4C440AB0B10000896399 /* ShapeFusion.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		F08B4B5A0AB0ADBA00896399 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = F08B4B5B0AB0ADBA00896399 /* Build configuration list for PBXProject "ShapeFusion" */;
+			hasScannedForEncodings = 0;
+			mainGroup = F08B4B580AB0ADBA00896399;
+			productRefGroup = F08B4C450AB0B10000896399 /* Products */;
+			projectDirPath = "";
+			targets = (
+				F08B4C430AB0B10000896399 /* ShapeFusion */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		F08B4C400AB0B10000896399 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F08B4C650AB0B39200896399 /* wxmac.icns in Resources */,
+				1FE8DF890B9C4431003EF856 /* COPYING.txt in Resources */,
+				1FE8DF8A0B9C4431003EF856 /* README.txt in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		F08B4C410AB0B10000896399 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F08B4C5A0AB0B31E00896399 /* ShapeFusionApp.cpp in Sources */,
+				1F9857330B8A2CDC00D0395F /* ShapeFusionMain.cpp in Sources */,
+				1F9857340B8A2CDC00D0395F /* ShapeFusionMenus.cpp in Sources */,
+				1F9857EA0B8A39BF00D0395F /* ShapesDocument.cpp in Sources */,
+				1F9857EB0B8A39BF00D0395F /* ShapesView.cpp in Sources */,
+				1FD941E10B92D5CD00DD1EEC /* BigEndianBuffer.cpp in Sources */,
+				1F536BAC0B93426B00F51E49 /* BitmapBrowser.cpp in Sources */,
+				1F536BAD0B93426C00F51E49 /* BitmapView.cpp in Sources */,
+				1F536BAE0B93426C00F51E49 /* CTBrowser.cpp in Sources */,
+				1F536BAF0B93426D00F51E49 /* FrameBrowser.cpp in Sources */,
+				1F536BB00B93426E00F51E49 /* FrameView.cpp in Sources */,
+				1F536BB10B93426F00F51E49 /* SequenceView.cpp in Sources */,
+				1FAD07400B94409100E04604 /* ShapesElements.cpp in Sources */,
+				1FEDD4630B9C3F9D00D69B62 /* MyTreeItemData.cpp in Sources */,
+				1FEDD4640B9C3F9D00D69B62 /* utilities.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		F08B4B5C0AB0ADBA00896399 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(NATIVE_ARCH)";
+				GCC_OPTIMIZATION_LEVEL = 0;
+				WARNING_CFLAGS = "-Wall";
+			};
+			name = Debug;
+		};
+		F08B4B5D0AB0ADBA00896399 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					ppc,
+					"$(NATIVE_ARCH)",
+				);
+			};
+			name = Release;
+		};
+		F08B4C490AB0B10000896399 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(LOCAL_LIBRARY_DIR)/Frameworks/wx.framework/Headers/wxprec.h";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					NO_GCC_PRAGMA,
+					__WXMAC__,
+					"wxUSE_BASE=1",
+					"_FILE_OFFSET_BITS=64",
+					_LARGE_FILES,
+					"__WXMAC_XCODE__=1",
+					"WX_PRECOMP=1",
+					MACOS_CLASSIC,
+					__WXDEBUG__,
+				);
+				INFOPLIST_FILE = "ShapeFusion-Info.plist";
+				PRODUCT_NAME = ShapeFusion;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		F08B4C4A0AB0B10000896399 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(LOCAL_LIBRARY_DIR)/Frameworks/wx.framework/Headers/wxprec.h";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					NO_GCC_PRAGMA,
+					__WXMAC__,
+					"wxUSE_BASE=1",
+					"_FILE_OFFSET_BITS=64",
+					_LARGE_FILES,
+					"__WXMAC_XCODE__=1",
+					"WX_PRECOMP=1",
+					MACOS_CLASSIC,
+					__WXDEBUG__,
+				);
+				INFOPLIST_FILE = "ShapeFusion-Info.plist";
+				PRODUCT_NAME = ShapeFusion;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		F08B4B5B0AB0ADBA00896399 /* Build configuration list for PBXProject "ShapeFusion" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F08B4B5C0AB0ADBA00896399 /* Debug */,
+				F08B4B5D0AB0ADBA00896399 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F08B4C480AB0B10000896399 /* Build configuration list for PBXNativeTarget "ShapeFusion" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F08B4C490AB0B10000896399 /* Debug */,
+				F08B4C4A0AB0B10000896399 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = F08B4B5A0AB0ADBA00896399 /* Project object */;
+}
