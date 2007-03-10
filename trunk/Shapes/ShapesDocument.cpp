@@ -22,7 +22,6 @@
 #include "wx/wx.h"
 #endif
 #include "wx/datstrm.h"
-
 #include "ShapesDocument.h"
 
 IMPLEMENT_DYNAMIC_CLASS(ShapesDocument, wxDocument)
@@ -216,21 +215,19 @@ wxSTD istream& ShapesDocument::LoadObject(wxSTD istream& stream)
 wxInputStream& ShapesDocument::LoadObject(wxInputStream& stream)
 #endif
 {
-	
-	for (unsigned int i = 0; i < COLLECTIONS_PER_FILE; i++)
-	{
+	for (unsigned int i = 0; i < COLLECTIONS_PER_FILE; i++) {
 		ShapesCollection	*c = new ShapesCollection(mVerboseLoading);
-		
+
 		if (mVerboseLoading)
 			wxLogDebug(wxT("[ShapesDocument] Loading collection %d"), i);
-		
+
 #if wxUSE_STD_IOSTREAM
 		stream.seekg(i * SIZEOF_collection_header, std::ios::beg);
 #else
 		stream.SeekI(i * SIZEOF_collection_header);
 #endif
 		c->LoadObject(stream);
-		
+
 		// store if correct
 		if (c->IsGood())
 			mCollections.push_back(c);

@@ -31,7 +31,7 @@
 #ifndef WX_PRECOMP
     #include "wx/wx.h"
 #endif
-#include "ShapesDocument.h"
+#include "ShapesElements.h"
 
 DECLARE_EVENT_TYPE(wxEVT_CTBROWSER, -1)
 

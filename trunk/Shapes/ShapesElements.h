@@ -27,9 +27,9 @@
 using std::vector;
 #include "../BigEndianBuffer.h"
 
-#define COLLECTIONS_PER_FILE				32
+#define COLLECTIONS_PER_FILE		32
 
-#define SIZEOF_collection_header			32
+#define SIZEOF_collection_header	32
 
 class ShapesElement /*: public wxObject*/
 {
@@ -39,7 +39,7 @@ private:
 protected:
 	// So that subclasses can change their status
 	bool	mGoodData;
-	
+
 public:
 	ShapesElement(bool verbose) : mVerboseLoading(verbose), mGoodData(false) {}
 	~ShapesElement(void) {}
@@ -63,7 +63,6 @@ private:
 	unsigned short	mRed, mGreen, mBlue;
 
 public:
-
 	// Constructor / Destructor
 	ShapesColor(bool verbose = false);
 	~ShapesColor(void);
@@ -83,10 +82,9 @@ public:
 class ShapesColorTable : public ShapesElement
 {
 private:
-	vector<ShapesColor*>		mColors;
-	
-public:
+	vector<ShapesColor*>	mColors;
 
+public:
 	ShapesColorTable(bool verbose = false);
 	~ShapesColorTable(void);
 
@@ -96,7 +94,7 @@ public:
 	unsigned int SizeInFile() const;
 	
     BigEndianBuffer& SaveObject(BigEndianBuffer& buffer);
-    BigEndianBuffer& LoadObject(BigEndianBuffer& buffer, long offset, long color_count);
+    BigEndianBuffer& LoadObject(BigEndianBuffer& buffer, unsigned int offset, unsigned int color_count);
 };
 
 // a bitmap
@@ -111,10 +109,8 @@ private:
 	unsigned char	*mPixels;
 	// list of frames referencing this bitmap
 	vector<int>		mUsers;
-	
-	
-public:
 
+public:
 	// Constructor / Destructor
 	ShapesBitmap(bool verbose = false);
 	~ShapesBitmap(void);
@@ -139,7 +135,7 @@ public:
 	unsigned int SizeInFile() const;
 	
     BigEndianBuffer& SaveObject(BigEndianBuffer& buffer);
-    BigEndianBuffer& LoadObject(BigEndianBuffer& buffer, long offset);
+    BigEndianBuffer& LoadObject(BigEndianBuffer& buffer, unsigned int offset);
 };
 
 // a frame, aka "low level shape definition"
@@ -172,13 +168,12 @@ private:
 	//   world_y0 = -scale_factor * (key_y - origin_y)
 	short		mWorldX0, mWorldY0;
 	// list of sequences referencing this frame
-	vector<int>		mUsers;
+	vector<int>	mUsers;
 public:
-		
 	// Constructor / Destructor
 	ShapesFrame(bool verbose = false);
 	~ShapesFrame(void);
-	
+
 	// Accessors
 	bool IsXmirrored(void) const {return mXmirror;}
 	bool IsYmirrored(void) const {return mYmirror;}
@@ -196,7 +191,7 @@ public:
 	short WorldBottom(void) const {return mWorldBottom;}
 	short WorldX0(void) const {return mWorldX0;}
 	short WorldY0(void) const {return mWorldY0;}
-	
+
 	// Mutators
 	void SetXmirrored(bool b) {mXmirror = b;}
 	void SetYmirrored(bool b) {mYmirror = b;}
@@ -214,12 +209,12 @@ public:
 	void SetWorldBottom(short s)  {mWorldBottom = s;}
 	void SetWorldX0(short s) {mWorldX0 = s;}
 	void SetWorldY0(short s) {mWorldY0 = s;}
-	
+
 	// Utilities
 	unsigned int SizeInFile() const;
-	
+
     BigEndianBuffer& SaveObject(BigEndianBuffer& buffer);
-    BigEndianBuffer& LoadObject(BigEndianBuffer& buffer, long offset);
+    BigEndianBuffer& LoadObject(BigEndianBuffer& buffer, unsigned int offset);
 };
 
 // sequence types (ShapesSequence.number_of_views). Nobody
@@ -258,13 +253,12 @@ private:
 //FIXME This could be made private
 public:
 	vector<short>	mFrameIndexes;
-	
-public:
 
+public:
 	// Constructor / Destructor
 	ShapesSequence(bool verbose = false);
 	~ShapesSequence(void);
-	
+
 	// Accessors
 	short Type(void) const {return mType;}
 	unsigned short Flags(void) const {return mFlags;}
@@ -325,11 +319,10 @@ private:
 	vector<ShapesBitmap*>		mBitmaps;
 
 public:
-
 	// Constructor / Destructor
 	ShapesChunk(bool verbose = false);
 	~ShapesChunk(void);
-	
+
 	// Chunk Data access
 	int Version() const {return mVersion;}
 	int Type() const {return mType;}
@@ -367,15 +360,15 @@ private:
 	short			mStatus;
 	unsigned short	mFlags;
 	ShapesChunk		*mChunks[2];	// chunks for 8-bit and truecolor game
-	
+
 public:
 	ShapesCollection(bool verbose = false);
 	~ShapesCollection(void);
-	
+
 	// Accessors
 	int Status(void) const {return mStatus;}
 	int Flags(void) const {return mFlags;}
-	
+
 	// Collection Data access
 	bool Defined(unsigned int chunk) const;
 	int Version(unsigned int chunk) const;

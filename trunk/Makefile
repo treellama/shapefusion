@@ -10,7 +10,7 @@ SHAPESOBJECTS = Shapes/BitmapBrowser.o Shapes/BitmapView.o \
 				Shapes/FrameView.o Shapes/SequenceView.o \
 				Shapes/ShapesDocument.o \
 				Shapes/ShapesElements.o Shapes/ShapesView.o \
-				Shapes/MyTreeItemData.o Shapes/utilities.o
+				Shapes/ShapesTreeItemData.o Shapes/utilities.o
 
 shapefusion: shapes $(OBJECTS)
 	g++ -o shapefusion $(OBJECTS) $(SHAPESOBJECTS) $(WXLIBS)

@@ -30,8 +30,7 @@
 #ifndef WX_PRECOMP
     #include "wx/wx.h"
 #endif
-
-#include "ShapesDocument.h"
+#include "ShapesElements.h"
 
 DECLARE_EVENT_TYPE(wxEVT_BITMAPBROWSER, -1)
 DECLARE_EVENT_TYPE(wxEVT_BITMAPBROWSER_DELETE, -1)

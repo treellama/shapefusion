@@ -28,7 +28,7 @@
 #ifndef WX_PRECOMP
     #include "wx/wx.h"
 #endif
-#include "ShapesDocument.h"
+#include "ShapesElements.h"
 
 class FrameView: public wxScrolledWindow {
 private:
