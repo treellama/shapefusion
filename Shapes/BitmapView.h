@@ -28,19 +28,19 @@
 #ifndef WX_PRECOMP
     #include "wx/wx.h"
 #endif
-#include "ShapesDocument.h"
+#include "ShapesElements.h"
 
 class BitmapView: public wxScrolledWindow {
 private:
 	ShapesBitmap		*enc_bmp;			// encoded bitmap
 	wxBitmap			dec_bmp;			// ready-to-draw bitmap
 	ShapesColorTable	*ctable;			// which palette to use for display
-	bool			white_transparency;	// hide transparent pixels
-	wxPen			invisible_pen;
+	bool				white_transparency;	// hide transparent pixels
+	wxPen				invisible_pen;
 
-	bool			dragging;
-	int				drag_start_x,
-					drag_start_y;
+	bool				dragging;
+	int					drag_start_x,
+						drag_start_y;
 
 protected:
 	DECLARE_EVENT_TABLE();

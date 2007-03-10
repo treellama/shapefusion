@@ -9,35 +9,34 @@ OBJECTS = BitmapBrowser.o BitmapView.o CTBrowser.o FrameBrowser.o \
 all: $(OBJECTS)
 
 ShapesEditor.o: ShapesEditor.cpp ShapesEditor.h BitmapBrowser.h \
-					BitmapView.h FrameBrowser.h FrameView.h \
-					CTBrowser.h
+					BitmapView.h FrameBrowser.h FrameView.h CTBrowser.h
 	g++ -c ShapesEditor.cpp $(CFLAGS) $(WXCFLAGS)
 
-BitmapBrowser.o: BitmapBrowser.cpp BitmapBrowser.h utilities.h
+BitmapBrowser.o: BitmapBrowser.cpp BitmapBrowser.h ShapesElements.h utilities.h
 	g++ -c BitmapBrowser.cpp $(CFLAGS) $(WXCFLAGS)
 
-BitmapView.o: BitmapView.cpp BitmapView.h utilities.h
+BitmapView.o: BitmapView.cpp BitmapView.h ShapesElements.h utilities.h
 	g++ -c BitmapView.cpp $(CFLAGS) $(WXCFLAGS)
 
-CTBrowser.o: CTBrowser.cpp CTBrowser.h 
+CTBrowser.o: CTBrowser.cpp CTBrowser.h ShapesElements.h
 	g++ -c CTBrowser.cpp $(CFLAGS) $(WXCFLAGS)
 
-FrameBrowser.o: FrameBrowser.cpp FrameBrowser.h utilities.h
+FrameBrowser.o: FrameBrowser.cpp FrameBrowser.h ShapesElements.h utilities.h
 	g++ -c FrameBrowser.cpp $(CFLAGS) $(WXCFLAGS)
 
-FrameView.o: FrameView.cpp FrameView.h utilities.h
+FrameView.o: FrameView.cpp FrameView.h ShapesElements.h utilities.h
 	g++ -c FrameView.cpp $(CFLAGS) $(WXCFLAGS)
 
 ShapesTreeItemData.o: ShapesTreeItemData.cpp ShapesTreeItemData.h
 	g++ -c ShapesTreeItemData.cpp $(CFLAGS) $(WXCFLAGS)
 
-SequenceView.o: SequenceView.cpp SequenceView.h utilities.h
+SequenceView.o: SequenceView.cpp SequenceView.h ShapesElements.h utilities.h
 	g++ -c SequenceView.cpp $(CFLAGS) $(WXCFLAGS)
 
-ShapesDocument.o: ShapesDocument.cpp ShapesDocument.h
+ShapesDocument.o: ShapesDocument.cpp ShapesDocument.h ShapesElements.h
 	g++ -c ShapesDocument.cpp $(CFLAGS) $(WXCFLAGS)
 
-ShapesElements.o: ShapesElements.cpp ShapesElements.h
+ShapesElements.o: ShapesElements.cpp ShapesElements.h ../BigEndianBuffer.h
 	g++ -c ShapesElements.cpp $(CFLAGS) $(WXCFLAGS)
 
 ShapesView.o: ShapesView.cpp ShapesView.h
