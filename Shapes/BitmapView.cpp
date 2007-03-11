@@ -100,9 +100,9 @@ void BitmapView::SetTranspPixelsDisplay(bool show)
 // add a new ShapesBitmap to the thumbnail list
 void BitmapView::SetBitmap(ShapesBitmap *bp)
 {
+	enc_bmp = bp;
 	if (bp != NULL) {
 		if (bp->Pixels() != NULL) {
-			enc_bmp = bp;
 			// adjust sizes
 			int	cw, ch,
 				vw = enc_bmp->Width(),
@@ -119,7 +119,7 @@ void BitmapView::SetBitmap(ShapesBitmap *bp)
 				dec_bmp = wxBitmap(ShapesBitmapToImage(bp, ctable, white_transparency));
 			Refresh();
 		} else {
-			std::cerr << "BitmapView: someone tried to add a bitmap with NULL pixels\n";
+			wxLogError(wxT("[BitmapView] Addes a bitmap with NULL pixels"));
 			SetVirtualSize(0, 0);
 		}
 	} else {

@@ -136,6 +136,7 @@ ShapesBitmap::~ShapesBitmap(void)
 {
 	if (mPixels)
 		delete mPixels;
+	mPixels = NULL;
 }
 
 unsigned int ShapesBitmap::SizeInFile(void) const

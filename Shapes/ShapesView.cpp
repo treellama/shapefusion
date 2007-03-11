@@ -921,6 +921,7 @@ void ShapesView::TreeSelect(wxTreeEvent &e)
 			fb->Clear();
 			f_view->SetFrame(NULL);
 			f_view->SetBitmap(NULL);
+			s_fb->Clear();
 			menubar->SetLabel(EDIT_MENU_DELETE, wxT("Delete"));
 			menubar->Enable(EDIT_MENU_DELETE, false);
 			for (unsigned int i = 0; i < ctmenucount; i++)

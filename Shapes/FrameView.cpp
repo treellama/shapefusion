@@ -242,9 +242,9 @@ void FrameView::SetBitmap(ShapesBitmap *bp)
 	int	cw, ch;
 
 	GetClientSize(&cw, &ch);
+	enc_bmp = bp;
 	if (bp != NULL) {
 		if (bp->Pixels() != NULL) {
-			enc_bmp = bp;
 			// adjust sizes
 			int	vw = enc_bmp->Width(),
 				vh = enc_bmp->Height();
@@ -269,11 +269,10 @@ void FrameView::SetBitmap(ShapesBitmap *bp)
 			}
 			Refresh();
 		} else {
-			std::cerr << "FrameView: someone tried to add a bitmap with NULL pixels\n";
+			wxLogError(wxT("[FrameView] Added a bitmap with NULL pixels"));
 			SetVirtualSize(cw, ch);
 		}
 	} else {
-		enc_bmp = NULL;
 		SetVirtualSize(cw, ch);
 	}
 }
