@@ -48,7 +48,7 @@ bool ShapeFusionApp::OnInit(void)
 #endif
     
     //// Create the main frame window
-    frame = new ShapeFusionMain(m_docManager, (wxFrame *) NULL, wxID_ANY, _T("ShapeFusion Workspace"), wxPoint(0, 0), wxSize(0, 0), wxDEFAULT_FRAME_STYLE);
+    frame = new ShapeFusionMain(m_docManager, (wxFrame *) NULL, wxID_ANY, _T("ShapeFusion Workspace"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE);
     
     //// Give it an icon (this is ignored in MDI mode: uses resources)
 #ifdef __WXMSW__

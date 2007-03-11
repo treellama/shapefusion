@@ -60,7 +60,7 @@ void BitmapBrowser::OnPaint(wxPaintEvent& e)
 	// draw thumbnails
 	tempdc.SetPen(tn_pen);
 	tempdc.SetBrush(*wxTRANSPARENT_BRUSH);
-	for (int i = 0; i < (int)thumbnails.size(); i++) {
+	for (int i = 0; i < (int)shp_bitmaps.size(); i++) {
 		int	x = tn_positions[i].x,
 			y = tn_positions[i].y;
 
@@ -258,7 +258,7 @@ void BitmapBrowser::AddBitmap(ShapesBitmap *bp)
 				Refresh();
 			}
 		} else {
-			std::cerr << "[BitmapBrowser] Someone tried to add a bitmap with NULL pixels\n";
+			wxLogError(wxT("[BitmapBrowser] Added a bitmap with NULL pixels"));
 		}
 	}
 }
@@ -290,9 +290,9 @@ void BitmapBrowser::SetColorTable(ShapesColorTable *ct)
 // size. Also pre-calculate thumbnail positions
 void BitmapBrowser::UpdateVirtualSize(void)
 {
-	wxClientDC	dc(this);
-	int			numbitmaps = thumbnails.size(),
-				width, height;
+	wxClientDC		dc(this);
+	unsigned int	numbitmaps = shp_bitmaps.size();
+	int				width, height;
 
 	GetClientSize(&width, &height);
 	if (numbitmaps < 1) {
@@ -308,7 +308,7 @@ void BitmapBrowser::UpdateVirtualSize(void)
 
 		SetScrollRate(0, 0);
 		// find greatest dimension among all bitmaps
-		for (unsigned int i = 0; i < shp_bitmaps.size(); i++) {
+		for (unsigned int i = 0; i < numbitmaps; i++) {
 			if (shp_bitmaps[i]->Width() > max_bitmap_dimension)
 				max_bitmap_dimension = shp_bitmaps[i]->Width();
 			if (shp_bitmaps[i]->Height() > max_bitmap_dimension)
@@ -355,7 +355,7 @@ void BitmapBrowser::UpdateVirtualSize(void)
 		y = margin;
 
 	tn_positions.clear();
-	for (unsigned int i = 0; i < thumbnails.size(); i++) {
+	for (unsigned int i = 0; i < numbitmaps; i++) {
 		tn_positions.push_back(wxPoint(x, y));
 
 		x += tn_size + margin;
@@ -370,6 +370,7 @@ void BitmapBrowser::UpdateVirtualSize(void)
 wxBitmap BitmapBrowser::CreateThumbnail(ShapesBitmap *bp)
 {
 	wxImage newimg;
+
 	if (ctable)
 		newimg = ShapesBitmapToImage(bp, ctable, white_transparency);
 	return ImageThumbnail(newimg, tn_size, true);
@@ -377,7 +378,7 @@ wxBitmap BitmapBrowser::CreateThumbnail(ShapesBitmap *bp)
 
 void BitmapBrowser::RebuildThumbnail(unsigned int i)
 {
-	if (i < thumbnails.size() && i < shp_bitmaps.size())
+	if (i < shp_bitmaps.size())
 		thumbnails[i] = CreateThumbnail(shp_bitmaps[i]);
 }
 

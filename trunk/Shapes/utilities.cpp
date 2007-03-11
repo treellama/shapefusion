@@ -23,9 +23,6 @@
 // the chroma-key color. NOTE: this routine assumes valid pointers.
 wxImage ShapesBitmapToImage(ShapesBitmap *bp, ShapesColorTable *ct, bool white_transparency)
 {
-	if (bp == NULL || ct == NULL || bp->Pixels() == NULL)
-		wxLogDebug(wxT("[utilities ShapesBitmapToImage] passed null pointers\n"));
-
 	int				w = bp->Width(),
 					h = bp->Height();
 	bool			transparency_enabled = bp->IsTransparent();
@@ -49,11 +46,9 @@ wxImage ShapesBitmapToImage(ShapesBitmap *bp, ShapesColorTable *ct, bool white_t
 			*outp++ = color->Green() >> 8;
 			*outp++ = color->Blue() >> 8;
 		} else {
-			wxLogError(wxT("[utilities ShapesBitmapToImage] Pixel value %u with just %u colors/table. Bitmap size %dx%d"),
-							value, colors_per_table, w, h);
-			*outp++ = 255;
-			*outp++ = 255;
-			*outp++ = 255;
+			wxLogError(wxT("[utilities ShapesBitmapToImage] Pixel value %u with just %u colors/table. Aborting"),
+							value, colors_per_table);
+			break;
 		}
 	}
 	return img;
