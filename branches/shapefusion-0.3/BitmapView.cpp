@@ -100,9 +100,9 @@ void BitmapView::SetTranspPixelsDisplay(bool show)
 // add a new ShpBitmap to the thumbnail list
 void BitmapView::SetBitmap(ShpBitmap *bp)
 {
+	enc_bmp = bp;
 	if (bp != NULL) {
 		if (bp->pixels != NULL) {
-			enc_bmp = bp;
 			// adjust sizes
 			int	cw, ch,
 				vw = enc_bmp->width,

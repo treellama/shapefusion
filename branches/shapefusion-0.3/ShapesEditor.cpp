@@ -1051,7 +1051,7 @@ void ShapesEditor::MenuShapesNewSequence(wxCommandEvent &e)
 void ShapesEditor::MenuHelpAbout(wxCommandEvent &e)
 {
 	 wxMessageDialog *dlg = new wxMessageDialog(this,
-								wxT("ShapeFusion 0.2\nhttp://shapefusion.sourceforge.net\n\nCopyright 2000-2007, Tito Dal Canton\n\n"
+								wxT("ShapeFusion 0.3\nhttp://shapefusion.sourceforge.net\n\nCopyright 2000-2007, Tito Dal Canton\n\n"
 									"An editor for Marathon II, Marathon Infinity and AlephOne shapes files. "
 									"Released under the terms of the GNU General Public License: for more information "
 									"see the COPYING file that comes with ShapeFusion."),

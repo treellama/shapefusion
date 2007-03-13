@@ -41,6 +41,11 @@ Shapes::Shapes(std::string path): good_data(false), verbose_file_load(false)
 	is.seekg(0, std::ios::end);
 	filesize = is.tellg();
 	is.seekg(0);
+	if (filesize < SIZEOF_collection_header * COLLECTIONS_PER_FILE) {
+		std::cerr << "[Shapes] File too small to be a Marathon shapes file\n";
+		is.close();
+		return;
+	}
 
 	// load collections
 	BigEndianBuffer	raw_headers(SIZEOF_collection_header * COLLECTIONS_PER_FILE);

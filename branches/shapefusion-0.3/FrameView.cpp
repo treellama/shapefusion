@@ -242,9 +242,9 @@ void FrameView::SetBitmap(ShpBitmap *bp)
 	int	cw, ch;
 
 	GetClientSize(&cw, &ch);
+	enc_bmp = bp;
 	if (bp != NULL) {
 		if (bp->pixels != NULL) {
-			enc_bmp = bp;
 			// adjust sizes
 			int	vw = enc_bmp->width,
 				vh = enc_bmp->height;
@@ -273,7 +273,6 @@ void FrameView::SetBitmap(ShpBitmap *bp)
 			SetVirtualSize(cw, ch);
 		}
 	} else {
-		enc_bmp = NULL;
 		SetVirtualSize(cw, ch);
 	}
 }

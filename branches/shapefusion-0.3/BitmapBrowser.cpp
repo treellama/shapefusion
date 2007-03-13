@@ -60,7 +60,7 @@ void BitmapBrowser::OnPaint(wxPaintEvent& e)
 	// draw thumbnails
 	tempdc.SetPen(tn_pen);
 	tempdc.SetBrush(*wxTRANSPARENT_BRUSH);
-	for (int i = 0; i < (int)thumbnails.size(); i++) {
+	for (int i = 0; i < (int)shp_bitmaps.size(); i++) {
 		int	x = tn_positions[i].x,
 			y = tn_positions[i].y;
 
@@ -104,7 +104,7 @@ void BitmapBrowser::OnMouseDown(wxMouseEvent& e)
 			{
 				int	new_selection = -1;
 
-				for (unsigned int i = 0; i < tn_positions.size(); i++) {
+				for (unsigned int i = 0; i < shp_bitmaps.size(); i++) {
 					wxRect	test(tn_positions[i].x, tn_positions[i].y, tn_size, tn_size);
 
 					if (test.Inside(mouse)) {
@@ -290,9 +290,9 @@ void BitmapBrowser::SetColorTable(ShpColorTable *ct)
 // size. Also pre-calculate thumbnail positions
 void BitmapBrowser::UpdateVirtualSize(void)
 {
-	wxClientDC	dc(this);
-	int			numbitmaps = thumbnails.size(),
-				width, height;
+	wxClientDC		dc(this);
+	unsigned int	numbitmaps = shp_bitmaps.size();
+	int				width, height;
 
 	GetClientSize(&width, &height);
 	if (numbitmaps < 1) {
@@ -308,7 +308,7 @@ void BitmapBrowser::UpdateVirtualSize(void)
 
 		SetScrollRate(0, 0);
 		// find greatest dimension among all bitmaps
-		for (unsigned int i = 0; i < shp_bitmaps.size(); i++) {
+		for (unsigned int i = 0; i < numbitmaps; i++) {
 			if (shp_bitmaps[i]->width > max_bitmap_dimension)
 				max_bitmap_dimension = shp_bitmaps[i]->width;
 			if (shp_bitmaps[i]->height > max_bitmap_dimension)
@@ -319,7 +319,7 @@ void BitmapBrowser::UpdateVirtualSize(void)
 			int	numcols = (width - margin) / (new_tn_size + margin),
 				numrows = (numcols > 0) ? (numbitmaps / numcols) : numbitmaps;
 
-			if (numrows * numcols < numbitmaps)
+			if (numrows * numcols < (int)numbitmaps)
 				numrows++;
 			int	total_height = numrows * (new_tn_size + margin) + margin;
 
@@ -345,7 +345,7 @@ void BitmapBrowser::UpdateVirtualSize(void)
 	num_cols = (width - margin) / (tn_size + margin);
 	num_rows = (num_cols > 0) ? (numbitmaps / num_cols) : numbitmaps;
 
-	if (num_rows * num_cols < numbitmaps)
+	if (num_rows * num_cols < (int)numbitmaps)
 		num_rows++;
 
 	SetVirtualSize(width, num_rows * (tn_size + margin) + margin);
@@ -355,7 +355,7 @@ void BitmapBrowser::UpdateVirtualSize(void)
 		y = margin;
 
 	tn_positions.clear();
-	for (unsigned int i = 0; i < thumbnails.size(); i++) {
+	for (unsigned int i = 0; i < numbitmaps; i++) {
 		tn_positions.push_back(wxPoint(x, y));
 
 		x += tn_size + margin;

@@ -1,4 +1,4 @@
-ShapeFusion 0.2
+ShapeFusion 0.3
 http://shapefusion.sourceforge.net
 
 An editor for Marathon II, Marathon Infinity and AlephOne Shapes files
@@ -111,8 +111,8 @@ bit of confusion if you forget it. Keep in mind that a famous Anvil bug is based
 confusion. But in Anvil it's a bug, in ShapeFusion it's a feature ;-)
 
 You can't open more than one Shapes file at a time. However you can launch more copies of ShapeFusion
-and open each file with them. I hope to fix this in the future and create a real multidocument
-application.
+and open each file with them. Work on this side is in progress and ShapeFusion will be a multidocument
+application soon.
 
 If you open an "original" Shapes file (e.g. from Marathon II) and then save it without touching
 anything, it won't probably have exactly the same size. In other words, it won't be exactly the same
