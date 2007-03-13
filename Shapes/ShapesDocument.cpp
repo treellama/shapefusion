@@ -215,6 +215,20 @@ wxSTD istream& ShapesDocument::LoadObject(wxSTD istream& stream)
 wxInputStream& ShapesDocument::LoadObject(wxInputStream& stream)
 #endif
 {
+	// first check file size to immediately rule out invalid stuff
+#if wxUSE_STD_IOSTREAM
+	stream.seekg(0, std::ios::end);
+	wxInt32 filesize = stream.tellg();
+	stream.seekg(0, std::ios::beg);
+#else
+	wxInt32 filesize = stream.GetSize();
+#endif
+	if (filesize < COLLECTIONS_PER_FILE * SIZEOF_collection_header) {
+		wxLogError(wxT("[ShapesDocument] File too small to be a Marathon shapes file"));
+		mGoodData = false;
+		return stream;
+	}
+	// load the collections
 	for (unsigned int i = 0; i < COLLECTIONS_PER_FILE; i++) {
 		ShapesCollection	*c = new ShapesCollection(mVerboseLoading);
 
@@ -233,7 +247,6 @@ wxInputStream& ShapesDocument::LoadObject(wxInputStream& stream)
 			mCollections.push_back(c);
 		else
 			wxLogError(wxT("[ShapesDocument] Error loading collection... Dropped"));
-		
 	}
 	mGoodData = true;
 	
