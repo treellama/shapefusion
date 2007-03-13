@@ -1212,7 +1212,7 @@ wxInputStream& ShapesCollection::LoadObject(wxInputStream& stream)
 
 #if wxUSE_STD_IOSTREAM
 	stream.seekg(0, std::ios::end);
-	wxInt32	filesize = stream.tellg();
+	wxInt32 filesize = stream.tellg();
 	stream.seekg(0, std::ios::beg);
 #else
 	wxInt32 filesize = stream.GetSize();
