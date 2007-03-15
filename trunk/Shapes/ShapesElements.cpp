@@ -479,11 +479,13 @@ unsigned int ShapesSequence::SizeInFile() const
 BigEndianBuffer& ShapesSequence::SaveObject(BigEndianBuffer& buffer)
 {
 	wxCSConv	seqnameconv(wxT("macintosh"));
+	char		name[33] = "";
 
 	buffer.WriteShort(mType);
 	buffer.WriteUShort(mFlags);
 	buffer.WriteChar(mName.Length());
-	buffer.WriteBlock(33, mName.mb_str(seqnameconv));
+	strncpy(name, mName.mb_str(seqnameconv), 33);
+	buffer.WriteBlock(33, (unsigned char *)name);
 	buffer.WriteShort(mNumberOfViews);
 	buffer.WriteShort(mFramesPerView);
 	buffer.WriteShort(mTicksPerFrame);
@@ -535,6 +537,7 @@ BigEndianBuffer& ShapesSequence::LoadObject(BigEndianBuffer& buffer, long offset
 	mLastFrameSound = buffer.ReadShort();
 	mPixelsToWorld = buffer.ReadShort();
 	mLoopFrame = buffer.ReadShort();
+	buffer.Position(buffer.Position() + 28);
 
 	if (IsVerbose()) {
 		wxLogDebug(wxT("[ShapesSequence]         Type:					%d"), mType);
@@ -552,18 +555,13 @@ BigEndianBuffer& ShapesSequence::LoadObject(BigEndianBuffer& buffer, long offset
 		wxLogDebug(wxT("[ShapesSequence]         Pixels to World:		%d"), mPixelsToWorld);
 		wxLogDebug(wxT("[ShapesSequence]         Loop Frame:			%d"), mLoopFrame);
 	}
-	
+
 	if (mNumberOfViews < 0 || mFramesPerView < 0 || mKeyFrame < 0 || mFirstFrameSound < -1
 			|| mKeyFrameSound < -1 || mLastFrameSound < -1 || mLoopFrame < -1) {
 		wxLogError(wxT("[ShapesSequence] Invalid value(s) in sequence data"));
 		return buffer;
 	}
 
-	wxInt32	oldpos = buffer.Position();
-
-	buffer.Position(buffer.Position() + 28);
-
-	oldpos = buffer.Position();
 	// load frame indexes
 	int	n = ActualNumberOfViews(mNumberOfViews) * mFramesPerView;
 
@@ -676,16 +674,20 @@ void ShapesChunk::InsertBitmap(ShapesBitmap *b)
 
 void ShapesChunk::DeleteBitmap(unsigned int b)
 {
-	// preserve existing frame-bitmap associations and associate
-	// a null bitmap to frames using the bitmap we're deleting
-	for (unsigned int i = 0; i < mFrames.size(); i++) {
-		if (mFrames[i]->BitmapIndex() == (int)b)
-			mFrames[i]->SetBitmapIndex(-1);
-		else if (mFrames[i]->BitmapIndex() > (int)b)
-			mFrames[i]->SetBitmapIndex(mFrames[i]->BitmapIndex() - 1);
+	if (b < mBitmaps.size()) {
+		// preserve existing frame-bitmap associations and associate
+		// a null bitmap to frames using the bitmap we're deleting
+		for (unsigned int i = 0; i < mFrames.size(); i++) {
+			short	bitmap_index = mFrames[i]->BitmapIndex();
+
+			if (bitmap_index == (int)b)
+				mFrames[i]->SetBitmapIndex(-1);
+			else if (bitmap_index > (int)b)
+				mFrames[i]->SetBitmapIndex(bitmap_index - 1);
+		}
+		// now actually delete the bitmap
+		mBitmaps.erase(mBitmaps.begin() + b);
 	}
-	// now actually delete the bitmap
-	mBitmaps.erase(mBitmaps.begin() + b);
 }
 
 void ShapesChunk::InsertFrame(ShapesFrame *f)
@@ -695,16 +697,21 @@ void ShapesChunk::InsertFrame(ShapesFrame *f)
 
 void ShapesChunk::DeleteFrame(unsigned int f)
 {
-	// preserve existing sequence-frame associations and
-	// unreference this frame index from any sequence using it
-	for (unsigned int i = 0; i < mSequences.size(); i++) {
-		for (unsigned int j = 0; j < mSequences[i]->FrameIndexCount(); j++) {
-			short frame_index = mSequences[i]->GetFrameIndex(j);
-			if (frame_index == (int)f)
-				mSequences[i]->SetFrameIndex(j, -1);
-			else if (frame_index > (int)f)
-				mSequences[i]->SetFrameIndex(j, mSequences[i]->GetFrameIndex(j) - 1);
+	if (f < mFrames.size()) {
+		// preserve existing sequence-frame associations and
+		// unreference this frame index from any sequence using it
+		for (unsigned int i = 0; i < mSequences.size(); i++) {
+			for (unsigned int j = 0; j < mSequences[i]->FrameIndexCount(); j++) {
+				short frame_index = mSequences[i]->GetFrameIndex(j);
+
+				if (frame_index == (int)f)
+					mSequences[i]->SetFrameIndex(j, -1);
+				else if (frame_index > (int)f)
+					mSequences[i]->SetFrameIndex(j, frame_index - 1);
+			}
 		}
+		// now actually delete the frame
+		mFrames.erase(mFrames.begin() + f);
 	}
 }
 
@@ -715,7 +722,8 @@ void ShapesChunk::InsertSequence(ShapesSequence *s)
 
 void ShapesChunk::DeleteSequence(unsigned int s)
 {
-	mSequences.erase(mSequences.begin() + s);
+	if (s < mSequences.size())
+		mSequences.erase(mSequences.begin() + s);
 }
 
 unsigned int ShapesChunk::SizeInFile(void) const
@@ -773,9 +781,8 @@ BigEndianBuffer& ShapesChunk::SaveObject(BigEndianBuffer& buffer)
 	// skip the collection definition, we'll fill it at the end
 	buffer.Position(SIZEOF_collection_definition);
 	// write color tables
-	for (i = 0; i < ColorTableCount(); i++) {
+	for (i = 0; i < ColorTableCount(); i++)
 		mColorTables[i]->SaveObject(buffer);
-	}
 	
 	// write sequences
 	sequence_table_offset = buffer.Position();
@@ -1109,57 +1116,49 @@ ShapesSequence* ShapesCollection::GetSequence(unsigned int chunk, unsigned int i
 void ShapesCollection::InsertColorTable(ShapesColorTable *ct, unsigned int chunk)
 {
 	if (Defined(chunk))
-		return;
-	mChunks[chunk]->InsertColorTable(ct);
+		mChunks[chunk]->InsertColorTable(ct);
 }
 
 void ShapesCollection::DeleteColorTable(unsigned int chunk, unsigned int ct)
 {
 	if (Defined(chunk))
-		return;
-	mChunks[chunk]->DeleteColorTable(ct);
+		mChunks[chunk]->DeleteColorTable(ct);
 }
 
 void ShapesCollection::InsertBitmap(ShapesBitmap *b, unsigned int chunk)
 {
 	if (Defined(chunk))
-		return;
-	mChunks[chunk]->InsertBitmap(b);
+		mChunks[chunk]->InsertBitmap(b);
 }
 
 void ShapesCollection::DeleteBitmap(unsigned int chunk, unsigned int b)
 {
 	if (Defined(chunk))
-		return;
-	mChunks[chunk]->DeleteBitmap(b);
+		mChunks[chunk]->DeleteBitmap(b);
 }
 
 void ShapesCollection::InsertFrame(ShapesFrame *f, unsigned int chunk)
 {
 	if (Defined(chunk))
-		return;
-	mChunks[chunk]->InsertFrame(f);
+		mChunks[chunk]->InsertFrame(f);
 }
 
 void ShapesCollection::DeleteFrame(unsigned int chunk, unsigned int f)
 {
 	if (Defined(chunk))
-		return;
-	mChunks[chunk]->DeleteFrame(f);
+		mChunks[chunk]->DeleteFrame(f);
 }
 
 void ShapesCollection::InsertSequence(ShapesSequence *s, unsigned int chunk)
 {
 	if (Defined(chunk))
-		return;
-	mChunks[chunk]->InsertSequence(s);
+		mChunks[chunk]->InsertSequence(s);
 }
 
 void ShapesCollection::DeleteSequence(unsigned int chunk, unsigned int s)
 {
 	if (Defined(chunk))
-		return;
-	mChunks[chunk]->DeleteSequence(s);
+		mChunks[chunk]->DeleteSequence(s);
 }
 
 // calculate how much space a collection is going
@@ -1168,7 +1167,7 @@ unsigned int ShapesCollection::SizeInFile(unsigned int chunk) const
 {
 	if (!Defined(chunk))
 		return 0;
-	
+
 	unsigned int	size = 0;
 
 	size += mChunks[chunk]->SizeInFile();
