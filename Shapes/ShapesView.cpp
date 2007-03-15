@@ -537,11 +537,12 @@ void ShapesView::MenuEditDelete(wxCommandEvent &e)
 					bb->Thaw();
 
 					wxString	count_string;
-		
+
 					count_string << bitmap_count << wxT(" bitmap");
 					if (bitmap_count != 1)
 						count_string << wxT("s");
 					b_count_label->SetLabel(count_string);
+					fb->RebuildThumbnails();
 					frame->Layout();
 				}
 				break;
@@ -859,6 +860,7 @@ void ShapesView::MenuShapesNewFrame(wxCommandEvent &e)
 	if (((ShapesDocument*)GetDocument()) != NULL && selected_coll != -1 && selected_vers != -1) {
 		// append an empty frame
 		ShapesFrame	*newframe = new ShapesFrame();
+
 		newframe->SetScaleFactor(((ShapesDocument*)GetDocument())->CollectionScaleFactor(selected_coll, selected_vers));
 		((ShapesDocument*)GetDocument())->InsertFrame(newframe, selected_coll, selected_vers);
 		fb->AddFrame(((ShapesDocument*)GetDocument())->GetFrame(selected_coll, selected_vers, ((ShapesDocument*)GetDocument())->CollectionFrameCount(selected_coll, selected_vers)-1));

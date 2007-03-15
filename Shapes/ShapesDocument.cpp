@@ -168,12 +168,13 @@ wxOutputStream& ShapesDocument::SaveObject(wxOutputStream& stream)
 		long			running_offset = SIZEOF_collection_header * COLLECTIONS_PER_FILE;
 		
 		for (unsigned int i = 0; i < COLLECTIONS_PER_FILE; i++) {
-			ShapesCollection	coll = mCollections[i];
-			raw_headers.WriteShort(coll.Status());
-			raw_headers.WriteUShort(coll.Flags());
+			ShapesCollection	*coll = mCollections[i];
+
+			raw_headers.WriteShort(coll->Status());
+			raw_headers.WriteUShort(coll->Flags());
 			// 8-bit version
-			if (coll.Defined(COLL_VERSION_8BIT)) {
-				coll_size = coll.SizeInFile(COLL_VERSION_8BIT);
+			if (coll->Defined(COLL_VERSION_8BIT)) {
+				coll_size = coll->SizeInFile(COLL_VERSION_8BIT);
 				
 				raw_headers.WriteLong(running_offset);
 				raw_headers.WriteLong(coll_size);
@@ -183,9 +184,9 @@ wxOutputStream& ShapesDocument::SaveObject(wxOutputStream& stream)
 				raw_headers.WriteLong(0);
 			}
 			// truecolor version
-			if (coll.Defined(COLL_VERSION_TRUECOLOR)) {
-				coll_size = coll.SizeInFile(COLL_VERSION_TRUECOLOR);
-				
+			if (coll->Defined(COLL_VERSION_TRUECOLOR)) {
+				coll_size = coll->SizeInFile(COLL_VERSION_TRUECOLOR);
+
 				raw_headers.WriteLong(running_offset);
 				raw_headers.WriteLong(coll_size);
 				running_offset += coll_size;
@@ -202,9 +203,9 @@ wxOutputStream& ShapesDocument::SaveObject(wxOutputStream& stream)
 #endif
 	}
 	
-	for (unsigned int i = 0; i < COLLECTIONS_PER_FILE; i++) {
+	// write collections
+	for (unsigned int i = 0; i < COLLECTIONS_PER_FILE; i++)
 		mCollections[i]->SaveObject(stream);
-	}
 	
 	return stream;
 }
