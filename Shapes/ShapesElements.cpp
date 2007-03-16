@@ -120,6 +120,13 @@ BigEndianBuffer& ShapesColorTable::LoadObject(BigEndianBuffer& buffer, unsigned 
 		ShapesColor	*color = new ShapesColor(IsVerbose());
 
 		color->LoadObject(buffer);
+		
+		if (!color->IsGood())
+		{
+			wxLogError(wxT("[ShapesColorTable] Error loading color table"));
+			mGoodData = false;
+			return buffer;
+		}
 		mColors.push_back(color);
 	}
 	
@@ -931,11 +938,14 @@ BigEndianBuffer& ShapesChunk::LoadObject(BigEndianBuffer& buffer)
 
 		buffer.Position(oldpos);
 		
-		// store if correct
-		if (color_table->IsGood())
-			mColorTables.push_back(color_table);
-		else
+		// we stop if an error occured
+		if (!color_table->IsGood())
+		{
 			wxLogError(wxT("[ShapesChunk] Error loading color table %d... Dropped"), i);
+			return buffer;
+		}
+		
+		mColorTables.push_back(color_table);
 	}
 	
 	// load bitmaps, decoding compressed ones
@@ -956,11 +966,15 @@ BigEndianBuffer& ShapesChunk::LoadObject(BigEndianBuffer& buffer)
 		bitmap->LoadObject(buffer, offset);
 		
 		buffer.Position(oldpos);
-		// store if correct
-		if (bitmap->IsGood())
-			mBitmaps.push_back(bitmap);
-		else
+		
+		// we stop if an error occured
+		if (!bitmap->IsGood())
+		{
 			wxLogError(wxT("[ShapesDocument] Error loading bitmap %d... Dropped"), i);
+			return buffer;
+		}
+		
+		mBitmaps.push_back(bitmap);
 	}
 
 	// load sequences
@@ -982,11 +996,14 @@ BigEndianBuffer& ShapesChunk::LoadObject(BigEndianBuffer& buffer)
 		
 		buffer.Position(oldpos);
 		
-		// store if correct
-		if (sequence->IsGood())
-			mSequences.push_back(sequence);
-		else
+		// we stop if an error occured
+		if (!sequence->IsGood())
+		{
 			wxLogError(wxT("[ShapesDocument] Error loading sequence... Dropped"));
+			return buffer;
+		}
+		
+		mSequences.push_back(sequence);
 	}
 	
 	// load frames
@@ -1021,10 +1038,13 @@ BigEndianBuffer& ShapesChunk::LoadObject(BigEndianBuffer& buffer)
 		}
 		
 		// store if correct
-		if (frame->IsGood())
-			mFrames.push_back(frame);
-		else
+		if (!frame->IsGood())
+		{
 			wxLogError(wxT("[ShapesDocument] Error loading frame %d... Dropped"), i);
+			return buffer;
+		}
+		
+		mFrames.push_back(frame);
 	}
 	
 	mGoodData = true;
@@ -1266,10 +1286,12 @@ wxInputStream& ShapesCollection::LoadObject(wxInputStream& stream)
 		ShapesChunk	*pc = new ShapesChunk(IsVerbose());
 		pc->LoadObject(chunkbuffer);
 		
-		if (pc->IsGood())
-			mChunks[0] = pc;
-		else
+		if (!pc->IsGood())
+		{
 			wxLogError(wxT("[ShapesCollection] Error loading 8-bit chunk... Dropped"));
+			return stream;
+		}
+		mChunks[0] = pc;
 	}
 	
 	// is there the 16-bit version?
@@ -1290,10 +1312,12 @@ wxInputStream& ShapesCollection::LoadObject(wxInputStream& stream)
 		ShapesChunk	*pc = new ShapesChunk(IsVerbose());
 		pc->LoadObject(chunkbuffer);
 		
-		if (pc->IsGood())
-			mChunks[1] = pc;
-		else
+		if (!pc->IsGood())
+		{
 			wxLogError(wxT("[ShapesCollection] Error loading 16/32-bit chunk... Dropped"));
+			return stream;
+		}
+		mChunks[1] = pc;
 	}
 	
 	mGoodData = true;
