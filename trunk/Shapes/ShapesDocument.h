@@ -69,6 +69,8 @@ public:
 	void InsertSequence(ShapesSequence *s, unsigned int coll, unsigned int chunk);
 	void DeleteSequence(unsigned int coll, unsigned int chunk, unsigned int s);
 	
+	bool DoOpenDocument(const wxString& file);
+	
 #if wxUSE_STD_IOSTREAM
     wxSTD ostream& SaveObject(wxSTD ostream& stream);
     wxSTD istream& LoadObject(wxSTD istream& stream);

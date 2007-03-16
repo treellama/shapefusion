@@ -154,6 +154,19 @@ void ShapesDocument::DeleteSequence(unsigned int coll, unsigned int chunk, unsig
 	mCollections[coll]->DeleteSequence(chunk, s);
 }
 
+
+bool ShapesDocument::DoOpenDocument(const wxString& file)
+{
+	bool wxOpen = wxDocument::DoOpenDocument(file);
+	
+	if (!(wxOpen && mGoodData))
+	{
+		wxLogError(wxT("[ShapesDocument] There was an error while loading, see log"));
+		return false;
+	}
+	return true;
+}
+
 #if wxUSE_STD_IOSTREAM
 wxSTD ostream& ShapesDocument::SaveObject(wxSTD ostream& stream)
 #else
@@ -216,19 +229,6 @@ wxSTD istream& ShapesDocument::LoadObject(wxSTD istream& stream)
 wxInputStream& ShapesDocument::LoadObject(wxInputStream& stream)
 #endif
 {
-	// first check file size to immediately rule out invalid stuff
-#if wxUSE_STD_IOSTREAM
-	stream.seekg(0, std::ios::end);
-	wxInt32 filesize = stream.tellg();
-	stream.seekg(0, std::ios::beg);
-#else
-	wxInt32 filesize = stream.GetSize();
-#endif
-	if (filesize < COLLECTIONS_PER_FILE * SIZEOF_collection_header) {
-		wxLogError(wxT("[ShapesDocument] File too small to be a Marathon shapes file"));
-		mGoodData = false;
-		return stream;
-	}
 	// load the collections
 	for (unsigned int i = 0; i < COLLECTIONS_PER_FILE; i++) {
 		ShapesCollection	*c = new ShapesCollection(mVerboseLoading);
@@ -244,10 +244,13 @@ wxInputStream& ShapesDocument::LoadObject(wxInputStream& stream)
 		c->LoadObject(stream);
 
 		// store if correct
-		if (c->IsGood())
-			mCollections.push_back(c);
-		else
+		if (!c->IsGood())
+		{
 			wxLogError(wxT("[ShapesDocument] Error loading collection... Dropped"));
+			return stream;
+		}
+		
+		mCollections.push_back(c);
 	}
 	mGoodData = true;
 	
