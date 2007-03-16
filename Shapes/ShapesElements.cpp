@@ -20,6 +20,7 @@
 using std::vector;
 
 #include "ShapesElements.h"
+#include "utilities.h"
 
 // on-file struct sizes
 #define SIZEOF_collection_definition		544
@@ -136,7 +137,56 @@ BigEndianBuffer& ShapesColorTable::LoadObject(BigEndianBuffer& buffer, unsigned 
 
 ShapesBitmap::ShapesBitmap(bool verbose) : ShapesElement(verbose), mPixels(NULL)
 {
+}
+
+ShapesBitmap::ShapesBitmap(wxImage image, ShapesColorTable *colortable) :
+	ShapesElement(false),
+	mWidth(image.GetWidth()), mHeight(image.GetHeight()), mBytesPerRow(image.GetWidth()), mBitDepth(8), mColumnOrder(false), mTransparent(false), mPixels(NULL)
+{
+	unsigned char	*srcpixels = image.GetData(),
+					*src = srcpixels,
+					*dst;
 	
+	mPixels = new unsigned char[mWidth * mHeight];
+	if (mPixels == NULL) {
+		wxLogError(wxT("Could not allocate new %dx%d bitmap\n"), mWidth, mHeight);
+		return;
+	}
+	dst = mPixels;
+	// quantize from 8-bit RGB pixels to an indexed bitmap. We need to transform
+	// RGB to HSV and perform the comparison in that space to get good results.
+	// FIXME 
+	// - this is not yet perfect (not as good as PhotoShop or Gimp)
+	// - move all this code to another place (utilities.cpp?)
+	for (int i = 0; i < mWidth * mHeight; i++) {
+		unsigned char 	r = *src++, g = *src++, b = *src++;
+		float			hue, sat, val,
+						min_dist = 0;
+		unsigned char   best_value = 0;
+		
+		RGB2HSV(r / 255.0, g / 255.0, b / 255.0, &hue, &sat, &val);
+		for (unsigned int j = 0; j < colortable->ColorCount(); j++) {
+			unsigned short	ct_r = colortable->GetColor(j)->Red(),
+							ct_g = colortable->GetColor(j)->Green(),
+							ct_b = colortable->GetColor(j)->Blue();
+			float			hue2, sat2, val2,
+				delta_h, delta_s, delta_v,
+				dist;
+			
+			RGB2HSV(ct_r / 65535.0, ct_g / 65535.0, ct_b / 65535.0, &hue2, &sat2, &val2);
+			delta_h = hue2 - hue;
+			delta_s = sat2 - sat;
+			delta_v = val2 - val;
+			dist = delta_h*delta_h + delta_s*delta_s + delta_v*delta_v;
+			if (dist < min_dist || j == 0) {
+				min_dist = dist;
+				best_value = colortable->GetColor(j)->Value();
+			}
+		}
+		*dst++ = best_value;
+		if (best_value == 0)
+			mTransparent = true;	// guess the user will want transparency
+	}
 }
 
 ShapesBitmap::~ShapesBitmap(void)
@@ -607,15 +657,6 @@ int ActualNumberOfViews(int t)
 	}
 	return -1;
 }
-
-// chunk mTypes. Bitmap encoding seems to depend on this setting
-enum {
-	_unused_collection = 0,	// plain
-	_wall_collection,		// plain
-	_object_collection,		// RLE
-	_interface_collection,	// plain
-	_scenery_collection		// RLE
-};
 
 ShapesChunk::ShapesChunk(bool verbose) : ShapesElement(verbose)
 {
