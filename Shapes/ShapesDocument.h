@@ -34,13 +34,11 @@
 #include "ShapesElements.h"
 
 // class representing the contents of a Marathon shapes file
-class ShapesDocument: public wxDocument
+class ShapesDocument: public wxDocument, public ShapesElement
 {
     DECLARE_DYNAMIC_CLASS(ShapesDocument)
 private:
 	vector<ShapesCollection*>	mCollections;
-	bool						mGoodData;
-	bool						mVerboseLoading;
 public:
 
 	// collection data access
