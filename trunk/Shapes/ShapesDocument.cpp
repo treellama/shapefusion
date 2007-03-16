@@ -27,7 +27,7 @@
 IMPLEMENT_DYNAMIC_CLASS(ShapesDocument, wxDocument)
 
 ShapesDocument::ShapesDocument():
-	wxDocument(), mGoodData(false), mVerboseLoading(false)
+	wxDocument(), ShapesElement(false)
 {
 
 }
@@ -154,7 +154,6 @@ void ShapesDocument::DeleteSequence(unsigned int coll, unsigned int chunk, unsig
 	mCollections[coll]->DeleteSequence(chunk, s);
 }
 
-
 bool ShapesDocument::DoOpenDocument(const wxString& file)
 {
 	bool wxOpen = wxDocument::DoOpenDocument(file);
@@ -245,9 +244,9 @@ wxInputStream& ShapesDocument::LoadObject(wxInputStream& stream)
 	}
 	// load the collections
 	for (unsigned int i = 0; i < COLLECTIONS_PER_FILE; i++) {
-		ShapesCollection	*c = new ShapesCollection(mVerboseLoading);
+		ShapesCollection	*c = new ShapesCollection(IsVerbose());
 
-		if (mVerboseLoading)
+		if (IsVerbose())
 			wxLogDebug(wxT("[ShapesDocument] Loading collection %d"), i);
 
 #if wxUSE_STD_IOSTREAM
