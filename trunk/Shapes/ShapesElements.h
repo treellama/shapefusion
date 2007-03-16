@@ -69,6 +69,7 @@ public:
 	
 	// Accessors
 	bool Luminescent(void) const {return mLuminescent;}
+	unsigned char Value(void) const {return mValue;}
 	unsigned short Red(void) const {return mRed;}
 	unsigned short Green(void) const {return mGreen;}
 	unsigned short Blue(void) const {return mBlue;}
@@ -113,6 +114,7 @@ private:
 public:
 	// Constructor / Destructor
 	ShapesBitmap(bool verbose = false);
+	ShapesBitmap(wxImage image, ShapesColorTable *colortable);
 	~ShapesBitmap(void);
 
 	// Accessors
@@ -127,6 +129,7 @@ public:
 	// Mutators
 	void SetWidth(short w) {mWidth = w;}
 	void SetHeight(short h) {mHeight = h;}
+	void SetBytesPerRow(short b) {mBytesPerRow = b;}
 	void SetBitDepth(short b) {mBitDepth = b;}
 	void SetColumnOrdered(bool b) {mColumnOrder = b;}
 	void SetTransparent(bool n) {mTransparent = n;}
@@ -303,6 +306,15 @@ public:
 };
 
 int ActualNumberOfViews(int t);
+
+// chunk types. Bitmap encoding seems to depend on this setting
+enum {
+	_unused_collection = 0,	// plain
+	_wall_collection,		// plain
+	_object_collection,		// RLE
+	_interface_collection,	// plain
+	_scenery_collection		// RLE
+};
 
 // a Shapes chunk
 class ShapesChunk : public ShapesElement

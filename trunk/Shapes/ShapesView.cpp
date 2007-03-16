@@ -751,71 +751,22 @@ void ShapesView::MenuShapesAddBitmap(wxCommandEvent &e)
 			wxImage		img;
 
 			if (img.LoadFile(filename)) {
-				// we have the wxImage now. Encode it to a new bitmap
-				/*ShapesBitmap		newbmp;
-				ShapesColorTable	*ct = ((ShapesDocument*)GetDocument())->GetColorTable(selected_coll, selected_vers, view_ct);
-				unsigned char	*srcpixels = img.GetData(),
-								*src = srcpixels,
-								*dst;
-
 				wxBeginBusyCursor();
-				newbmp.IsColumnOrdered() = newbmp.IsTransparent() = false;
-				newbmp.width = img.GetWidth();
-				newbmp.height = img.GetHeight();
-				newbmp.bit_depth = 8;
-				newbmp.BytesPerRow() = img.GetWidth();
-				newbmp.pixels = new unsigned char[newbmp.width * newbmp.height];
-				if (newbmp.pixels == NULL) {
-					std::cerr << "Could not allocate new " << newbmp.width << "x" << newbmp.height << " bitmap\n";
-					dlg->Destroy();
-					return;
-				}
-				dst = newbmp.pixels;
+				// we have the wxImage now. Encode it to a new bitmap
+				ShapesColorTable	*ct = ((ShapesDocument*)GetDocument())->GetColorTable(selected_coll, selected_vers, view_ct);
+				ShapesBitmap		*newbmp = new ShapesBitmap(img, ct);
+
 				// automagically initialize bitmap flags
 				if (((ShapesDocument*)GetDocument())->CollectionType(selected_coll, selected_vers) == _object_collection ||
 						((ShapesDocument*)GetDocument())->CollectionType(selected_coll, selected_vers) == _scenery_collection) {
-					newbmp.BytesPerRow() = -1;
-					newbmp.IsColumnOrdered() = true;
-				}
-				// quantize from 8-bit RGB pixels to an indexed bitmap. We need to transform
-				// RGB to HSV and perform the comparison in that space to get good results.
-				// FIXME 
-				// - this is not yet perfect (not as good as PhotoShop or Gimp)
-				// - move all this code to another place (utilities.cpp?)
-				for (int i = 0; i < newbmp.width * newbmp.height; i++) {
-					unsigned char 	r = *src++, g = *src++, b = *src++;
-					float			hue, sat, val,
-									min_dist = 0;
-					unsigned char   best_value = 0;
-
-					RGB2HSV(r / 255.0, g / 255.0, b / 255.0, &hue, &sat, &val);
-					for (unsigned int j = 0; j < ct->colors.size(); j++) {
-						unsigned short	ct_r = ct->colors[j].red,
-										ct_g = ct->colors[j].green,
-										ct_b = ct->colors[j].blue;
-						float			hue2, sat2, val2,
-										delta_h, delta_s, delta_v,
-										dist;
-
-						RGB2HSV(ct_r / 65535.0, ct_g / 65535.0, ct_b / 65535.0, &hue2, &sat2, &val2);
-						delta_h = hue2 - hue;
-						delta_s = sat2 - sat;
-						delta_v = val2 - val;
-						dist = delta_h*delta_h + delta_s*delta_s + delta_v*delta_v;
-						if (dist < min_dist || j == 0) {
-							min_dist = dist;
-							best_value = ct->colors[j].value;
-						}
-					}
-					*dst++ = best_value;
-					if (best_value == 0)
-						newbmp.IsTransparent() = true;	// guess the user will want transparency
+					newbmp->SetBytesPerRow(-1);
+					newbmp->SetColumnOrdered(true);
 				}
 				((ShapesDocument*)GetDocument())->InsertBitmap(newbmp, selected_coll, selected_vers);
 
 				// update the GUI
 				unsigned int	bitmap_count = ((ShapesDocument*)GetDocument())->CollectionBitmapCount(selected_coll, selected_vers);
-				ShapesBitmap		*pnewbitmap = ((ShapesDocument*)GetDocument())->GetBitmap(selected_coll, selected_vers, bitmap_count-1);
+				ShapesBitmap	*pnewbitmap = ((ShapesDocument*)GetDocument())->GetBitmap(selected_coll, selected_vers, bitmap_count-1);
 				wxString		count_string = wxString::Format(wxT("%u bitmap"), bitmap_count);
 
 				bb->AddBitmap(pnewbitmap);
@@ -829,7 +780,7 @@ void ShapesView::MenuShapesAddBitmap(wxCommandEvent &e)
 				wxString	errormsg;
 
 				errormsg << wxT("Sorry, could not load bitmap from ") << filename << wxT(".");
-				wxMessageBox(errormsg, wxT("Error adding bitmap"), wxOK | wxICON_ERROR, this);*/
+				wxMessageBox(errormsg, wxT("Error adding bitmap"), wxOK | wxICON_ERROR, frame);
 			}
 		}
 		dlg->Destroy();
