@@ -346,7 +346,7 @@ int Shapes::LoadShapesChunk(unsigned int id, ShpChunk *pc, std::ifstream &is, lo
 			frame.y_mirror = flags & Y_MIRROR;
 			frame.keypoint_obscured = flags & KEYPOINT_OBSCURED;
 			mli_fixed = chunkbuffer.ReadLong();
-			frame.minimum_light_intensity = ((mli_fixed >> 16) & 0xffff) + (float)(mli_fixed & 0xffff) / 65536.0;	// convert fixed point [0,1] to double
+			frame.minimum_light_intensity = ((mli_fixed >> 16) & 0xffff) + (float)(mli_fixed & 0xffff) / 65536.0;	// convert fixed point [0,1] to float
 			frame.bitmap_index = chunkbuffer.ReadShort();
 			frame.origin_x = chunkbuffer.ReadShort();
 			frame.origin_y = chunkbuffer.ReadShort();
@@ -492,7 +492,7 @@ int Shapes::WriteToFile(std::string path)
 				for (unsigned int j = 0; j < frame_count; j++) {
 					ShpFrame		*frame = &chunkp->frames[j];
 					unsigned short	flags = 0;
-					double			mli_integer, mli_fractional;
+					float			mli_integer, mli_fractional;
 					long			min_light_intensity = 0;
 
 					frame_offsets[j] = chunkbuffer.Position();
@@ -502,10 +502,10 @@ int Shapes::WriteToFile(std::string path)
 						flags |= Y_MIRROR;
 					if (frame->keypoint_obscured)
 						flags |= KEYPOINT_OBSCURED;
-					// double to fixed
-					mli_fractional = modf(frame->minimum_light_intensity, &mli_integer);
+					// float to fixed
+					mli_fractional = modff(frame->minimum_light_intensity, &mli_integer);
 					min_light_intensity |= (((short)mli_integer) << 16) & 0xffff0000;
-					min_light_intensity |= (short)(mli_fractional * 0xffff) & 0x0000ffff;
+					min_light_intensity |= (short)roundf(mli_fractional * 0xffff) & 0x0000ffff;
 					chunkbuffer.WriteUShort(flags);
 					chunkbuffer.WriteLong(min_light_intensity);
 					chunkbuffer.WriteShort(frame->bitmap_index);

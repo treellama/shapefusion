@@ -73,6 +73,7 @@ public:
 	void OnSize(wxSizeEvent& e);
 	void OnMouseDown(wxMouseEvent& e);
 	void OnMouseMove(wxMouseEvent &e);
+	void OnMouseUp(wxMouseEvent& e);
 	void OnKeyDown(wxKeyEvent& e);
 	// access methods
 	int GetSelection(void) const;

@@ -1429,7 +1429,7 @@ void ShapesEditor::FrameSelect(wxCommandEvent &e)
 		f_key_x_field->SetValue(INT_TO_WXSTRING(sel_frame->key_x));
 		f_key_y_field->SetValue(INT_TO_WXSTRING(sel_frame->key_y));
 		f_scalefactor_field->SetValue(INT_TO_WXSTRING(sel_frame->scale_factor));
-		f_mli_field->SetValue(INT_TO_WXSTRING((int)(sel_frame->minimum_light_intensity * 100.0)));
+		f_mli_field->SetValue(INT_TO_WXSTRING((int)roundf(sel_frame->minimum_light_intensity * 100.0)));
 		f_outer_sizer->Show(f_count_label, false);
 		f_outer_sizer->Show(f_edit_box, true);
 		edit_menu->SetLabel(wxID_DELETE, wxT("Delete frame"));

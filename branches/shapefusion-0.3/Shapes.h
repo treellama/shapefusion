@@ -22,7 +22,7 @@
 // Note that, for keeping things simple and providing compatibility,
 // the class doesn't store everything using the original on-disk format.
 // For example, flags are expanded to bool fields and fixed point values
-// are converted to doubles. Every bitmap is converted to a simple block
+// are converted to floats. Every bitmap is converted to a simple block
 // of width*height pixels, regardless of its compression and pixel order.
 // Conversions take place only when actually loading and writing files.
 //
@@ -103,7 +103,7 @@ typedef struct {
 	bool		x_mirror,
 				y_mirror,
 				keypoint_obscured;
-	double		minimum_light_intensity;
+	float		minimum_light_intensity;
 	short		bitmap_index;
 	// bitmap scale factor. Computed when loading Shapes
 	// using world_* fields and associated bitmap dimensions
