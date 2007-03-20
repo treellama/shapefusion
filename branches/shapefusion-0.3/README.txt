@@ -88,8 +88,9 @@ Shapes file.
 Notes
 -----
 Please be careful when editing your scenario with ShapeFusion. I had no problems so far, but it's
-still under development and it may corrupt your Shapes files, so be sure to keep backup copies. If you
-think your Shapes got corrupted by ShapeFusion, please let me know what happened.
+still under development and it may corrupt your Shapes files, so be sure to keep backup copies.
+You shouldn't use versions before 0.3, as they are affected by a bug regarding frames minimum light
+intensity value. If you think your Shapes got corrupted by ShapeFusion, please let me know what happened.
 
 Object indexes start from 0, not 1. So if you have 12 bitmaps, the first is bitmap 0 (not 1) and the
 last is bitmap 11 (not 12).
@@ -128,9 +129,11 @@ invalid data very well, but I plan to implement some consistency checks in the f
 Changelog
 ---------
 0.3
+	Improved functionality of the sequence editor.
 	Implemented bitmap and frame deletion.
 	Frame and sequence user interface cleanup.
 	One can now edit frame scale factors.
+	Fixed a serious bug regarding frames minimum light intensity value.
 	Assorted changes and fixes.
 
 0.2

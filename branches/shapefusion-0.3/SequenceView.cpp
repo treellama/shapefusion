@@ -104,6 +104,12 @@ void SequenceView::OnPaint(wxPaintEvent& e)
 			tempdc.DrawBitmap(prev_btn, x + 2, y + tn_size - prev_btn.GetHeight() - 2);
 			tempdc.DrawBitmap(next_btn, x + tn_size - next_btn.GetWidth() - 2, y + tn_size - next_btn.GetHeight() - 2);
 			tempdc.GetTextExtent(label, &labelw, &labelh);
+			tempdc.SetTextForeground(wxColour(255, 255, 255));
+			tempdc.DrawText(label, x + (tn_size-labelw) / 2 - 1, y + tn_size - labelh - 2);
+			tempdc.DrawText(label, x + (tn_size-labelw) / 2 + 1, y + tn_size - labelh - 2);
+			tempdc.DrawText(label, x + (tn_size-labelw) / 2, y + tn_size - labelh - 2 - 1);
+			tempdc.DrawText(label, x + (tn_size-labelw) / 2, y + tn_size - labelh - 2 + 1);
+			tempdc.SetTextForeground(wxColour(0, 0, 0));
 			tempdc.DrawText(label, x + (tn_size-labelw) / 2, y + tn_size - labelh - 2);
 		}
 	}
