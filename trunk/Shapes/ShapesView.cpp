@@ -16,6 +16,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+#include <fstream>
 #include "ShapesView.h"
 #include "utilities.h"
 
@@ -681,34 +682,36 @@ void ShapesView::MenuShapesSaveColorTable(wxCommandEvent &e)
 			}
 
 			if (!ctpath.empty()) {
-/*				ShapesColorTable	*ct = ((ShapesDocument*)GetDocument())->GetColorTable(selected_coll, selected_vers, selection);
-				std::ofstream	cts(ctpath.fn_str());
+				ShapesColorTable	*ct = ((ShapesDocument*)GetDocument())->GetColorTable(selected_coll, selected_vers, selection);
+				std::ofstream		cts(ctpath.fn_str());
 
 				if (cts.good()) {
 					// file opened successfully
 					if (ps) {
 						// PhotoShop binary color table format
 						// (MacOS file type is '8BCT', extension '.act')
-						unsigned char	*rgb = new unsigned char[ct->colors.size() * 3];
+						unsigned char	*rgb = new unsigned char[ct->ColorCount() * 3];
 
 						if (rgb != NULL) {
 							unsigned char	*prgb = rgb;
 
 							// first a block of RGB byte triplets
-							for (unsigned int i = 0; i < ct->colors.size(); i++) {
-								*prgb++ = ct->colors[i].red >> 8;
-								*prgb++ = ct->colors[i].green >> 8;
-								*prgb++ = ct->colors[i].blue >> 8;
+							for (unsigned int i = 0; i < ct->ColorCount(); i++) {
+								ShapesColor	*color = ct->GetColor(i);
+
+								*prgb++ = color->Red() >> 8;
+								*prgb++ = color->Green() >> 8;
+								*prgb++ = color->Blue() >> 8;
 							}
-							cts.write((char *)rgb, ct->colors.size() * 3);
+							cts.write((char *)rgb, ct->ColorCount() * 3);
 							delete[] rgb;
 							// if we didn't reach 256 colors, pad with zeroes to fill and end with
 							//    00 n ff ff
 							// where n is the number of colors
-							if (ct->colors.size() < 256) {
-								unsigned int	padsize = 3 * (256 - ct->colors.size());
+							if (ct->ColorCount() < 256) {
+								unsigned int	padsize = 3 * (256 - ct->ColorCount());
 								unsigned char	*pad = new unsigned char[padsize],
-												tail[4] = { 0, ct->colors.size(), 0xff, 0xff};
+												tail[4] = { 0, ct->ColorCount(), 0xff, 0xff};
 								
 								memset(pad, 0, padsize);
 								cts.write((char *)pad, padsize);
@@ -721,10 +724,12 @@ void ShapesView::MenuShapesSaveColorTable(wxCommandEvent &e)
 						cts << "GIMP Palette\n";
 						cts << "Name: ShapeFusion exported palette\n";
 						cts << "#\n";
-						for (unsigned int i = 0; i < ct->colors.size(); i++) {
-							cts << (ct->colors[i].red >> 8) << ' ';
-							cts << (ct->colors[i].green >> 8) << ' ';
-							cts << (ct->colors[i].blue >> 8) << '\n';
+						for (unsigned int i = 0; i < ct->ColorCount(); i++) {
+							ShapesColor *color = ct->GetColor(i);
+
+							cts << (color->Red() >> 8) << ' ';
+							cts << (color->Green() >> 8) << ' ';
+							cts << (color->Blue() >> 8) << '\n';
 						}
 					}
 					cts.close();
@@ -733,8 +738,8 @@ void ShapesView::MenuShapesSaveColorTable(wxCommandEvent &e)
 					wxString    errormsg;
 
 					errormsg << wxT("Sorry, could not save color table to ") << ctpath << wxT(".");
-					wxMessageBox(errormsg, wxT("Error saving color table"), wxOK | wxICON_ERROR, this);
-				}*/
+					wxMessageBox(errormsg, wxT("Error saving color table"), wxOK | wxICON_ERROR, frame);
+				}
 			}
 		}
 	}

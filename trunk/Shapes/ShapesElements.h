@@ -89,7 +89,7 @@ public:
 	ShapesColorTable(bool verbose = false);
 	~ShapesColorTable(void);
 
-	int ColorCount(void) const {return mColors.size();}
+	unsigned int ColorCount(void) const {return mColors.size();}
 	ShapesColor *GetColor(unsigned int index) const {return mColors[index];}
 	
 	unsigned int SizeInFile() const;
