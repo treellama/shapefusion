@@ -465,7 +465,7 @@ BigEndianBuffer& ShapesFrame::LoadObject(BigEndianBuffer& buffer, unsigned int o
 	
 	mli_fixed = buffer.ReadLong();
 	
-	mMinimumLightIntensity = ((mli_fixed >> 16) & 0xffff) + (float)(mli_fixed & 0xffff) / 65536.0;	// convert fixed point [0,1] to double
+	mMinimumLightIntensity = ((mli_fixed >> 16) & 0xffff) + (float)(mli_fixed & 0xffff) / 65536.0;	// convert fixed point [0,1] to float
 	
 	mBitmapIndex = buffer.ReadShort();
 	mOriginX = buffer.ReadShort();

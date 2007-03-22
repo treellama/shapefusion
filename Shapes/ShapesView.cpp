@@ -1215,7 +1215,7 @@ void ShapesView::FrameSelect(wxCommandEvent &e)
 		f_key_x_field->SetValue(INT_TO_WXSTRING(sel_frame->KeyX()));
 		f_key_y_field->SetValue(INT_TO_WXSTRING(sel_frame->KeyY()));
 		f_scalefactor_field->SetValue(INT_TO_WXSTRING(sel_frame->ScaleFactor()));
-		f_mli_field->SetValue(INT_TO_WXSTRING((int)(sel_frame->MinimumLightIntensity() * 100.0)));
+		f_mli_field->SetValue(INT_TO_WXSTRING((int)roundf(sel_frame->MinimumLightIntensity() * 100.0)));
 		f_outer_sizer->Show(f_count_label, false);
 		f_outer_sizer->Show(f_edit_box, true);
 		menubar->SetLabel(EDIT_MENU_DELETE, wxT("Delete frame"));

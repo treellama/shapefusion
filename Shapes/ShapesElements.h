@@ -148,7 +148,7 @@ private:
 	bool		mXmirror,
 				mYmirror,
 				mKeypointObscured;
-	double		mMinimumLightIntensity;
+	float		mMinimumLightIntensity;
 	short		mBitmapIndex;
 	// bitmap scale factor. Computed when loading Shapes
 	// using world_* fields and associated bitmap dimensions
@@ -181,7 +181,7 @@ public:
 	bool IsXmirrored(void) const {return mXmirror;}
 	bool IsYmirrored(void) const {return mYmirror;}
 	bool IsKeypointObscured(void) const {return mKeypointObscured;}
-	double MinimumLightIntensity(void) const {return mMinimumLightIntensity;}
+	float MinimumLightIntensity(void) const {return mMinimumLightIntensity;}
 	int ScaleFactor(void) const {return mScaleFactor;}
 	short BitmapIndex(void) const {return mBitmapIndex;}
 	short OriginX(void) const {return mOriginX;}
@@ -199,7 +199,7 @@ public:
 	void SetXmirrored(bool b) {mXmirror = b;}
 	void SetYmirrored(bool b) {mYmirror = b;}
 	void SetKeypointObscured(bool b) {mKeypointObscured = b;}
-	void SetMinimumLightIntensity(double v) {mMinimumLightIntensity = v;}
+	void SetMinimumLightIntensity(float v) {mMinimumLightIntensity = v;}
 	void SetBitmapIndex(short i) {mBitmapIndex = i;}
 	void SetScaleFactor(int s) {mScaleFactor = s;}
 	void SetOriginX(short x) {mOriginX = x;}
