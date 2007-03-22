@@ -418,7 +418,7 @@ ShapesFrame::~ShapesFrame(void)
 BigEndianBuffer& ShapesFrame::SaveObject(BigEndianBuffer& buffer)
 {
 	unsigned short	flags = 0;
-	double			mli_integer, mli_fractional;
+	float			mli_integer, mli_fractional;
 	long			min_light_intensity = 0;
 	
 	if (mXmirror)
@@ -428,10 +428,10 @@ BigEndianBuffer& ShapesFrame::SaveObject(BigEndianBuffer& buffer)
 	if (mKeypointObscured)
 		flags |= KEYPOINT_OBSCURED;
 		
-	// double to fixed
-	mli_fractional = modf(mMinimumLightIntensity, &mli_integer);
+	// float to fixed
+	mli_fractional = modff(mMinimumLightIntensity, &mli_integer);
 	min_light_intensity |= (((short)mli_integer) << 16) & 0xffff0000;
-	min_light_intensity |= (short)(mli_fractional * 0xffff) & 0x0000ffff;
+	min_light_intensity |= (short)roundf(mli_fractional * 0xffff) & 0x0000ffff;
 	buffer.WriteUShort(flags);
 	buffer.WriteLong(min_light_intensity);
 	buffer.WriteShort(mBitmapIndex);
