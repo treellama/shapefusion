@@ -19,6 +19,9 @@
 		1F9857EA0B8A39BF00D0395F /* ShapesDocument.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F9857E60B8A39BF00D0395F /* ShapesDocument.cpp */; };
 		1F9857EB0B8A39BF00D0395F /* ShapesView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F9857E80B8A39BF00D0395F /* ShapesView.cpp */; };
 		1FAD07400B94409100E04604 /* ShapesElements.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FAD073D0B94409100E04604 /* ShapesElements.cpp */; };
+		1FAD85D20BB1E9410024D113 /* SoundsDocument.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FAD85CC0BB1E9410024D113 /* SoundsDocument.cpp */; };
+		1FAD85D30BB1E9410024D113 /* SoundsElements.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FAD85CE0BB1E9410024D113 /* SoundsElements.cpp */; };
+		1FAD85D40BB1E9410024D113 /* SoundsView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FAD85D00BB1E9410024D113 /* SoundsView.cpp */; };
 		1FD3571A0BA21F2000360AA5 /* ShapesTreeItemData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FD357180BA21F2000360AA5 /* ShapesTreeItemData.cpp */; };
 		1FD941E10B92D5CD00DD1EEC /* BigEndianBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F096F44E0AD2DD97005A633A /* BigEndianBuffer.cpp */; };
 		1FE8DF890B9C4431003EF856 /* COPYING.txt in Resources */ = {isa = PBXBuildFile; fileRef = 1FE8DF870B9C4431003EF856 /* COPYING.txt */; };
@@ -51,6 +54,12 @@
 		1F9857E90B8A39BF00D0395F /* ShapesView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ShapesView.h; sourceTree = "<group>"; };
 		1FAD073D0B94409100E04604 /* ShapesElements.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = ShapesElements.cpp; sourceTree = "<group>"; };
 		1FAD073E0B94409100E04604 /* ShapesElements.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ShapesElements.h; sourceTree = "<group>"; };
+		1FAD85CC0BB1E9410024D113 /* SoundsDocument.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = SoundsDocument.cpp; sourceTree = "<group>"; };
+		1FAD85CD0BB1E9410024D113 /* SoundsDocument.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SoundsDocument.h; sourceTree = "<group>"; };
+		1FAD85CE0BB1E9410024D113 /* SoundsElements.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = SoundsElements.cpp; sourceTree = "<group>"; };
+		1FAD85CF0BB1E9410024D113 /* SoundsElements.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SoundsElements.h; sourceTree = "<group>"; };
+		1FAD85D00BB1E9410024D113 /* SoundsView.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = SoundsView.cpp; sourceTree = "<group>"; };
+		1FAD85D10BB1E9410024D113 /* SoundsView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SoundsView.h; sourceTree = "<group>"; };
 		1FD357180BA21F2000360AA5 /* ShapesTreeItemData.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = ShapesTreeItemData.cpp; sourceTree = "<group>"; };
 		1FD357190BA21F2000360AA5 /* ShapesTreeItemData.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ShapesTreeItemData.h; sourceTree = "<group>"; };
 		1FE8DF870B9C4431003EF856 /* COPYING.txt */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = COPYING.txt; sourceTree = "<group>"; };
@@ -123,6 +132,19 @@
 			path = Shapes;
 			sourceTree = "<group>";
 		};
+		1FAD85C70BB1E9280024D113 /* Sounds */ = {
+			isa = PBXGroup;
+			children = (
+				1FAD85CC0BB1E9410024D113 /* SoundsDocument.cpp */,
+				1FAD85CD0BB1E9410024D113 /* SoundsDocument.h */,
+				1FAD85CE0BB1E9410024D113 /* SoundsElements.cpp */,
+				1FAD85CF0BB1E9410024D113 /* SoundsElements.h */,
+				1FAD85D00BB1E9410024D113 /* SoundsView.cpp */,
+				1FAD85D10BB1E9410024D113 /* SoundsView.h */,
+			);
+			path = Sounds;
+			sourceTree = "<group>";
+		};
 		F08B4B580AB0ADBA00896399 = {
 			isa = PBXGroup;
 			children = (
@@ -136,6 +158,7 @@
 		F08B4B720AB0AE0B00896399 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				1FAD85C70BB1E9280024D113 /* Sounds */,
 				1F84BF630B8C8F5C000B4DC4 /* Shapes */,
 				F08B4B780AB0AE4B00896399 /* ShapeFusionApp.cpp */,
 				F08B4B820AB0AE6C00896399 /* ShapeFusionApp.h */,
@@ -250,6 +273,9 @@
 				1FAD07400B94409100E04604 /* ShapesElements.cpp in Sources */,
 				1FEDD4640B9C3F9D00D69B62 /* utilities.cpp in Sources */,
 				1FD3571A0BA21F2000360AA5 /* ShapesTreeItemData.cpp in Sources */,
+				1FAD85D20BB1E9410024D113 /* SoundsDocument.cpp in Sources */,
+				1FAD85D30BB1E9410024D113 /* SoundsElements.cpp in Sources */,
+				1FAD85D40BB1E9410024D113 /* SoundsView.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

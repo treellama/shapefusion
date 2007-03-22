@@ -15,12 +15,14 @@
  * along with ShapeFusion; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
-//#include <iostream>
+
 #include "ShapeFusionApp.h"
 #include "ShapeFusionMain.h"
 #include "ShapeFusionMenus.h"
 #include "ShapesDocument.h"
 #include "ShapesView.h"
+#include "SoundsDocument.h"
+#include "SoundsView.h"
 
 ShapeFusionMain *frame = (ShapeFusionMain *) NULL;
 
@@ -36,20 +38,25 @@ bool ShapeFusionApp::OnInit(void)
     if ( !wxApp::OnInit() )
         return false;
 		
-	//// Create a document manager
+	// Create a document manager
     m_docManager = new wxDocManager;
 
-    //// Create a template relating drawing documents to their views
+    // Create a template relating drawing documents to their views
     (void) new wxDocTemplate(m_docManager, _T("Shapes"), _T("*"), _T(""), _T(""), _T("Shapes"), _T("Shapes"),
 		CLASSINFO(ShapesDocument), CLASSINFO(ShapesView));
+    (void) new wxDocTemplate(m_docManager, _T("Sounds"), _T("*"), _T(""), _T(""), _T("Sounds"), _T("Sounds"),
+		CLASSINFO(SoundsDocument), CLASSINFO(SoundsView));
+
 #ifdef __WXMAC__
+	//TODO: Put correct file extension values here
+//    wxFileName::MacRegisterDefaultTypeAndCreator( wxT("*") , 'WXMB' , 'WXMA' );
 //    wxFileName::MacRegisterDefaultTypeAndCreator( wxT("*") , 'WXMB' , 'WXMA' );
 #endif
     
-    //// Create the main frame window
+    // Create the main frame window
     frame = new ShapeFusionMain(m_docManager, (wxFrame *) NULL, wxID_ANY, _T("ShapeFusion Workspace"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE);
     
-    //// Give it an icon (this is ignored in MDI mode: uses resources)
+    // Give it an icon (this is ignored in MDI mode: uses resources)
 #ifdef __WXMSW__
     frame->SetIcon(wxIcon(_T("doc_icn")));
 #endif
