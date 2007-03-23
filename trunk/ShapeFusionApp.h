@@ -32,7 +32,7 @@ public:
     bool OnInit(void);
     int OnExit(void);
     
-	wxFrame *CreateChildFrame(wxDocument *doc, wxView *view, const wxString title, wxPoint point, wxSize size);
+	wxFrame *CreateChildFrame(wxDocument *doc, wxView *view, const wxString title, wxPoint point, wxSize size, long style = wxDEFAULT_FRAME_STYLE);
     
 protected:
     wxDocManager* m_docManager;
