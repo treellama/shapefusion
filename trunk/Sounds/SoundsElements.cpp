@@ -22,9 +22,87 @@ SoundsDefinition::SoundsDefinition(bool verbose) : SoundsElement(verbose) {}
 
 SoundsDefinition::~SoundsDefinition() {}
 
-
-BigEndianBuffer& SoundsDefinition::SaveObject(BigEndianBuffer& buffer)
+unsigned int SoundsDefinition::GetSizeInFile(void)
 {
+	unsigned int size = SIZEOF_sound_definition;
+	
+	for (unsigned int i = 0; i < mSounds.size(); i++)
+		size += mSounds[i]->Size();
+	
+	return size;
+}
+
+BigEndianBuffer& SoundsDefinition::SaveObject(BigEndianBuffer& buffer, unsigned int& offset)
+{
+	unsigned int oldpos = buffer.Position();
+	
+	// We write sound_definition header
+	buffer.WriteShort(mSoundCode);
+	
+	buffer.WriteShort(mBehaviorIndex);
+	buffer.WriteUShort(mFlags);
+	
+	buffer.WriteUShort(mChance);
+	
+	float			low_pitch_integer, low_pitch_fractional,
+					high_pitch_integer, high_pitch_fractional;
+	long			low_pitch = 0, high_pitch = 0;
+	
+	// float to fixed
+	low_pitch_fractional = modff(mLowPitch, &low_pitch_integer);
+	low_pitch |= (((short)low_pitch_integer) << 16) & 0xffff0000;
+	low_pitch |= (short)roundf(low_pitch_fractional * 0xffff) & 0x0000ffff;
+	
+	high_pitch_fractional = modff(mHighPitch, &high_pitch_integer);
+	high_pitch |= (((short)high_pitch_integer) << 16) & 0xffff0000;
+	high_pitch |= (short)roundf(high_pitch_fractional * 0xffff) & 0x0000ffff;
+	
+	buffer.WriteLong(low_pitch);
+	buffer.WriteLong(high_pitch);
+	
+	buffer.WriteShort(mSounds.size());
+	buffer.WriteUShort(mPermutationsPlayed);
+	
+	// We need to recalculate those fields...
+	unsigned long single_length = (mSounds.size() >= 1 ? mSounds[0]->Size() : 0);
+	unsigned long total_length = single_length;
+	std::vector<long> soundOffsets;
+	soundOffsets.push_back(0);
+	
+	// ... and the corresponding offsets ...
+	for (unsigned int i = 1; i < mSounds.size(); i++) {
+		soundOffsets.push_back(total_length);
+		total_length += mSounds[i]->Size();
+	}
+	
+	// ... and write everything
+	buffer.WriteLong(offset);
+	buffer.WriteLong(single_length);
+	buffer.WriteLong(total_length);
+	
+	// We have to pad with zeroes, as engine always expect MAXIMUM_PERMUTATIONS_PER_SOUND sound offsets...
+	for (unsigned int i = 0; i < MAXIMUM_PERMUTATIONS_PER_SOUND; i++) {
+		if (i < soundOffsets.size())
+			buffer.WriteLong(soundOffsets[i]);
+		else
+			buffer.WriteLong(0);
+	}
+	
+	buffer.WriteULong(mLastPlayed);
+	
+	// Now, we write actual sound data where it belongs...
+	buffer.Position(offset);
+	
+	for (unsigned int i = 0; i < mSounds.size(); i++) {
+		buffer.WriteBlock(mSounds[i]->Size(), mSounds[i]->Data());
+	}
+	
+	// We put back position to the end of the written sound_definition...
+	buffer.Position(oldpos + SIZEOF_sound_definition);
+	// ... and add our total_length to the offset, so that next invocation
+	// writes its sound data at the correct place.
+	offset += total_length;
+	
 	return buffer;
 }
 
@@ -57,12 +135,17 @@ BigEndianBuffer& SoundsDefinition::LoadObject(BigEndianBuffer& buffer)
 		return buffer;
 	}
 	
-	unsigned short permutationsPlayed = buffer.ReadUShort();
+	mPermutationsPlayed = buffer.ReadUShort();
 	int groupOffset = buffer.ReadLong();
 	int singleLength = buffer.ReadLong();
 	int totalLength = buffer.ReadLong();
 	
-	std::vector<int> soundOffsets;
+	if (groupOffset + totalLength > buffer.Size()) {
+		wxLogError("[SoundsDefinition] incorrect group offset / total length");
+		return buffer;
+	}
+	
+	std::vector<long> soundOffsets;
 	
 	soundOffsets.resize(MAXIMUM_PERMUTATIONS_PER_SOUND);
 	for (unsigned int i = 0; i < MAXIMUM_PERMUTATIONS_PER_SOUND; i++) {
@@ -79,7 +162,7 @@ BigEndianBuffer& SoundsDefinition::LoadObject(BigEndianBuffer& buffer)
 		wxLogDebug("[SoundsDefinition] Low Pitch:			%f", mLowPitch);
 		wxLogDebug("[SoundsDefinition] High Pitch:			%f", mHighPitch);
 		wxLogDebug("[SoundsDefinition] Permutations:		%d", permutations);
-		wxLogDebug("[SoundsDefinition] Permutations Played:	%d", permutationsPlayed);
+		wxLogDebug("[SoundsDefinition] Permutations Played:	%d", mPermutationsPlayed);
 		wxLogDebug("[SoundsDefinition] Group Offset:		%d", groupOffset);
 		wxLogDebug("[SoundsDefinition] Single Length:		%d", singleLength);
 		wxLogDebug("[SoundsDefinition] Total Length:		%d", totalLength);
@@ -120,22 +203,3 @@ BigEndianBuffer* SoundsDefinition::GetPermutation(unsigned int permutation_index
 	
 	return mSounds[permutation_index];
 }
-
-/*SoundHeader::SoundHeader(bool verbose): SoundsElement(verbose), mLength(0), mData(NULL)
-{}
-
-SoundHeader::~SoundHeader()
-{
-	if (mData)
-		mData = NULL;
-}
-
-BigEndianBuffer& SoundHeader::SaveObject(BigEndianBuffer& buffer)
-{
-	return buffer;
-}
-
-BigEndianBuffer& SoundHeader::LoadObject(BigEndianBuffer& buffer)
-{
-	return buffer;
-}*/

@@ -74,12 +74,50 @@ bool SoundsDocument::DoOpenDocument(const wxString& file)
 	return true;
 }
 
+unsigned int SoundsDocument::GetSizeInFile(void)
+{
+	unsigned int size = SIZEOF_sound_file_header;
+	
+	for (unsigned int i = 0; i < mSoundDefinitions.size(); i++)
+		for (unsigned int j = 0; j < mSoundDefinitions[i].size(); j++)
+			size += mSoundDefinitions[i][j]->GetSizeInFile();
+	
+	return size;
+}
+
 #if wxUSE_STD_IOSTREAM
 wxSTD ostream& SoundsDocument::SaveObject(wxSTD ostream& stream)
 #else
 wxOutputStream& SoundsDocument::SaveObject(wxOutputStream& stream)
 #endif
 {
+	BigEndianBuffer filebuffer(GetSizeInFile());
+	
+	unsigned int source_count = mSoundDefinitions.size();
+	unsigned int sound_count = mSoundDefinitions[0].size();
+	
+	filebuffer.WriteLong(mVersion);
+	filebuffer.WriteLong(mTag);
+	filebuffer.WriteShort(source_count);
+	filebuffer.WriteShort(sound_count);
+	
+	filebuffer.Position(SIZEOF_sound_file_header);
+	
+	unsigned int current_sound_offset = SIZEOF_sound_file_header
+			+ source_count * sound_count * SIZEOF_sound_definition;
+	
+	for (unsigned int i = 0; i < mSoundDefinitions.size(); i++) {
+		for (unsigned int j = 0; j < mSoundDefinitions[i].size(); j++) {
+			mSoundDefinitions[i][j]->SaveObject(filebuffer, current_sound_offset);
+		}
+	}
+	
+#if wxUSE_STD_IOSTREAM
+	stream.write((char *)filebuffer.Data(), filebuffer.Size());
+#else
+	stream.Write((char *)filebuffer.Data(), filebuffer.Size());
+#endif
+
 	return stream;
 }
 
