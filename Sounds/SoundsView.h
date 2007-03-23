@@ -28,37 +28,56 @@ class SoundsView: public wxView
 private:
 	// control ids
 	enum {
-		SOUND_LIST_BOX,
-		SOUND_LIST_ADD_BUTTON,
-		SOUND_LIST_REMOVE_BUTTON,
+		SOUND_CLASS_MENU,
+//		SOUND_LIST_ADD_BUTTON,
+//		SOUND_LIST_REMOVE_BUTTON,
 		SOURCE_RADIO_BOX,
 		SOUND_BEHAVIOR_MENU,
 		SOUND_CHANCE_MENU,
-		SOUND_FLAGS_BOX,
+		SOUND_FLAGS_CHECKBOX,
+		SOUND_FLAGS_RESTART,
+		SOUND_FLAGS_ABORT,
+		SOUND_FLAGS_RESIST,
+		SOUND_FLAGS_CHANGE,
+		SOUND_FLAGS_OBSTRUCTED,
+		SOUND_FLAGS_MOBSTRUCTED,
+		SOUND_FLAGS_AMBIENT,
 		SOUND_LOW_PITCH_SLIDER,
 		SOUND_HIGH_PITCH_SLIDER,
-		PERMUTATION_LIST_BOX
+		PERMUTATION_LIST_BOX,
+//		PERMUTATION_IMPORT_BUTTON,
+//		PERMUTATION_EXPORT_BUTTON
 	};
 	
-	wxBoxSizer			*frame_sizer;
-	wxBoxSizer				*sound_list_sizer;
-	wxListBox					*sound_list;
-	wxBoxSizer					*sound_list_button_sizer;
-	wxButton						*sound_list_add_button;
-	wxButton						*sound_list_remove_button;
-	wxBoxSizer				*editor_sizer;
-	wxStaticText				*source_static_text;
-	wxRadioBox					*source_radio_box;
-	wxBoxSizer					*sound_menu_sizer;
-	wxStaticText					*sound_behavior_label;
-	wxChoice						*sound_behavior_menu;
-	wxStaticText					*sound_chance_label;
-	wxChoice						*sound_chance_menu;
-	wxRadioBox					*sound_flags_box;
-	wxSlider					*sound_low_pitch_slider;
-	wxSlider					*sound_high_pitch_slider;
-	wxStaticText				*permutation_static_text;
-	wxListBox					*permutation_list_box;
+	wxBoxSizer		*frame_sizer;
+	wxFlexGridSizer		*sound_class_sizer;
+	wxStaticText			*sound_class_text;
+	wxChoice				*sound_class_menu;
+	wxRadioBox				*source_radio_box;
+	wxStaticBox			*editor_static_box;
+	wxStaticBoxSizer	*editor_static_sizer;
+	wxBoxSizer				*top_editor_sizer;
+	wxBoxSizer					*left_editor_sizer;
+	wxListBox						*permutation_list_box;
+	wxGridSizer						*left_editor_menus_sizer;
+	wxStaticText						*behavior_text;
+	wxChoice								*behavior_menu;
+	wxStaticText						*chance_text;
+	wxChoice							*chance_menu;
+	wxBoxSizer					*right_editor_sizer;
+//	wxCheckListBox					*flags_check_boxes;
+	wxCheckBox						*flag_restart_checkbox;
+	wxCheckBox						*flag_abort_checkbox;
+	wxCheckBox						*flag_resist_checkbox;
+	wxCheckBox						*flag_change_checkbox;
+	wxCheckBox						*flag_obstructed_checkbox;
+	wxCheckBox						*flag_mobstructed_checkbox;
+	wxCheckBox						*flag_ambient_checkbox;
+	wxGridSizer				*bottom_editor_sizer;
+	wxStaticText				*low_pitch_text;
+	wxSlider					*low_pitch_slider;
+	wxStaticText				*high_pitch_text;
+	wxSlider					*high_pitch_slider;
 
     wxFrame			*frame;
 	wxMenuBar		*menubar;
@@ -75,7 +94,7 @@ public:
 	
 	bool Update(void);
 	
-	void SoundSelected(wxCommandEvent &e);
+	void SoundClassMenuChanged(wxCommandEvent &e);
     
 	void AddSound(wxCommandEvent &e);
 	void RemoveSound(wxCommandEvent &e);
@@ -86,6 +105,8 @@ public:
 	void LowPitchChanged(wxScrollEvent &e);
 	void HighPitchChanged(wxScrollEvent &e);
 	void PermutationSelected(wxCommandEvent &e);
+	void ImportSound(wxCommandEvent &e);
+	void ExportSound(wxCommandEvent &e);
     DECLARE_EVENT_TABLE()
 };
 #endif
