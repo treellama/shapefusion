@@ -66,13 +66,13 @@ enum /* sound chances */
 
 /* ---------- structures */
 
-typedef struct {
+/*typedef struct {
 	short sound_index;
 }  ambient_sound_definition;
 
 typedef struct {
 	short sound_index;
-} random_sound_definition;
+} random_sound_definition;*/
 
 class SoundsElement // : public wxObject
 {
@@ -149,12 +149,19 @@ public:
 	bool IsNotMediaObstructed(void) const {return mFlags & _sound_cannot_be_media_obstructed;}
 	bool IsAmbient(void) const {return mFlags & _sound_is_ambient;}
 	
-	short GetChance(void) const {return mChance;}
+	short GetChance(void) const {
+		for (int i = 0; i < 10; i++)
+			if (mChance == 32768*i/10) return i;
+		
+		wxLogDebug("Invalid chance %d", mChance);
+		return -1;
+	}
 	
 	int GetLowPitch(void) const {return mLowPitch;}
 	int GetHighPitch(void) const {return mHighPitch;}
 	
 	unsigned int GetPermutationCount(void) const {return mSounds.size();}
+	BigEndianBuffer* GetPermutation(unsigned int permutation_index);
 	
 	// Utilities
     BigEndianBuffer& SaveObject(BigEndianBuffer& buffer);

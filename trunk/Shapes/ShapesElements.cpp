@@ -937,7 +937,7 @@ BigEndianBuffer& ShapesChunk::LoadObject(BigEndianBuffer& buffer)
 	}
 
 	if ((unsigned long)size != buffer.Size()) {
-		wxLogError(wxT("[ShapesChunk] Chunk size mismatch (%d/%d): this may not be a Marathon shapes file"), size, buffer.Size());
+		wxLogError(wxT("[ShapesChunk] Chunk size mismatch (%ld/%d): this may not be a Marathon shapes file"), size, buffer.Size());
 		return buffer;
 	}
 	if (color_table_offset < SIZEOF_collection_definition

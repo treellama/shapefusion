@@ -113,6 +113,14 @@ BigEndianBuffer& SoundsDefinition::LoadObject(BigEndianBuffer& buffer)
 	return buffer;
 }
 
+BigEndianBuffer* SoundsDefinition::GetPermutation(unsigned int permutation_index)
+{
+	if (permutation_index > mSounds.size())
+		return NULL;
+	
+	return mSounds[permutation_index];
+}
+
 /*SoundHeader::SoundHeader(bool verbose): SoundsElement(verbose), mLength(0), mData(NULL)
 {}
 
