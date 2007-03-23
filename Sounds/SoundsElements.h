@@ -120,11 +120,11 @@ private:
 	float mLowPitch, mHighPitch;
 	
 	/* filled in later */
-/*	short mPermutations;
+//	short mPermutations;
 	unsigned short mPermutationsPlayed;
-	int mGroupOffset, mSingleLength, mTotalLength; // magic numbers necessary to load sounds
+//	int mGroupOffset, mSingleLength, mTotalLength; // magic numbers necessary to load sounds
 //	int mSoundOffsets[MAXIMUM_PERMUTATIONS_PER_SOUND]; // zero-based from group offset
-	std::vector<int> mSoundOffsets;*/
+//	std::vector<int> mSoundOffsets;
 
 	std::vector<BigEndianBuffer*> mSounds;
 	
@@ -164,7 +164,8 @@ public:
 	BigEndianBuffer* GetPermutation(unsigned int permutation_index);
 	
 	// Utilities
-    BigEndianBuffer& SaveObject(BigEndianBuffer& buffer);
+	unsigned int GetSizeInFile(void);
+    BigEndianBuffer& SaveObject(BigEndianBuffer& buffer, unsigned int& offset);
     BigEndianBuffer& LoadObject(BigEndianBuffer& buffer);
 };
 

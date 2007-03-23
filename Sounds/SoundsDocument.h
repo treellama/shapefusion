@@ -53,6 +53,8 @@ public:
 	
 	bool DoOpenDocument(const wxString& file);
 	
+	// Utilities
+	unsigned int GetSizeInFile(void);
 #if wxUSE_STD_IOSTREAM
     wxSTD ostream& SaveObject(wxSTD ostream& stream);
     wxSTD istream& LoadObject(wxSTD istream& stream);
