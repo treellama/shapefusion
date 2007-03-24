@@ -3,7 +3,7 @@ http://shapefusion.sourceforge.net
 
 An editor for Marathon II, Marathon Infinity and AlephOne Shapes files
 
-Copyright 2000-2007 Tito Dal Canton
+Copyright 2000-2007 Tito Dal Canton and Etienne Samson
 
 
 What is ShapeFusion?
@@ -28,6 +28,7 @@ I became more and more attracted by the idea of porting ShapeFusion to other sys
 couldn't be done easily with the original MacOS code, so eventually I started to rewrite everything
 using the portable wxWidgets toolkit. I also had the opportunity to rework the user interface, since
 I never liked the Anvil approach that I was trying to follow in the original ShapeFusion.
+Etienne joined the project at this stage.
 
 The new editor is not yet complete, but it's a great improvement at least on the technical side
 (stability, code organization, portability). Adding new features and fixing existing ones will be
@@ -35,11 +36,11 @@ much easier with respect to the old version.
 
 Supported platforms
 -------------------
-The new ShapeFusion is being developed on Linux and constantly tested both on Linux and MacOS X. 
-Thanks to wxWidgets it should compile and work also on Windows and maybe other systems, but I've
-never tried it. As far as I know, ShapeFusion could *in theory* compile and work also on MacOS
-Classic, but I have to investigate. If you build ShapeFusion on systems different from Linux and
-MacOS X, please let me know (screenshots are appreciated!).
+The new ShapeFusion is being developed and constantly tested both on Linux and MacOS X. Thanks to
+wxWidgets it should compile and work also on Windows and maybe other systems, but I've never tried it.
+ShapeFusion could *in theory* compile and work also on MacOS Classic, but we have no plans on this side.
+If you build ShapeFusion on systems different from Linux and MacOS X, please let us know (screenshots
+are appreciated!).
 
 Building
 --------
@@ -52,7 +53,7 @@ compilation is complete, simply run the 'shapefusion' executable (you can put it
 PATH).
 
 On MacOS X you should be able to use the provided Xcode project in the osx-build directory. You'll
-need both the MacOS X developer tools and wxWidgets. Note that I'm releasing MacOS X binary builds
+need both the MacOS X developer tools and wxWidgets. Note that we are releasing MacOS X binary builds
 along with each source release: they should work out-of-the-box without the need to install anything
 else. In case you're wondering why they are so large in size, it is because they carry the whole
 wxWidgets code linked statically.
@@ -87,10 +88,10 @@ Shapes file.
 
 Notes
 -----
-Please be careful when editing your scenario with ShapeFusion. I had no problems so far, but it's
+Please be careful when editing your scenario with ShapeFusion. We had no problems so far, but it's
 still under development and it may corrupt your Shapes files, so be sure to keep backup copies.
 You shouldn't use versions before 0.3, as they are affected by a bug regarding frames minimum light
-intensity value. If you think your Shapes got corrupted by ShapeFusion, please let me know what happened.
+intensity value. If you think your Shapes got corrupted by ShapeFusion, please let us know what happened.
 
 Object indexes start from 0, not 1. So if you have 12 bitmaps, the first is bitmap 0 (not 1) and the
 last is bitmap 11 (not 12).
@@ -107,7 +108,7 @@ collection color table.
 You can't edit color tables yet. They are just displayed.
 
 In ShapeFusion, a frame can be referenced by many sequences. This may sound strange at first, but in
-Shapes file format logic it's perfectly legal and I think it makes sense too. However it can create a
+Shapes file format logic it's perfectly legal and we think it makes sense too. However it can create a
 bit of confusion if you forget it. Keep in mind that a famous Anvil bug is based on this very
 confusion. But in Anvil it's a bug, in ShapeFusion it's a feature ;-)
 
@@ -124,7 +125,7 @@ it just packs structure after structure and so produces generally smaller files.
 
 Shapes files are known to rarely contain strange data, like negative sequence ticks_per_frame. Maybe
 this comes from some broken Shapes editor, but it could be just Anvil. ShapeFusion doesn't handle this
-invalid data very well, but I plan to implement some consistency checks in the future.
+invalid data very well, but we plan to implement some consistency checks in the future.
 
 Changelog
 ---------

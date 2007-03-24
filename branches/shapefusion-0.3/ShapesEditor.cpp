@@ -140,7 +140,6 @@ ShapesEditor::ShapesEditor(const wxChar *t, int x, int y, int w, int h):
 	mainbox = new wxBoxSizer(wxHORIZONTAL);
 	// create the collection tree
 	colltree = new wxTreeCtrl(this, -1, wxDefaultPosition, wxDefaultSize, wxTR_DEFAULT_STYLE | wxTR_HIDE_ROOT);
-	wxTreeItemId	treeroot = colltree->AddRoot(wxT("No file loaded"));
 	mainbox->Add(colltree, 2, wxEXPAND);
 	// empty space (e.g. what is displayed when selecting the Sequences node)
 	dummy_sizer = new wxBoxSizer(wxVERTICAL);
