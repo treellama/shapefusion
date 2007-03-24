@@ -32,6 +32,23 @@ unsigned int SoundsDefinition::GetSizeInFile(void)
 	return size;
 }
 
+short SoundsDefinition::GetChance(void) const
+{
+	for (int i = 0; i < 10; i++)
+		if (mChance == 32768*i/10) return i;
+	
+	wxLogDebug("Invalid chance %d", mChance);
+	return -1;
+}
+
+void SoundsDefinition::SetChance(short chance)
+{
+	if (chance < 0 || chance > 10)
+		wxLogDebug("Invalid chance %d", mChance);
+	
+	mChance = 32768*chance/10;
+}
+
 BigEndianBuffer& SoundsDefinition::SaveObject(BigEndianBuffer& buffer, unsigned int& offset)
 {
 	unsigned int oldpos = buffer.Position();
@@ -140,7 +157,7 @@ BigEndianBuffer& SoundsDefinition::LoadObject(BigEndianBuffer& buffer)
 	int singleLength = buffer.ReadLong();
 	int totalLength = buffer.ReadLong();
 	
-	if (groupOffset + totalLength > buffer.Size()) {
+	if ((unsigned int)(groupOffset + totalLength) > buffer.Size()) {
 		wxLogError("[SoundsDefinition] incorrect group offset / total length");
 		return buffer;
 	}

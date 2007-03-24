@@ -34,7 +34,7 @@ private:
 		SOURCE_RADIO_BOX,
 		SOUND_BEHAVIOR_MENU,
 		SOUND_CHANCE_MENU,
-		SOUND_FLAGS_CHECKBOX,
+//		SOUND_FLAGS_CHECKBOX,
 		SOUND_FLAGS_RESTART,
 		SOUND_FLAGS_ABORT,
 		SOUND_FLAGS_RESIST,
@@ -65,7 +65,6 @@ private:
 	wxStaticText						*chance_text;
 	wxChoice							*chance_menu;
 	wxBoxSizer					*right_editor_sizer;
-//	wxCheckListBox					*flags_check_boxes;
 	wxCheckBox						*flag_restart_checkbox;
 	wxCheckBox						*flag_abort_checkbox;
 	wxCheckBox						*flag_resist_checkbox;
@@ -82,6 +81,8 @@ private:
     wxFrame			*frame;
 	wxMenuBar		*menubar;
 	SoundsDocument	*payload;
+	int				mSourceIndex, mSoundIndex;
+	
 public:
     
     SoundsView(void) { frame = (wxFrame *) NULL; };
@@ -98,12 +99,12 @@ public:
     
 	void AddSound(wxCommandEvent &e);
 	void RemoveSound(wxCommandEvent &e);
-	void SourceSelected(wxCommandEvent &e);
-	void BehaviorChanged(wxCommandEvent &e);
-	void ChanceChanged(wxCommandEvent &e);
+	void SourceRadioButtonChanged(wxCommandEvent &e);
+	void BehaviorMenuChanged(wxCommandEvent &e);
+	void ChanceMenuChanged(wxCommandEvent &e);
 	void FlagsChanged(wxCommandEvent &e);
-	void LowPitchChanged(wxScrollEvent &e);
-	void HighPitchChanged(wxScrollEvent &e);
+	void LowPitchSliderChanged(wxScrollEvent &e);
+	void HighPitchSliderChanged(wxScrollEvent &e);
 	void PermutationSelected(wxCommandEvent &e);
 	void ImportSound(wxCommandEvent &e);
 	void ExportSound(wxCommandEvent &e);

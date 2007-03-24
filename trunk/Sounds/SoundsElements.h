@@ -149,16 +149,26 @@ public:
 	bool IsNotMediaObstructed(void) const {return mFlags & _sound_cannot_be_media_obstructed;}
 	bool IsAmbient(void) const {return mFlags & _sound_is_ambient;}
 	
-	short GetChance(void) const {
-		for (int i = 0; i < 10; i++)
-			if (mChance == 32768*i/10) return i;
-		
-		wxLogDebug("Invalid chance %d", mChance);
-		return -1;
-	}
+	short GetChance(void) const;
 	
 	int GetLowPitch(void) const {return mLowPitch;}
 	int GetHighPitch(void) const {return mHighPitch;}
+	
+	void SetSoundCode(short s) {mSoundCode = s;}
+	void SetBehaviorIndex(int i) {mBehaviorIndex = i;}
+	
+	void SetNotRestartable(bool f) {mFlags |= _sound_cannot_be_restarted;}
+	void SetNotSelfAbortable(bool f) {mFlags |= _sound_does_not_self_abort;}
+	void SetPitchChangeResistant(bool b) {mFlags |= _sound_resists_pitch_changes;}
+	void SetNotPitchChangeable(bool b) {mFlags |= _sound_cannot_change_pitch;}
+	void SetNotObstructed(bool b) {mFlags |= _sound_cannot_be_obstructed;}
+	void SetNotMediaObstructed(bool b) {mFlags |= _sound_cannot_be_media_obstructed;}
+	void SetAmbient(bool b) {mFlags |= _sound_is_ambient;}
+	
+	void SetChance(short i);
+	
+	void SetLowPitch(int p) {mLowPitch = p;}
+	void SetHighPitch(int p) {mHighPitch = p;}
 	
 	unsigned int GetPermutationCount(void) const {return mSounds.size();}
 	BigEndianBuffer* GetPermutation(unsigned int permutation_index);

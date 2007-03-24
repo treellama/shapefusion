@@ -37,9 +37,9 @@ BEGIN_EVENT_TABLE(SoundsView, wxView)
 	EVT_CHOICE(SOUND_CLASS_MENU, SoundsView::SoundClassMenuChanged)
 //	EVT_BUTTON(SOUND_LIST_ADD_BUTTON, SoundsView::AddSound)
 //	EVT_BUTTON(SOUND_LIST_REMOVE_BUTTON, SoundsView::RemoveSound)
-	EVT_RADIOBOX(SOURCE_RADIO_BOX, SoundsView::SourceSelected)
-	EVT_CHOICE(SOUND_BEHAVIOR_MENU, SoundsView::BehaviorChanged)
-	EVT_CHOICE(SOUND_CHANCE_MENU, SoundsView::ChanceChanged)
+	EVT_RADIOBOX(SOURCE_RADIO_BOX, SoundsView::SourceRadioButtonChanged)
+	EVT_CHOICE(SOUND_BEHAVIOR_MENU, SoundsView::BehaviorMenuChanged)
+	EVT_CHOICE(SOUND_CHANCE_MENU, SoundsView::ChanceMenuChanged)
 //	EVT_RADIOBOX(SOUND_FLAGS_BOX, SoundsView::FlagsChanged)
 	EVT_CHECKBOX(SOUND_FLAGS_RESTART, SoundsView::FlagsChanged)
 	EVT_CHECKBOX(SOUND_FLAGS_ABORT, SoundsView::FlagsChanged)
@@ -48,8 +48,8 @@ BEGIN_EVENT_TABLE(SoundsView, wxView)
 	EVT_CHECKBOX(SOUND_FLAGS_OBSTRUCTED, SoundsView::FlagsChanged)
 	EVT_CHECKBOX(SOUND_FLAGS_MOBSTRUCTED, SoundsView::FlagsChanged)
 	EVT_CHECKBOX(SOUND_FLAGS_AMBIENT, SoundsView::FlagsChanged)
-	EVT_COMMAND_SCROLL_THUMBRELEASE(SOUND_LOW_PITCH_SLIDER, SoundsView::LowPitchChanged)
-	EVT_COMMAND_SCROLL_THUMBRELEASE(SOUND_HIGH_PITCH_SLIDER, SoundsView::HighPitchChanged)
+	EVT_COMMAND_SCROLL_THUMBRELEASE(SOUND_LOW_PITCH_SLIDER, SoundsView::LowPitchSliderChanged)
+	EVT_COMMAND_SCROLL_THUMBRELEASE(SOUND_HIGH_PITCH_SLIDER, SoundsView::HighPitchSliderChanged)
 	EVT_LISTBOX(PERMUTATION_LIST_BOX, SoundsView::PermutationSelected)
 //	EVT_BUTTON(PERMUTATION_IMPORT_BUTTON, SoundsView::ImportSound)
 //	EVT_BUTTON(PERMUTATION_EXPORT_BUTTON, SoundsView::ExportSound)
@@ -236,16 +236,13 @@ void SoundsView::OnUpdate(wxView *WXUNUSED(sender), wxObject *WXUNUSED(hint))
 
 bool SoundsView::Update(void)
 {
-	int sound_index = sound_class_menu->GetSelection();
-	int source_index = source_radio_box->GetSelection();
+	mSoundIndex = sound_class_menu->GetSelection();
+	mSourceIndex = source_radio_box->GetSelection();
 	
-	if (sound_index == wxNOT_FOUND || source_index == wxNOT_FOUND)
+	if (mSoundIndex == wxNOT_FOUND || mSourceIndex == wxNOT_FOUND)
 		return false;
 	
-	wxLogDebug("[SoundsView] Selected sound %d", sound_index);
-	wxLogDebug("[SoundsView] Selected source %d", source_index);
-	
-	SoundsDefinition *def = payload->GetSoundDefinition(source_index, sound_index);
+	SoundsDefinition *def = payload->GetSoundDefinition(mSourceIndex, mSoundIndex);
 	
 	behavior_menu->SetSelection(def->GetBehaviorIndex());
 	chance_menu->SetSelection(def->GetChance());
@@ -298,40 +295,79 @@ void SoundsView::RemoveSound(wxCommandEvent &e)
 
 void SoundsView::SoundClassMenuChanged(wxCommandEvent &e)
 {
-	wxLogDebug(wxT("Sound class menu: selected item %d"), e.GetInt());
 	Update();
 }
 
 
-void SoundsView::SourceSelected(wxCommandEvent &e)
+void SoundsView::SourceRadioButtonChanged(wxCommandEvent &e)
 {
-	wxLogDebug(wxT("Source radio button: selected item %d"), e.GetInt());
 	Update();
 }
 
-void SoundsView::BehaviorChanged(wxCommandEvent &e)
+void SoundsView::BehaviorMenuChanged(wxCommandEvent &e)
 {
-
+	SoundsDefinition *def = payload->GetSoundDefinition(mSourceIndex, mSoundIndex);
+	
+	def->SetBehaviorIndex(behavior_menu->GetSelection());
 }
 
-void SoundsView::ChanceChanged(wxCommandEvent &e)
+void SoundsView::ChanceMenuChanged(wxCommandEvent &e)
 {
-
+	SoundsDefinition *def = payload->GetSoundDefinition(mSourceIndex, mSoundIndex);
+	
+	def->SetChance(chance_menu->GetSelection());
 }
 
 void SoundsView::FlagsChanged(wxCommandEvent &e)
 {
-
+	SoundsDefinition *def = payload->GetSoundDefinition(mSourceIndex, mSoundIndex);
+	switch (e.GetId()) {
+		case SOUND_FLAGS_RESTART:
+			def->SetNotRestartable(e.IsChecked());
+			break;
+		
+		case SOUND_FLAGS_ABORT:
+			def->SetNotSelfAbortable(e.IsChecked());
+			break;
+		
+		case SOUND_FLAGS_RESIST:
+			def->SetPitchChangeResistant(e.IsChecked());
+			break;
+		
+		case SOUND_FLAGS_CHANGE:
+			def->SetNotPitchChangeable(e.IsChecked());
+			break;
+		
+		case SOUND_FLAGS_OBSTRUCTED:
+			def->SetNotObstructed(e.IsChecked());
+			break;
+		
+		case SOUND_FLAGS_MOBSTRUCTED:
+			def->SetNotMediaObstructed(e.IsChecked());
+			break;
+		
+		case SOUND_FLAGS_AMBIENT:
+			def->SetAmbient(e.IsChecked());
+			break;
+		
+		default:
+			wxLogDebug("Invalid control id in FlagsChanged");
+			break;
+	}
 }
 
-void SoundsView::LowPitchChanged(wxScrollEvent &e)
+void SoundsView::LowPitchSliderChanged(wxScrollEvent &e)
 {
-
+	SoundsDefinition *def = payload->GetSoundDefinition(mSourceIndex, mSoundIndex);
+	
+	def->SetLowPitch(low_pitch_slider->GetValue());
 }
 
-void SoundsView::HighPitchChanged(wxScrollEvent &e)
+void SoundsView::HighPitchSliderChanged(wxScrollEvent &e)
 {
-
+	SoundsDefinition *def = payload->GetSoundDefinition(mSourceIndex, mSoundIndex);
+	
+	def->SetHighPitch(high_pitch_slider->GetValue());
 }
 
 void SoundsView::PermutationSelected(wxCommandEvent &e)
@@ -344,4 +380,5 @@ void SoundsView::ImportSound(wxCommandEvent &e)
 
 void SoundsView::ExportSound(wxCommandEvent &e)
 {
+	
 }
