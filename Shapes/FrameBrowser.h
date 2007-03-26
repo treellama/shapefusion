@@ -78,6 +78,7 @@ public:
 	void AddBitmap(ShapesBitmap *bp);
 	void SetColorTable(ShapesColorTable *ct);
 	void Clear(void);
+	void ClearBitmaps(void);
 	// utilities
 	void RebuildThumbnail(unsigned int i);
 	void RebuildThumbnails(void);

@@ -28,6 +28,7 @@ BEGIN_EVENT_TABLE(SequenceView, wxScrolledWindow)
 	EVT_SIZE(SequenceView::OnSize)
 	EVT_LEFT_DOWN(SequenceView::OnMouseDown)
 	EVT_RIGHT_DOWN(SequenceView::OnMouseDown)
+	EVT_LEFT_UP(SequenceView::OnMouseUp)
 	EVT_KEY_DOWN(SequenceView::OnKeyDown)
 	EVT_MOTION(SequenceView::OnMouseMove)
 END_EVENT_TABLE()
@@ -96,8 +97,20 @@ void SequenceView::OnPaint(wxPaintEvent& e)
 		wxRect	tnrect(x, y, tn_size, tn_size);
 
 		if (tnrect.Inside(mouse)) {
+			wxString	label = wxString::Format(wxT("%d"), (*frame_indexes)[i]);
+			int			labelw, labelh;
+
+			tempdc.SetFont(*wxSMALL_FONT);
 			tempdc.DrawBitmap(prev_btn, x + 2, y + tn_size - prev_btn.GetHeight() - 2);
 			tempdc.DrawBitmap(next_btn, x + tn_size - next_btn.GetWidth() - 2, y + tn_size - next_btn.GetHeight() - 2);
+			tempdc.GetTextExtent(label, &labelw, &labelh);
+			tempdc.SetTextForeground(wxColour(255, 255, 255));
+			tempdc.DrawText(label, x + (tn_size-labelw) / 2 - 1, y + tn_size - labelh - 2);
+			tempdc.DrawText(label, x + (tn_size-labelw) / 2 + 1, y + tn_size - labelh - 2);
+			tempdc.DrawText(label, x + (tn_size-labelw) / 2, y + tn_size - labelh - 2 - 1);
+			tempdc.DrawText(label, x + (tn_size-labelw) / 2, y + tn_size - labelh - 2 + 1);
+			tempdc.SetTextForeground(wxColour(0, 0, 0));
+			tempdc.DrawText(label, x + (tn_size-labelw) / 2, y + tn_size - labelh - 2);
 		}
 	}
 	if (thumbnails.size() > 0 && animation_type != UNANIMATED && animation_type != ANIMATED_1) {
@@ -159,6 +172,58 @@ void SequenceView::OnMouseDown(wxMouseEvent& e)
 			}
 			break;
 		case wxMOUSE_BTN_RIGHT:
+			break;
+	}
+	e.Skip();
+}
+
+void SequenceView::OnMouseUp(wxMouseEvent& e)
+{
+	wxClientDC  dc(this);
+	wxPoint     mouse;
+	
+	DoPrepareDC(dc);
+	mouse = e.GetLogicalPosition(dc);
+	switch (e.GetButton()) {
+		case wxMOUSE_BTN_LEFT:
+			// clicks on the little arrows change the associated frame index
+			// FIXME mouse tracking like real buttons (starting with a mouse down)
+			{
+				// find wether the mouse was released over a thumbnail
+				int touched_thumbnail = -1;
+				
+				for (unsigned int i = 0; i < tn_positions.size(); i++) {
+					wxRect  test(tn_positions[i].x, tn_positions[i].y, tn_size, tn_size);
+					
+					if (test.Inside(mouse)) {
+						touched_thumbnail = i;
+						break;
+					}
+				}
+				if (touched_thumbnail > -1) {
+					// find wether an arrow was touched
+					int     x = tn_positions[touched_thumbnail].x,
+							y = tn_positions[touched_thumbnail].y;
+					wxRect  prev_rect(x + 2, y + tn_size - prev_btn.GetHeight() - 2,
+								prev_btn.GetWidth(), prev_btn.GetHeight()),
+							next_rect(x + tn_size - next_btn.GetWidth() - 2, y + tn_size - next_btn.GetHeight() - 2,
+								prev_btn.GetWidth(), prev_btn.GetHeight());
+					
+					if (prev_rect.Inside(mouse)) {
+						if ((*frame_indexes)[touched_thumbnail] > -1) {
+							(*frame_indexes)[touched_thumbnail]--;
+							RebuildThumbnail(touched_thumbnail);
+							Refresh();
+						}
+					} else if (next_rect.Inside(mouse)) {
+						if ((*frame_indexes)[touched_thumbnail] < ((int)frames.size()-1)) {
+							(*frame_indexes)[touched_thumbnail]++;
+							RebuildThumbnail(touched_thumbnail);
+							Refresh();
+						}
+					}
+				}
+			}
 			break;
 	}
 	e.Skip();

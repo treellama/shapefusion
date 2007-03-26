@@ -240,6 +240,9 @@ public:
 	void EditSequenceType(wxCommandEvent &e);
 	void EditSequenceXferMode(wxCommandEvent &e);
 	void EditSequenceFields(wxCommandEvent &e);
+
+	void DoDeleteBitmap(int which);
+	void DoDeleteFrame(int which);
 };
 
 #endif

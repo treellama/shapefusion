@@ -213,7 +213,7 @@ void SoundsView::OnUpdate(wxView *WXUNUSED(sender), wxObject *WXUNUSED(hint))
 	sound_class_menu->Clear();
 	
 	for (unsigned int i = 0; i < payload->GetSoundCount() ; i++) {
-		sound_class_menu->Append(wxString::Format("Sound %d", i));
+		sound_class_menu->Append(wxString::Format(wxT("Sound %d"), i));
 	}
 	
 	//FIXME
@@ -260,7 +260,7 @@ bool SoundsView::Update(void)
 	
 	permutation_list_box->Clear();
 	for (unsigned int i = 0; i < def->GetPermutationCount(); i++) {
-		permutation_list_box->Append(wxString::Format("Permutation %d", i));
+		permutation_list_box->Append(wxString::Format(wxT("Permutation %d"), i));
 	}
 	
 	return true;
@@ -351,7 +351,7 @@ void SoundsView::FlagsChanged(wxCommandEvent &e)
 			break;
 		
 		default:
-			wxLogDebug("Invalid control id in FlagsChanged");
+			wxLogDebug(wxT("Invalid control id in FlagsChanged"));
 			break;
 	}
 }

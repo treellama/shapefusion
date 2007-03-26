@@ -141,7 +141,7 @@ ShapesBitmap::ShapesBitmap(bool verbose) : ShapesElement(verbose), mPixels(NULL)
 
 ShapesBitmap::ShapesBitmap(wxImage image, ShapesColorTable *colortable) :
 	ShapesElement(false),
-	mWidth(image.GetWidth()), mHeight(image.GetHeight()), mBytesPerRow(image.GetWidth()), mBitDepth(8), mColumnOrder(false), mTransparent(false), mPixels(NULL)
+	mWidth(image.GetWidth()), mHeight(image.GetHeight()), mBytesPerRow(image.GetWidth()), mBitDepth(8), mColumnOrder(true), mTransparent(false), mPixels(NULL)
 {
 	unsigned char	*srcpixels = image.GetData(),
 					*src = srcpixels,
@@ -155,9 +155,7 @@ ShapesBitmap::ShapesBitmap(wxImage image, ShapesColorTable *colortable) :
 	dst = mPixels;
 	// quantize from 8-bit RGB pixels to an indexed bitmap. We need to transform
 	// RGB to HSV and perform the comparison in that space to get good results.
-	// FIXME 
-	// - this is not yet perfect (not as good as PhotoShop or Gimp)
-	// - move all this code to another place (utilities.cpp?)
+	// FIXME this is not yet perfect (not as good as PhotoShop or Gimp)
 	for (int i = 0; i < mWidth * mHeight; i++) {
 		unsigned char 	r = *src++, g = *src++, b = *src++;
 		float			hue, sat, val,

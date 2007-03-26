@@ -319,7 +319,7 @@ void BitmapBrowser::UpdateVirtualSize(void)
 			int	numcols = (width - margin) / (new_tn_size + margin),
 				numrows = (numcols > 0) ? (numbitmaps / numcols) : numbitmaps;
 
-			if (numrows * numcols < numbitmaps)
+			if (numrows * numcols < (int)numbitmaps)
 				numrows++;
 			int	total_height = numrows * (new_tn_size + margin) + margin;
 
@@ -345,7 +345,7 @@ void BitmapBrowser::UpdateVirtualSize(void)
 	num_cols = (width - margin) / (tn_size + margin);
 	num_rows = (num_cols > 0) ? (numbitmaps / num_cols) : numbitmaps;
 
-	if (num_rows * num_cols < numbitmaps)
+	if (num_rows * num_cols < (int)numbitmaps)
 		num_rows++;
 
 	SetVirtualSize(width, num_rows * (tn_size + margin) + margin);
