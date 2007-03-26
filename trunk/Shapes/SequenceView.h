@@ -71,6 +71,7 @@ public:
 	void OnSize(wxSizeEvent& e);
 	void OnMouseDown(wxMouseEvent& e);
 	void OnMouseMove(wxMouseEvent &e);
+	void OnMouseUp(wxMouseEvent& e);
 	void OnKeyDown(wxKeyEvent& e);
 	// access methods
 	int GetSelection(void) const;
@@ -79,7 +80,7 @@ public:
 	void AddFrame(ShapesFrame *fp);
 	void AddBitmap(ShapesBitmap *bp);
 	void SetColorTable(ShapesColorTable *ct);
-	void SetSeqParameters(int animtype, int fpv, vector<short>	*indexes);
+	void SetSeqParameters(int animtype, int fpv, vector<short> *indexes);
 	void Clear(void);
 	// utilities
 	void RebuildThumbnail(unsigned int i);

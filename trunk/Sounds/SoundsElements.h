@@ -22,7 +22,7 @@
 #include <vector>
 using std::vector;
 
-#include "BigEndianBuffer.h"
+#include "../BigEndianBuffer.h"
 
 /* ---------- constants */
 
@@ -180,3 +180,4 @@ public:
 };
 
 #endif
+

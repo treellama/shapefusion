@@ -149,12 +149,12 @@ wxInputStream& SoundsDocument::LoadObject(wxInputStream& stream)
 	mSoundCount = filebuffer.ReadShort();
 	
 	if ((mVersion != 0 && mVersion != 1) || mTag != FOUR_CHARS_TO_INT('s','n','d','2')) {
-		wxLogError("[SoundsDocument] Error loading : Incorrect version/tag");
+		wxLogError(wxT("[SoundsDocument] Error loading : Incorrect version/tag"));
 		return stream;
 	}
 	
 	if (mSoundCount < 0 || mSourceCount < 0) {
-		wxLogError("[SoundsDocument] Error loading : Incorrect Sound/Source count");
+		wxLogError(wxT("[SoundsDocument] Error loading : Incorrect Sound/Source count"));
 		return stream;
 	}
 	
@@ -164,10 +164,10 @@ wxInputStream& SoundsDocument::LoadObject(wxInputStream& stream)
 	}
 	
 	if (IsVerbose()) {
-		wxLogDebug("[SoundsDocument] Version:		%d", mVersion);
-		wxLogDebug("[SoundsDocument] Tag:			%d", mTag);
-		wxLogDebug("[SoundsDocument] Source Count:	%d", mSourceCount);
-		wxLogDebug("[SoundsDocument] Sound Count:	%d", mSoundCount);
+		wxLogDebug(wxT("[SoundsDocument] Version:		%d"), mVersion);
+		wxLogDebug(wxT("[SoundsDocument] Tag:			%d"), mTag);
+		wxLogDebug(wxT("[SoundsDocument] Source Count:	%d"), mSourceCount);
+		wxLogDebug(wxT("[SoundsDocument] Sound Count:	%d"), mSoundCount);
 	}
 	
 	filebuffer.Position(SIZEOF_sound_file_header);
@@ -187,7 +187,7 @@ wxInputStream& SoundsDocument::LoadObject(wxInputStream& stream)
 			filebuffer.Position(oldpos + SIZEOF_sound_definition);
 			
 			if (!snd->IsGood()) {
-				wxLogError("[SoundsDocument] Error loading sound definition. Skipping...");
+				wxLogError(wxT("[SoundsDocument] Error loading sound definition. Skipping..."));
 				return stream;
 			}
 			
@@ -198,3 +198,4 @@ wxInputStream& SoundsDocument::LoadObject(wxInputStream& stream)
 	mGoodData = true;
 	return stream;
 }
+

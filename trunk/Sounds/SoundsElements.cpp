@@ -16,6 +16,22 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+#include "wx/wxprec.h"
+
+#ifdef __BORLANDC__
+#pragma hdrstop
+#endif
+
+#ifndef WX_PRECOMP
+#include "wx/wx.h"
+#endif
+
+#if wxUSE_STD_IOSTREAM
+    #include "wx/ioswrap.h"
+#else
+    #include "wx/txtstrm.h"
+#endif
+
 #include "SoundsElements.h"
 
 SoundsDefinition::SoundsDefinition(bool verbose) : SoundsElement(verbose) {}
@@ -37,14 +53,14 @@ short SoundsDefinition::GetChance(void) const
 	for (int i = 0; i < 10; i++)
 		if (mChance == 32768*i/10) return i;
 	
-	wxLogDebug("Invalid chance %d", mChance);
+	wxLogDebug(wxT("Invalid chance %d"), mChance);
 	return -1;
 }
 
 void SoundsDefinition::SetChance(short chance)
 {
 	if (chance < 0 || chance > 10)
-		wxLogDebug("Invalid chance %d", mChance);
+		wxLogDebug(wxT("Invalid chance %d"), mChance);
 	
 	mChance = 32768*chance/10;
 }
@@ -133,7 +149,7 @@ BigEndianBuffer& SoundsDefinition::LoadObject(BigEndianBuffer& buffer)
 	mChance = buffer.ReadUShort();
 	
 	if ((mBehaviorIndex > NUMBER_OF_SOUND_BEHAVIOR_DEFINITIONS) || (mChance > _ten_percent)) {
-		wxLogError("[SoundsDefinition] incorrect Behavior/Chance");
+		wxLogError(wxT("[SoundsDefinition] incorrect Behavior/Chance"));
 		return buffer;
 	}
 	
@@ -148,7 +164,7 @@ BigEndianBuffer& SoundsDefinition::LoadObject(BigEndianBuffer& buffer)
 	short permutations = buffer.ReadShort();
 	
 	if (permutations < 0 || permutations > MAXIMUM_PERMUTATIONS_PER_SOUND) {
-		wxLogError("[SoundsDefinition] incorrect permutation count");
+		wxLogError(wxT("[SoundsDefinition] incorrect permutation count"));
 		return buffer;
 	}
 	
@@ -158,7 +174,7 @@ BigEndianBuffer& SoundsDefinition::LoadObject(BigEndianBuffer& buffer)
 	int totalLength = buffer.ReadLong();
 	
 	if ((unsigned int)(groupOffset + totalLength) > buffer.Size()) {
-		wxLogError("[SoundsDefinition] incorrect group offset / total length");
+		wxLogError(wxT("[SoundsDefinition] incorrect group offset / total length"));
 		return buffer;
 	}
 	
@@ -172,18 +188,18 @@ BigEndianBuffer& SoundsDefinition::LoadObject(BigEndianBuffer& buffer)
 	mLastPlayed = buffer.ReadULong();
 	
 	if (IsVerbose()) {
-		wxLogDebug("[SoundsDefinition] Sound Code:			%d", mSoundCode);
-		wxLogDebug("[SoundsDefinition] Behavior Index:		%d", mBehaviorIndex);
-		wxLogDebug("[SoundsDefinition] Flags:				%d", mFlags);
-		wxLogDebug("[SoundsDefinition] Chance:				%d", mChance);
-		wxLogDebug("[SoundsDefinition] Low Pitch:			%f", mLowPitch);
-		wxLogDebug("[SoundsDefinition] High Pitch:			%f", mHighPitch);
-		wxLogDebug("[SoundsDefinition] Permutations:		%d", permutations);
-		wxLogDebug("[SoundsDefinition] Permutations Played:	%d", mPermutationsPlayed);
-		wxLogDebug("[SoundsDefinition] Group Offset:		%d", groupOffset);
-		wxLogDebug("[SoundsDefinition] Single Length:		%d", singleLength);
-		wxLogDebug("[SoundsDefinition] Total Length:		%d", totalLength);
-		wxLogDebug("[SoundsDefinition] Last Played:			%d", mLastPlayed);
+		wxLogDebug(wxT("[SoundsDefinition] Sound Code:			%d"), mSoundCode);
+		wxLogDebug(wxT("[SoundsDefinition] Behavior Index:		%d"), mBehaviorIndex);
+		wxLogDebug(wxT("[SoundsDefinition] Flags:				%d"), mFlags);
+		wxLogDebug(wxT("[SoundsDefinition] Chance:				%d"), mChance);
+		wxLogDebug(wxT("[SoundsDefinition] Low Pitch:			%f"), mLowPitch);
+		wxLogDebug(wxT("[SoundsDefinition] High Pitch:			%f"), mHighPitch);
+		wxLogDebug(wxT("[SoundsDefinition] Permutations:		%d"), permutations);
+		wxLogDebug(wxT("[SoundsDefinition] Permutations Played:	%d"), mPermutationsPlayed);
+		wxLogDebug(wxT("[SoundsDefinition] Group Offset:		%d"), groupOffset);
+		wxLogDebug(wxT("[SoundsDefinition] Single Length:		%d"), singleLength);
+		wxLogDebug(wxT("[SoundsDefinition] Total Length:		%d"), totalLength);
+		wxLogDebug(wxT("[SoundsDefinition] Last Played:			%d"), mLastPlayed);
 	}
 	
 	// Now we load actual sound data

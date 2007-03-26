@@ -506,73 +506,19 @@ wxTreeItemId ShapesView::GetSequencesTreeItem(unsigned int collection, unsigned 
 	return wxTreeItemId();	// ctor makes it invalid, so ok
 }
 
-// handle the Edit->Delete command (which is context-sensitive)
+// handle the Edit->Delete menu command, which is context-sensitive
 void ShapesView::MenuEditDelete(wxCommandEvent &e)
 {
-	wxTreeItemId	selected_item = colltree->GetSelection();
-	ShapesTreeItemData	*item_data = dynamic_cast<ShapesTreeItemData *>(colltree->GetItemData(selected_item));
+	ShapesTreeItemData	*selected_item_data = dynamic_cast<ShapesTreeItemData *>(colltree->GetItemData(colltree->GetSelection()));
 
-	if (item_data != NULL) {
-		int	selection;
-
+	if (selected_item_data != NULL) {
 		// what should we delete?
-		switch (item_data->Section()) {
+		switch (selected_item_data->Section()) {
 			case TREESECTION_BITMAPS:
-				// delete selected bitmap if any
-				selection = bb->GetSelection();
-				if (selection > -1) {
-					// the user interface update should be nearly identical to the TreeSelect case
-					bb->Freeze();
-					bb->Clear();	// FIXME just remove THAT bitmap!
-					b_outer_sizer->Show(b_count_label, true);
-					b_outer_sizer->Show(b_edit_box, false);
-					b_view->SetBitmap(NULL);
-					((ShapesDocument*)GetDocument())->DeleteBitmap(selected_coll, selected_vers, selection);
-
-					unsigned int	bitmap_count = ((ShapesDocument*)GetDocument())->CollectionBitmapCount(selected_coll, selected_vers);
-
-					for (unsigned int i = 0; i < bitmap_count; i++)
-						bb->AddBitmap(((ShapesDocument*)GetDocument())->GetBitmap(selected_coll, selected_vers, i));
-					bb->Thaw();
-
-					wxString	count_string;
-
-					count_string << bitmap_count << wxT(" bitmap");
-					if (bitmap_count != 1)
-						count_string << wxT("s");
-					b_count_label->SetLabel(count_string);
-					fb->RebuildThumbnails();
-					frame->Layout();
-				}
+				DoDeleteBitmap(bb->GetSelection());
 				break;
 			case TREESECTION_FRAMES:
-				// delete selected frame if any
-				selection = fb->GetSelection();
-				if (selection > -1) {
-					fb->Freeze();
-					fb->Clear();    // FIXME just remove THAT frame
-					f_outer_sizer->Show(f_count_label, true);
-					f_outer_sizer->Show(f_edit_box, false);
-					f_view->SetFrame(NULL);
-					((ShapesDocument*)GetDocument())->DeleteFrame(selected_coll, selected_vers, selection);
-
-					unsigned int	frame_count = ((ShapesDocument*)GetDocument())->CollectionFrameCount(selected_coll, selected_vers),
-									bitmap_count = ((ShapesDocument*)GetDocument())->CollectionBitmapCount(selected_coll, selected_vers);
-
-					for (unsigned int i = 0; i < bitmap_count; i++)
-						fb->AddBitmap(((ShapesDocument*)GetDocument())->GetBitmap(selected_coll, selected_vers, i));
-					for (unsigned int i = 0; i < frame_count; i++)
-						fb->AddFrame(((ShapesDocument*)GetDocument())->GetFrame(selected_coll, selected_vers, i));
-					fb->Thaw();
-
-					wxString    count_string;
-
-					count_string << frame_count << wxT(" frame");
-					if (frame_count != 1)
-						count_string << wxT("s");
-					f_count_label->SetLabel(count_string);
-					frame->Layout();
-				}
+				DoDeleteFrame(fb->GetSelection());
 				break;
 			case TREESECTION_SEQUENCES:
 				break;
@@ -764,8 +710,11 @@ void ShapesView::MenuShapesAddBitmap(wxCommandEvent &e)
 				// automagically initialize bitmap flags
 				if (((ShapesDocument*)GetDocument())->CollectionType(selected_coll, selected_vers) == _object_collection ||
 						((ShapesDocument*)GetDocument())->CollectionType(selected_coll, selected_vers) == _scenery_collection) {
+					// compress weapons, monsters and scenery
 					newbmp->SetBytesPerRow(-1);
-					newbmp->SetColumnOrdered(true);
+				} else if (((ShapesDocument*)GetDocument())->CollectionType(selected_coll, selected_vers) == _interface_collection) {
+					// interface elements are row-ordered (not so important with A1 actually)
+					newbmp->SetColumnOrdered(false);
 				}
 				((ShapesDocument*)GetDocument())->InsertBitmap(newbmp, selected_coll, selected_vers);
 
@@ -1114,31 +1063,77 @@ void ShapesView::BitmapSelect(wxCommandEvent &e)
 	b_outer_sizer->Layout();
 }
 
+// handle a delete event from the bitmap browser
 void ShapesView::BitmapDelete(wxCommandEvent &e)
 {
-	if (e.GetSelection() < 0)
-		return;
+	DoDeleteBitmap(e.GetSelection());
+}
 
-	bb->Freeze();
-	bb->Clear();    // FIXME just remove THAT bitmap!
-	b_outer_sizer->Show(b_count_label, true);
-	b_outer_sizer->Show(b_edit_box, false);
-	b_view->SetBitmap(NULL);
-	((ShapesDocument*)GetDocument())->DeleteBitmap(selected_coll, selected_vers, e.GetSelection());
-	
-	unsigned int    bitmap_count = ((ShapesDocument*)GetDocument())->CollectionBitmapCount(selected_coll, selected_vers);
-	
-	for (unsigned int i = 0; i < bitmap_count; i++)
-		bb->AddBitmap(((ShapesDocument*)GetDocument())->GetBitmap(selected_coll, selected_vers, i));
-	bb->Thaw();
-	
-	wxString    count_string;
-	
-	count_string << bitmap_count << wxT(" bitmap");
-	if (bitmap_count != 1)
-		count_string << wxT("s");
-	b_count_label->SetLabel(count_string);
-	frame->Layout();
+void ShapesView::DoDeleteBitmap(int which)
+{
+	if (which >= 0) {
+		// fist make sure no GUI element references that bitmap anymore
+		bb->Freeze();
+		bb->Clear();				// FIXME just remove that bitmap
+		fb->Freeze();
+		fb->ClearBitmaps();			// FIXME just remove that bitmap
+		b_outer_sizer->Show(b_count_label, true);
+		b_outer_sizer->Show(b_edit_box, false);
+		b_view->SetBitmap(NULL);
+		// delete
+		((ShapesDocument*)GetDocument())->DeleteBitmap(selected_coll, selected_vers, which);
+		// update the GUI
+		unsigned int	bitmap_count = ((ShapesDocument*)GetDocument())->CollectionBitmapCount(selected_coll, selected_vers);
+
+		for (unsigned int i = 0; i < bitmap_count; i++) {
+			ShapesBitmap	*bmp = ((ShapesDocument*)GetDocument())->GetBitmap(selected_coll, selected_vers, i);
+
+			bb->AddBitmap(bmp);
+			fb->AddBitmap(bmp);
+		}
+		bb->Thaw();
+		fb->RebuildThumbnails();	// FIXME just rebuild dirty frames
+		fb->Thaw();
+
+		wxString	count_string;
+
+		count_string << bitmap_count << wxT(" bitmap");
+		if (bitmap_count != 1)
+			count_string << wxT("s");
+		b_count_label->SetLabel(count_string);
+		frame->Layout();
+	}
+}
+
+void ShapesView::DoDeleteFrame(int which)
+{
+	if (which >= 0) {
+		// first make sure no GUI element references that frame anymore
+		fb->Freeze();
+		fb->Clear();	// FIXME just remove THAT frame
+		f_outer_sizer->Show(f_count_label, true);
+		f_outer_sizer->Show(f_edit_box, false);
+		f_view->SetFrame(NULL);
+		// delete
+		((ShapesDocument*)GetDocument())->DeleteFrame(selected_coll, selected_vers, which);
+
+		unsigned int	frame_count = ((ShapesDocument*)GetDocument())->CollectionFrameCount(selected_coll, selected_vers),
+						bitmap_count = ((ShapesDocument*)GetDocument())->CollectionBitmapCount(selected_coll, selected_vers);
+
+		for (unsigned int i = 0; i < bitmap_count; i++)
+			fb->AddBitmap(((ShapesDocument*)GetDocument())->GetBitmap(selected_coll, selected_vers, i));
+		for (unsigned int i = 0; i < frame_count; i++)
+			fb->AddFrame(((ShapesDocument*)GetDocument())->GetFrame(selected_coll, selected_vers, i));
+		fb->Thaw();
+
+		wxString	count_string;
+
+		count_string << frame_count << wxT(" frame");
+		if (frame_count != 1)
+			count_string << wxT("s");
+		f_count_label->SetLabel(count_string);
+		frame->Layout();
+	}
 }
 
 void ShapesView::ToggleBitmapCheckboxes(wxCommandEvent &e)
@@ -1224,35 +1219,10 @@ void ShapesView::FrameSelect(wxCommandEvent &e)
 	f_outer_sizer->Layout();
 }
 
+// handle a delete event from the frame browser
 void ShapesView::FrameDelete(wxCommandEvent &e)
 {
-	if (e.GetSelection() < 0)
-		return;
-	
-	fb->Freeze();
-	fb->Clear();    // FIXME just remove THAT frame
-	f_outer_sizer->Show(f_count_label, true);
-	f_outer_sizer->Show(f_edit_box, false);
-	f_view->SetFrame(NULL);
-	((ShapesDocument*)GetDocument())->DeleteFrame(selected_coll, selected_vers, e.GetSelection());
-	
-	unsigned int	frame_count = ((ShapesDocument*)GetDocument())->CollectionFrameCount(selected_coll, selected_vers),
-					bitmap_count = ((ShapesDocument*)GetDocument())->CollectionBitmapCount(selected_coll, selected_vers);
-	
-	for (unsigned int i = 0; i < bitmap_count; i++)
-		fb->AddBitmap(((ShapesDocument*)GetDocument())->GetBitmap(selected_coll, selected_vers, i));
-	for (unsigned int i = 0; i < frame_count; i++)
-		fb->AddFrame(((ShapesDocument*)GetDocument())->GetFrame(selected_coll, selected_vers, i));
-	fb->Thaw();
-
-	wxString    count_string;
-
-	count_string << frame_count << wxT(" frame");
-	if (frame_count != 1)
-		count_string << wxT("s");
-	f_count_label->SetLabel(count_string);
-	frame->Layout();
-
+	DoDeleteFrame(e.GetSelection());
 }
 
 void ShapesView::AskSaveBitmap(wxCommandEvent &e)

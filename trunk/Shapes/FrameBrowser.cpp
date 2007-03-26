@@ -290,6 +290,12 @@ void FrameBrowser::Clear(void)
 	}
 }
 
+// clear just the bitmap pointer list
+void FrameBrowser::ClearBitmaps(void)
+{
+	bitmaps.clear();
+}
+
 // call before adding frames!
 void FrameBrowser::SetColorTable(ShapesColorTable *ct)
 {

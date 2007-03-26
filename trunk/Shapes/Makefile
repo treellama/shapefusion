@@ -1,4 +1,4 @@
-CFLAGS = -Wall -g -O2 -I..
+CFLAGS = -Wall -O2 -I..
 
 WXCFLAGS = `wx-config --cxxflags`
 
