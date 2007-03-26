@@ -1399,14 +1399,22 @@ void ShapesView::EditSequenceType(wxCommandEvent &e)
 		real_nov = ActualNumberOfViews(sel_seq->NumberOfViews());
 //		s_nov_field->SetValue(INT_TO_WXSTRING(real_nov));
 		
-		// init frame indexes with old frames index,
-		// or invalid ones if there's not enough
-		sel_seq->mFrameIndexes.clear();
-		for (int i = 0; i < real_nov * sel_seq->FramesPerView(); i++) {
-			if (i >= old_nov * sel_seq->FramesPerView())
+		// Let's handle sequence frames changes...
+		if (real_nov > old_nov) {
+			// We are adding one (or more) view
+			// We need to add FramesPerView() * (real_nov - old_nov)
+			// to the END of the frame_index array
+			for (int i = 0; i < sel_seq->FramesPerView() * (real_nov - old_nov); i++)
 				sel_seq->mFrameIndexes.push_back(-1);
-			else
-				sel_seq->mFrameIndexes.push_back(sel_seq->mFrameIndexes[i]);
+			
+		} else if (real_nov < old_nov) {
+			// We are removing one (or more) view
+			// We need to remove FramesPerView() * (old_nov - real_nov)
+			// from the END of the frame_index array
+			for (int i = 0; i < sel_seq->FramesPerView() * (old_nov - real_nov); i++)
+				sel_seq->mFrameIndexes.pop_back();
+		} else {
+			// Hmm, number of views unchanged, don't bother...
 		}
 		s_fb->SetSeqParameters(sel_seq->NumberOfViews(), sel_seq->FramesPerView(), &sel_seq->mFrameIndexes);
 	}
