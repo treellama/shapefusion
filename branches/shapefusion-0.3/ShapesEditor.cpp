@@ -1625,8 +1625,9 @@ void ShapesEditor::EditSequenceType(wxCommandEvent &e)
 {
 	if (selected_sequence >= 0) {
 		ShpSequence	*sel_seq = payload->GetSeq(selected_coll, selected_vers, selected_sequence);
-		int			real_nov;
-
+		int			real_nov, old_nov;
+		
+		old_nov = CalcActualNumberOfViews(sel_seq->number_of_views);
 		// always use ANIMATED_4, ANIMATED_5, ANIMATED_8
 		// and never other values like ANIMATED_3TO4. Apparently
 		// nobody knows the real meaning of these values
@@ -1637,13 +1638,19 @@ void ShapesEditor::EditSequenceType(wxCommandEvent &e)
 			case 3:	sel_seq->number_of_views = ANIMATED_5;	break;
 			case 4:	sel_seq->number_of_views = ANIMATED_8;	break;
 		}
+		
 		real_nov = CalcActualNumberOfViews(sel_seq->number_of_views);
 //		s_nov_field->SetValue(INT_TO_WXSTRING(real_nov));
-		// init frame indexes to all invalid frames
-		// FIXME very annoying for the user, do better
+		
+		// init frame indexes with old frames index,
+		// or invalid ones if there's not enough
 		sel_seq->frame_indexes.clear();
-		for (int i = 0; i < real_nov * sel_seq->frames_per_view; i++)
-			sel_seq->frame_indexes.push_back(-1);
+		for (int i = 0; i < sel_seq->frames_per_view * real_nov; i++) {
+			if (i >= old_nov * sel_seq->frames_per_view)
+				sel_seq->frame_indexes.push_back(-1);
+			else
+				sel_seq->frame_indexes.push_back(sel_seq->frame_indexes[i]);
+		}
 		s_fb->SetSeqParameters(sel_seq->number_of_views, sel_seq->frames_per_view, &sel_seq->frame_indexes);
 	}
 }
