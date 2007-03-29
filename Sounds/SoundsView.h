@@ -28,13 +28,9 @@ class SoundsView: public wxView
 private:
 	// control ids
 	enum {
-		SOUND_CLASS_MENU,
-//		SOUND_LIST_ADD_BUTTON,
-//		SOUND_LIST_REMOVE_BUTTON,
-		SOURCE_RADIO_BOX,
-		SOUND_BEHAVIOR_MENU,
-		SOUND_CHANCE_MENU,
-//		SOUND_FLAGS_CHECKBOX,
+		SOUND_CLASS_ID_FIELD,
+		SOUND_CLASS_NUMBER_FIELD,
+		SOUND_CLASS_LIST,
 		SOUND_FLAGS_RESTART,
 		SOUND_FLAGS_ABORT,
 		SOUND_FLAGS_RESIST,
@@ -42,50 +38,61 @@ private:
 		SOUND_FLAGS_OBSTRUCTED,
 		SOUND_FLAGS_MOBSTRUCTED,
 		SOUND_FLAGS_AMBIENT,
-		SOUND_LOW_PITCH_SLIDER,
-		SOUND_HIGH_PITCH_SLIDER,
-		PERMUTATION_LIST_BOX,
-//		PERMUTATION_IMPORT_BUTTON,
-//		PERMUTATION_EXPORT_BUTTON
+		SOUND_VOLUME_RADIO_BUTTON,
+		SOUND_CHANCE_MENU,
+		SOUND_LOW_PITCH_FIELD,
+		SOUND_HIGH_PITCH_FIELD,
+		SOUND_EIGHT_BIT_PERMUTATIONS_LIST,
+		SOUND_SIXTEEN_BIT_PERMUTATIONS_LIST,
+		SOUND_REMAP_CHECK_BOX
+		
 	};
-	
+
 	wxBoxSizer		*frame_sizer;
-	wxFlexGridSizer		*sound_class_sizer;
-	wxStaticText			*sound_class_text;
-	wxChoice				*sound_class_menu;
-	wxRadioBox				*source_radio_box;
-	wxStaticBox			*editor_static_box;
-	wxStaticBoxSizer	*editor_static_sizer;
-	wxBoxSizer				*top_editor_sizer;
-	wxBoxSizer					*left_editor_sizer;
-	wxListBox						*permutation_list_box;
-	wxGridSizer						*left_editor_menus_sizer;
-	wxStaticText						*behavior_text;
-	wxChoice								*behavior_menu;
-	wxStaticText						*chance_text;
-	wxChoice							*chance_menu;
-	wxBoxSizer					*right_editor_sizer;
-	wxCheckBox						*flag_restart_checkbox;
-	wxCheckBox						*flag_abort_checkbox;
-	wxCheckBox						*flag_resist_checkbox;
-	wxCheckBox						*flag_change_checkbox;
-	wxCheckBox						*flag_obstructed_checkbox;
-	wxCheckBox						*flag_mobstructed_checkbox;
-	wxCheckBox						*flag_ambient_checkbox;
-	wxGridSizer				*bottom_editor_sizer;
-	wxStaticText				*low_pitch_text;
-	wxSlider					*low_pitch_slider;
-	wxStaticText				*high_pitch_text;
-	wxSlider					*high_pitch_slider;
+	wxSizer				*sound_class_sizer;
+	wxSizer					*sound_class_header_sizer;
+	wxStaticText				*sound_class_text;
+	wxStaticText				*sound_class_id_text;
+	wxTextCtrl					*sound_class_id_field;
+	wxStaticText				*sound_class_number_text;
+	wxStaticText				*sound_class_number_field;
+	wxListBox				*sound_class_list;
+	wxSizer				*sound_editor_sizer;
+	wxStaticText			*sound_flags_text;
+	wxSizer						*sound_flags_sizer;
+	wxCheckBox					*sound_flag_restart_checkbox;
+	wxCheckBox					*sound_flag_abort_checkbox;
+	wxCheckBox					*sound_flag_resist_checkbox;
+	wxCheckBox					*sound_flag_change_checkbox;
+	wxCheckBox					*sound_flag_obstructed_checkbox;
+	wxCheckBox					*sound_flag_mobstructed_checkbox;
+	wxCheckBox					*sound_flag_ambient_checkbox;
+	wxRadioBox				*sound_volume_radio_button;
+	wxSizer					*sound_menus_sizer;
+	wxStaticText				*sound_chance_text;
+	wxChoice					*sound_chance_menu;
+	wxStaticText				*sound_low_pitch_text;
+	wxTextCtrl					*sound_low_pitch_field;
+	wxStaticText				*sound_high_pitch_text;
+	wxTextCtrl					*sound_high_pitch_field;
+	wxSizer					*sound_permutation_sizer;
+	wxSizer						*sound_eight_bit_sizer;
+	wxStaticText					*sound_eight_bit_text;
+	wxListBox						*sound_eight_bit_list;
+	wxSizer						*sound_sixteen_bit_sizer;
+	wxStaticText					*sound_sixteen_bit_text;
+	wxListBox						*sound_sixteen_bit_list;
+	wxCheckBox						*sound_remap_check_box;
 
     wxFrame			*frame;
 	wxMenuBar		*menubar;
 	SoundsDocument	*payload;
-	int				mSourceIndex, mSoundIndex;
+	int				mSoundClass,
+					mPermutation;
 	
 public:
     
-    SoundsView(void) { frame = (wxFrame *) NULL; };
+    SoundsView(void);
     ~SoundsView(void) {};
     
     bool OnCreate(wxDocument *doc, long flags);
@@ -100,14 +107,16 @@ public:
 	void AddSound(wxCommandEvent &e);
 	void RemoveSound(wxCommandEvent &e);
 	void SourceRadioButtonChanged(wxCommandEvent &e);
-	void BehaviorMenuChanged(wxCommandEvent &e);
+	void VolumeButtonChanged(wxCommandEvent &e);
 	void ChanceMenuChanged(wxCommandEvent &e);
 	void FlagsChanged(wxCommandEvent &e);
-	void LowPitchSliderChanged(wxScrollEvent &e);
-	void HighPitchSliderChanged(wxScrollEvent &e);
-	void PermutationSelected(wxCommandEvent &e);
+	void LowPitchValueChanged(wxScrollEvent &e);
+	void HighPitchValueChanged(wxScrollEvent &e);
+	void SoundPermutationSelected(wxCommandEvent &e);
 	void ImportSound(wxCommandEvent &e);
 	void ExportSound(wxCommandEvent &e);
+	
+protected:
     DECLARE_EVENT_TABLE()
 };
 #endif
