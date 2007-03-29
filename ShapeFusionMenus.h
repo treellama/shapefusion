@@ -78,7 +78,11 @@ enum {
 	SHAPES_MENU_ADDBITMAP,
 	SHAPES_MENU_EXPORTBITMAPS,
 	SHAPES_MENU_ADDFRAME,
-	SHAPES_MENU_ADDSEQUENCE
+	SHAPES_MENU_ADDSEQUENCE,
+	// Sounds menu
+	SOUNDS_MENU_ADDCLASS,
+	SOUNDS_MENU_EXPORTSOUND,
+	SOUNDS_MENU_IMPORTSOUND
 };
 
 void CreateFileMenu(wxMenuBar *menu_bar);
@@ -86,5 +90,6 @@ void CreateEditMenu(wxMenuBar *menu_bar);
 void CreateHelpMenu(wxMenuBar *menu_bar);
 void CreateViewMenu(wxMenuBar *menu_bar);
 void CreateShapesMenu(wxMenuBar *menu_bar);
+void CreateSoundsMenu(wxMenuBar *menu_bar);
 #endif
 

@@ -39,19 +39,26 @@
 // Construct four-character-code
 #define FOUR_CHARS_TO_INT(a,b,c,d) (((unsigned int)(a) << 24) | ((unsigned int)(b) << 16) | ((unsigned int)(c) << 8) | (unsigned int)(d))
 
+enum {
+	_sound_8bit = 0,
+	_sound_16bit,
+	NUMBER_OF_SOUND_SOURCES
+};
+
 IMPLEMENT_DYNAMIC_CLASS(SoundsDocument, wxDocument)
 
 SoundsDocument::SoundsDocument():
 	wxDocument(), SoundsElement(true)
 {
-
+	// We need storage for our sound sources...
+	mSoundDefinitions.resize(NUMBER_OF_SOUND_SOURCES);
 }
 
 SoundsDocument::~SoundsDocument()
 {
 }
 
-SoundsDefinition* SoundsDocument::GetSoundDefinition(unsigned short source_index, unsigned short sound_index)
+SoundsDefinition *SoundsDocument::GetSoundDefinition(unsigned short source_index, unsigned short sound_index)
 {
 	if (source_index > mSoundDefinitions.size())
 		return NULL;
@@ -60,6 +67,46 @@ SoundsDefinition* SoundsDocument::GetSoundDefinition(unsigned short source_index
 		return NULL;
 
 	return mSoundDefinitions[source_index][sound_index];
+}
+
+SoundsDefinition *SoundsDocument::Get8BitSoundDefinition(unsigned short sound_index)
+{
+	return GetSoundDefinition(_sound_8bit, sound_index);
+}
+
+SoundsDefinition *SoundsDocument::Get16BitSoundDefinition(unsigned short sound_index)
+{
+	return GetSoundDefinition(_sound_16bit, sound_index);
+}
+
+void SoundsDocument::AddSoundDefinition(void)
+{
+	// As there's always two versions (8-bit/16-bit) of the same sound, we add both there...
+	SoundsDefinition	*snd8 = new SoundsDefinition(),
+						*snd16 = new SoundsDefinition();
+
+	// We add 8-bit...
+	mSoundDefinitions[_sound_8bit].push_back(snd8);
+	// ... and 16-bit
+	mSoundDefinitions[_sound_16bit].push_back(snd16);
+	
+	// We mark ourselves as modified...
+	Modify(true);
+}
+
+void SoundsDocument::DeleteSoundDefinition(unsigned int index)
+{
+	// We check we really have that much sounds...
+	if (index > mSoundDefinitions[_sound_8bit].size())
+		return;
+	
+	// We remove 8-bit version
+	mSoundDefinitions[_sound_8bit].erase(mSoundDefinitions[_sound_8bit].begin() + index);
+	// We remove 16-bit version
+	mSoundDefinitions[_sound_16bit].erase(mSoundDefinitions[_sound_16bit].begin() + index);
+	
+	// We mark ourselves as modified...
+	Modify(true);
 }
 
 bool SoundsDocument::DoOpenDocument(const wxString& file)
@@ -172,7 +219,7 @@ wxInputStream& SoundsDocument::LoadObject(wxInputStream& stream)
 	
 	filebuffer.Position(SIZEOF_sound_file_header);
 
-	mSoundDefinitions.resize(mSourceCount);
+//	mSoundDefinitions.resize(mSourceCount);
 	for (int i = 0; i < mSourceCount; i++) {
 		for (int j = 0; j < mSoundCount; j++) {
 			SoundsDefinition *snd = new SoundsDefinition(IsVerbose());

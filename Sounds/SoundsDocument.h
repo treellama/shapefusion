@@ -23,11 +23,6 @@
 #include "wx/cmdproc.h"
 #include "SoundsElements.h"
 
-enum {
-	_sound_8bit = 0,
-	_sound_16bit
-};
-
 class SoundsDocument: public wxDocument, public SoundsElement
 {
     DECLARE_DYNAMIC_CLASS(SoundsDocument)
@@ -54,7 +49,12 @@ public:
 	unsigned int GetSourceCount(void) const {return mSourceCount;}
 	unsigned int GetSoundCount(void) const {return mSoundCount;}
 	
-	SoundsDefinition* GetSoundDefinition(unsigned short source_index, unsigned short sound_index);
+	SoundsDefinition *GetSoundDefinition(unsigned short source_index, unsigned short sound_index);
+	SoundsDefinition *Get8BitSoundDefinition(unsigned short sound_index);
+	SoundsDefinition *Get16BitSoundDefinition(unsigned short sound_index);
+	
+	void AddSoundDefinition(void);
+	void DeleteSoundDefinition(unsigned int index);
 	
 	bool DoOpenDocument(const wxString& file);
 	
