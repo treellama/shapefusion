@@ -23,6 +23,11 @@
 #include "wx/cmdproc.h"
 #include "SoundsElements.h"
 
+enum {
+	_sound_8bit = 0,
+	_sound_16bit
+};
+
 class SoundsDocument: public wxDocument, public SoundsElement
 {
     DECLARE_DYNAMIC_CLASS(SoundsDocument)
