@@ -1,38 +1,85 @@
-CFLAGS = -Wall -O2 -IShapes -ISounds
+#
+# ShapeFusion Makefile
+#
+
+CFLAGS = -Wall -O2
 
 WXCFLAGS = `wx-config --cxxflags`
 WXLIBS = `wx-config --libs`
 
-OBJECTS =	BigEndianBuffer.o ShapeFusionApp.o ShapeFusionMain.o ShapeFusionMenus.o
+OBJECTS =		BigEndianBuffer.o ShapeFusionApp.o ShapeFusionMain.o ShapeFusionMenus.o
 SHAPESOBJECTS = Shapes/BitmapBrowser.o Shapes/BitmapView.o Shapes/CTBrowser.o \
 				Shapes/FrameBrowser.o Shapes/FrameView.o Shapes/SequenceView.o \
 				Shapes/ShapesDocument.o Shapes/ShapesElements.o Shapes/ShapesView.o \
 				Shapes/ShapesTreeItemData.o Shapes/utilities.o
 SOUNDSOBJECTS = Sounds/SoundsDocument.o Sounds/SoundsView.o Sounds/SoundsElements.o
 
-shapefusion: shapes sounds $(OBJECTS)
+VPATH = Shapes:Sounds
+
+
+shapefusion: $(OBJECTS) $(SHAPESOBJECTS) $(SOUNDSOBJECTS)
 	g++ -o shapefusion $(OBJECTS) $(SHAPESOBJECTS) $(SOUNDSOBJECTS) $(WXLIBS)
 
 BigEndianBuffer.o: BigEndianBuffer.cpp BigEndianBuffer.h
-	g++ -c BigEndianBuffer.cpp $(CFLAGS)
+	g++ -c $(CFLAGS) $<
 
-ShapeFusionApp.o: ShapeFusionApp.cpp ShapeFusionApp.h
-	g++ -c ShapeFusionApp.cpp $(CFLAGS) $(WXCFLAGS)
+ShapeFusionApp.o: ShapeFusionApp.cpp ShapeFusionApp.h ShapeFusionMain.h ShapeFusionMenus.h \
+					ShapesDocument.h ShapesView.h SoundsDocument.h SoundsView.h
+	g++ -c $(CFLAGS) $(WXCFLAGS) -IShapes -ISounds $<
 
-ShapeFusionMain.o: ShapeFusionMain.cpp ShapeFusionMain.h
-	g++ -c ShapeFusionMain.cpp $(CFLAGS) $(WXCFLAGS)
+ShapeFusionMain.o: ShapeFusionMain.cpp ShapeFusionMain.h ShapeFusionMenus.h
+	g++ -c $(CFLAGS) $(WXCFLAGS) -IShapes -ISounds $<
 
 ShapeFusionMenus.o: ShapeFusionMenus.cpp ShapeFusionMenus.h
-	g++ -c ShapeFusionMenus.cpp $(CFLAGS) $(WXCFLAGS)
+	g++ -c $(CFLAGS) $(WXCFLAGS) -IShapes -ISounds $<
 
-shapes:
-	make -C Shapes
 
-sounds:
-	make -C Sounds
+Shapes/BitmapBrowser.o: BitmapBrowser.cpp BitmapBrowser.h ShapesElements.h utilities.h
+	g++ -c $(CFLAGS) $(WXCFLAGS) $< -o $@
+
+Shapes/BitmapView.o: BitmapView.cpp BitmapView.h ShapesElements.h utilities.h
+	g++ -c $(CFLAGS) $(WXCFLAGS) $< -o $@
+
+Shapes/CTBrowser.o: CTBrowser.cpp CTBrowser.h ShapesElements.h
+	g++ -c $(CFLAGS) $(WXCFLAGS) $< -o $@
+
+Shapes/FrameBrowser.o: FrameBrowser.cpp FrameBrowser.h ShapesElements.h utilities.h
+	g++ -c $(CFLAGS) $(WXCFLAGS) $< -o $@
+
+Shapes/FrameView.o: FrameView.cpp FrameView.h ShapesElements.h utilities.h
+	g++ -c $(CFLAGS) $(WXCFLAGS) $< -o $@
+
+Shapes/ShapesTreeItemData.o: ShapesTreeItemData.cpp ShapesTreeItemData.h
+	g++ -c $(CFLAGS) $(WXCFLAGS) $< -o $@
+
+Shapes/SequenceView.o: SequenceView.cpp SequenceView.h ShapesElements.h utilities.h
+	g++ -c $(CFLAGS) $(WXCFLAGS) $< -o $@
+
+Shapes/ShapesDocument.o: ShapesDocument.cpp ShapesDocument.h ShapesElements.h
+	g++ -c $(CFLAGS) $(WXCFLAGS) $< -o $@
+
+Shapes/ShapesElements.o: ShapesElements.cpp ShapesElements.h BigEndianBuffer.h
+	g++ -c $(CFLAGS) $(WXCFLAGS) $< -o $@
+
+Shapes/ShapesView.o: ShapesView.cpp ShapesView.h BitmapView.h
+	g++ -c $(CFLAGS) $(WXCFLAGS) $< -o $@
+
+Shapes/utilities.o: utilities.cpp utilities.h
+	g++ -c $(CFLAGS) $(WXCFLAGS) $< -o $@
+
+
+Sounds/SoundsDocument.o: SoundsDocument.cpp SoundsDocument.h SoundsElements.h SoundsView.h
+	g++ -c $(CFLAGS) $(WXCFLAGS) $< -o $@
+
+Sounds/SoundsElements.o: SoundsElements.cpp SoundsElements.h BigEndianBuffer.h
+	g++ -c $(CFLAGS) $(WXCFLAGS) $< -o $@
+
+Sounds/SoundsView.o: SoundsView.cpp SoundsView.h SoundsDocument.h
+	g++ -c $(CFLAGS) $(WXCFLAGS) $< -o $@
+
 
 clean:
-	make -C Shapes clean
-	make -C Sounds clean
+	rm -f Shapes/*.o
+	rm -f Sounds/*.o
 	rm -f *.o
 
