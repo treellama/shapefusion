@@ -164,3 +164,23 @@ void CreateShapesMenu(wxMenuBar *menu_bar)
 	// .. and add the whole to the menuBar
 	menu_bar->Append(shapes_menu, wxT("&Shapes"));
 }
+
+void CreateSoundsMenu(wxMenuBar *menu_bar)
+{
+	wxMenu *sounds_menu;
+	
+	// We create and build the Sounds menu
+	sounds_menu = new wxMenu();
+	sounds_menu->Append(SOUNDS_MENU_ADDCLASS, wxT("Add new sound class"));
+	sounds_menu->AppendSeparator();
+	sounds_menu->Append(SOUNDS_MENU_EXPORTSOUND, wxT("Export selected sound"));
+	sounds_menu->Append(SOUNDS_MENU_IMPORTSOUND, wxT("Import sound"));
+	
+	// Let's disable them ...
+	sounds_menu->Enable(SOUNDS_MENU_ADDCLASS, false);
+	sounds_menu->Enable(SOUNDS_MENU_EXPORTSOUND, false);
+	sounds_menu->Enable(SOUNDS_MENU_IMPORTSOUND, false);
+	
+	// ... and add the whole to the menu_bar
+	menu_bar->Append(sounds_menu, wxT("S&ounds"));
+}

@@ -88,7 +88,8 @@ private:
 	wxMenuBar		*menubar;
 	SoundsDocument	*payload;
 	int				mSoundClass,
-					mPermutation;
+					mSoundSource,
+					mSoundPermutation;
 	
 public:
     
@@ -100,10 +101,10 @@ public:
     void OnUpdate(wxView *sender, wxObject *hint = (wxObject *) NULL);
     bool OnClose(bool deleteWindow = true);
 	
-	bool Update(void);
+	void Update(void);
 	
-	void SoundClassMenuChanged(wxCommandEvent &e);
-    
+	
+	void SoundClassChanged(wxCommandEvent &e);
 	void AddSound(wxCommandEvent &e);
 	void RemoveSound(wxCommandEvent &e);
 	void SourceRadioButtonChanged(wxCommandEvent &e);
@@ -113,8 +114,14 @@ public:
 	void LowPitchValueChanged(wxScrollEvent &e);
 	void HighPitchValueChanged(wxScrollEvent &e);
 	void SoundPermutationSelected(wxCommandEvent &e);
-	void ImportSound(wxCommandEvent &e);
-	void ExportSound(wxCommandEvent &e);
+	
+	// Menu events
+	void MenuDelete(wxCommandEvent &e);
+	void MenuAddSoundClass(wxCommandEvent &e);
+	void MenuImportSound(wxCommandEvent &e);
+	void MenuExportSound(wxCommandEvent &e);
+	
+	void ExportSound(wxString filepath);
 	
 protected:
     DECLARE_EVENT_TABLE()
