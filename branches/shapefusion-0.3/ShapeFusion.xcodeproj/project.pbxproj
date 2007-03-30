@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		1F89D48C0BB31C5B004D7E20 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F08B4C360AB0B06D00896399 /* Carbon.framework */; };
 		1F89D48F0BB31C9A004D7E20 /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F89D48E0BB31C9A004D7E20 /* libiconv.dylib */; };
-		1F89D4950BB31D25004D7E20 /* libwx_mac.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F89D4660BB31A81004D7E20 /* libwx_mac.dylib */; };
+		1FABAFF10BBD8D2E00CAE63F /* libwx_mac.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F89D4660BB31A81004D7E20 /* libwx_mac.dylib */; };
 		F08B4C5A0AB0B31E00896399 /* ShapeFusionApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F08B4B780AB0AE4B00896399 /* ShapeFusionApp.cpp */; };
 		F08B4C5B0AB0B34E00896399 /* ShapesEditor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F08B4B810AB0AE4B00896399 /* ShapesEditor.cpp */; };
 		F08B4C5C0AB0B35700896399 /* Shapes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F08B4B770AB0AE4B00896399 /* Shapes.cpp */; };
@@ -53,18 +53,6 @@
 		};
 /* End PBXContainerItemProxy section */
 
-/* Begin PBXCopyFilesBuildPhase section */
-		1F89D46D0BB31AD7004D7E20 /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
-
 /* Begin PBXFileReference section */
 		1F89D45A0BB31A81004D7E20 /* wxWindows.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = wxWindows.xcodeproj; path = ../wxWidgets/src/wxWindows.xcodeproj; sourceTree = SOURCE_ROOT; };
 		1F89D48E0BB31C9A004D7E20 /* libiconv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.dylib; path = ../../../../../../../usr/lib/libiconv.dylib; sourceTree = SOURCE_ROOT; };
@@ -105,7 +93,7 @@
 			files = (
 				1F89D48C0BB31C5B004D7E20 /* Carbon.framework in Frameworks */,
 				1F89D48F0BB31C9A004D7E20 /* libiconv.dylib in Frameworks */,
-				1F89D4950BB31D25004D7E20 /* libwx_mac.dylib in Frameworks */,
+				1FABAFF10BBD8D2E00CAE63F /* libwx_mac.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -199,7 +187,7 @@
 				F08B4C400AB0B10000896399 /* Resources */,
 				F08B4C410AB0B10000896399 /* Sources */,
 				F08B4C420AB0B10000896399 /* Frameworks */,
-				1F89D46D0BB31AD7004D7E20 /* CopyFiles */,
+				1FABAFE60BBD8BE500CAE63F /* ShellScript */,
 			);
 			buildRules = (
 				F08B4D9F0AB0CF7500896399 /* PBXBuildRule */,
@@ -261,6 +249,22 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		1FABAFE60BBD8BE500CAE63F /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [ ! -d ${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH} ]; then\n\tmkdir ${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}\nfi\nif [ ! -e ${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/libwx_mac.dylib ]; then\n\tcp ${SRCROOT}/../wxWidgets/src/build/${CONFIGURATION}/libwx_mac.dylib ${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}\nfi\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		F08B4C410AB0B10000896399 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -287,10 +291,7 @@
 		F08B4B5C0AB0ADBA00896399 /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					ppc,
-					"$(NATIVE_ARCH)",
-				);
+				ARCHS = "$(NATIVE_ARCH)";
 			};
 			name = Development;
 		};
@@ -299,7 +300,7 @@
 			buildSettings = {
 				ARCHS = (
 					ppc,
-					"$(NATIVE_ARCH)",
+					i386,
 				);
 			};
 			name = Deployment;
@@ -307,10 +308,6 @@
 		F08B4C490AB0B10000896399 /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					ppc,
-					"$(NATIVE_ARCH)",
-				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = ../wxWidgets/include/wx/wxprec.h;
 				GCC_PREPROCESSOR_DEFINITIONS = (
