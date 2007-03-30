@@ -138,6 +138,18 @@ public:
 	SoundsDefinition(bool verbose = false);
 	~SoundsDefinition();
 	
+	inline bool Compare (SoundsDefinition *right) {
+		if (mSoundCode == right->mSoundCode
+			&& mBehaviorIndex == right->mBehaviorIndex
+			&& mFlags == right->mFlags
+			&& mChance == right->mChance
+			&& mLowPitch == right->mLowPitch
+			&& mHighPitch == right->mHighPitch)
+			return true;
+		
+		return false;
+	}
+	
 	short GetSoundCode(void) const {return mSoundCode;}
 	short GetBehaviorIndex(void) const {return mBehaviorIndex;}
 	

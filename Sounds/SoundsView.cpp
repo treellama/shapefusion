@@ -231,8 +231,28 @@ void SoundsView::OnUpdate(wxView *WXUNUSED(sender), wxObject *WXUNUSED(hint))
 {
 	sound_class_list->Clear();
 	
+	bool gequals = true;
+	
 	for (unsigned int i = 0; i < payload->GetSoundCount() ; i++) {
 		sound_class_list->Append(wxString::Format(wxT("Sound %d"), i));
+		// We check if there is a difference between 8-bit and 16-bit
+		// SoundsDefinitions
+		bool equals = payload->Get8BitSoundDefinition(i)->Compare(payload->Get16BitSoundDefinition(i));
+		if (!equals) wxLogDebug("Sound source different at %d", i);
+		gequals = gequals && equals;
+	}
+	
+	if (!gequals) {
+		// FIXME : Update this when we have a "complete" editor...
+		wxMessageDialog msg(frame,
+						wxT("It seems 8-bit and 16-bit versions of some of this Sound file"
+						"sounds have differences. This editor will replace 16-bit sounds"
+						"flags with those from 8-bit sounds, to ensure consistency."
+						"If you really need to be able to change 16-bit flags independently,"
+						"please file a feature request"),
+						wxT("Warning !"), wxOK | wxICON_WARNING);
+						
+		msg.ShowModal();
 	}
 	
 	Update();
@@ -240,15 +260,20 @@ void SoundsView::OnUpdate(wxView *WXUNUSED(sender), wxObject *WXUNUSED(hint))
 
 void SoundsView::Update(void)
 {
+	// We disable our menuitems, in case selection is invalid 
+	menubar->Enable(SOUNDS_MENU_IMPORTSOUND, false);
+	menubar->Enable(SOUNDS_MENU_EXPORTSOUND, false);
+	menubar->Enable(EDIT_MENU_DELETE, false);
+	
 	if (sound_class_list->GetCount() == 0) {
 		// There is no sound class
-		menubar->Enable(SOUNDS_MENU_EXPORTSOUND, false);
-		menubar->Enable(SOUNDS_MENU_EXPORTSOUND, true);
+		// We cannot have a selection
+		mSoundPermutation = wxNOT_FOUND;
+		mSoundSource = wxNOT_FOUND;
 	} else {
 		// We have a sound class
 		
-		menubar->Enable(SOUNDS_MENU_IMPORTSOUND, true);
-		
+		// Make sure we always have something selected
 		mSoundClass = sound_class_list->GetSelection();
 		if (mSoundClass == wxNOT_FOUND) {
 			wxLogDebug(wxT("[SoundsView] There is no sound selected. Selecting first item..."));
@@ -256,30 +281,58 @@ void SoundsView::Update(void)
 			mSoundClass = sound_class_list->GetSelection();
 		}
 		
-		if (payload->Get8BitSoundDefinition(mSoundClass)->GetPermutationCount() == 0) {
-			// There is no 8-bit sounds
-			if (payload->Get16BitSoundDefinition(mSoundClass)->GetPermutationCount() == 0) {
-				// There is no 8-bit & no 16-bit sounds, we bail...
-				return;
-			} else {
-				// We have 16-bit sounds, we select this one...
-				mSoundSource = 1;
-				mSoundPermutation = 0;
-				sound_sixteen_bit_list->SetSelection(0);
+		// We build the permutations listbox
+		sound_eight_bit_list->Clear();
+		sound_sixteen_bit_list->Clear();
+		
+		SoundsDefinition *def = payload->Get8BitSoundDefinition(mSoundClass);
+		if (def) {
+			for (unsigned int i = 0; i < def->GetPermutationCount(); i++) {
+				sound_eight_bit_list->Append(wxString::Format(wxT("%d"), def->GetPermutation(i)->Size()));
 			}
-		} else {
+		}
+		
+		def = payload->Get16BitSoundDefinition(mSoundClass);
+		if (def) {
+			for (unsigned int i = 0; i < def->GetPermutationCount(); i++) {
+				sound_sixteen_bit_list->Append(wxString::Format(wxT("%d"), def->GetPermutation(i)->Size()));
+			}
+		}
+		
+		// As soon as we have a sound class selected, we can
+		// - import a sound into it
+		// - delete it
+		menubar->Enable(SOUNDS_MENU_IMPORTSOUND, true);
+		menubar->Enable(EDIT_MENU_DELETE, true);
+		
+		if (payload->Get8BitSoundDefinition(mSoundClass)->GetPermutationCount() != 0) {
 			// There is 8-bit sounds, we select first
 			mSoundSource = 0;
 			mSoundPermutation = 0;
 			sound_eight_bit_list->SetSelection(0);
+			// We deselect 16-bit list
+			sound_sixteen_bit_list->SetSelection(wxNOT_FOUND);
+		} else {
+			// There is no 8-bit sounds
+			if (payload->Get16BitSoundDefinition(mSoundClass)->GetPermutationCount() != 0) {
+				// We have 16-bit sounds, we select this one...
+				mSoundSource = 1;
+				mSoundPermutation = 0;
+				sound_sixteen_bit_list->SetSelection(0);
+				// We deselect 8-bit list
+				sound_eight_bit_list->SetSelection(wxNOT_FOUND);
+			} else {
+				// There is neither 8-bit nor 16-bit sounds, we bail...
+				return;
+			}
 		}
 		
+		// We enable this, our selection is valid...
 		menubar->Enable(SOUNDS_MENU_EXPORTSOUND, true);
 		
-		SoundsDefinition *def = payload->Get8BitSoundDefinition(mSoundClass);
-		
+		def = payload->Get8BitSoundDefinition(mSoundClass);
+				
 		sound_class_number_field->SetLabel(wxString::Format(wxT("%d"), mSoundClass));
-		
 		sound_class_id_field->SetValue(wxString::Format(wxT("%d"), def->GetSoundCode()));
 		
 		sound_volume_radio_button->SetSelection(def->GetBehaviorIndex());
@@ -295,17 +348,6 @@ void SoundsView::Update(void)
 		
 		sound_low_pitch_field->ChangeValue(wxString::Format(wxT("%d"), def->GetLowPitch()));
 		sound_high_pitch_field->ChangeValue(wxString::Format(wxT("%d"), def->GetHighPitch()));
-		
-		sound_eight_bit_list->Clear();
-		for (unsigned int i = 0; i < def->GetPermutationCount(); i++) {
-			sound_eight_bit_list->Append(wxString::Format(wxT("%d"), def->GetPermutation(i)->Size()));
-		}
-		
-		def = payload->Get16BitSoundDefinition(mSoundClass);
-		sound_sixteen_bit_list->Clear();
-		for (unsigned int i = 0; i < def->GetPermutationCount(); i++) {
-			sound_sixteen_bit_list->Append(wxString::Format(wxT("%d"), def->GetPermutation(i)->Size()));
-		}
 	}
 }
 
@@ -327,12 +369,6 @@ bool SoundsView::OnClose(bool deleteWindow)
 }
 
 void SoundsView::SoundClassChanged(wxCommandEvent &e)
-{
-	Update();
-}
-
-
-void SoundsView::SourceRadioButtonChanged(wxCommandEvent &e)
 {
 	Update();
 }
@@ -428,7 +464,24 @@ void SoundsView::HighPitchValueChanged(wxScrollEvent &e)
 
 void SoundsView::MenuDelete(wxCommandEvent &e)
 {
-
+	wxWindow *win = sound_class_list->FindFocus();
+	
+	switch (win->GetId()) {
+		case SOUND_CLASS_LIST:
+			wxLogDebug("Delete Sound Class");
+			break;
+		
+		case SOUND_EIGHT_BIT_PERMUTATIONS_LIST:
+			wxLogDebug("Delete 8-bit sound");
+			break;
+			
+		case SOUND_SIXTEEN_BIT_PERMUTATIONS_LIST:
+			wxLogDebug("Delete 16-bit sound");
+			break;
+		
+		default:
+			break;
+	}
 }
 
 void SoundsView::MenuAddSoundClass(wxCommandEvent &e)
