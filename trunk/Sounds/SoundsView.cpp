@@ -29,10 +29,9 @@
 
 #include "wx/wfstream.h"
 
-#include "ShapeFusionApp.h"
-#include "ShapeFusionMenus.h"
+#include "../ShapeFusionApp.h"
+#include "../ShapeFusionMenus.h"
 #include "SoundsView.h"
-#include "SoundsDocument.h"
 
 BEGIN_EVENT_TABLE(SoundsView, wxView)
 	EVT_LISTBOX(SOUND_CLASS_LIST, SoundsView::SoundClassChanged)
@@ -118,16 +117,16 @@ bool SoundsView::OnCreate(wxDocument *doc, long WXUNUSED(flags) )
 	wxString volume_labels[] = { wxT("Soft"), wxT("Medium"), wxT("Loud") };
 	wxString chances_labels[] = { wxT("100%"), wxT("90%"), wxT("80%"), wxT("70%"), wxT("60%"), wxT("50%"), wxT("40%"), wxT("30%"), wxT("20%"), wxT("10%") };
 	
-	sound_class_text = new wxStaticText(frame, wxID_ANY, wxT("Sound Classes : "));
-	sound_class_id_text = new wxStaticText(frame, wxID_ANY, wxT("Class ID : "));
+	sound_class_text = new wxStaticText(frame, wxID_ANY, wxT("Sound Classes: "));
+	sound_class_id_text = new wxStaticText(frame, wxID_ANY, wxT("Class ID: "));
 	sound_class_id_field = new wxTextCtrl(frame, SOUND_CLASS_ID_FIELD, wxT(""));
 	
-	sound_class_number_text = new wxStaticText(frame, wxID_ANY, wxT("Class Number : "));
+	sound_class_number_text = new wxStaticText(frame, wxID_ANY, wxT("Class Number: "));
 	sound_class_number_field = new wxStaticText(frame, SOUND_CLASS_NUMBER_FIELD, wxT(""));
 	
 	sound_class_list = new wxListBox(frame, SOUND_CLASS_LIST, wxDefaultPosition, wxDefaultSize, 0, NULL);
 	
-	sound_flags_text = new wxStaticText(frame, SOUND_CLASS_NUMBER_FIELD, wxT("Flags : "));
+	sound_flags_text = new wxStaticText(frame, SOUND_CLASS_NUMBER_FIELD, wxT("Flags: "));
 	
 	sound_flag_restart_checkbox = new wxCheckBox(frame, SOUND_FLAGS_RESTART, wxT("Cannot be restarted"));
 	sound_flag_abort_checkbox = new wxCheckBox(frame, SOUND_FLAGS_ABORT, wxT("Does not self-abort"));
@@ -137,20 +136,20 @@ bool SoundsView::OnCreate(wxDocument *doc, long WXUNUSED(flags) )
 	sound_flag_mobstructed_checkbox = new wxCheckBox(frame, SOUND_FLAGS_MOBSTRUCTED, wxT("Can't be media obstructed"));
 	sound_flag_ambient_checkbox = new wxCheckBox(frame, SOUND_FLAGS_AMBIENT, wxT("Is ambient"));
 	
-	sound_volume_radio_button = new wxRadioBox(frame, SOUND_VOLUME_RADIO_BUTTON, wxT("Volume : "), wxDefaultPosition, wxDefaultSize, 3, volume_labels, 3, wxRA_SPECIFY_COLS);
+	sound_volume_radio_button = new wxRadioBox(frame, SOUND_VOLUME_RADIO_BUTTON, wxT("Volume"), wxDefaultPosition, wxDefaultSize, 3, volume_labels, 3, wxRA_SPECIFY_COLS);
 	
-	sound_chance_text = new wxStaticText(frame, wxID_ANY, wxT("Chance : "));
+	sound_chance_text = new wxStaticText(frame, wxID_ANY, wxT("Chance: "));
 	sound_chance_menu = new wxChoice(frame, SOUND_CHANCE_MENU, wxDefaultPosition, wxDefaultSize, 10, chances_labels);
 	
-	sound_low_pitch_text = new wxStaticText(frame, wxID_ANY, wxT("Low Pitch : "));
+	sound_low_pitch_text = new wxStaticText(frame, wxID_ANY, wxT("Low Pitch: "));
 	sound_low_pitch_field = new wxTextCtrl(frame, SOUND_LOW_PITCH_FIELD);
-	sound_high_pitch_text = new wxStaticText(frame, wxID_ANY, wxT("High Pitch : "));
+	sound_high_pitch_text = new wxStaticText(frame, wxID_ANY, wxT("High Pitch: "));
 	sound_high_pitch_field = new wxTextCtrl(frame, SOUND_HIGH_PITCH_FIELD);
 	
-	sound_eight_bit_text = new wxStaticText(frame, wxID_ANY, wxT("8-bit Sounds :"));
+	sound_eight_bit_text = new wxStaticText(frame, wxID_ANY, wxT("8-bit Sounds:"));
 	sound_eight_bit_list = new wxListBox(frame, SOUND_EIGHT_BIT_PERMUTATIONS_LIST, wxDefaultPosition, wxDefaultSize, 0, NULL);
 	
-	sound_sixteen_bit_text = new wxStaticText(frame, wxID_ANY, wxT("16-bit Sounds : "));
+	sound_sixteen_bit_text = new wxStaticText(frame, wxID_ANY, wxT("16-bit Sounds: "));
 	sound_sixteen_bit_list = new wxListBox(frame, SOUND_SIXTEEN_BIT_PERMUTATIONS_LIST, wxDefaultPosition, wxDefaultSize, 0, NULL);
 	
 	sound_remap_check_box = new wxCheckBox(frame, SOUND_REMAP_CHECK_BOX, wxT("Remap 8-bit"));
@@ -164,20 +163,20 @@ bool SoundsView::OnCreate(wxDocument *doc, long WXUNUSED(flags) )
 	sound_eight_bit_sizer = new wxBoxSizer(wxVERTICAL);
 	sound_sixteen_bit_sizer = new wxBoxSizer(wxVERTICAL);
 	
-	sound_class_header_sizer->Add(sound_class_id_text, 0, 0, 0);
+	sound_class_header_sizer->Add(sound_class_id_text, 0, wxALIGN_CENTER_VERTICAL, 0);
 	sound_class_header_sizer->Add(sound_class_id_field, 0, 0, 0);
-	sound_class_header_sizer->Add(sound_class_number_text, 0, 0, 0);
+	sound_class_header_sizer->Add(sound_class_number_text, 0, wxALIGN_CENTER_VERTICAL, 0);
 	sound_class_header_sizer->Add(sound_class_number_field, 0, 0, 0);
 	
 	sound_class_sizer->Add(sound_class_text, 0, 0, 0);
 	sound_class_sizer->Add(sound_class_header_sizer, 0, 0, 0);
 	sound_class_sizer->Add(sound_class_list, 1, wxEXPAND, 0);
 	
-	sound_menus_sizer->Add(sound_chance_text, 0, 0, 0);
+	sound_menus_sizer->Add(sound_chance_text, 0, wxALIGN_CENTER_VERTICAL, 0);
 	sound_menus_sizer->Add(sound_chance_menu, 0, 0, 0);
-	sound_menus_sizer->Add(sound_low_pitch_text, 0, 0, 0);
+	sound_menus_sizer->Add(sound_low_pitch_text, 0, wxALIGN_CENTER_VERTICAL, 0);
 	sound_menus_sizer->Add(sound_low_pitch_field, 0, 0, 0);
-	sound_menus_sizer->Add(sound_high_pitch_text, 0, 0, 0);
+	sound_menus_sizer->Add(sound_high_pitch_text, 0, wxALIGN_CENTER_VERTICAL, 0);
 	sound_menus_sizer->Add(sound_high_pitch_field, 0, 0, 0);
 	
 	sound_eight_bit_sizer->Add(sound_eight_bit_text, 0, 0, 0);
@@ -238,7 +237,8 @@ void SoundsView::OnUpdate(wxView *WXUNUSED(sender), wxObject *WXUNUSED(hint))
 		// We check if there is a difference between 8-bit and 16-bit
 		// SoundsDefinitions
 		bool equals = payload->Get8BitSoundDefinition(i)->Compare(payload->Get16BitSoundDefinition(i));
-		if (!equals) wxLogDebug("Sound source different at %d", i);
+		if (!equals)
+			wxLogDebug(wxT("Sound source different at %d"), i);
 		gequals = gequals && equals;
 	}
 	
@@ -345,9 +345,14 @@ void SoundsView::Update(void)
 		sound_flag_obstructed_checkbox->SetValue(def->IsNotObstructed());
 		sound_flag_mobstructed_checkbox->SetValue(def->IsNotMediaObstructed());
 		sound_flag_ambient_checkbox->SetValue(def->IsAmbient());
-		
-		sound_low_pitch_field->ChangeValue(wxString::Format(wxT("%d"), def->GetLowPitch()));
-		sound_high_pitch_field->ChangeValue(wxString::Format(wxT("%d"), def->GetHighPitch()));
+
+#if 1
+		sound_low_pitch_field->ChangeValue(wxString::Format(wxT("%g"), def->GetLowPitch()));
+		sound_high_pitch_field->ChangeValue(wxString::Format(wxT("%g"), def->GetHighPitch()));
+#else
+		sound_low_pitch_field->SetValue(wxString::Format(wxT("%g"), def->GetLowPitch()));
+		sound_high_pitch_field->SetValue(wxString::Format(wxT("%g"), def->GetHighPitch()));
+#endif
 	}
 }
 
@@ -468,15 +473,15 @@ void SoundsView::MenuDelete(wxCommandEvent &e)
 	
 	switch (win->GetId()) {
 		case SOUND_CLASS_LIST:
-			wxLogDebug("Delete Sound Class");
+			wxLogDebug(wxT("Delete Sound Class"));
 			break;
 		
 		case SOUND_EIGHT_BIT_PERMUTATIONS_LIST:
-			wxLogDebug("Delete 8-bit sound");
+			wxLogDebug(wxT("Delete 8-bit sound"));
 			break;
 			
 		case SOUND_SIXTEEN_BIT_PERMUTATIONS_LIST:
-			wxLogDebug("Delete 16-bit sound");
+			wxLogDebug(wxT("Delete 16-bit sound"));
 			break;
 		
 		default:
@@ -486,11 +491,11 @@ void SoundsView::MenuDelete(wxCommandEvent &e)
 
 void SoundsView::MenuAddSoundClass(wxCommandEvent &e)
 {
-	wxLogDebug("Adding an item");
+	wxLogDebug(wxT("Adding an item"));
 	payload->AddSoundDefinition();
 	
 	// We add the new Sound class item by hand
-	sound_class_list->Append(wxString::Format("Sound %d", sound_class_list->GetCount()));
+	sound_class_list->Append(wxString::Format(wxT("Sound %d"), sound_class_list->GetCount()));
 	
 	Update();
 }
@@ -502,14 +507,18 @@ void SoundsView::MenuImportSound(wxCommandEvent &e)
 
 void SoundsView::MenuExportSound(wxCommandEvent &e)
 {
-	wxFileDialog dlg(frame, wxT("Choose a file name :"), "", wxString::Format("Sound %d-%d", mSoundClass, mSoundPermutation), "*.snd", wxFD_SAVE);
+#ifdef wxFD_SAVE
+	wxFileDialog dlg(frame, wxT("Choose a file name :"), wxT(""), wxString::Format(wxT("Sound %d-%d"), mSoundClass, mSoundPermutation), wxT("*.snd"), wxFD_SAVE);
+#else
+	wxFileDialog dlg(frame, wxT("Choose a file name :"), wxT(""), wxString::Format(wxT("Sound %d-%d"), mSoundClass, mSoundPermutation), wxT("*.snd"), wxSAVE);
+#endif
 
 	if (mSoundClass == wxNOT_FOUND || mSoundSource == wxNOT_FOUND || mSoundPermutation == wxNOT_FOUND) {
 		wxMessageDialog msg(frame, wxT("Sorry, you need to select a sound class and a permutation to export a sound"), wxT("Error : No selection"), wxOK | wxICON_EXCLAMATION);
 		msg.ShowModal();
 		return;
 	}
-	
+
 	if (dlg.ShowModal() == wxID_OK) {
 		ExportSound(dlg.GetPath());
 	}
@@ -526,21 +535,22 @@ void SoundsView::ExportSound(wxString filepath)
 	if (stream.IsOk())
 		stream.Write(sound->Data(), sound->Size());
 	else
-		wxLogDebug("[SoundsView] Error opening file for sound export");
+		wxLogDebug(wxT("[SoundsView] Error opening file for sound export"));
 }
 
 void SoundsView::SoundPermutationSelected(wxCommandEvent &e)
 {
 	// We unselect the other permutation field
 	if (e.GetId() == SOUND_EIGHT_BIT_PERMUTATIONS_LIST) {
-		wxLogDebug("Selected 8-bit");
+		wxLogDebug(wxT("Selected 8-bit"));
 		sound_sixteen_bit_list->SetSelection(wxNOT_FOUND);
 		mSoundSource = 0;
 		mSoundPermutation = sound_eight_bit_list->GetSelection();
 	} else if (e.GetId() == SOUND_SIXTEEN_BIT_PERMUTATIONS_LIST) {
-		wxLogDebug("Selected 16-bit");
+		wxLogDebug(wxT("Selected 16-bit"));
 		sound_eight_bit_list->SetSelection(wxNOT_FOUND);
 		mSoundSource = 1;
 		mSoundPermutation = sound_sixteen_bit_list->GetSelection();
 	}
 }
+

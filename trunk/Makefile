@@ -58,13 +58,15 @@ Shapes/SequenceView.o: SequenceView.cpp SequenceView.h ShapesElements.h utilitie
 Shapes/ShapesDocument.o: ShapesDocument.cpp ShapesDocument.h ShapesElements.h
 	g++ -c $(CFLAGS) $(WXCFLAGS) $< -o $@
 
-Shapes/ShapesElements.o: ShapesElements.cpp ShapesElements.h BigEndianBuffer.h
+Shapes/ShapesElements.o: ShapesElements.cpp ShapesElements.h BigEndianBuffer.h utilities.h
 	g++ -c $(CFLAGS) $(WXCFLAGS) $< -o $@
 
-Shapes/ShapesView.o: ShapesView.cpp ShapesView.h BitmapView.h
+Shapes/ShapesView.o: ShapesView.cpp ShapesView.h BitmapBrowser.h BitmapView.h CTBrowser.h \
+						FrameBrowser.h FrameView.h SequenceView.h ShapesTreeItemData.h \
+						utilities.h ShapesDocument.h ShapeFusionApp.h ShapeFusionMenus.h
 	g++ -c $(CFLAGS) $(WXCFLAGS) $< -o $@
 
-Shapes/utilities.o: utilities.cpp utilities.h
+Shapes/utilities.o: utilities.cpp utilities.h ShapesElements.h
 	g++ -c $(CFLAGS) $(WXCFLAGS) $< -o $@
 
 
@@ -74,7 +76,7 @@ Sounds/SoundsDocument.o: SoundsDocument.cpp SoundsDocument.h SoundsElements.h So
 Sounds/SoundsElements.o: SoundsElements.cpp SoundsElements.h BigEndianBuffer.h
 	g++ -c $(CFLAGS) $(WXCFLAGS) $< -o $@
 
-Sounds/SoundsView.o: SoundsView.cpp SoundsView.h SoundsDocument.h
+Sounds/SoundsView.o: SoundsView.cpp SoundsView.h SoundsDocument.h ShapeFusionApp.h ShapeFusionMenus.h
 	g++ -c $(CFLAGS) $(WXCFLAGS) $< -o $@
 
 

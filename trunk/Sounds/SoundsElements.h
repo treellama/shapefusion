@@ -163,8 +163,8 @@ public:
 	
 	short GetChance(void) const;
 	
-	int GetLowPitch(void) const {return mLowPitch;}
-	int GetHighPitch(void) const {return mHighPitch;}
+	float GetLowPitch(void) const {return mLowPitch;}
+	float GetHighPitch(void) const {return mHighPitch;}
 	
 	void SetSoundCode(short s) {mSoundCode = s;}
 	void SetBehaviorIndex(int i) {mBehaviorIndex = i;}

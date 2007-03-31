@@ -87,7 +87,6 @@ void CreateEditMenu(wxMenuBar *menu_bar)
 	
 	// We add the Edit menu to the passed menubar
 	menu_bar->Append(edit_menu, wxT("&Edit"));
-	
 }
 
 void CreateHelpMenu(wxMenuBar *menu_bar)
@@ -131,12 +130,10 @@ void CreateViewMenu(wxMenuBar *menu_bar)
 
 	// We add that to the passed menubar
 	menu_bar->Append(view_menu, wxT("&View"));
-
 }
 
 void CreateShapesMenu(wxMenuBar *menu_bar)
 {
-
 	wxMenu *shapes_menu;
 	
 	// We create and build the Shapes menu
@@ -184,3 +181,4 @@ void CreateSoundsMenu(wxMenuBar *menu_bar)
 	// ... and add the whole to the menu_bar
 	menu_bar->Append(sounds_menu, wxT("S&ounds"));
 }
+

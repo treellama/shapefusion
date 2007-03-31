@@ -23,7 +23,6 @@
 #include "wx/treectrl.h"
 #include "wx/spinctrl.h"
 #include "wx/statline.h"
-#include "ShapesView.h"
 #include "../ShapeFusionApp.h"
 #include "ShapesTreeItemData.h"
 #include "CTBrowser.h"

@@ -23,7 +23,6 @@
     #include "wx/wx.h"
 #endif
 #include "wx/treectrl.h"
-#include "ShapesDocument.h"
 
 enum {
 	TREESECTION_COLLECTION = 1,
