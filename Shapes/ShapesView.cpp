@@ -18,6 +18,7 @@
 
 #include <fstream>
 #include "ShapesView.h"
+#include "ShapesDocument.h"
 #include "utilities.h"
 
 #define INT_TO_WXSTRING(a)	wxString::Format(wxT("%d"), a)

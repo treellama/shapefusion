@@ -23,7 +23,6 @@
     #include "wx/wx.h"
 #endif
 #include "wx/image.h"
-#include "ShapesDocument.h"
 
 wxImage ShapesBitmapToImage(ShapesBitmap *bp, ShapesColorTable *ct, bool white_transparency);
 wxBitmap ImageThumbnail(wxImage &img, int tn_size, bool filtering);

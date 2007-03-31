@@ -16,6 +16,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 #include <iostream>
+#include "ShapesElements.h"
 #include "utilities.h"
 
 // convert an 8-bit ShapesBitmap to a RGB wxImage using the provided color table.

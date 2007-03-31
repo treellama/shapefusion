@@ -47,3 +47,4 @@ int ShapesTreeItemData::Sequence(void) const
 {
 	return sequence;
 }
+

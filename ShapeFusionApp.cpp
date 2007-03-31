@@ -17,7 +17,6 @@
 */
 
 #include "ShapeFusionApp.h"
-#include "ShapeFusionMain.h"
 #include "ShapeFusionMenus.h"
 #include "ShapesDocument.h"
 #include "ShapesView.h"
