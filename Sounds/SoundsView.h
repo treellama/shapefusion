@@ -58,8 +58,7 @@ private:
 	wxStaticText				*sound_class_number_field;
 	wxListBox				*sound_class_list;
 	wxSizer				*sound_editor_sizer;
-	wxStaticText			*sound_flags_text;
-	wxSizer						*sound_flags_sizer;
+	wxSizer					*sound_flags_sizer;
 	wxCheckBox					*sound_flag_restart_checkbox;
 	wxCheckBox					*sound_flag_abort_checkbox;
 	wxCheckBox					*sound_flag_resist_checkbox;
