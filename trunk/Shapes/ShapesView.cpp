@@ -384,8 +384,6 @@ bool ShapesView::OnCreate(wxDocument *doc, long WXUNUSED(flags) )
 	
 	mainbox->Layout();
 	frame->SetSizer(mainbox);
-
-//    editor = new ShapesView(this, frame, wxPoint(0, 0), wxSize(900, 600));
 	
 #ifdef __X__
     // X seems to require a forced resize
@@ -408,39 +406,40 @@ void ShapesView::OnUpdate(wxView *WXUNUSED(sender), wxObject *WXUNUSED(hint) )
 {
 	// update all levels of the tree control
 	
-	for (unsigned int i = 0; i < COLLECTIONS_PER_FILE; i++) {
+	for (unsigned int i = 0; i < ((ShapesDocument*)GetDocument())->CollectionCount(); i++) {
 		// collection name nodes
 		ShapesTreeItemData	*itemdata = new ShapesTreeItemData(i, -1, TREESECTION_COLLECTION);
-		wxTreeItemId	coll = colltree->AppendItem(colltree->GetRootItem(), wxString(collnames[i], wxConvUTF8), -1, -1, itemdata);
+		wxString			itemLabel = (i < 32) ? wxString(collnames[i], wxConvUTF8) : wxString::Format(wxT("Collection %u"), i);
+		wxTreeItemId		coll = colltree->AppendItem(colltree->GetRootItem(), itemLabel, -1, -1, itemdata);
 		
 		for (unsigned int j = 0; j < 2; j++) {
 			// color version nodes
 			ShapesTreeItemData	*id = new ShapesTreeItemData(i, j, TREESECTION_VERSION);
-			wxString		label;
+			wxString			label;
 			
 			if (j == COLL_VERSION_8BIT)
 				label = wxT("8-bit color version");
 			else if (j == COLL_VERSION_TRUECOLOR)
 				label = wxT("True color version");
 			wxTreeItemId	coll2 = colltree->AppendItem(coll, label, -1, -1, id);
-			
+
 			if (((ShapesDocument*)GetDocument())->CollectionDefined(i, j)) {
 				// section nodes
 				ShapesTreeItemData	*id_b = new ShapesTreeItemData(i, j, TREESECTION_BITMAPS),
 									*id_ct = new ShapesTreeItemData(i, j, TREESECTION_COLORTABLES),
 									*id_f = new ShapesTreeItemData(i, j, TREESECTION_FRAMES),
 									*id_s = new ShapesTreeItemData(i, j, TREESECTION_SEQUENCES);
-				wxTreeItemId	coll_b = colltree->AppendItem(coll2, wxT("Bitmaps"), -1, -1, id_b),
-								coll_ct = colltree->AppendItem(coll2, wxT("Color tables"), -1, -1, id_ct),
-								coll_f = colltree->AppendItem(coll2, wxT("Frames"), -1, -1, id_f),
-								coll_s = colltree->AppendItem(coll2, wxT("Sequences"), -1, -1, id_s);
+				wxTreeItemId		coll_b = colltree->AppendItem(coll2, wxT("Bitmaps"), -1, -1, id_b),
+									coll_ct = colltree->AppendItem(coll2, wxT("Color tables"), -1, -1, id_ct),
+									coll_f = colltree->AppendItem(coll2, wxT("Frames"), -1, -1, id_f),
+									coll_s = colltree->AppendItem(coll2, wxT("Sequences"), -1, -1, id_s);
 				
 				for (unsigned int k = 0; k < ((ShapesDocument*)GetDocument())->CollectionSequenceCount(i, j); k++) {
 					// sequence nodes
 					ShapesSequence		*seq = ((ShapesDocument*)GetDocument())->GetSequence(i, j, k);
-					wxString    	blabel;
+					wxString    		blabel;
 					ShapesTreeItemData	*id_seq = new ShapesTreeItemData(i, j, TREESECTION_SEQUENCES, k);
-					
+
 					blabel << k;
 					if (seq->Name().Length() > 0)
 						blabel << wxT(" - ") << seq->Name();
@@ -597,6 +596,7 @@ void ShapesView::MenuShapesAddColorTable(wxCommandEvent &e)
 			// then add every color. Otherwise, keep only the
 			// first <color per table> colors (warn the user)
 			fstream.close();
+			((ShapesDocument*)GetDocument())->Modify(true);
 		} else {
 			std::cerr << "Error loading palette " << filename.mb_str() << "\n";
 		}*/
@@ -731,6 +731,7 @@ void ShapesView::MenuShapesAddBitmap(wxCommandEvent &e)
 				b_count_label->SetLabel(count_string);
 				
 				wxEndBusyCursor();
+				((ShapesDocument*)GetDocument())->Modify(true);
 			} else {
 				wxString	errormsg;
 
@@ -775,6 +776,7 @@ void ShapesView::MenuShapesNewFrame(wxCommandEvent &e)
 		if (frame_count != 1)
 			count_string << wxT("s");
 		f_count_label->SetLabel(count_string);
+		((ShapesDocument*)GetDocument())->Modify(true);
 	}
 }
 
@@ -797,6 +799,7 @@ void ShapesView::MenuShapesNewSequence(wxCommandEvent &e)
 		if (seq->Name().Length() > 0)
 			label << wxT(" - ") << seq->Name();
 		colltree->AppendItem(thenode, label, -1, -1, itemdata);
+		((ShapesDocument*)GetDocument())->Modify(true);
 	}
 }
 
@@ -1103,6 +1106,7 @@ void ShapesView::DoDeleteBitmap(int which)
 			count_string << wxT("s");
 		b_count_label->SetLabel(count_string);
 		frame->Layout();
+		((ShapesDocument*)GetDocument())->Modify(true);
 	}
 }
 
@@ -1134,6 +1138,7 @@ void ShapesView::DoDeleteFrame(int which)
 			count_string << wxT("s");
 		f_count_label->SetLabel(count_string);
 		frame->Layout();
+		((ShapesDocument*)GetDocument())->Modify(true);
 	}
 }
 
@@ -1145,6 +1150,7 @@ void ShapesView::ToggleBitmapCheckboxes(wxCommandEvent &e)
 		switch (e.GetId()) {
 			case CB_COLUMN_ORDER:
 				sel_bitmap->SetColumnOrdered(e.IsChecked());
+				((ShapesDocument*)GetDocument())->Modify(true);
 				break;
 			case CB_ENABLE_TRANSPARENCY:
 				sel_bitmap->SetTransparent(e.IsChecked());
@@ -1152,6 +1158,7 @@ void ShapesView::ToggleBitmapCheckboxes(wxCommandEvent &e)
 				bb->Refresh();
 				b_view->SetBitmap(sel_bitmap);
 				// FIXME also update the FrameBrowser and all that
+				((ShapesDocument*)GetDocument())->Modify(true);
 				break;
 		}
 	}
@@ -1262,6 +1269,7 @@ void ShapesView::BitmapIndexSpin(wxSpinEvent &e)
 		f_view->SetFrame(sel_frame);
 		fb->RebuildThumbnail(fb->GetSelection());
 		fb->Refresh();
+		((ShapesDocument*)GetDocument())->Modify(true);
 	}
 }
 
@@ -1282,6 +1290,7 @@ void ShapesView::ToggleFrameCheckboxes(wxCommandEvent &e)
 			fb->Refresh();
 			f_view->SetFrame(sel_frame);
 		}
+		((ShapesDocument*)GetDocument())->Modify(true);
 	}
 }
 
@@ -1347,6 +1356,8 @@ void ShapesView::EditFrameFields(wxCommandEvent &e)
 				sel_frame->SetWorldY0(-scale_factor * (sel_frame->KeyY() - sel_frame->OriginY()));
 			}
 			f_view->Refresh();
+			// TODO set document to modified when transition to
+			// wxTextCtrl::ChangeValue is done
 		}
 	}
 }
@@ -1377,6 +1388,7 @@ void ShapesView::DeleteSequence(wxCommandEvent &e)
 	}
 
 	selected_sequence = -1;
+	((ShapesDocument*)GetDocument())->Modify(true);
 }
 
 // sequence type menu in the sequence editor
@@ -1398,7 +1410,6 @@ void ShapesView::EditSequenceType(wxCommandEvent &e)
 			case 4:	sel_seq->SetNumberOfViews(ANIMATED_8);	break;
 		}
 		real_nov = ActualNumberOfViews(sel_seq->NumberOfViews());
-//		s_nov_field->SetValue(INT_TO_WXSTRING(real_nov));
 		
 		// Let's handle sequence frames changes...
 		if (real_nov > old_nov) {
@@ -1407,7 +1418,6 @@ void ShapesView::EditSequenceType(wxCommandEvent &e)
 			// to the END of the frame_index array
 			for (int i = 0; i < sel_seq->FramesPerView() * (real_nov - old_nov); i++)
 				sel_seq->mFrameIndexes.push_back(-1);
-			
 		} else if (real_nov < old_nov) {
 			// We are removing one (or more) view
 			// We need to remove FramesPerView() * (old_nov - real_nov)
@@ -1418,6 +1428,7 @@ void ShapesView::EditSequenceType(wxCommandEvent &e)
 			// Hmm, number of views unchanged, don't bother...
 		}
 		s_fb->SetSeqParameters(sel_seq->NumberOfViews(), sel_seq->FramesPerView(), &sel_seq->mFrameIndexes);
+		((ShapesDocument*)GetDocument())->Modify(true);
 	}
 }
 
@@ -1428,10 +1439,13 @@ void ShapesView::EditSequenceXferMode(wxCommandEvent &e)
 		ShapesSequence	*sel_seq = ((ShapesDocument*)GetDocument())->GetSequence(selected_coll, selected_vers, selected_sequence);
 
 		sel_seq->SetTransferMode(s_xfermode_menu->GetSelection());
+		((ShapesDocument*)GetDocument())->Modify(true);
 	}
 }
 
 // user messed with fields in the sequence editor
+// TODO set document to modified when transition to
+// wxTextCtrl::ChangeValue is done
 void ShapesView::EditSequenceFields(wxCommandEvent &e)
 {
 	if (selected_sequence >= 0) {

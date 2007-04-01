@@ -37,6 +37,11 @@ ShapesDocument::~ShapesDocument()
 
 }
 
+unsigned int ShapesDocument::CollectionCount(void) const
+{
+	return mCollections.size();
+}
+
 // collection data access
 int ShapesDocument::CollectionStatus(unsigned int id)
 {
@@ -158,8 +163,7 @@ bool ShapesDocument::DoOpenDocument(const wxString& file)
 {
 	bool wxOpen = wxDocument::DoOpenDocument(file);
 	
-	if (!(wxOpen && mGoodData))
-	{
+	if (!(wxOpen && mGoodData)) {
 		wxLogError(wxT("[ShapesDocument] There was an error while loading, see log"));
 		return false;
 	}
@@ -171,52 +175,50 @@ wxSTD ostream& ShapesDocument::SaveObject(wxSTD ostream& stream)
 #else
 wxOutputStream& ShapesDocument::SaveObject(wxOutputStream& stream)
 #endif
-{	// calculate collection sizes
-	unsigned int	coll_size;
+{
+	unsigned int	collectionCount = CollectionCount();
 	
 	// compose and write the collection header block
-	{
-		BigEndianBuffer	raw_headers(SIZEOF_collection_header * COLLECTIONS_PER_FILE);
-		long			running_offset = SIZEOF_collection_header * COLLECTIONS_PER_FILE;
-		
-		for (unsigned int i = 0; i < COLLECTIONS_PER_FILE; i++) {
-			ShapesCollection	*coll = mCollections[i];
+	BigEndianBuffer	raw_headers(SIZEOF_collection_header * collectionCount);
+	long			running_offset = SIZEOF_collection_header * collectionCount;
 
-			raw_headers.WriteShort(coll->Status());
-			raw_headers.WriteUShort(coll->Flags());
-			// 8-bit version
-			if (coll->Defined(COLL_VERSION_8BIT)) {
-				coll_size = coll->SizeInFile(COLL_VERSION_8BIT);
-				
-				raw_headers.WriteLong(running_offset);
-				raw_headers.WriteLong(coll_size);
-				running_offset += coll_size;
-			} else {
-				raw_headers.WriteLong(-1);
-				raw_headers.WriteLong(0);
-			}
-			// truecolor version
-			if (coll->Defined(COLL_VERSION_TRUECOLOR)) {
-				coll_size = coll->SizeInFile(COLL_VERSION_TRUECOLOR);
+	for (unsigned int i = 0; i < collectionCount; i++) {
+		ShapesCollection	*coll = mCollections[i];
 
-				raw_headers.WriteLong(running_offset);
-				raw_headers.WriteLong(coll_size);
-				running_offset += coll_size;
-			} else {
-				raw_headers.WriteLong(-1);
-				raw_headers.WriteLong(0);
-			}
-			raw_headers.WriteZeroes(12);
+		raw_headers.WriteShort(coll->Status());
+		raw_headers.WriteUShort(coll->Flags());
+		// 8-bit version
+		if (coll->Defined(COLL_VERSION_8BIT)) {
+			unsigned int	collSize = coll->SizeInFile(COLL_VERSION_8BIT);
+
+			raw_headers.WriteLong(running_offset);
+			raw_headers.WriteLong(collSize);
+			running_offset += collSize;
+		} else {
+			raw_headers.WriteLong(-1);
+			raw_headers.WriteLong(0);
 		}
-#if wxUSE_STD_IOSTREAM
-		stream.write((char *)raw_headers.Data(), raw_headers.Size());
-#else
-		stream.Write((char *)raw_headers.Data(), raw_headers.Size());
-#endif
+		// truecolor version
+		if (coll->Defined(COLL_VERSION_TRUECOLOR)) {
+			unsigned int	collSize = coll->SizeInFile(COLL_VERSION_TRUECOLOR);
+
+			raw_headers.WriteLong(running_offset);
+			raw_headers.WriteLong(collSize);
+			running_offset += collSize;
+		} else {
+			raw_headers.WriteLong(-1);
+			raw_headers.WriteLong(0);
+		}
+		raw_headers.WriteZeroes(12);
 	}
+#if wxUSE_STD_IOSTREAM
+	stream.write((char *)raw_headers.Data(), raw_headers.Size());
+#else
+	stream.Write((char *)raw_headers.Data(), raw_headers.Size());
+#endif
 	
 	// write collections
-	for (unsigned int i = 0; i < COLLECTIONS_PER_FILE; i++)
+	for (unsigned int i = 0; i < collectionCount; i++)
 		mCollections[i]->SaveObject(stream);
 	
 	return stream;
@@ -242,12 +244,15 @@ wxInputStream& ShapesDocument::LoadObject(wxInputStream& stream)
 		wxLogError(wxT("[ShapesDocument] File too small to be a Marathon shapes file"));
 		return stream;
 	}
-	// load the collections
-	for (unsigned int i = 0; i < COLLECTIONS_PER_FILE; i++) {
+
+	// find how many collections are stored and load them
+	unsigned int	i = 0;
+
+	while (true) {
 		ShapesCollection	*c = new ShapesCollection(IsVerbose());
 
 		if (IsVerbose())
-			wxLogDebug(wxT("[ShapesDocument] Loading collection %d"), i);
+			wxLogDebug(wxT("[ShapesDocument] Trying to load collection %d"), i);
 
 #if wxUSE_STD_IOSTREAM
 		stream.seekg(i * SIZEOF_collection_header, std::ios::beg);
@@ -256,15 +261,17 @@ wxInputStream& ShapesDocument::LoadObject(wxInputStream& stream)
 #endif
 		c->LoadObject(stream);
 
-		// store if correct
-		if (!c->IsGood()) {
-			wxLogError(wxT("[ShapesDocument] Error loading collection... Dropped"));
-			return stream;
+		if (c->IsGood()) {
+			mCollections.push_back(c);
+			i++;
+		} else {
+			break;
 		}
-		
-		mCollections.push_back(c);
 	}
-	mGoodData = true;
-	
+	if (i >= COLLECTIONS_PER_FILE)
+		mGoodData = true;
+	else
+		wxLogError(wxT("[ShapesDocument] Could not find enough collections. This may not be a Marathon Shapes file."));
+
 	return stream;
 }
