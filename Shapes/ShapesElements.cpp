@@ -607,9 +607,20 @@ BigEndianBuffer& ShapesSequence::LoadObject(BigEndianBuffer& buffer, long offset
 		wxLogDebug(wxT("[ShapesSequence]         Loop Frame:			%d"), mLoopFrame);
 	}
 
-	if (mNumberOfViews < 0 || mFramesPerView < 0 || mKeyFrame < 0 || mFirstFrameSound < -1
-			|| mKeyFrameSound < -1 || mLastFrameSound < -1 || mLoopFrame < -1) {
-		wxLogError(wxT("[ShapesSequence] Invalid value(s) in sequence data"));
+	if (mNumberOfViews < 0 || mFramesPerView < 0) {
+		wxLogError(wxT("[ShapesSequence] Invalid sequence type parameters: numberOfViews=%d, framesPerView=%d"),
+						mNumberOfViews, mFramesPerView);
+		return buffer;
+	}
+	// guess these shouldn't be < 0, but RED Shapes have a case with mKeyFrame=-1
+	if (mKeyFrame < -1 || mLoopFrame < -1) {
+		wxLogError(wxT("[ShapesSequence] Invalid key/loop frame values in sequence data: keyFrame=%d, loopFrame=%d"),
+						mKeyFrame, mLoopFrame);
+		return buffer;
+	}
+	if (mFirstFrameSound < -1 || mKeyFrameSound < -1 || mLastFrameSound < -1) {
+		wxLogError(wxT("[ShapesSequence] Invalid sound values in sequence data: firstFrameSound=%d, keyFrameSound=%d, lastFrameSound=%d"),
+						mFirstFrameSound, mKeyFrameSound, mLastFrameSound);
 		return buffer;
 	}
 

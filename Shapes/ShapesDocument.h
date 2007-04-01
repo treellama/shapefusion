@@ -41,6 +41,7 @@ private:
 	vector<ShapesCollection*>	mCollections;
 public:
 
+	unsigned int CollectionCount(void) const;
 	// collection data access
 	int CollectionStatus(unsigned int id);
 	unsigned int CollectionFlags(unsigned int id) const;
