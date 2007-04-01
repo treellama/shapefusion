@@ -20,7 +20,6 @@
 		F08B4C610AB0B37000896399 /* BitmapBrowser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F08B4B7E0AB0AE4B00896399 /* BitmapBrowser.cpp */; };
 		F08B4C630AB0B37900896399 /* MyTreeItemData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F08B4B790AB0AE4B00896399 /* MyTreeItemData.cpp */; };
 		F08B4C640AB0B37E00896399 /* utilities.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F08B4B800AB0AE4B00896399 /* utilities.cpp */; };
-		F08B4C650AB0B39200896399 /* wxmac.icns in Resources */ = {isa = PBXBuildFile; fileRef = F08B4B760AB0AE2000896399 /* wxmac.icns */; };
 		F0966E030B551E4900820E4F /* SequenceView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F0966E020B551E4900820E4F /* SequenceView.cpp */; };
 		F096F44F0AD2DD97005A633A /* BigEndianBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F096F44E0AD2DD97005A633A /* BigEndianBuffer.cpp */; };
 /* End PBXBuildFile section */
@@ -243,7 +242,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F08B4C650AB0B39200896399 /* wxmac.icns in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
