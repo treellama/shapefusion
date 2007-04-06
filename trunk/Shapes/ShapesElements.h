@@ -139,6 +139,8 @@ public:
 	
     BigEndianBuffer& SaveObject(BigEndianBuffer& buffer);
     BigEndianBuffer& LoadObject(BigEndianBuffer& buffer, unsigned int offset);
+	void SaveToBMP(wxString path, ShapesColorTable *colorTable) const;
+	void SaveMaskToBMP(wxString path) const;
 };
 
 // a frame, aka "low level shape definition"

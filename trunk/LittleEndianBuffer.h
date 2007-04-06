@@ -17,14 +17,14 @@
 */
  
 //
-// BigEndianBuffer
-// Utility class to access big-endian data buffers easily
+// LittleEndianBuffer
+// Utility class to access little-endian data buffers easily
 //
 
-#ifndef BIGENDIANBUFFER_H
-#define BIGENDIANBUFFER_H
+#ifndef LITTLEENDIANBUFFER_H
+#define LITTLEENDIANBUFFER_H
 
-class BigEndianBuffer {
+class LittleEndianBuffer {
 private:
 	unsigned char	*data,
 					*position;
@@ -33,15 +33,15 @@ private:
 
 public:
 	// self-allocate data buffer
-	BigEndianBuffer(unsigned int _size);
+	LittleEndianBuffer(unsigned int _size);
 	// use a pre-allocated buffer
-	BigEndianBuffer(unsigned char *_data, unsigned int _size);
-	~BigEndianBuffer(void);
+	LittleEndianBuffer(unsigned char *_data, unsigned int _size);
+	~LittleEndianBuffer(void);
 	// set access position
 	void Position(unsigned int pos);
 	// return access position
 	unsigned int Position(void) const;
-	// read big-endian values, advance position accordingly
+	// read little-endian values, advance position accordingly
 	char ReadChar(void);
 	unsigned char ReadUChar(void);
 	short ReadShort(void);
@@ -49,7 +49,7 @@ public:
 	long ReadLong(void);
 	unsigned long ReadULong(void);
 	void ReadBlock(unsigned long _size, unsigned char *dest);
-	// write big-endian values, advance position accordingly
+	// write little-endian values, advance position accordingly
 	void WriteChar(char v);
 	void WriteUChar(unsigned char v);
 	void WriteShort(short v);

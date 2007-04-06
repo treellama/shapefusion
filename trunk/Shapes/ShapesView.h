@@ -43,9 +43,6 @@ private:
 		BITMAP_BROWSER,
 		CB_COLUMN_ORDER,
 		CB_ENABLE_TRANSPARENCY,
-		BTN_SAVE_BITMAP,
-		BTN_REPLACE_BITMAP,
-		BTN_DELETE_BITMAP,
 		// frames
 		FRAME_BROWSER,
 		FIELD_BITMAP_INDEX,
@@ -72,7 +69,6 @@ private:
 		FIELD_SEQ_FIRST_FRAME_SND,
 		FIELD_SEQ_KEY_FRAME_SND,
 		FIELD_SEQ_LAST_FRAME_SND,
-		FIELD_SEQ_SCALE_FACTOR,
 	};
 
 	wxBoxSizer			*mainbox;
@@ -113,8 +109,6 @@ private:
 						*b_transparency_checkbox;
 	wxStaticText		*b_info_label;
 	BitmapView			*b_view;
-	wxButton			*b_save,
-						*b_replace;
 	// widgets for frames section
 	wxBoxSizer			*f_outer_sizer,
 						*f_edit_inner_box;
@@ -184,8 +178,6 @@ private:
 	wxTextCtrl					*s_ffs_field,
 								*s_kfs_field,
 								*s_lfs_field;
-	wxStaticText				*s_sf_label;
-	wxTextCtrl					*s_sf_field;
 	SequenceView		*s_fb;
 
 	int				selected_coll,
@@ -220,7 +212,10 @@ public:
 	void MenuShapesSaveColorTable(wxCommandEvent &e);
 	void MenuShapesSaveColorTableToPS(wxCommandEvent &e);
 	void MenuShapesAddBitmap(wxCommandEvent &e);
+	void MenuShapesExportBitmap(wxCommandEvent &e);
+	void MenuShapesExportBitmapMask(wxCommandEvent &e);
 	void MenuShapesExportBitmaps(wxCommandEvent &e);
+	void MenuShapesExportBitmapMasks(wxCommandEvent &e);
 	void MenuShapesNewFrame(wxCommandEvent &e);
 	void MenuShapesNewSequence(wxCommandEvent &e);
 	// control callbacks
@@ -229,7 +224,6 @@ public:
 	void BitmapDelete(wxCommandEvent &e);
 	void CTSelect(wxCommandEvent &e);
 	void ToggleBitmapCheckboxes(wxCommandEvent &e);
-	void AskSaveBitmap(wxCommandEvent &e);
 	void FrameSelect(wxCommandEvent &e);
 	void FrameDelete(wxCommandEvent &e);
 	void BitmapIndexSpin(wxSpinEvent &e);

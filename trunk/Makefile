@@ -7,7 +7,7 @@ CFLAGS = -Wall -O2
 WXCFLAGS = `wx-config --cxxflags`
 WXLIBS = `wx-config --libs`
 
-OBJECTS =		BigEndianBuffer.o ShapeFusionApp.o ShapeFusionMain.o ShapeFusionMenus.o
+OBJECTS =		BigEndianBuffer.o LittleEndianBuffer.o ShapeFusionApp.o ShapeFusionMain.o ShapeFusionMenus.o
 SHAPESOBJECTS = Shapes/BitmapBrowser.o Shapes/BitmapView.o Shapes/CTBrowser.o \
 				Shapes/FrameBrowser.o Shapes/FrameView.o Shapes/SequenceView.o \
 				Shapes/ShapesDocument.o Shapes/ShapesElements.o Shapes/ShapesView.o \
@@ -21,6 +21,9 @@ shapefusion: $(OBJECTS) $(SHAPESOBJECTS) $(SOUNDSOBJECTS)
 	g++ -o shapefusion $(OBJECTS) $(SHAPESOBJECTS) $(SOUNDSOBJECTS) $(WXLIBS)
 
 BigEndianBuffer.o: BigEndianBuffer.cpp BigEndianBuffer.h
+	g++ -c $(CFLAGS) $<
+
+LittleEndianBuffer.o: LittleEndianBuffer.cpp LittleEndianBuffer.h
 	g++ -c $(CFLAGS) $<
 
 ShapeFusionApp.o: ShapeFusionApp.cpp ShapeFusionApp.h ShapeFusionMain.h ShapeFusionMenus.h \
@@ -58,7 +61,7 @@ Shapes/SequenceView.o: SequenceView.cpp SequenceView.h ShapesElements.h utilitie
 Shapes/ShapesDocument.o: ShapesDocument.cpp ShapesDocument.h ShapesElements.h
 	g++ -c $(CFLAGS) $(WXCFLAGS) $< -o $@
 
-Shapes/ShapesElements.o: ShapesElements.cpp ShapesElements.h BigEndianBuffer.h utilities.h
+Shapes/ShapesElements.o: ShapesElements.cpp ShapesElements.h BigEndianBuffer.h LittleEndianBuffer.h utilities.h
 	g++ -c $(CFLAGS) $(WXCFLAGS) $< -o $@
 
 Shapes/ShapesView.o: ShapesView.cpp ShapesView.h BitmapBrowser.h BitmapView.h CTBrowser.h \

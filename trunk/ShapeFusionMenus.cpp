@@ -139,11 +139,14 @@ void CreateShapesMenu(wxMenuBar *menu_bar)
 	// We create and build the Shapes menu
 	shapes_menu = new wxMenu();
 	shapes_menu->Append(SHAPES_MENU_ADDCOLORTABLE, wxT("New color table..."));
-	shapes_menu->Append(SHAPES_MENU_SAVECOLORTABLE, wxT("Save color table to GIMP..."));
-	shapes_menu->Append(SHAPES_MENU_SAVECOLORTABLETOPS, wxT("Save color table to PhotoShop..."));
+	shapes_menu->Append(SHAPES_MENU_SAVECOLORTABLE, wxT("Export color table to GIMP..."));
+	shapes_menu->Append(SHAPES_MENU_SAVECOLORTABLETOPS, wxT("Export color table to PhotoShop..."));
 	shapes_menu->AppendSeparator();
 	shapes_menu->Append(SHAPES_MENU_ADDBITMAP, wxT("New bitmap..."));
-	shapes_menu->Append(SHAPES_MENU_EXPORTBITMAPS, wxT("Save all bitmaps..."));
+	shapes_menu->Append(SHAPES_MENU_EXPORTBITMAP, wxT("Export bitmap..."));
+	shapes_menu->Append(SHAPES_MENU_EXPORTMASK, wxT("Export bitmap mask..."));
+	shapes_menu->Append(SHAPES_MENU_EXPORTBITMAPS, wxT("Export all bitmaps..."));
+	shapes_menu->Append(SHAPES_MENU_EXPORTMASKS, wxT("Export all bitmap masks..."));
 	shapes_menu->AppendSeparator();
 	shapes_menu->Append(SHAPES_MENU_ADDFRAME, wxT("New frame"));
 	shapes_menu->AppendSeparator();
@@ -154,7 +157,10 @@ void CreateShapesMenu(wxMenuBar *menu_bar)
 	shapes_menu->Enable(SHAPES_MENU_SAVECOLORTABLE, false);
 	shapes_menu->Enable(SHAPES_MENU_SAVECOLORTABLETOPS, false);
 	shapes_menu->Enable(SHAPES_MENU_ADDBITMAP, false);
+	shapes_menu->Enable(SHAPES_MENU_EXPORTBITMAP, false);
+	shapes_menu->Enable(SHAPES_MENU_EXPORTMASK, false);
 	shapes_menu->Enable(SHAPES_MENU_EXPORTBITMAPS, false);
+	shapes_menu->Enable(SHAPES_MENU_EXPORTMASKS, false);
 	shapes_menu->Enable(SHAPES_MENU_ADDFRAME, false);
 	shapes_menu->Enable(SHAPES_MENU_ADDSEQUENCE, false);
 	
