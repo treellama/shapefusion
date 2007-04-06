@@ -15,8 +15,10 @@
  * along with ShapeFusion; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
+#include <fstream>
 #include "ShapesElements.h"
 #include "utilities.h"
+#include "../LittleEndianBuffer.h"
 
 // on-file struct sizes
 #define SIZEOF_collection_definition		544
@@ -390,6 +392,133 @@ BigEndianBuffer& ShapesBitmap::LoadObject(BigEndianBuffer& buffer, unsigned int 
 
 	mGoodData = true;
 	return buffer;
+}
+
+// export the ShapesBitmap to an indexed BMP file specified by path
+void ShapesBitmap::SaveToBMP(wxString path, ShapesColorTable *colorTable) const
+{
+	std::ofstream	stream(path.fn_str());
+
+	if (stream.good()) {
+		unsigned int	colorCount = colorTable->ColorCount();
+		unsigned long	paddedWidth = (mWidth + 3) & 0xfffffffc;
+
+		// header
+		LittleEndianBuffer	headerBlock(54);
+
+		headerBlock.WriteChar('B');
+		headerBlock.WriteChar('M');
+		headerBlock.WriteULong(54 + 4*colorCount + paddedWidth * mHeight);	// file size
+		headerBlock.WriteULong(0);	// reserved
+		headerBlock.WriteULong(54 + 4*colorCount);	// raster data offset
+		headerBlock.WriteULong(40);	// info header size
+		headerBlock.WriteULong(mWidth);
+		headerBlock.WriteULong(mHeight);
+		headerBlock.WriteUShort(1);	// plane count
+		headerBlock.WriteUShort(8);	// bits per pixel
+		headerBlock.WriteULong(0);	// no compression
+		headerBlock.WriteULong(0);	// compressed size of image
+		headerBlock.WriteULong(0);
+		headerBlock.WriteULong(0);
+		headerBlock.WriteULong(colorCount);	// FIXME
+		headerBlock.WriteULong(0);	// FIXME
+		stream.write((const char *)headerBlock.Data(), headerBlock.Size());
+		
+		// palette
+		LittleEndianBuffer	paletteBlock(4*colorCount);
+
+		for (unsigned int i = 0; i < colorCount; i++) {
+			ShapesColor	*color = colorTable->GetColor(i);
+
+			paletteBlock.WriteUChar(color->Blue() >> 8);
+			paletteBlock.WriteUChar(color->Green() >> 8);
+			paletteBlock.WriteUChar(color->Red() >> 8);
+			paletteBlock.WriteUChar(0);
+		}
+		stream.write((const char *)paletteBlock.Data(), paletteBlock.Size());
+
+		// 8-bit raster data
+		LittleEndianBuffer	rasterBlock(paddedWidth * mHeight);
+
+		for (unsigned int y = 0; y < mHeight; y++) {
+			rasterBlock.WriteBlock(mWidth, mPixels + (mHeight - y - 1) * mWidth);
+			rasterBlock.WriteZeroes(paddedWidth - mWidth);
+		}
+		stream.write((const char *)rasterBlock.Data(), rasterBlock.Size());
+
+		stream.close();
+	}
+}
+
+// export the ShapesBitmap mask to a 1-bit BMP file specified by path
+void ShapesBitmap::SaveMaskToBMP(wxString path) const
+{
+	std::ofstream	stream(path.fn_str());
+
+	if (stream.good()) {
+		unsigned long	rowBytes = ((mWidth + 31) & 0xffffffe0) >> 3;
+
+		// header
+		LittleEndianBuffer	headerBlock(54);
+		
+		headerBlock.WriteChar('B');
+		headerBlock.WriteChar('M');
+		headerBlock.WriteULong(54 + 4*2 + rowBytes * mHeight);	// file size
+		headerBlock.WriteULong(0);	// reserved
+		headerBlock.WriteULong(54 + 4*2);	// raster data offset
+		headerBlock.WriteULong(40);	// info header size
+		headerBlock.WriteULong(mWidth);
+		headerBlock.WriteULong(mHeight);
+		headerBlock.WriteUShort(1);	// plane count
+		headerBlock.WriteUShort(1);	// bits per pixel
+		headerBlock.WriteULong(0);	// no compression
+		headerBlock.WriteULong(0);	// compressed size of image
+		headerBlock.WriteULong(0);
+		headerBlock.WriteULong(0);
+		headerBlock.WriteULong(2);
+		headerBlock.WriteULong(0);
+		stream.write((const char *)headerBlock.Data(), headerBlock.Size());
+
+		// black & white palette
+		LittleEndianBuffer	paletteBlock(4*2);
+
+		paletteBlock.WriteUChar(0);
+		paletteBlock.WriteUChar(0);
+		paletteBlock.WriteUChar(0);
+		paletteBlock.WriteUChar(0);
+		paletteBlock.WriteUChar(255);
+		paletteBlock.WriteUChar(255);
+		paletteBlock.WriteUChar(255);
+		paletteBlock.WriteUChar(0);
+		stream.write((const char *)paletteBlock.Data(), paletteBlock.Size());
+
+		// 1-bit raster data
+		LittleEndianBuffer	rasterBlock(rowBytes * mHeight);
+		
+		rasterBlock.WriteZeroes(rowBytes * mHeight);
+		for (unsigned int y = 0; y < mHeight; y++) {
+			unsigned char	*p = mPixels + y * mWidth,
+							bit = 128,
+							byte = 0;
+
+			rasterBlock.Position((mHeight - y - 1) * rowBytes);
+			for (unsigned int x = 0; x < mWidth; x++) {
+				if (*p++ != 0)
+					byte |= bit;
+				bit >>= 1;
+				if (bit == 0) {
+					bit = 128;
+					rasterBlock.WriteUChar(byte);
+					byte = 0;
+				}
+			}
+			if (bit != 128)
+				rasterBlock.WriteUChar(byte);
+		}
+		stream.write((const char *)rasterBlock.Data(), rasterBlock.Size());
+
+		stream.close();
+	 }
 }
 
 ShapesFrame::ShapesFrame(bool verbose) : ShapesElement(verbose)
