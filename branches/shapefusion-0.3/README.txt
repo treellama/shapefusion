@@ -14,8 +14,11 @@ it part of the AlephOne effort, actually). A Marathon scenario is made of severa
 is devoted to editing the "Shapes" file, which stores most of the game graphics and animation data.
 It's *not* a tool for editing maps. In case you ever used Bungie tools for editing Marathon scenarios,
 it's enough to say that ShapeFusion is meant as a replacement for Anvil, or better for its Shapes
-editor. Anvil has always been a buggy, incomplete, Mac-only editor: I hope things will be better with
-ShapeFusion.
+editor. Anvil has always been a buggy, incomplete, closed-source and Mac-only editor: I hope things
+will be better with ShapeFusion.
+
+As for the license, ShapeFusion is free software, released under the terms of the GNU General Public
+License. For more information see the COPYING file that comes with ShapeFusion.
 
 History
 -------
@@ -44,13 +47,13 @@ are appreciated!).
 
 Building
 --------
-You'll need wxWidgets to compile ShapeFusion.
+You'll need wxWidgets (at least version 2.6.1) to compile ShapeFusion.
 
-On Linux systems you can test the presence of wxWidgets by running the command 'wx-config'. If that
-command is available, everything should work; otherwise install wxWidgets following your Linux
-distribution rules. To compile ShapeFusion, just do a 'make' inside the source directory. When
-compilation is complete, simply run the 'shapefusion' executable (you can put it anywhere in your
-PATH).
+On Linux systems you can test the presence of wxWidgets by running the command 'wx-config --version'.
+If that command is available and gives you the right version, everything should work; otherwise install
+wxWidgets following your Linux distribution rules. To compile ShapeFusion, just do a 'make' inside the
+source directory. When compilation is complete, simply run the 'shapefusion' executable (you can put it
+anywhere in your PATH).
 
 On MacOS X you should be able to use the provided Xcode project in the osx-build directory. You'll
 need both the MacOS X developer tools and wxWidgets. Note that we are releasing MacOS X binary builds
