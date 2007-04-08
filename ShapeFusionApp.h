@@ -15,7 +15,6 @@
  * along with ShapeFusion; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
-
 #ifndef SHAPEFUSIONAPP_H
 #define SHAPEFUSIONAPP_H
 
@@ -23,23 +22,12 @@
 #ifndef WX_PRECOMP
     #include "wx/wx.h"
 #endif
-#include "wx/docview.h"
-#include "ShapeFusionMain.h"
 
 class ShapeFusionApp: public wxApp {
 public:
-    ShapeFusionApp(void);
-    bool OnInit(void);
-    int OnExit(void);
-    
-	wxFrame *CreateChildFrame(wxDocument *doc, wxView *view, const wxString title, wxPoint point, wxSize size, long style = wxDEFAULT_FRAME_STYLE);
-    
-protected:
-    wxDocManager* m_docManager;
+	virtual bool OnInit(void);
 };
 
 DECLARE_APP(ShapeFusionApp);
-
-ShapeFusionMain *GetMainFrame(void);
 
 #endif

@@ -190,11 +190,11 @@ void SequenceView::OnMouseUp(wxMouseEvent& e)
 			// FIXME mouse tracking like real buttons (starting with a mouse down)
 			{
 				// find wether the mouse was released over a thumbnail
-				int touched_thumbnail = -1;
-				
+				int	touched_thumbnail = -1;
+
 				for (unsigned int i = 0; i < tn_positions.size(); i++) {
-					wxRect  test(tn_positions[i].x, tn_positions[i].y, tn_size, tn_size);
-					
+					wxRect	test(tn_positions[i].x, tn_positions[i].y, tn_size, tn_size);
+
 					if (test.Inside(mouse)) {
 						touched_thumbnail = i;
 						break;
@@ -202,13 +202,13 @@ void SequenceView::OnMouseUp(wxMouseEvent& e)
 				}
 				if (touched_thumbnail > -1) {
 					// find wether an arrow was touched
-					int     x = tn_positions[touched_thumbnail].x,
+					int		x = tn_positions[touched_thumbnail].x,
 							y = tn_positions[touched_thumbnail].y;
-					wxRect  prev_rect(x + 2, y + tn_size - prev_btn.GetHeight() - 2,
-								prev_btn.GetWidth(), prev_btn.GetHeight()),
+					wxRect	prev_rect(x + 2, y + tn_size - prev_btn.GetHeight() - 2,
+										prev_btn.GetWidth(), prev_btn.GetHeight()),
 							next_rect(x + tn_size - next_btn.GetWidth() - 2, y + tn_size - next_btn.GetHeight() - 2,
-								prev_btn.GetWidth(), prev_btn.GetHeight());
-					
+										prev_btn.GetWidth(), prev_btn.GetHeight());
+
 					if (prev_rect.Inside(mouse)) {
 						if ((*frame_indexes)[touched_thumbnail] > -1) {
 							(*frame_indexes)[touched_thumbnail]--;
@@ -330,18 +330,18 @@ void SequenceView::SetTranspPixelsDisplay(bool show)
 	Refresh();
 }
 
-// add a new ShapesFrame to the thumbnail list
-void SequenceView::AddFrame(ShapesFrame *fp)
+// add a new ShpFrame to the thumbnail list
+void SequenceView::AddFrame(ShpFrame *fp)
 {
 	if (fp != NULL)
 		frames.push_back(fp);
 }
 
-// add a ShapesBitmap to the bitmap pointer list. Call before adding frames!
-void SequenceView::AddBitmap(ShapesBitmap *bp)
+// add a ShpBitmap to the bitmap pointer list. Call before adding frames!
+void SequenceView::AddBitmap(ShpBitmap *bp)
 {
 	if (bp != NULL) {
-		if (bp->Pixels() != NULL)
+		if (bp->pixels != NULL)
 			bitmaps.push_back(bp);
 		else
 			std::cerr << "SequenceView: someone tried to add a bitmap with NULL pixels\n";
@@ -354,7 +354,7 @@ void SequenceView::AddBitmap(ShapesBitmap *bp)
 void SequenceView::SetSeqParameters(int animtype, int fpv, vector<short> *indexes)
 {
 	animation_type = animtype;
-	number_of_views = ActualNumberOfViews(animtype);
+	number_of_views = CalcActualNumberOfViews(animtype);
 	frames_per_view = fpv;
 	frame_indexes = indexes;
 	RebuildThumbnails();
@@ -375,7 +375,7 @@ void SequenceView::Clear(void)
 }
 
 // call before adding frames!
-void SequenceView::SetColorTable(ShapesColorTable *ct)
+void SequenceView::SetColorTable(ShpColorTable *ct)
 {
 	ctable = ct;
 	RebuildThumbnails();
@@ -414,14 +414,14 @@ void SequenceView::UpdateVirtualSize(void)
 			if (frame_index < 0 || frame_index >= (int)frames.size())
 				continue;
 
-			int	bitmap_index = frames[frame_index]->BitmapIndex();
+			int	bitmap_index = frames[frame_index]->bitmap_index;
 
 			if (bitmap_index < 0 || bitmap_index >= (int)bitmaps.size())
 				continue;
-			if (bitmaps[bitmap_index]->Width() > max_bitmap_dimension)
-				max_bitmap_dimension = bitmaps[bitmap_index]->Width();
-			if (bitmaps[bitmap_index]->Height() > max_bitmap_dimension)
-				max_bitmap_dimension = bitmaps[bitmap_index]->Height();
+			if (bitmaps[bitmap_index]->width > max_bitmap_dimension)
+				max_bitmap_dimension = bitmaps[bitmap_index]->width;
+			if (bitmaps[bitmap_index]->height > max_bitmap_dimension)
+				max_bitmap_dimension = bitmaps[bitmap_index]->height;
 		}
 		// start with a minimum size and increase it until overflow
 		for (new_tn_size = 2*margin; ; new_tn_size++) {
@@ -464,27 +464,27 @@ void SequenceView::UpdateVirtualSize(void)
 	}
 }
 
-// transform an ShapesFrame to a wxBitmap thumbnail
-wxBitmap SequenceView::CreateThumbnail(ShapesFrame *fp)
+// transform an ShpFrame to a wxBitmap thumbnail
+wxBitmap SequenceView::CreateThumbnail(ShpFrame *fp)
 {
-	if (fp->BitmapIndex() < 0 || fp->BitmapIndex() >= (int)bitmaps.size()) {
+	if (fp->bitmap_index < 0 || fp->bitmap_index >= (int)bitmaps.size()) {
 		// invalid or unset bitmap
 		// FIXME we are rebuilding this wxBitmap each time! Build it once
 		// and store it somewhere (rebuild upon tn_size change)
 		return BadThumbnail(tn_size);
 	} else {
 		// valid bitmap
-		ShapesBitmap	*bp = bitmaps[fp->BitmapIndex()];
-		wxImage		newimg(bp->Width(), bp->Height());
+		ShpBitmap	*bp = bitmaps[fp->bitmap_index];
+		wxImage		newimg(bp->width, bp->height);
 
 		// decode the bitmap to a wxImage
 		if (ctable)
-			newimg = ShapesBitmapToImage(bp, ctable, white_transparency);
+			newimg = ShpBitmapToImage(bp, ctable, white_transparency);
 
 		// apply frame transformations
-		if (fp->IsXmirrored())
+		if (fp->x_mirror)
 			newimg = newimg.Mirror(true);
-		if (fp->IsYmirrored())
+		if (fp->y_mirror)
 			newimg = newimg.Mirror(false);
 
 		// TODO apply transfer mode

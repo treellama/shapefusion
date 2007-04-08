@@ -15,27 +15,35 @@
  * along with ShapeFusion; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
+#include "MyTreeItemData.h"
 
-#ifndef __FUSIONMAIN_H__
-#define __FUSIONMAIN_H__
-
-#include "wx/docview.h"
-
-// Define a new frame
-class MyCanvas;
-class ShapeFusionMain: public wxDocParentFrame
+MyTreeItemData::MyTreeItemData(int id, int vers, int sect, int seq):
+	coll_id(id), version(vers), section(sect), sequence(seq)
 {
-    DECLARE_CLASS(FusionMain)
-public:
-    
-    ShapeFusionMain(wxDocManager *manager, wxFrame *frame, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size,
-        const long type);
-    
-    void OnAbout(wxCommandEvent& event);
-	void OnMenuHistory(wxCommandEvent& event);
-    
-    DECLARE_EVENT_TABLE()
-};
 
-#endif
+}
 
+MyTreeItemData::~MyTreeItemData(void)
+{
+
+}
+
+int MyTreeItemData::CollID(void) const
+{
+	return coll_id;
+}
+
+int MyTreeItemData::Version(void) const
+{
+	return version;
+}
+
+int MyTreeItemData::Section(void) const
+{
+	return section;
+}
+
+int MyTreeItemData::Sequence(void) const
+{
+	return sequence;
+}

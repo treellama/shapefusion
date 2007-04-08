@@ -16,22 +16,20 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 #include <iostream>
-#include "ShapesElements.h"
 #include "utilities.h"
 
-// convert an 8-bit ShapesBitmap to a RGB wxImage using the provided color table.
+// convert an 8-bit ShpBitmap to a RGB wxImage using the provided color table.
 // <white_transparency> renders transparent pixels as white instead of using
 // the chroma-key color. NOTE: this routine assumes valid pointers.
-wxImage ShapesBitmapToImage(ShapesBitmap *bp, ShapesColorTable *ct, bool white_transparency)
+wxImage ShpBitmapToImage(ShpBitmap *bp, ShpColorTable *ct, bool white_transparency)
 {
-	int				w = bp->Width(),
-					h = bp->Height();
-	bool			transparency_enabled = bp->IsTransparent();
+	int				w = bp->width,
+					h = bp->height;
+	bool			transparency_enabled = bp->enable_transparency;
 	wxImage			img(w, h);
 	unsigned char	*imgbuf = img.GetData(),
-					*inp = bp->Pixels(),
+					*inp = bp->pixels,
 					*outp = imgbuf;
-	unsigned int	colors_per_table = ct->ColorCount();
 
 	for (int i = 0; i < w * h; i++) {
 		unsigned char	value = *inp++;
@@ -40,16 +38,10 @@ wxImage ShapesBitmapToImage(ShapesBitmap *bp, ShapesColorTable *ct, bool white_t
 			*outp++ = 255;
 			*outp++ = 255;
 			*outp++ = 255;
-		} else if (value < colors_per_table) {
-			ShapesColor	*color = ct->GetColor(value);
-
-			*outp++ = color->Red() >> 8;
-			*outp++ = color->Green() >> 8;
-			*outp++ = color->Blue() >> 8;
 		} else {
-			wxLogError(wxT("[utilities ShapesBitmapToImage] Pixel value %u with just %u colors/table. Aborting"),
-							value, colors_per_table);
-			break;
+			*outp++ = ct->colors[value].red >> 8;
+			*outp++ = ct->colors[value].green >> 8;
+			*outp++ = ct->colors[value].blue >> 8;
 		}
 	}
 	return img;

@@ -28,14 +28,16 @@
 #ifndef WX_PRECOMP
     #include "wx/wx.h"
 #endif
-#include "ShapesElements.h"
+#include <vector>
+#include "Shapes.h"
+using std::vector;
 
 class FrameView: public wxScrolledWindow {
 private:
-	ShapesFrame			*frame;				// frame data
-	ShapesBitmap		*enc_bmp;			// encoded bitmap
-	wxBitmap			dec_bmp;			// ready-to-draw associated frame bitmap
-	ShapesColorTable	*ctable;			// which palette to use for display
+	ShpFrame		*frame;				// frame data
+	ShpBitmap		*enc_bmp;			// encoded bitmap
+	wxBitmap		dec_bmp;			// ready-to-draw associated frame bitmap
+	ShpColorTable	*ctable;			// which palette to use for display
 	bool			white_transparency;	// hide transparent pixels
 	wxPen			origin_pen,
 					key_pen,
@@ -62,10 +64,10 @@ public:
 	void OnDrag(wxMouseEvent &e);
 	// access
 	void SetTranspPixelsDisplay(bool show);
-	void SetFrame(ShapesFrame *fp);
-	ShapesFrame *GetFrame(void) const;
-	void SetBitmap(ShapesBitmap *bp);
-	void SetColorTable(ShapesColorTable *ct);
+	void SetFrame(ShpFrame *fp);
+	ShpFrame *GetFrame(void) const;
+	void SetBitmap(ShpBitmap *bp);
+	void SetColorTable(ShpColorTable *ct);
 };
 
 #endif

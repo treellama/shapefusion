@@ -78,8 +78,8 @@ void BitmapView::OnDrag(wxMouseEvent &e)
 void BitmapView::OnSize(wxSizeEvent &e)
 {
 	int cw, ch,
-		vw = (enc_bmp == NULL) ? 0 : enc_bmp->Width(),
-		vh = (enc_bmp == NULL) ? 0 : enc_bmp->Height();
+		vw = (enc_bmp == NULL) ? 0 : enc_bmp->width,
+		vh = (enc_bmp == NULL) ? 0 : enc_bmp->height;
 	
 	GetClientSize(&cw, &ch);
 	if (vw < cw)
@@ -92,21 +92,21 @@ void BitmapView::OnSize(wxSizeEvent &e)
 void BitmapView::SetTranspPixelsDisplay(bool show)
 {
 	white_transparency = show;
-	if (enc_bmp != NULL && enc_bmp->Pixels() != NULL && ctable != NULL)
-		dec_bmp = wxBitmap(ShapesBitmapToImage(enc_bmp, ctable, white_transparency));
+	if (enc_bmp != NULL && enc_bmp->pixels != NULL && ctable != NULL)
+		dec_bmp = wxBitmap(ShpBitmapToImage(enc_bmp, ctable, white_transparency));
 	Refresh();
 }
 
-// add a new ShapesBitmap to the thumbnail list
-void BitmapView::SetBitmap(ShapesBitmap *bp)
+// add a new ShpBitmap to the thumbnail list
+void BitmapView::SetBitmap(ShpBitmap *bp)
 {
 	enc_bmp = bp;
 	if (bp != NULL) {
-		if (bp->Pixels() != NULL) {
+		if (bp->pixels != NULL) {
 			// adjust sizes
 			int	cw, ch,
-				vw = enc_bmp->Width(),
-				vh = enc_bmp->Height();
+				vw = enc_bmp->width,
+				vh = enc_bmp->height;
 
 			GetClientSize(&cw, &ch);
 			if (vw < cw)
@@ -116,10 +116,10 @@ void BitmapView::SetBitmap(ShapesBitmap *bp)
 			SetVirtualSize(vw, vh);
 			// decode bitmap
 			if (ctable != NULL)
-				dec_bmp = wxBitmap(ShapesBitmapToImage(bp, ctable, white_transparency));
+				dec_bmp = wxBitmap(ShpBitmapToImage(bp, ctable, white_transparency));
 			Refresh();
 		} else {
-			wxLogError(wxT("[BitmapView] Addes a bitmap with NULL pixels"));
+			std::cerr << "BitmapView: someone tried to add a bitmap with NULL pixels\n";
 			SetVirtualSize(0, 0);
 		}
 	} else {
@@ -127,17 +127,17 @@ void BitmapView::SetBitmap(ShapesBitmap *bp)
 	}
 }
 
-ShapesBitmap *BitmapView::GetBitmap(void) const
+ShpBitmap *BitmapView::GetBitmap(void) const
 {
 	return enc_bmp;
 }
 
-// call this before SettingBitmap!
-void BitmapView::SetColorTable(ShapesColorTable *ct)
+// call this before Set'tingBitmap!
+void BitmapView::SetColorTable(ShpColorTable *ct)
 {
 	ctable = ct;
-	if (enc_bmp != NULL && enc_bmp->Pixels() != NULL && ctable != NULL)
-		dec_bmp = wxBitmap(ShapesBitmapToImage(enc_bmp, ctable, white_transparency));
+	if (enc_bmp != NULL && enc_bmp->pixels != NULL && ctable != NULL)
+		dec_bmp = wxBitmap(ShpBitmapToImage(enc_bmp, ctable, white_transparency));
 	Refresh();
 }
 

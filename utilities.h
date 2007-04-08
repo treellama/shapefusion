@@ -15,39 +15,19 @@
  * along with ShapeFusion; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
-#ifndef SHAPESTREEITEMDATA_H
-#define SHAPESTREEITEMDATA_H
+#ifndef UTILITIES_H
+#define UTILITIES_H
 
 #include "wx/wxprec.h"
 #ifndef WX_PRECOMP
     #include "wx/wx.h"
 #endif
-#include "wx/treectrl.h"
+#include "wx/image.h"
+#include "Shapes.h"
 
-enum {
-	TREESECTION_COLLECTION = 1,
-	TREESECTION_VERSION,
-	TREESECTION_BITMAPS,
-	TREESECTION_COLORTABLES,
-	TREESECTION_FRAMES,
-	TREESECTION_SEQUENCES
-};
-
-class ShapesTreeItemData: public wxTreeItemData {
-private:
-	int	coll_id;
-	int	version;
-	int section;
-	int	sequence;
-
-public:
-	ShapesTreeItemData(int id=-1, int vers=-1, int sect=-1, int seq=-1);
-	~ShapesTreeItemData(void);
-	
-	int CollID(void) const;
-	int Version(void) const;
-	int Section(void) const;
-	int Sequence(void) const;
-};
+wxImage ShpBitmapToImage(ShpBitmap *bp, ShpColorTable *ct, bool white_transparency);
+wxBitmap ImageThumbnail(wxImage &img, int tn_size, bool filtering);
+wxBitmap BadThumbnail(int tn_size);
+void RGB2HSV(float r, float g, float b, float *hue, float *sat, float *val);
 
 #endif

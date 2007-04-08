@@ -21,8 +21,8 @@
 // Utility class to access big-endian data buffers easily
 //
 
-#ifndef BIGENDIANBUFFER_H
-#define BIGENDIANBUFFER_H
+#ifndef BIGENDIABUFFER_H
+#define BIGENDIABUFFER_H
 
 class BigEndianBuffer {
 private:
@@ -56,7 +56,7 @@ public:
 	void WriteUShort(unsigned short v);
 	void WriteLong(long v);
 	void WriteULong(unsigned long v);
-	void WriteBlock(unsigned long _size, const void *src);
+	void WriteBlock(unsigned long _size, unsigned char *src);
 	void WriteZeroes(unsigned int n);
 	// stuff access
 	unsigned char *Data(void) const;
