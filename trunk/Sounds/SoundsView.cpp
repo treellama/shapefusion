@@ -48,8 +48,8 @@ BEGIN_EVENT_TABLE(SoundsView, wxView)
 	EVT_LISTBOX(SOUND_SIXTEEN_BIT_PERMUTATIONS_LIST, SoundsView::SoundPermutationSelected)
 	EVT_MENU(EDIT_MENU_DELETE, SoundsView::MenuDelete)
 	EVT_MENU(SOUNDS_MENU_ADDCLASS, SoundsView::MenuAddSoundClass)
-	EVT_MENU(SOUNDS_MENU_EXPORTSOUND, SoundsView::MenuExportSound)
-	EVT_MENU(SOUNDS_MENU_IMPORTSOUND, SoundsView::MenuImportSound)
+	EVT_MENU(SOUNDS_MENU_EXPORT, SoundsView::MenuExportSound)
+	EVT_MENU(SOUNDS_MENU_IMPORT, SoundsView::MenuImportSound)
 END_EVENT_TABLE()
 
 /*char *randomsndnames[] = {	"Water",
@@ -248,11 +248,11 @@ void SoundsView::OnUpdate(wxView *WXUNUSED(sender), wxObject *WXUNUSED(hint))
 	if (!gequals) {
 		// FIXME : Update this when we have a "complete" editor...
 		wxMessageDialog msg(frame,
-						wxT("It seems 8-bit and 16-bit versions of some of this Sound file"
-						"sounds have differences. This editor will replace 16-bit sounds"
-						"flags with those from 8-bit sounds, to ensure consistency."
-						"If you really need to be able to change 16-bit flags independently,"
-						"please file a feature request"),
+						wxT("It seems 8-bit and 16-bit versions of some of this Sound file "
+						"sounds have differences. This editor will replace 16-bit sounds "
+						"flags with those from 8-bit sounds, to ensure consistency. "
+						"If you really need to be able to change 16-bit flags independently, "
+						"please file a feature request."),
 						wxT("Warning !"), wxOK | wxICON_WARNING);
 						
 		msg.ShowModal();
@@ -264,8 +264,8 @@ void SoundsView::OnUpdate(wxView *WXUNUSED(sender), wxObject *WXUNUSED(hint))
 void SoundsView::Update(void)
 {
 	// We disable our menuitems, in case selection is invalid 
-	menubar->Enable(SOUNDS_MENU_IMPORTSOUND, false);
-	menubar->Enable(SOUNDS_MENU_EXPORTSOUND, false);
+	menubar->Enable(SOUNDS_MENU_IMPORT, false);
+	menubar->Enable(SOUNDS_MENU_EXPORT, false);
 	menubar->Enable(EDIT_MENU_DELETE, false);
 	
 	if (sound_class_list->GetCount() == 0) {
@@ -305,7 +305,7 @@ void SoundsView::Update(void)
 		// As soon as we have a sound class selected, we can
 		// - import a sound into it
 		// - delete it
-		menubar->Enable(SOUNDS_MENU_IMPORTSOUND, true);
+		menubar->Enable(SOUNDS_MENU_IMPORT, true);
 		menubar->Enable(EDIT_MENU_DELETE, true);
 		
 		if (payload->Get8BitSoundDefinition(mSoundClass)->GetPermutationCount() != 0) {
@@ -331,7 +331,7 @@ void SoundsView::Update(void)
 		}
 		
 		// We enable this, our selection is valid...
-		menubar->Enable(SOUNDS_MENU_EXPORTSOUND, true);
+		menubar->Enable(SOUNDS_MENU_EXPORT, true);
 		
 		def = payload->Get8BitSoundDefinition(mSoundClass);
 				
@@ -511,35 +511,34 @@ void SoundsView::MenuImportSound(wxCommandEvent &e)
 
 void SoundsView::MenuExportSound(wxCommandEvent &e)
 {
-#ifdef wxFD_SAVE
-	wxFileDialog dlg(frame, wxT("Choose a file name :"), wxT(""), wxString::Format(wxT("Sound %d-%d"), mSoundClass, mSoundPermutation), wxT("*.snd"), wxFD_SAVE);
-#else
-	wxFileDialog dlg(frame, wxT("Choose a file name :"), wxT(""), wxString::Format(wxT("Sound %d-%d"), mSoundClass, mSoundPermutation), wxT("*.snd"), wxSAVE);
-#endif
-
 	if (mSoundClass == wxNOT_FOUND || mSoundSource == wxNOT_FOUND || mSoundPermutation == wxNOT_FOUND) {
 		wxMessageDialog msg(frame, wxT("Sorry, you need to select a sound class and a permutation to export a sound"), wxT("Error : No selection"), wxOK | wxICON_EXCLAMATION);
 		msg.ShowModal();
 		return;
 	}
+	
+	wxFileDialog dlg(frame, wxT("Choose a file name :"), wxT(""), wxString::Format(wxT("Sound %d-%d.wav"), mSoundClass, mSoundPermutation), wxT("WAV files (*.wav)|*.wav|AIFF files (*.aif)|*.aif"), wxSAVE | wxOVERWRITE_PROMPT);
 
 	if (dlg.ShowModal() == wxID_OK) {
-		ExportSound(dlg.GetPath());
-	}
-}
-
-// Should be in SoundsElements, not there...
-void SoundsView::ExportSound(wxString filepath)
-{
-	SoundsDefinition *def = payload->GetSoundDefinition(mSoundSource, mSoundClass);
+		SoundsDefinition *def = payload->GetSoundDefinition(mSoundSource, mSoundClass);
 		
-	BigEndianBuffer *sound = def->GetPermutation(mSoundPermutation);
-	wxFileOutputStream stream(filepath);
-	
-	if (stream.IsOk())
-		stream.Write(sound->Data(), sound->Size());
-	else
-		wxLogDebug(wxT("[SoundsView] Error opening file for sound export"));
+		SoundsHeader *sound = def->GetPermutation(mSoundPermutation);
+		
+		bool result = false;
+		
+		switch (dlg.GetFilterIndex()) {
+			case 0: // Selected *.wav
+				result = sound->SaveToWave(dlg.GetPath());
+				break;
+			case 1: // Selected *.aif
+			default:
+//				result = sound->SaveToAiff(dlg.GetPath());
+				break;
+		}
+		
+		if (!result)
+			wxLogDebug(wxT("[SoundsView] Error exporting sound"));
+	}
 }
 
 void SoundsView::SoundPermutationSelected(wxCommandEvent &e)

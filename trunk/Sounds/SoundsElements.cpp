@@ -34,6 +34,117 @@
 
 #include "SoundsElements.h"
 
+SoundsHeader::SoundsHeader(unsigned int sndSize, bool verbose) : SoundsElement(verbose) {
+	mData = new BigEndianBuffer(sndSize);
+}
+
+SoundsHeader::~SoundsHeader() {
+	if (mData)
+		delete mData;
+}
+
+bool SoundsHeader::SaveToWave(wxString path)
+{
+	unsigned int	wavChannels, wavSampleRate, wavBitsPerSample, wavFrames;
+	long			length, sampleRate, numChannels, numFrames;
+	short			sampleSize;
+	unsigned char	baseFrequency;
+	
+	mData->Position(20);
+	unsigned char	encode = mData->ReadUChar();
+	switch (encode) {
+		case standardSoundHeader:
+		// standard sound header
+		mData->Position(4);
+		length = mData->ReadLong();
+		sampleRate = mData->ReadLong();
+		mData->Position(21);
+		baseFrequency = mData->ReadUChar();
+		// <length> 8-bit signed samples follow
+		wavChannels = 1;
+		wavSampleRate = (unsigned int)(sampleRate >> 16);
+		wavBitsPerSample = 8;
+		wavFrames = (unsigned int)length;
+		break;
+	case extendedSoundHeader:
+		// extended sound header
+		mData->Position(4);
+		numChannels = mData->ReadLong();
+		sampleRate = mData->ReadLong();
+		mData->Position(21);
+		baseFrequency = mData->ReadUChar();
+		numFrames = mData->ReadLong();
+		mData->Position(48);
+		sampleSize = mData->ReadShort();
+		wavChannels = (unsigned int)numChannels;
+		wavSampleRate = (unsigned int)(sampleRate >> 16);
+		wavBitsPerSample = (unsigned int)sampleSize;
+		wavFrames = (unsigned int)numFrames;
+		mData->Position(64);
+		break;
+	case compressedSoundHeader:
+		// compressed sound header
+		wxLogError(wxT("[SoundsHeader] Compressed sounds not yet supported, can not export this sound."));
+		return false;
+		break;
+	default:
+		wxLogError(wxT("[SoundsHeader] Unknown sound encoding %.2x, can not export this sound."), encode);
+		return false;
+		break;
+	}
+	
+	// write the WAVE file
+	LittleEndianBuffer	riffHeader(12),
+						fmtChunk(24),
+						dataChunk(8 + wavFrames * wavBitsPerSample / 8);
+	std::ofstream		stream(path.fn_str(), std::ios::binary);
+	
+	if (!stream.good()) {
+		wxLogError(wxT("[SoundsHeader] Error opening stream"));
+		return false;
+	}
+	// RIFF chunk
+	riffHeader.WriteULong(0x46464952);			// RIFF signature
+	riffHeader.WriteULong(riffHeader.Size() + fmtChunk.Size() + dataChunk.Size() - 8);	// total file size
+	riffHeader.WriteULong(0x45564157);			// WAVE signature
+												// format chunk
+	fmtChunk.WriteULong(0x20746d66);			// fmt signature
+	fmtChunk.WriteULong(fmtChunk.Size() - 8);	// chunk size
+	fmtChunk.WriteUShort(1);					// PCM data
+	fmtChunk.WriteUShort(wavChannels);
+	fmtChunk.WriteULong(wavSampleRate);
+	fmtChunk.WriteULong(wavSampleRate * wavChannels * wavBitsPerSample / 8);	// byte rate
+	fmtChunk.WriteUShort(wavChannels * wavBitsPerSample / 8);	// block align
+	fmtChunk.WriteUShort(wavBitsPerSample);
+	// data chunk
+	dataChunk.WriteULong(0x61746164);			// data signature
+	dataChunk.WriteULong(dataChunk.Size() - 8);	// chunk size
+	if (wavBitsPerSample == 8) {
+		dataChunk.WriteBlock(wavFrames * wavChannels, mData->Data() + mData->Position());
+	} else if (wavBitsPerSample == 16) {
+		// need to flip endian order
+		for (unsigned int i = 0; i < wavFrames * wavChannels; i++)
+			dataChunk.WriteShort(mData->ReadShort());
+	}
+	// actual write
+	stream.write((const char *)riffHeader.Data(), riffHeader.Size());
+	stream.write((const char *)fmtChunk.Data(), fmtChunk.Size());
+	stream.write((const char *)dataChunk.Data(), dataChunk.Size());
+	stream.close();
+	return true;
+	
+}
+
+unsigned int SoundsHeader::Size(void)
+{
+	return mData->Size();
+}
+
+unsigned char* SoundsHeader::Data(void)
+{
+	return mData->Data();
+}
+
 SoundsDefinition::SoundsDefinition(bool verbose) : SoundsElement(verbose) {}
 
 SoundsDefinition::~SoundsDefinition() {}
@@ -173,7 +284,7 @@ BigEndianBuffer& SoundsDefinition::LoadObject(BigEndianBuffer& buffer)
 	int singleLength = buffer.ReadLong();
 	int totalLength = buffer.ReadLong();
 	
-	if ((unsigned int)(groupOffset + totalLength) > buffer.Size()) {
+	if (permutations != 0 && (unsigned int)(groupOffset + totalLength) > buffer.Size()) {
 		wxLogError(wxT("[SoundsDefinition] incorrect group offset / total length"));
 		return buffer;
 	}
@@ -215,7 +326,7 @@ BigEndianBuffer& SoundsDefinition::LoadObject(BigEndianBuffer& buffer)
 		else
 			size = soundOffsets[i + 1] - soundOffsets[i];
 		
-		BigEndianBuffer *sndbuffer = new BigEndianBuffer(size);
+		SoundsHeader *sndbuffer = new SoundsHeader(size, IsVerbose());
 		
 		buffer.Position(groupOffset + soundOffsets[i]);
 		buffer.ReadBlock(sndbuffer->Size(), sndbuffer->Data());
@@ -229,7 +340,7 @@ BigEndianBuffer& SoundsDefinition::LoadObject(BigEndianBuffer& buffer)
 	return buffer;
 }
 
-BigEndianBuffer* SoundsDefinition::GetPermutation(unsigned int permutation_index)
+SoundsHeader* SoundsDefinition::GetPermutation(unsigned int permutation_index)
 {
 	if (permutation_index > mSounds.size())
 		return NULL;

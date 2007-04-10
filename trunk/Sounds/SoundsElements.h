@@ -19,10 +19,12 @@
 #ifndef SOUNDSELEMENTS_H
 #define SOUNDSELEMENTS_H
 
+#include <fstream>
 #include <vector>
 using std::vector;
 
 #include "../BigEndianBuffer.h"
+#include "../LittleEndianBuffer.h"
 
 /* ---------- constants */
 
@@ -91,20 +93,31 @@ public:
 	bool IsVerbose() const {return mVerboseLoading;}
 };
 
-/*class SoundHeader : public SoundsElement
+class SoundsHeader : public SoundsElement
 {
 private:
-// TODO: make something useful with this
-	unsigned int mLength;
-	char *mData;
+// Stuff for reading System 7 Sound info
+/*sampled sound header encoding options*/
+	enum {
+		standardSoundHeader		= 0x00,
+		extendedSoundHeader		= 0xFF,
+		compressedSoundHeader	= 0xFE
+	};
+	
+	BigEndianBuffer* mData;
 public:
-	SoundHeader(bool verbose = false);
-	~SoundHeader();
+	SoundsHeader(unsigned int sndSize, bool verbose = false);
+	~SoundsHeader();
+	
+	bool LoadFromWave(wxString path);
+	bool SaveToWave(wxString path);
 	
 	// Utilities
+	unsigned int Size(void);
+	unsigned char* Data(void);
     BigEndianBuffer& SaveObject(BigEndianBuffer& buffer);
     BigEndianBuffer& LoadObject(BigEndianBuffer& buffer);
-};*/
+};
 
 class SoundsDefinition : public SoundsElement 
 {
@@ -126,7 +139,7 @@ private:
 //	int mSoundOffsets[MAXIMUM_PERMUTATIONS_PER_SOUND]; // zero-based from group offset
 //	std::vector<int> mSoundOffsets;
 
-	std::vector<BigEndianBuffer*> mSounds;
+	std::vector<SoundsHeader*> mSounds;
 	
 	unsigned int mLastPlayed; // machine ticks
 	
@@ -183,7 +196,7 @@ public:
 	void SetHighPitch(int p) {mHighPitch = p;}
 	
 	unsigned int GetPermutationCount(void) const {return mSounds.size();}
-	BigEndianBuffer* GetPermutation(unsigned int permutation_index);
+	SoundsHeader* GetPermutation(unsigned int permutation_index);
 	
 	// Utilities
 	unsigned int GetSizeInFile(void);
