@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1F33454A0BC95CA300A15A32 /* LittleEndianBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1F3345480BC95CA300A15A32 /* LittleEndianBuffer.cpp */; };
 		1F536BAC0B93426B00F51E49 /* BitmapBrowser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F08B4B7E0AB0AE4B00896399 /* BitmapBrowser.cpp */; };
 		1F536BAD0B93426C00F51E49 /* BitmapView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F08B4B7D0AB0AE4B00896399 /* BitmapView.cpp */; };
 		1F536BAE0B93426C00F51E49 /* CTBrowser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F08B4B7C0AB0AE4B00896399 /* CTBrowser.cpp */; };
@@ -43,6 +44,8 @@
 /* End PBXBuildRule section */
 
 /* Begin PBXFileReference section */
+		1F3345480BC95CA300A15A32 /* LittleEndianBuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = LittleEndianBuffer.cpp; sourceTree = "<group>"; };
+		1F3345490BC95CA300A15A32 /* LittleEndianBuffer.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = LittleEndianBuffer.h; sourceTree = "<group>"; };
 		1F6C5E060B80E37800628F07 /* wx.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = wx.framework; path = /Library/Frameworks/wx.framework; sourceTree = "<absolute>"; };
 		1F84BCE90B8C760D000B4DC4 /* ShapesDocument.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ShapesDocument.h; sourceTree = "<group>"; };
 		1F98572F0B8A2CDC00D0395F /* ShapeFusionMain.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = ShapeFusionMain.cpp; sourceTree = "<group>"; };
@@ -168,6 +171,8 @@
 				1F9857300B8A2CDC00D0395F /* ShapeFusionMain.h */,
 				F096F44E0AD2DD97005A633A /* BigEndianBuffer.cpp */,
 				F096F4500AD2DD9F005A633A /* BigEndianBuffer.h */,
+				1F3345480BC95CA300A15A32 /* LittleEndianBuffer.cpp */,
+				1F3345490BC95CA300A15A32 /* LittleEndianBuffer.h */,
 			);
 			name = Sources;
 			sourceTree = SOURCE_ROOT;
@@ -276,6 +281,7 @@
 				1FAD85D20BB1E9410024D113 /* SoundsDocument.cpp in Sources */,
 				1FAD85D30BB1E9410024D113 /* SoundsElements.cpp in Sources */,
 				1FAD85D40BB1E9410024D113 /* SoundsView.cpp in Sources */,
+				1F33454A0BC95CA300A15A32 /* LittleEndianBuffer.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
