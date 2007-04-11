@@ -46,6 +46,8 @@ BEGIN_EVENT_TABLE(SoundsView, wxView)
 	EVT_CHECKBOX(SOUND_FLAGS_AMBIENT, SoundsView::FlagsChanged)
 	EVT_LISTBOX(SOUND_EIGHT_BIT_PERMUTATIONS_LIST, SoundsView::SoundPermutationSelected)
 	EVT_LISTBOX(SOUND_SIXTEEN_BIT_PERMUTATIONS_LIST, SoundsView::SoundPermutationSelected)
+	EVT_LISTBOX_DCLICK(SOUND_EIGHT_BIT_PERMUTATIONS_LIST, SoundsView::SoundPermutationDoubleClicked)
+	EVT_LISTBOX_DCLICK(SOUND_SIXTEEN_BIT_PERMUTATIONS_LIST, SoundsView::SoundPermutationDoubleClicked)
 	EVT_MENU(EDIT_MENU_DELETE, SoundsView::MenuDelete)
 	EVT_MENU(SOUNDS_MENU_ADDCLASS, SoundsView::MenuAddSoundClass)
 	EVT_MENU(SOUNDS_MENU_EXPORT, SoundsView::MenuExportSound)
@@ -531,8 +533,9 @@ void SoundsView::MenuExportSound(wxCommandEvent &e)
 				result = sound->SaveToWave(dlg.GetPath());
 				break;
 			case 1: // Selected *.aif
+				result = sound->SaveToAiff(dlg.GetPath());
+				break;
 			default:
-//				result = sound->SaveToAiff(dlg.GetPath());
 				break;
 		}
 		
@@ -557,3 +560,8 @@ void SoundsView::SoundPermutationSelected(wxCommandEvent &e)
 	}
 }
 
+void SoundsView::SoundPermutationDoubleClicked(wxCommandEvent &e)
+{
+	SoundsDefinition *def = payload->GetSoundDefinition(mSoundSource, mSoundClass);
+	def->GetPermutation(mSoundPermutation)->PlaySound();
+}

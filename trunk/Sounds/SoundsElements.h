@@ -112,6 +112,11 @@ public:
 	bool LoadFromWave(wxString path);
 	bool SaveToWave(wxString path);
 	
+	bool LoadFromAiff(wxString path);
+	bool SaveToAiff(wxString path);
+	
+	void PlaySound(void);
+	
 	// Utilities
 	unsigned int Size(void);
 	unsigned char* Data(void);

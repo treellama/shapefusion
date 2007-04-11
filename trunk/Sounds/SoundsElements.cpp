@@ -31,6 +31,7 @@
 #else
     #include "wx/txtstrm.h"
 #endif
+#include "wx/sound.h"
 
 #include "SoundsElements.h"
 
@@ -104,11 +105,11 @@ bool SoundsHeader::SaveToWave(wxString path)
 		return false;
 	}
 	// RIFF chunk
-	riffHeader.WriteULong(0x46464952);			// RIFF signature
+	riffHeader.WriteULong('FFIR'/*0x46464952*/);			// RIFF signature
 	riffHeader.WriteULong(riffHeader.Size() + fmtChunk.Size() + dataChunk.Size() - 8);	// total file size
-	riffHeader.WriteULong(0x45564157);			// WAVE signature
+	riffHeader.WriteULong('EVAW');			// WAVE signature
 												// format chunk
-	fmtChunk.WriteULong(0x20746d66);			// fmt signature
+	fmtChunk.WriteULong(' tmf');			// fmt signature
 	fmtChunk.WriteULong(fmtChunk.Size() - 8);	// chunk size
 	fmtChunk.WriteUShort(1);					// PCM data
 	fmtChunk.WriteUShort(wavChannels);
@@ -117,7 +118,7 @@ bool SoundsHeader::SaveToWave(wxString path)
 	fmtChunk.WriteUShort(wavChannels * wavBitsPerSample / 8);	// block align
 	fmtChunk.WriteUShort(wavBitsPerSample);
 	// data chunk
-	dataChunk.WriteULong(0x61746164);			// data signature
+	dataChunk.WriteULong('atad');			// data signature
 	dataChunk.WriteULong(dataChunk.Size() - 8);	// chunk size
 	if (wavBitsPerSample == 8) {
 		dataChunk.WriteBlock(wavFrames * wavChannels, mData->Data() + mData->Position());
@@ -132,7 +133,104 @@ bool SoundsHeader::SaveToWave(wxString path)
 	stream.write((const char *)dataChunk.Data(), dataChunk.Size());
 	stream.close();
 	return true;
+}
+
+bool SoundsHeader::SaveToAiff(wxString path)
+{
+	unsigned int	aiffChannels, aiffSampleRate, aiffBitsPerSample, aiffFrames;
+	long			length, sampleRate, numChannels, numFrames;
+	short			sampleSize;
+	unsigned char	baseFrequency;
 	
+	mData->Position(20);
+	unsigned char	encode = mData->ReadUChar();
+	switch (encode) {
+		case standardSoundHeader:
+		// standard sound header
+		mData->Position(4);
+		length = mData->ReadLong();
+		sampleRate = mData->ReadLong();
+		mData->Position(21);
+		baseFrequency = mData->ReadUChar();
+		// <length> 8-bit signed samples follow
+		aiffChannels = 1;
+		aiffSampleRate = (unsigned int)(sampleRate >> 16);
+		aiffBitsPerSample = 8;
+		aiffFrames = (unsigned int)length;
+		break;
+	case extendedSoundHeader:
+		// extended sound header
+		mData->Position(4);
+		numChannels = mData->ReadLong();
+		sampleRate = mData->ReadLong();
+		mData->Position(21);
+		baseFrequency = mData->ReadUChar();
+		numFrames = mData->ReadLong();
+		mData->Position(48);
+		sampleSize = mData->ReadShort();
+		aiffChannels = (unsigned int)numChannels;
+		aiffSampleRate = (unsigned int)(sampleRate >> 16);
+		aiffBitsPerSample = (unsigned int)sampleSize;
+		aiffFrames = (unsigned int)numFrames;
+		mData->Position(64);
+		break;
+	case compressedSoundHeader:
+		// compressed sound header
+		wxLogError(wxT("[SoundsHeader] Compressed sounds not yet supported, can not export this sound."));
+		return false;
+		break;
+	default:
+		wxLogError(wxT("[SoundsHeader] Unknown sound encoding %.2x, can not export this sound."), encode);
+		return false;
+		break;
+	}
+	
+	// write the AIFF file
+	BigEndianBuffer		formHeader(12),
+						commChunk(24),
+						ssndChunk(16 + aiffFrames * aiffBitsPerSample / 8);
+	std::ofstream		stream(path.fn_str(), std::ios::binary);
+	
+	if (!stream.good()) {
+		wxLogError(wxT("[SoundsHeader] Error opening stream"));
+		return false;
+	}
+	// FORM AIFF chunk
+	formHeader.WriteULong('FORM');				// groupID
+	formHeader.WriteULong(formHeader.Size() + commChunk.Size() + ssndChunk.Size() - 8);
+												// fileSize
+	formHeader.WriteULong('AIFF');				// typeID
+	
+	// Common chunk
+	commChunk.WriteULong('COMM');				// chunkID
+	commChunk.WriteULong(commChunk.Size() - 8);	// chunkSize
+	commChunk.WriteShort(aiffChannels);			// numChannels
+	commChunk.WriteULong(aiffFrames);			// numSampleFrames
+	commChunk.WriteShort(aiffBitsPerSample);	// sampleSize
+	commChunk.WriteLong(sampleRate);			// sampleRate
+	
+	// Sound Data chunk
+	ssndChunk.WriteULong('SSND');				// chunkID
+	ssndChunk.WriteULong(ssndChunk.Size() - 8);	// chunkSize
+	ssndChunk.WriteULong(0);					// offset
+	ssndChunk.WriteULong(0);					// blockSize
+	ssndChunk.WriteBlock(aiffFrames * aiffChannels, mData->Data() + mData->Position());
+	
+	// actual write
+	stream.write((const char *)formHeader.Data(), formHeader.Size());
+	stream.write((const char *)commChunk.Data(), commChunk.Size());
+	stream.write((const char *)ssndChunk.Data(), ssndChunk.Size());
+	stream.close();
+	return true;
+}
+
+void SoundsHeader::PlaySound(void)
+{
+	wxString tempfile = wxString::Format(wxT("shp%d.wav"), wxDateTime::UNow().GetMillisecond());
+	
+	SaveToWave(tempfile);
+	wxSound(tempfile).Play(wxSOUND_SYNC);
+	//FIXME: Delete the tempfile after use !!!
 }
 
 unsigned int SoundsHeader::Size(void)
@@ -280,9 +378,9 @@ BigEndianBuffer& SoundsDefinition::LoadObject(BigEndianBuffer& buffer)
 	}
 	
 	mPermutationsPlayed = buffer.ReadUShort();
-	int groupOffset = buffer.ReadLong();
-	int singleLength = buffer.ReadLong();
-	int totalLength = buffer.ReadLong();
+	int groupOffset = buffer.ReadULong();
+	int singleLength = buffer.ReadULong();
+	int totalLength = buffer.ReadULong();
 	
 	if (permutations != 0 && (unsigned int)(groupOffset + totalLength) > buffer.Size()) {
 		wxLogError(wxT("[SoundsDefinition] incorrect group offset / total length"));
@@ -342,7 +440,7 @@ BigEndianBuffer& SoundsDefinition::LoadObject(BigEndianBuffer& buffer)
 
 SoundsHeader* SoundsDefinition::GetPermutation(unsigned int permutation_index)
 {
-	if (permutation_index > mSounds.size())
+	if (permutation_index >= mSounds.size())
 		return NULL;
 	
 	return mSounds[permutation_index];

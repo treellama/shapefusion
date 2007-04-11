@@ -113,6 +113,7 @@ public:
 	void LowPitchValueChanged(wxScrollEvent &e);
 	void HighPitchValueChanged(wxScrollEvent &e);
 	void SoundPermutationSelected(wxCommandEvent &e);
+	void SoundPermutationDoubleClicked(wxCommandEvent &e);
 	
 	// Menu events
 	void MenuDelete(wxCommandEvent &e);
