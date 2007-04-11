@@ -522,12 +522,10 @@ void SoundsView::MenuExportSound(wxCommandEvent &e)
 	wxFileDialog dlg(frame, wxT("Choose a file name :"), wxT(""), wxString::Format(wxT("Sound %d-%d.wav"), mSoundClass, mSoundPermutation), wxT("WAV files (*.wav)|*.wav|AIFF files (*.aif)|*.aif"), wxSAVE | wxOVERWRITE_PROMPT);
 
 	if (dlg.ShowModal() == wxID_OK) {
-		SoundsDefinition *def = payload->GetSoundDefinition(mSoundSource, mSoundClass);
-		
-		SoundsHeader *sound = def->GetPermutation(mSoundPermutation);
-		
-		bool result = false;
-		
+		SoundsDefinition	*def = payload->GetSoundDefinition(mSoundSource, mSoundClass);
+		AppleSoundHeader	*sound = def->GetPermutation(mSoundPermutation);
+		bool				result = false;
+
 		switch (dlg.GetFilterIndex()) {
 			case 0: // Selected *.wav
 				result = sound->SaveToWave(dlg.GetPath());
@@ -538,7 +536,7 @@ void SoundsView::MenuExportSound(wxCommandEvent &e)
 			default:
 				break;
 		}
-		
+
 		if (!result)
 			wxLogDebug(wxT("[SoundsView] Error exporting sound"));
 	}

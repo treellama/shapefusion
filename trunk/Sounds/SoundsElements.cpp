@@ -34,17 +34,20 @@
 #include "wx/sound.h"
 
 #include "SoundsElements.h"
+#include "../LittleEndianBuffer.h"
 
-SoundsHeader::SoundsHeader(unsigned int sndSize, bool verbose) : SoundsElement(verbose) {
+AppleSoundHeader::AppleSoundHeader(unsigned int sndSize, bool verbose) : SoundsElement(verbose)
+{
 	mData = new BigEndianBuffer(sndSize);
 }
 
-SoundsHeader::~SoundsHeader() {
+AppleSoundHeader::~AppleSoundHeader()
+{
 	if (mData)
 		delete mData;
 }
 
-bool SoundsHeader::SaveToWave(wxString path)
+bool AppleSoundHeader::SaveToWave(wxString path)
 {
 	unsigned int	wavChannels, wavSampleRate, wavBitsPerSample, wavFrames;
 	long			length, sampleRate, numChannels, numFrames;
@@ -55,43 +58,43 @@ bool SoundsHeader::SaveToWave(wxString path)
 	unsigned char	encode = mData->ReadUChar();
 	switch (encode) {
 		case standardSoundHeader:
-		// standard sound header
-		mData->Position(4);
-		length = mData->ReadLong();
-		sampleRate = mData->ReadLong();
-		mData->Position(21);
-		baseFrequency = mData->ReadUChar();
-		// <length> 8-bit signed samples follow
-		wavChannels = 1;
-		wavSampleRate = (unsigned int)(sampleRate >> 16);
-		wavBitsPerSample = 8;
-		wavFrames = (unsigned int)length;
-		break;
-	case extendedSoundHeader:
-		// extended sound header
-		mData->Position(4);
-		numChannels = mData->ReadLong();
-		sampleRate = mData->ReadLong();
-		mData->Position(21);
-		baseFrequency = mData->ReadUChar();
-		numFrames = mData->ReadLong();
-		mData->Position(48);
-		sampleSize = mData->ReadShort();
-		wavChannels = (unsigned int)numChannels;
-		wavSampleRate = (unsigned int)(sampleRate >> 16);
-		wavBitsPerSample = (unsigned int)sampleSize;
-		wavFrames = (unsigned int)numFrames;
-		mData->Position(64);
-		break;
-	case compressedSoundHeader:
-		// compressed sound header
-		wxLogError(wxT("[SoundsHeader] Compressed sounds not yet supported, can not export this sound."));
-		return false;
-		break;
-	default:
-		wxLogError(wxT("[SoundsHeader] Unknown sound encoding %.2x, can not export this sound."), encode);
-		return false;
-		break;
+			// standard sound header
+			mData->Position(4);
+			length = mData->ReadLong();
+			sampleRate = mData->ReadLong();
+			mData->Position(21);
+			baseFrequency = mData->ReadUChar();
+			// <length> 8-bit signed samples follow
+			wavChannels = 1;
+			wavSampleRate = (unsigned int)(sampleRate >> 16);
+			wavBitsPerSample = 8;
+			wavFrames = (unsigned int)length;
+			break;
+		case extendedSoundHeader:
+			// extended sound header
+			mData->Position(4);
+			numChannels = mData->ReadLong();
+			sampleRate = mData->ReadLong();
+			mData->Position(21);
+			baseFrequency = mData->ReadUChar();
+			numFrames = mData->ReadLong();
+			mData->Position(48);
+			sampleSize = mData->ReadShort();
+			wavChannels = (unsigned int)numChannels;
+			wavSampleRate = (unsigned int)(sampleRate >> 16);
+			wavBitsPerSample = (unsigned int)sampleSize;
+			wavFrames = (unsigned int)numFrames;
+			mData->Position(64);
+			break;
+		case compressedSoundHeader:
+			// compressed sound header
+			wxLogError(wxT("[AppleSoundHeader] Compressed sounds not yet supported, can not export this sound."));
+			return false;
+			break;
+		default:
+			wxLogError(wxT("[AppleSoundHeader] Unknown sound encoding %.2x, can not export this sound."), encode);
+			return false;
+			break;
 	}
 	
 	// write the WAVE file
@@ -101,11 +104,11 @@ bool SoundsHeader::SaveToWave(wxString path)
 	std::ofstream		stream(path.fn_str(), std::ios::binary);
 	
 	if (!stream.good()) {
-		wxLogError(wxT("[SoundsHeader] Error opening stream"));
+		wxLogError(wxT("[AppleSoundHeader] Error opening stream"));
 		return false;
 	}
 	// RIFF chunk
-	riffHeader.WriteULong('FFIR'/*0x46464952*/);			// RIFF signature
+	riffHeader.WriteULong('FFIR');			// RIFF signature
 	riffHeader.WriteULong(riffHeader.Size() + fmtChunk.Size() + dataChunk.Size() - 8);	// total file size
 	riffHeader.WriteULong('EVAW');			// WAVE signature
 												// format chunk
@@ -135,7 +138,7 @@ bool SoundsHeader::SaveToWave(wxString path)
 	return true;
 }
 
-bool SoundsHeader::SaveToAiff(wxString path)
+bool AppleSoundHeader::SaveToAiff(wxString path)
 {
 	unsigned int	aiffChannels, aiffSampleRate, aiffBitsPerSample, aiffFrames;
 	long			length, sampleRate, numChannels, numFrames;
@@ -176,11 +179,11 @@ bool SoundsHeader::SaveToAiff(wxString path)
 		break;
 	case compressedSoundHeader:
 		// compressed sound header
-		wxLogError(wxT("[SoundsHeader] Compressed sounds not yet supported, can not export this sound."));
+		wxLogError(wxT("[AppleSoundHeader] Compressed sounds not yet supported, can not export this sound."));
 		return false;
 		break;
 	default:
-		wxLogError(wxT("[SoundsHeader] Unknown sound encoding %.2x, can not export this sound."), encode);
+		wxLogError(wxT("[AppleSoundHeader] Unknown sound encoding %.2x, can not export this sound."), encode);
 		return false;
 		break;
 	}
@@ -192,7 +195,7 @@ bool SoundsHeader::SaveToAiff(wxString path)
 	std::ofstream		stream(path.fn_str(), std::ios::binary);
 	
 	if (!stream.good()) {
-		wxLogError(wxT("[SoundsHeader] Error opening stream"));
+		wxLogError(wxT("[AppleSoundHeader] Error opening stream"));
 		return false;
 	}
 	// FORM AIFF chunk
@@ -207,15 +210,18 @@ bool SoundsHeader::SaveToAiff(wxString path)
 	commChunk.WriteShort(aiffChannels);			// numChannels
 	commChunk.WriteULong(aiffFrames);			// numSampleFrames
 	commChunk.WriteShort(aiffBitsPerSample);	// sampleSize
-	commChunk.WriteLong(sampleRate);			// sampleRate
+	// FIXME this is actually an 80 bit extended floating point value.
+	// See MPlayer/libavutil/intfloat_readwrite.* for code about this.
+	commChunk.WriteLong(aiffSampleRate);		// sampleRate
 	
 	// Sound Data chunk
 	ssndChunk.WriteULong('SSND');				// chunkID
 	ssndChunk.WriteULong(ssndChunk.Size() - 8);	// chunkSize
 	ssndChunk.WriteULong(0);					// offset
 	ssndChunk.WriteULong(0);					// blockSize
+	// FIXME?
 	ssndChunk.WriteBlock(aiffFrames * aiffChannels, mData->Data() + mData->Position());
-	
+
 	// actual write
 	stream.write((const char *)formHeader.Data(), formHeader.Size());
 	stream.write((const char *)commChunk.Data(), commChunk.Size());
@@ -224,7 +230,7 @@ bool SoundsHeader::SaveToAiff(wxString path)
 	return true;
 }
 
-void SoundsHeader::PlaySound(void)
+void AppleSoundHeader::PlaySound(void)
 {
 	wxString tempfile = wxString::Format(wxT("shp%d.wav"), wxDateTime::UNow().GetMillisecond());
 	
@@ -233,12 +239,12 @@ void SoundsHeader::PlaySound(void)
 	//FIXME: Delete the tempfile after use !!!
 }
 
-unsigned int SoundsHeader::Size(void)
+unsigned int AppleSoundHeader::Size(void)
 {
 	return mData->Size();
 }
 
-unsigned char* SoundsHeader::Data(void)
+unsigned char* AppleSoundHeader::Data(void)
 {
 	return mData->Data();
 }
@@ -413,9 +419,8 @@ BigEndianBuffer& SoundsDefinition::LoadObject(BigEndianBuffer& buffer)
 	
 	// Now we load actual sound data
 	unsigned int oldpos = buffer.Position();
-	
+
 	for (short i = 0; i < permutations; i++) {
-	
 		unsigned int size = 0;
 		if (permutations == 1)
 			size = singleLength;
@@ -424,11 +429,10 @@ BigEndianBuffer& SoundsDefinition::LoadObject(BigEndianBuffer& buffer)
 		else
 			size = soundOffsets[i + 1] - soundOffsets[i];
 		
-		SoundsHeader *sndbuffer = new SoundsHeader(size, IsVerbose());
-		
+		AppleSoundHeader *sndbuffer = new AppleSoundHeader(size, IsVerbose());
+
 		buffer.Position(groupOffset + soundOffsets[i]);
 		buffer.ReadBlock(sndbuffer->Size(), sndbuffer->Data());
-		
 		mSounds.push_back(sndbuffer);
 	}
 
@@ -438,7 +442,7 @@ BigEndianBuffer& SoundsDefinition::LoadObject(BigEndianBuffer& buffer)
 	return buffer;
 }
 
-SoundsHeader* SoundsDefinition::GetPermutation(unsigned int permutation_index)
+AppleSoundHeader* SoundsDefinition::GetPermutation(unsigned int permutation_index)
 {
 	if (permutation_index >= mSounds.size())
 		return NULL;
