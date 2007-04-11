@@ -24,7 +24,6 @@
 using std::vector;
 
 #include "../BigEndianBuffer.h"
-#include "../LittleEndianBuffer.h"
 
 /* ---------- constants */
 
@@ -93,7 +92,7 @@ public:
 	bool IsVerbose() const {return mVerboseLoading;}
 };
 
-class SoundsHeader : public SoundsElement
+class AppleSoundHeader : public SoundsElement
 {
 private:
 // Stuff for reading System 7 Sound info
@@ -106,8 +105,8 @@ private:
 	
 	BigEndianBuffer* mData;
 public:
-	SoundsHeader(unsigned int sndSize, bool verbose = false);
-	~SoundsHeader();
+	AppleSoundHeader(unsigned int sndSize, bool verbose = false);
+	~AppleSoundHeader();
 	
 	bool LoadFromWave(wxString path);
 	bool SaveToWave(wxString path);
@@ -144,7 +143,7 @@ private:
 //	int mSoundOffsets[MAXIMUM_PERMUTATIONS_PER_SOUND]; // zero-based from group offset
 //	std::vector<int> mSoundOffsets;
 
-	std::vector<SoundsHeader*> mSounds;
+	std::vector<AppleSoundHeader*> mSounds;
 	
 	unsigned int mLastPlayed; // machine ticks
 	
@@ -201,7 +200,7 @@ public:
 	void SetHighPitch(int p) {mHighPitch = p;}
 	
 	unsigned int GetPermutationCount(void) const {return mSounds.size();}
-	SoundsHeader* GetPermutation(unsigned int permutation_index);
+	AppleSoundHeader* GetPermutation(unsigned int permutation_index);
 	
 	// Utilities
 	unsigned int GetSizeInFile(void);

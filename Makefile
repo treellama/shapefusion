@@ -76,7 +76,7 @@ Shapes/utilities.o: utilities.cpp utilities.h ShapesElements.h
 Sounds/SoundsDocument.o: SoundsDocument.cpp SoundsDocument.h SoundsElements.h SoundsView.h
 	g++ -c $(CFLAGS) $(WXCFLAGS) $< -o $@
 
-Sounds/SoundsElements.o: SoundsElements.cpp SoundsElements.h BigEndianBuffer.h
+Sounds/SoundsElements.o: SoundsElements.cpp SoundsElements.h BigEndianBuffer.h LittleEndianBuffer.h
 	g++ -c $(CFLAGS) $(WXCFLAGS) $< -o $@
 
 Sounds/SoundsView.o: SoundsView.cpp SoundsView.h SoundsDocument.h ShapeFusionApp.h ShapeFusionMenus.h
