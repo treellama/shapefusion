@@ -126,46 +126,36 @@ public:
 class SoundsDefinition : public SoundsElement 
 {
 private:
+	/* Marathon Sound Definition */
 	short mSoundCode;
-	
 	short mBehaviorIndex;
 	unsigned short mFlags;
-
 	unsigned short mChance; // play sound if AbsRandom()>=chance
-	
-	/* if low_pitch==0, use FIXED_ONE; if high_pitch==0 use low pitch; else choose in [low_pitch,high_pitch] */
+	/* if low_pitch==0, use FIXED_ONE;
+	 * if high_pitch==0 use low pitch;
+	 * else choose in [low_pitch,high_pitch]
+	 */
 	float mLowPitch, mHighPitch;
-	
 	/* filled in later */
 //	short mPermutations;
 	unsigned short mPermutationsPlayed;
 //	int mGroupOffset, mSingleLength, mTotalLength; // magic numbers necessary to load sounds
-//	int mSoundOffsets[MAXIMUM_PERMUTATIONS_PER_SOUND]; // zero-based from group offset
 //	std::vector<int> mSoundOffsets;
-
 	std::vector<AppleSoundHeader*> mSounds;
-	
 	unsigned int mLastPlayed; // machine ticks
-	
 	// Pointer to loaded sound and size of sound object pointed to
 //	short *ptr;
 //	int size;
-
+	
+	bool mRemap8bit;
 public:
 	SoundsDefinition(bool verbose = false);
 	~SoundsDefinition();
 	
-	inline bool Compare (SoundsDefinition *right) {
-		if (mSoundCode == right->mSoundCode
-			&& mBehaviorIndex == right->mBehaviorIndex
-			&& mFlags == right->mFlags
-			&& mChance == right->mChance
-			&& mLowPitch == right->mLowPitch
-			&& mHighPitch == right->mHighPitch)
-			return true;
-		
-		return false;
-	}
+	bool HaveSameAttributesAs(const SoundsDefinition& right) const;
+	bool HaveSameSoundsAs(const SoundsDefinition& right) const;
+	bool operator== (const SoundsDefinition& right) const;
+	bool operator!=(const SoundsDefinition& right) const;
 	
 	short GetSoundCode(void) const {return mSoundCode;}
 	short GetBehaviorIndex(void) const {return mBehaviorIndex;}

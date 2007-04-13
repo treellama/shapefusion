@@ -145,8 +145,14 @@ wxOutputStream& SoundsDocument::SaveObject(wxOutputStream& stream)
 	
 	filebuffer.WriteLong(mVersion);
 	filebuffer.WriteLong(mTag);
-	filebuffer.WriteShort(source_count);
-	filebuffer.WriteShort(sound_count);
+	
+	if (mM2Demo) {
+		filebuffer.WriteShort(mSoundCount);
+		filebuffer.WriteShort(0);
+	} else {
+		filebuffer.WriteShort(source_count);
+		filebuffer.WriteShort(sound_count);
+	}
 	
 	filebuffer.Position(SIZEOF_sound_file_header);
 	
@@ -206,8 +212,12 @@ wxInputStream& SoundsDocument::LoadObject(wxInputStream& stream)
 	}
 	
 	if (mSoundCount == 0) {
+		/* Handling Marathon 2 Demo
+		 * We have to swap our counts
+		 */
 		mSoundCount = mSourceCount;
 		mSourceCount = 1;
+		mM2Demo = true;
 	}
 	
 	if (IsVerbose()) {
@@ -217,26 +227,27 @@ wxInputStream& SoundsDocument::LoadObject(wxInputStream& stream)
 		wxLogDebug(wxT("[SoundsDocument] Sound Count:	%d"), mSoundCount);
 	}
 	
+	/* We move to the end of the Sound file header */
 	filebuffer.Position(SIZEOF_sound_file_header);
-
-//	mSoundDefinitions.resize(mSourceCount);
+	
+	/* Now we load 8-bit and 16-bit sounds */
 	for (int i = 0; i < mSourceCount; i++) {
 		for (int j = 0; j < mSoundCount; j++) {
 			SoundsDefinition *snd = new SoundsDefinition(IsVerbose());
-			unsigned int oldpos = filebuffer.Position();
-			
 			
 			if (IsVerbose())
 				wxLogDebug(wxT("[SoundsDocument] Loading source %d, sound %d"), i, j);
 			
-			snd->LoadObject(filebuffer);
+			unsigned int oldpos = filebuffer.Position();
 			
-			filebuffer.Position(oldpos + SIZEOF_sound_definition);
+			snd->LoadObject(filebuffer);
 			
 			if (!snd->IsGood()) {
 				wxLogError(wxT("[SoundsDocument] Error loading sound definition. Skipping..."));
 				return stream;
 			}
+			
+			filebuffer.Position(oldpos + SIZEOF_sound_definition);
 			
 			mSoundDefinitions[i].push_back(snd);
 		}
