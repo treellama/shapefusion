@@ -241,7 +241,7 @@ void SoundsView::OnUpdate(wxView *WXUNUSED(sender), wxObject *WXUNUSED(hint))
 		sound_class_list->Append(wxString::Format(wxT("Sound %d"), i));
 		// We check if there is a difference between 8-bit and 16-bit
 		// SoundsDefinitions
-		bool equals = payload->Get8BitSoundDefinition(i)->Compare(payload->Get16BitSoundDefinition(i));
+		bool equals = payload->Get8BitSoundDefinition(i)->HaveSameAttributesAs(*payload->Get16BitSoundDefinition(i));
 		if (!equals)
 			wxLogDebug(wxT("Sound source different at %d"), i);
 		gequals = gequals && equals;

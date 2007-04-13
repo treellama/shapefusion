@@ -249,9 +249,53 @@ unsigned char* AppleSoundHeader::Data(void)
 	return mData->Data();
 }
 
-SoundsDefinition::SoundsDefinition(bool verbose) : SoundsElement(verbose) {}
+SoundsDefinition::SoundsDefinition(bool verbose) : SoundsElement(verbose)
+{
+	mSoundCode = -1;
+	mBehaviorIndex = _sound_is_quiet;
+	mFlags = 0;
+	mChance = _always;
+	mSounds.resize(0);
+}
 
 SoundsDefinition::~SoundsDefinition() {}
+
+bool SoundsDefinition::HaveSameAttributesAs(const SoundsDefinition& right) const
+{
+	return (
+			(mSoundCode == right.mSoundCode) &&
+			(mBehaviorIndex == right.mBehaviorIndex) &&
+			(mFlags == right.mFlags) &&
+			(mChance == right.mChance) &&
+			(mLowPitch == right.mLowPitch) &&
+			(mHighPitch == right.mHighPitch)
+		   );
+}
+
+bool SoundsDefinition::HaveSameSoundsAs(const SoundsDefinition& right) const
+{
+	bool isSame = ((&right) != this) && (mSounds.size() == right.mSounds.size());
+	
+	unsigned int i = 0;
+	while (isSame && (i < mSounds.size())) {
+		isSame = isSame && mSounds[i] == right.mSounds[i];
+	}
+	
+	return isSame;
+}
+
+bool SoundsDefinition::operator== (const SoundsDefinition&	right) const
+{
+	return (HaveSameAttributesAs(right) &&
+			HaveSameSoundsAs(right));
+}
+
+
+bool SoundsDefinition::operator!=(const SoundsDefinition& right) const
+{
+	return (!HaveSameAttributesAs(right) ||
+			!HaveSameSoundsAs(right));
+}
 
 unsigned int SoundsDefinition::GetSizeInFile(void)
 {
@@ -355,7 +399,7 @@ BigEndianBuffer& SoundsDefinition::SaveObject(BigEndianBuffer& buffer, unsigned 
 }
 
 BigEndianBuffer& SoundsDefinition::LoadObject(BigEndianBuffer& buffer)
-{	
+{
 	mSoundCode = buffer.ReadShort();
 
 	mBehaviorIndex = buffer.ReadShort();
@@ -418,6 +462,7 @@ BigEndianBuffer& SoundsDefinition::LoadObject(BigEndianBuffer& buffer)
 	}
 	
 	// Now we load actual sound data
+	// We save our current position, 'coz we need to restore it at the end
 	unsigned int oldpos = buffer.Position();
 
 	for (short i = 0; i < permutations; i++) {
