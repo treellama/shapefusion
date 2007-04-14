@@ -31,6 +31,7 @@
 #else
     #include "wx/txtstrm.h"
 #endif
+#include "wx/filename.h"
 #include "wx/sound.h"
 
 #include "SoundsElements.h"
@@ -50,8 +51,7 @@ AppleSoundHeader::~AppleSoundHeader()
 bool AppleSoundHeader::SaveToWave(wxString path)
 {
 	unsigned int	wavChannels, wavSampleRate, wavBitsPerSample, wavFrames;
-	long			length, sampleRate, numChannels, numFrames;
-	short			sampleSize;
+	unsigned long	sampleRate;
 	unsigned char	baseFrequency;
 	
 	mData->Position(20);
@@ -60,30 +60,25 @@ bool AppleSoundHeader::SaveToWave(wxString path)
 		case standardSoundHeader:
 			// standard sound header
 			mData->Position(4);
-			length = mData->ReadLong();
-			sampleRate = mData->ReadLong();
+			wavFrames = mData->ReadULong();
+			sampleRate = mData->ReadULong();
 			mData->Position(21);
 			baseFrequency = mData->ReadUChar();
-			// <length> 8-bit signed samples follow
 			wavChannels = 1;
-			wavSampleRate = (unsigned int)(sampleRate >> 16);
+			wavSampleRate = sampleRate >> 16;
 			wavBitsPerSample = 8;
-			wavFrames = (unsigned int)length;
 			break;
 		case extendedSoundHeader:
 			// extended sound header
 			mData->Position(4);
-			numChannels = mData->ReadLong();
-			sampleRate = mData->ReadLong();
+			wavChannels = mData->ReadULong();
+			sampleRate = mData->ReadULong();
 			mData->Position(21);
 			baseFrequency = mData->ReadUChar();
-			numFrames = mData->ReadLong();
+			wavFrames = mData->ReadULong();
 			mData->Position(48);
-			sampleSize = mData->ReadShort();
-			wavChannels = (unsigned int)numChannels;
-			wavSampleRate = (unsigned int)(sampleRate >> 16);
-			wavBitsPerSample = (unsigned int)sampleSize;
-			wavFrames = (unsigned int)numFrames;
+			wavBitsPerSample = mData->ReadUShort();
+			wavSampleRate = sampleRate >> 16;
 			mData->Position(64);
 			break;
 		case compressedSoundHeader:
@@ -108,11 +103,11 @@ bool AppleSoundHeader::SaveToWave(wxString path)
 		return false;
 	}
 	// RIFF chunk
-	riffHeader.WriteULong('FFIR');			// RIFF signature
+	riffHeader.WriteULong('FFIR');				// RIFF signature
 	riffHeader.WriteULong(riffHeader.Size() + fmtChunk.Size() + dataChunk.Size() - 8);	// total file size
-	riffHeader.WriteULong('EVAW');			// WAVE signature
-												// format chunk
-	fmtChunk.WriteULong(' tmf');			// fmt signature
+	riffHeader.WriteULong('EVAW');				// WAVE signature
+	// format chunk
+	fmtChunk.WriteULong(' tmf');				// fmt signature
 	fmtChunk.WriteULong(fmtChunk.Size() - 8);	// chunk size
 	fmtChunk.WriteUShort(1);					// PCM data
 	fmtChunk.WriteUShort(wavChannels);
@@ -121,7 +116,7 @@ bool AppleSoundHeader::SaveToWave(wxString path)
 	fmtChunk.WriteUShort(wavChannels * wavBitsPerSample / 8);	// block align
 	fmtChunk.WriteUShort(wavBitsPerSample);
 	// data chunk
-	dataChunk.WriteULong('atad');			// data signature
+	dataChunk.WriteULong('atad');				// data signature
 	dataChunk.WriteULong(dataChunk.Size() - 8);	// chunk size
 	if (wavBitsPerSample == 8) {
 		dataChunk.WriteBlock(wavFrames * wavChannels, mData->Data() + mData->Position());
@@ -232,11 +227,13 @@ bool AppleSoundHeader::SaveToAiff(wxString path)
 
 void AppleSoundHeader::PlaySound(void)
 {
-	wxString tempfile = wxString::Format(wxT("shp%d.wav"), wxDateTime::UNow().GetMillisecond());
-	
+	wxString	tempfile = wxFileName::CreateTempFileName(wxT("sf"));
+
+	wxBeginBusyCursor();
 	SaveToWave(tempfile);
 	wxSound(tempfile).Play(wxSOUND_SYNC);
-	//FIXME: Delete the tempfile after use !!!
+	wxRemoveFile(tempfile);
+	wxEndBusyCursor();
 }
 
 unsigned int AppleSoundHeader::Size(void)
