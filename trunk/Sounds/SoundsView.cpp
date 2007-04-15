@@ -189,7 +189,7 @@ bool SoundsView::OnCreate(wxDocument *doc, long WXUNUSED(flags) )
 	sound_menus_sizer->Add(sound_high_pitch_field, 0, 0, 0);
 	
 	sound_eight_bit_sizer->Add(sound_eight_bit_text, 0, 0, 0);
-	sound_eight_bit_sizer->Add(sound_eight_bit_list, 1, wxEXPAND, 0);
+	sound_eight_bit_sizer->Add(sound_eight_bit_list, 1, wxEXPAND | wxRIGHT, 5);
 	sound_sixteen_bit_sizer->Add(sound_sixteen_bit_text, 0, 0, 0);
 	sound_sixteen_bit_sizer->Add(sound_sixteen_bit_list, 1, wxEXPAND, 0);
 	sound_sixteen_bit_sizer->Add(sound_remap_check_box, 0, 0, 0);
