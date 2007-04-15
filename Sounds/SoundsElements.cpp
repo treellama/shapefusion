@@ -51,7 +51,7 @@ AppleSoundHeader::~AppleSoundHeader()
 bool AppleSoundHeader::SaveToWave(wxString path)
 {
 	unsigned int	wavChannels, wavSampleRate, wavBitsPerSample, wavFrames;
-	unsigned long	sampleRate;
+	unsigned long	sampleRate, loopStart, loopEnd;
 	unsigned char	baseFrequency;
 	
 	mData->Position(20);
@@ -62,6 +62,8 @@ bool AppleSoundHeader::SaveToWave(wxString path)
 			mData->Position(4);
 			wavFrames = mData->ReadULong();
 			sampleRate = mData->ReadULong();
+			loopStart = mData->ReadULong();
+			loopEnd = mData->ReadULong();
 			mData->Position(21);
 			baseFrequency = mData->ReadUChar();
 			wavChannels = 1;
@@ -73,6 +75,8 @@ bool AppleSoundHeader::SaveToWave(wxString path)
 			mData->Position(4);
 			wavChannels = mData->ReadULong();
 			sampleRate = mData->ReadULong();
+			loopStart = mData->ReadULong();
+			loopEnd = mData->ReadULong();
 			mData->Position(21);
 			baseFrequency = mData->ReadUChar();
 			wavFrames = mData->ReadULong();
@@ -91,7 +95,21 @@ bool AppleSoundHeader::SaveToWave(wxString path)
 			return false;
 			break;
 	}
-	
+
+#if 0
+	// check alignment of loop* fields
+	// Apple docs say they are to be interpreted in byte values,
+	// so they should be frame-aligned. Marathon sound values are not
+	// like that, they seem to be in units of frames instead. This
+	// triggers the following error dialog almost always. A1 interprets
+	// those fields as byte values, and this causes problems with at
+	// least one sound from rubicon. WTF? FIXME!
+	if ((loopStart % (wavBitsPerSample / 8)) != 0 ||
+		(loopEnd % (wavBitsPerSample / 8)) != 0)
+		wxLogError(wxT("[AppleSoundHeader] This sound has broken loop values, it could cause problems when playing the game. loopStart=%lu, loopEnd=%lu, frameCount=%lu, bitsPerSample=%u"),
+					loopStart, loopEnd, wavFrames, wavBitsPerSample);
+#endif
+
 	// write the WAVE file
 	LittleEndianBuffer	riffHeader(12),
 						fmtChunk(24),
