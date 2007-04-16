@@ -202,12 +202,12 @@ wxInputStream& SoundsDocument::LoadObject(wxInputStream& stream)
 	mSoundCount = filebuffer.ReadShort();
 	
 	if ((mVersion != 0 && mVersion != 1) || mTag != FOUR_CHARS_TO_INT('s','n','d','2')) {
-		wxLogError(wxT("[SoundsDocument] Error loading : Incorrect version/tag"));
+		wxLogError(wxT("[SoundsDocument] Error loading : Incorrect version/tag, (%d/%x)"), mVersion, mTag);
 		return stream;
 	}
 	
 	if (mSoundCount < 0 || mSourceCount < 0) {
-		wxLogError(wxT("[SoundsDocument] Error loading : Incorrect Sound/Source count"));
+		wxLogError(wxT("[SoundsDocument] Error loading : Incorrect Sound/Source count (%d/%d)"), mSoundCount, mSourceCount);
 		return stream;
 	}
 	

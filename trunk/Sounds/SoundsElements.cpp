@@ -425,7 +425,7 @@ BigEndianBuffer& SoundsDefinition::LoadObject(BigEndianBuffer& buffer)
 	mChance = buffer.ReadUShort();
 	
 	if ((mBehaviorIndex > NUMBER_OF_SOUND_BEHAVIOR_DEFINITIONS) || (mChance > _ten_percent)) {
-		wxLogError(wxT("[SoundsDefinition] incorrect Behavior/Chance"));
+		wxLogError(wxT("[SoundsDefinition] incorrect Behavior/Chance (%d/%d)"), mBehaviorIndex, mChance);
 		return buffer;
 	}
 	
@@ -440,7 +440,7 @@ BigEndianBuffer& SoundsDefinition::LoadObject(BigEndianBuffer& buffer)
 	short permutations = buffer.ReadShort();
 	
 	if (permutations < 0 || permutations > MAXIMUM_PERMUTATIONS_PER_SOUND) {
-		wxLogError(wxT("[SoundsDefinition] incorrect permutation count"));
+		wxLogError(wxT("[SoundsDefinition] incorrect permutation count : %d"), permutations);
 		return buffer;
 	}
 	
