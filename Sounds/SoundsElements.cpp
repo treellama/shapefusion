@@ -447,8 +447,12 @@ BigEndianBuffer& SoundsDefinition::LoadObject(BigEndianBuffer& buffer)
 	int singleLength = buffer.ReadULong();
 	int totalLength = buffer.ReadULong();
 	
+	// Bug fix for RED Sounds : When groupOffset is out of bounds, consider sound empty.
+	if (groupOffset < 0)
+		permutations = 0;
+	
 	if (permutations != 0 && (unsigned int)(groupOffset + totalLength) > buffer.Size()) {
-		wxLogError(wxT("[SoundsDefinition] incorrect group offset / total length"));
+		wxLogError(wxT("[SoundsDefinition] incorrect group offset / total length (%d/%d)"), groupOffset, totalLength);
 		return buffer;
 	}
 	
