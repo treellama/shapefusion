@@ -245,9 +245,7 @@ bool AppleSoundHeader::SaveToAiff(wxString path)
 
 void AppleSoundHeader::PlaySound(void)
 {
-	wxString	tempfile = wxFileName::CreateTempFileName(wxT("sf"));
-	// 'cause QT OSX still need an extention to read a file
-	tempfile.Append(".wav");
+	wxString	tempfile = wxFileName::CreateTempFileName(wxT("sf")) + wxString(wxT(".wav"));
 	
 	wxBeginBusyCursor();
 	SaveToWave(tempfile);

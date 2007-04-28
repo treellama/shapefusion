@@ -1423,18 +1423,18 @@ wxInputStream& ShapesCollection::LoadObject(wxInputStream& stream)
 	length16 = coll_header.ReadLong();
 	
 	if (offset8 < -1 || length8 < 0 || offset16 < -1 || length16 < 0) {
-		wxLogError(wxT("[ShapesCollection] Invalid collection header: incorrect offsets"));
-		wxLogError(wxT("[ShapesCollection] Invalid collection header: this may not be a Marathon shapes file"));
+//		wxLogError(wxT("[ShapesCollection] Invalid collection header: incorrect offsets"));
+//		wxLogError(wxT("[ShapesCollection] Invalid collection header: this may not be a Marathon shapes file"));
 		return stream;
 	}
 	if ((offset8 + length8) > filesize) {
-		wxLogError(wxT("[ShapesCollection] Invalid collection header: 8 bit offsets out-of-bounds"));
-		wxLogError(wxT("[ShapesCollection] Invalid collection header: this may not be a Marathon shapes file"));
+//		wxLogError(wxT("[ShapesCollection] Invalid collection header: 8 bit offsets out-of-bounds"));
+//		wxLogError(wxT("[ShapesCollection] Invalid collection header: this may not be a Marathon shapes file"));
 		return stream;
 	}
 	if ((offset16 + length16) > filesize) {
-		wxLogError(wxT("[ShapesCollection] Invalid collection header: 16 bit offsets out-of-bounds"));
-		wxLogError(wxT("[ShapesCollection] Invalid collection header: this may not be a Marathon shapes file"));
+//		wxLogError(wxT("[ShapesCollection] Invalid collection header: 16 bit offsets out-of-bounds"));
+//		wxLogError(wxT("[ShapesCollection] Invalid collection header: this may not be a Marathon shapes file"));
 		return stream;
 	}
 	
@@ -1461,8 +1461,7 @@ wxInputStream& ShapesCollection::LoadObject(wxInputStream& stream)
 		ShapesChunk	*pc = new ShapesChunk(IsVerbose());
 		pc->LoadObject(chunkbuffer);
 		
-		if (!pc->IsGood())
-		{
+		if (!pc->IsGood()) {
 			wxLogError(wxT("[ShapesCollection] Error loading 8-bit chunk... Dropped"));
 			return stream;
 		}
@@ -1487,8 +1486,7 @@ wxInputStream& ShapesCollection::LoadObject(wxInputStream& stream)
 		ShapesChunk	*pc = new ShapesChunk(IsVerbose());
 		pc->LoadObject(chunkbuffer);
 		
-		if (!pc->IsGood())
-		{
+		if (!pc->IsGood()) {
 			wxLogError(wxT("[ShapesCollection] Error loading 16/32-bit chunk... Dropped"));
 			return stream;
 		}
