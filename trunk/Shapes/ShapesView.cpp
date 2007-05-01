@@ -623,60 +623,16 @@ void ShapesView::MenuShapesSaveColorTable(wxCommandEvent &e)
 
 			if (!ctpath.empty()) {
 				ShapesColorTable	*ct = ((ShapesDocument*)GetDocument())->GetColorTable(selected_coll, selected_vers, selection);
-				std::ofstream		cts(ctpath.fn_str());
+				int					err = 0;
 
-				if (cts.good()) {
-					// file opened successfully
-					if (ps) {
-						// PhotoShop binary color table format
-						// (MacOS file type is '8BCT', extension '.act')
-						unsigned char	*rgb = new unsigned char[ct->ColorCount() * 3];
+				if (ps)
+					err = ct->SaveToPhotoshop(ctpath);
+				else
+					err = ct->SaveToGimp(ctpath);
 
-						if (rgb != NULL) {
-							unsigned char	*prgb = rgb;
-
-							// first a block of RGB byte triplets
-							for (unsigned int i = 0; i < ct->ColorCount(); i++) {
-								ShapesColor	*color = ct->GetColor(i);
-
-								*prgb++ = color->Red() >> 8;
-								*prgb++ = color->Green() >> 8;
-								*prgb++ = color->Blue() >> 8;
-							}
-							cts.write((char *)rgb, ct->ColorCount() * 3);
-							delete[] rgb;
-							// if we didn't reach 256 colors, pad with zeroes to fill and end with
-							//    00 n ff ff
-							// where n is the number of colors
-							if (ct->ColorCount() < 256) {
-								unsigned int	padsize = 3 * (256 - ct->ColorCount());
-								unsigned char	*pad = new unsigned char[padsize],
-												tail[4] = { 0, ct->ColorCount(), 0xff, 0xff};
-								
-								memset(pad, 0, padsize);
-								cts.write((char *)pad, padsize);
-								cts.write((char *)tail, 4);
-								delete[] pad;
-							}
-						}
-					} else {
-						// Gimp ASCII format
-						cts << "GIMP Palette\n";
-						cts << "Name: ShapeFusion exported palette\n";
-						cts << "#\n";
-						for (unsigned int i = 0; i < ct->ColorCount(); i++) {
-							ShapesColor *color = ct->GetColor(i);
-
-							cts << (color->Red() >> 8) << ' ';
-							cts << (color->Green() >> 8) << ' ';
-							cts << (color->Blue() >> 8) << '\n';
-						}
-					}
-					cts.close();
-				} else {
-					// failed to open file for writing
-					wxString    errormsg;
-
+				if (err != 0) {
+					wxString	errormsg;
+					
 					errormsg << wxT("Sorry, could not save color table to ") << ctpath << wxT(".");
 					wxMessageBox(errormsg, wxT("Error saving color table"), wxOK | wxICON_ERROR, frame);
 				}

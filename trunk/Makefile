@@ -2,7 +2,7 @@
 # ShapeFusion Makefile
 #
 
-CFLAGS = -Wall -O2
+CFLAGS = -g -Wall -O2
 
 WXCFLAGS = `wx-config --cxxflags`
 WXLIBS = `wx-config --libs`

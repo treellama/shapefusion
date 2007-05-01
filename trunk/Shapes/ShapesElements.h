@@ -96,6 +96,8 @@ public:
 	
     BigEndianBuffer& SaveObject(BigEndianBuffer& buffer);
     BigEndianBuffer& LoadObject(BigEndianBuffer& buffer, unsigned int offset, unsigned int color_count);
+	int SaveToGimp(wxString path) const;
+	int SaveToPhotoshop(wxString path) const;
 };
 
 // a bitmap

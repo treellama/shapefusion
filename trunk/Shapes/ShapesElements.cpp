@@ -133,6 +133,72 @@ BigEndianBuffer& ShapesColorTable::LoadObject(BigEndianBuffer& buffer, unsigned 
 	return buffer;
 }
 
+// export a color table to Gimp ASCII format
+int ShapesColorTable::SaveToGimp(wxString path) const
+{
+	std::ofstream	cts(path.fn_str());
+
+	if (cts.good()) {
+		cts << "GIMP Palette\n";
+		cts << "Name: ShapeFusion exported palette\n";
+		cts << "#\n";
+		for (unsigned int i = 0; i < ColorCount(); i++) {
+			ShapesColor	*color = GetColor(i);
+
+			cts << (color->Red() >> 8) << ' ';
+			cts << (color->Green() >> 8) << ' ';
+			cts << (color->Blue() >> 8) << '\n';
+		}
+		cts.close();
+		return 0;
+	} else {
+		return -1;
+	}
+}
+
+// export a color table to Photoshop binary format
+// (MacOS file type is '8BCT', extension '.act')
+int ShapesColorTable::SaveToPhotoshop(wxString path) const
+{
+	std::ofstream	cts(path.fn_str());
+
+	if (cts.good()) {
+		unsigned char	*rgb = new unsigned char[ColorCount() * 3];
+
+		if (rgb != NULL) {
+			unsigned char   *prgb = rgb;
+			
+			// first a block of RGB byte triplets
+			for (unsigned int i = 0; i < ColorCount(); i++) {
+				ShapesColor *color = GetColor(i);
+
+				*prgb++ = color->Red() >> 8;
+				*prgb++ = color->Green() >> 8;
+				*prgb++ = color->Blue() >> 8;
+			}
+			cts.write((char *)rgb, ColorCount() * 3);
+			delete[] rgb;
+			// if we didn't reach 256 colors, pad with zeroes to fill and end with
+			//    00 n ff ff
+			// where n is the number of colors
+			if (ColorCount() < 256) {
+				unsigned int	padsize = 3 * (256 - ColorCount());
+				unsigned char	*pad = new unsigned char[padsize],
+								tail[4] = { 0, ColorCount(), 0xff, 0xff};
+				
+				memset(pad, 0, padsize);
+				cts.write((char *)pad, padsize);
+				cts.write((char *)tail, 4);
+				delete[] pad;
+			}
+		}
+		cts.close();
+		return 0;
+	} else {
+		return -1;
+	}
+}
+
 ShapesBitmap::ShapesBitmap(bool verbose) : ShapesElement(verbose), mPixels(NULL)
 {
 }
