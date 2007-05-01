@@ -236,17 +236,25 @@ void SoundsView::OnUpdate(wxView *WXUNUSED(sender), wxObject *WXUNUSED(hint))
 	sound_class_list->Clear();
 	
 	bool gequals = true;
-	
+
 	for (unsigned int i = 0; i < payload->GetSoundCount() ; i++) {
 		sound_class_list->Append(wxString::Format(wxT("Sound %d"), i));
 		// We check if there is a difference between 8-bit and 16-bit
 		// SoundsDefinitions
-		bool equals = payload->Get8BitSoundDefinition(i)->HaveSameAttributesAs(*payload->Get16BitSoundDefinition(i));
+		SoundsDefinition	*def8 = payload->Get8BitSoundDefinition(i),
+							*def16 = payload->Get16BitSoundDefinition(i);
+		bool				equals = false;
+
+		if (def8 != NULL && def16 != NULL)
+			equals = def8->HaveSameAttributesAs(*def16);
+		else if (def8 == NULL && def16 == NULL)
+			equals = true;
+
 		if (!equals)
 			wxLogDebug(wxT("Sound source different at %d"), i);
 		gequals = gequals && equals;
 	}
-	
+
 	if (!gequals) {
 		// FIXME : Update this when we have a "complete" editor...
 		wxMessageDialog msg(frame,

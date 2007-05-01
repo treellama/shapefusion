@@ -48,7 +48,7 @@ enum {
 IMPLEMENT_DYNAMIC_CLASS(SoundsDocument, wxDocument)
 
 SoundsDocument::SoundsDocument():
-	wxDocument(), SoundsElement(true)
+	wxDocument(), SoundsElement(true), mM2Demo(false)
 {
 	// We need storage for our sound sources...
 	mSoundDefinitions.resize(NUMBER_OF_SOUND_SOURCES);
