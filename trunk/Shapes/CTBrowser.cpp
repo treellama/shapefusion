@@ -26,7 +26,8 @@ BEGIN_EVENT_TABLE(CTBrowser, wxScrolledWindow)
 	EVT_KEY_DOWN(CTBrowser::OnKeyDown)
 END_EVENT_TABLE()
 
-CTBrowser::CTBrowser(wxWindow *parent): wxScrolledWindow(parent, -1, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER),
+CTBrowser::CTBrowser(wxWindow *parent):
+	wxScrolledWindow(parent, -1, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER | wxFULL_REPAINT_ON_RESIZE),
 	sample_w(1), sample_h(20), selection(-1)
 {
 	SetBackgroundColour(wxColour(255, 255, 255));

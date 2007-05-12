@@ -23,8 +23,8 @@ BEGIN_EVENT_TABLE(CTView, wxPanel)
 END_EVENT_TABLE()
 
 CTView::CTView(wxWindow *parent):
-	wxPanel(parent, -1, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER),
-	mColorTable(NULL)
+	wxPanel(parent, -1, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER | wxFULL_REPAINT_ON_RESIZE),
+	mColorTable(NULL), mSwatchSize(0), mMargin(2)
 {
 	SetBackgroundColour(wxColour(255, 255, 255));
 	mInvisiblePen.SetColour(0, 0, 0);
@@ -33,9 +33,10 @@ CTView::CTView(wxWindow *parent):
 
 void CTView::OnPaint(wxPaintEvent& e)
 {
-	wxPaintDC	tempdc(this);
-	wxBrush		brush(wxColour(0, 0, 0), wxSOLID);
-	int			sample_w = 10, x = 0, y = 0, width, height;
+	wxPaintDC		tempdc(this);
+	wxBrush			brush(wxColour(0, 0, 0), wxSOLID);
+	unsigned int	x = mMargin, y = mMargin;
+	int				width, height;
 
 	tempdc.GetSize(&width, &height);
 	tempdc.SetPen(mInvisiblePen);
@@ -44,28 +45,64 @@ void CTView::OnPaint(wxPaintEvent& e)
 						mColorTable->GetColor(j)->Green() >> 8,
 						mColorTable->GetColor(j)->Blue() >> 8);
 		tempdc.SetBrush(brush);
-		tempdc.DrawRectangle(x, y, sample_w, sample_w);
+		tempdc.DrawRectangle(x+2, y+2, mSwatchSize-4, mSwatchSize-4);
 		if (mColorTable->GetColor(j)->Luminescent()) {
 			// display the self-luminescent color flag
 			tempdc.SetBrush(*wxWHITE_BRUSH);
 			tempdc.DrawRectangle(x + 2, y + 2, 2, 2);
 		}
-		x += sample_w;
-		if (x + sample_w >= width) {
-			x = 0;
-			y += sample_w;
+		x += mSwatchSize;
+		if (x + mSwatchSize >= width) {
+			x = mMargin;
+			y += mSwatchSize;
 		}
 	}
 }
 
 void CTView::OnSize(wxSizeEvent &e)
 {
-	
+	CalculateSwatchSize();
 }
 
 void CTView::SetColorTable(ShapesColorTable *ct)
 {
+	bool	need_recalc = (ct != NULL) && (mColorTable != NULL)
+				&& (ct->ColorCount() != mColorTable->ColorCount());
+
 	mColorTable = ct;
+	if (need_recalc)
+		CalculateSwatchSize();
 	Refresh();
+}
+
+// calculate best swatch size fitting into the widget area
+void CTView::CalculateSwatchSize(void)
+{
+	if (mColorTable != NULL) {
+		int				width, height;
+		unsigned int	new_swatch_size = 2;
+
+		GetVirtualSize(&width, &height);
+		mSwatchSize = 0;
+		while (mSwatchSize == 0) {
+			// FIXME faster & more elegant math please
+			unsigned int	x = mMargin, y = mMargin;
+
+			for (unsigned int i = 0; i < mColorTable->ColorCount(); i++) {
+				x += new_swatch_size;
+				if (x + new_swatch_size >= width) {
+					x = mMargin;
+					y += new_swatch_size;
+					if (y + new_swatch_size >= height) {
+						mSwatchSize = new_swatch_size - 1;
+						break;
+					}
+				}
+			}
+			new_swatch_size++;
+		}
+	} else {
+		mSwatchSize = 0;
+	}
 }
 

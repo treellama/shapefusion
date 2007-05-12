@@ -35,7 +35,7 @@ const char	arrow_left_bits[] = { 0x08, 0x0c, 0x0e, 0x0f, 0x0e, 0x0c, 0x08 },
 	  		arrow_right_bits[] = { 0x01, 0x03, 0x07, 0x0f, 0x07, 0x03, 0x01 };
 
 SequenceView::SequenceView(wxWindow *parent, wxWindowID id):
-	wxScrolledWindow(parent, id, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER),
+	wxScrolledWindow(parent, id, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER | wxFULL_REPAINT_ON_RESIZE),
 	ctable(NULL), tn_size(64), margin(7), prev_btn(arrow_left_bits, 4, 7),
 	next_btn(arrow_right_bits, 4, 7), auto_size(false), selection(-1), frame_indexes(NULL)
 {
