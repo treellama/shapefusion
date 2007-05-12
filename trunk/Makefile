@@ -8,7 +8,7 @@ WXCFLAGS = `wx-config --cxxflags`
 WXLIBS = `wx-config --libs`
 
 OBJECTS =		BigEndianBuffer.o LittleEndianBuffer.o ShapeFusionApp.o ShapeFusionMain.o ShapeFusionMenus.o
-SHAPESOBJECTS = Shapes/BitmapBrowser.o Shapes/BitmapView.o Shapes/CTBrowser.o \
+SHAPESOBJECTS = Shapes/BitmapBrowser.o Shapes/BitmapView.o Shapes/CTBrowser.o Shapes/CTView.o \
 				Shapes/FrameBrowser.o Shapes/FrameView.o Shapes/SequenceView.o \
 				Shapes/ShapesDocument.o Shapes/ShapesElements.o Shapes/ShapesView.o \
 				Shapes/ShapesTreeItemData.o Shapes/utilities.o
@@ -44,6 +44,9 @@ Shapes/BitmapView.o: BitmapView.cpp BitmapView.h ShapesElements.h utilities.h
 	g++ -c $(CFLAGS) $(WXCFLAGS) $< -o $@
 
 Shapes/CTBrowser.o: CTBrowser.cpp CTBrowser.h ShapesElements.h
+	g++ -c $(CFLAGS) $(WXCFLAGS) $< -o $@
+
+Shapes/CTView.o: CTView.cpp CTView.h ShapesElements.h
 	g++ -c $(CFLAGS) $(WXCFLAGS) $< -o $@
 
 Shapes/FrameBrowser.o: FrameBrowser.cpp FrameBrowser.h ShapesElements.h utilities.h

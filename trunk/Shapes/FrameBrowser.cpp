@@ -22,8 +22,6 @@
 // displays the frame's associated bitmap, altered with
 // the specified mirror transformations.
 // 
-#include <iostream>
-#include <math.h>
 #include "wx/image.h"
 #include "FrameBrowser.h"
 #include "utilities.h"

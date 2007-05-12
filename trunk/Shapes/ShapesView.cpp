@@ -193,8 +193,16 @@ bool ShapesView::OnCreate(wxDocument *doc, long WXUNUSED(flags) )
 	ct_outer_sizer = new wxBoxSizer(wxVERTICAL);
 	ctb = new CTBrowser(frame);
 	ct_count_label = new wxStaticText(frame, -1, wxT("N color tables"));
+	ct_edit_static_box = new wxStaticBox(frame, -1, wxT("Color table N of M"));
+	ct_edit_box = new wxStaticBoxSizer(ct_edit_static_box, wxVERTICAL);
+	ct_view = new CTView(frame);
+	ct_self_lumin_checkbox = new wxCheckBox(frame, CB_SELF_LUMINESCENT, wxT("Self-luminescent color"));
+	ct_edit_box->Add(ct_view, 1, wxEXPAND | wxLEFT | wxTOP | wxRIGHT | wxBOTTOM, 5);
+	ct_edit_box->Add(ct_self_lumin_checkbox, 0, wxEXPAND | wxLEFT | wxTOP | wxRIGHT | wxBOTTOM, 5);
 	ct_outer_sizer->Add(ctb, 1, wxGROW);
 	ct_outer_sizer->Add(ct_count_label, 0, wxALIGN_LEFT | wxLEFT | wxTOP | wxBOTTOM, 10);
+	ct_outer_sizer->Add(ct_edit_box, 1, wxEXPAND | wxLEFT | wxRIGHT | wxTOP | wxBOTTOM, 10);
+	ct_outer_sizer->Show(ct_edit_box, false);
 	mainbox->Add(ct_outer_sizer, 5, wxEXPAND);
 	mainbox->Show(ct_outer_sizer, false);
 	// create the bitmaps section
@@ -834,6 +842,7 @@ void ShapesView::TreeSelect(wxTreeEvent &e)
 
 			view_ct = -1;
 			ctb->Clear();
+			ct_view->SetColorTable(NULL);
 			bb->Freeze();
 			bb->Clear();
 			b_view->SetBitmap(NULL);
@@ -1027,6 +1036,8 @@ void ShapesView::TreeSelect(wxTreeEvent &e)
 				break;
 			case TREESECTION_COLORTABLES:
 				mainbox->Show(ct_outer_sizer, true);
+				ct_outer_sizer->Show(ct_edit_box, ctb->GetSelection() != -1);
+				ct_outer_sizer->Show(ct_count_label, ctb->GetSelection() == -1);
 				break;
 			case TREESECTION_FRAMES:
 				mainbox->Show(f_outer_sizer, true);
@@ -1189,17 +1200,28 @@ void ShapesView::CTSelect(wxCommandEvent &e)
 
 	if (selection < 0) {
 		// deselection
+		ct_view->SetColorTable(NULL);
+		ct_outer_sizer->Show(ct_count_label, true);
+		ct_outer_sizer->Show(ct_edit_box, false);
 		menubar->Enable(SHAPES_MENU_SAVECOLORTABLE, false);
 		menubar->Enable(SHAPES_MENU_SAVECOLORTABLETOPS, false);
 		menubar->SetLabel(EDIT_MENU_DELETE, wxT("Delete"));
 		menubar->Enable(EDIT_MENU_DELETE, false);
 	} else {
 		// selection
+		ShapesColorTable	*ct = ((ShapesDocument*)GetDocument())->GetColorTable(selected_coll, selected_vers, selection);
+
+		ct_view->SetColorTable(ct);
+		ct_edit_static_box->SetLabel(wxString::Format(wxT("Color table %d of %d"), selection,
+			((ShapesDocument*)GetDocument())->CollectionColorTableCount(selected_coll, selected_vers)));
+		ct_outer_sizer->Show(ct_count_label, false);
+		ct_outer_sizer->Show(ct_edit_box, true);
 		menubar->Enable(SHAPES_MENU_SAVECOLORTABLE, true);
 		menubar->Enable(SHAPES_MENU_SAVECOLORTABLETOPS, true);
 		menubar->SetLabel(EDIT_MENU_DELETE, wxT("Delete color table"));
 		menubar->Enable(EDIT_MENU_DELETE, true);
 	}
+	ct_outer_sizer->Layout();
 }
 
 // selection event in the frame browser
