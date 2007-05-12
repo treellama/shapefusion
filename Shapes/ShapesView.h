@@ -16,8 +16,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#ifndef __TEXTVIEW_H__
-#define __TEXTVIEW_H__
+#ifndef SHAPESVIEW_H
+#define SHAPESVIEW_H
 
 #include "wx/docview.h"
 #include "wx/treectrl.h"
@@ -26,6 +26,7 @@
 #include "../ShapeFusionApp.h"
 #include "ShapesTreeItemData.h"
 #include "CTBrowser.h"
+#include "CTView.h"
 #include "BitmapBrowser.h"
 #include "BitmapView.h"
 #include "FrameBrowser.h"
@@ -39,6 +40,9 @@ class ShapesView: public wxView
 private:
 	// control ids
 	enum {
+		// color tables
+		CB_SELF_LUMINESCENT,
+		BTN_BLEND,
 		// bitmaps
 		BITMAP_BROWSER,
 		CB_COLUMN_ORDER,
@@ -98,6 +102,11 @@ private:
 	wxBoxSizer			*ct_outer_sizer;
 	CTBrowser			*ctb;
 	wxStaticText		*ct_count_label;
+	wxStaticBox			*ct_edit_static_box;
+	wxStaticBoxSizer	*ct_edit_box;
+	CTView					*ct_view;
+	wxCheckBox				*ct_self_lumin_checkbox;
+	wxButton				*ct_blend_button;
 	// widgets for bitmaps section
 	wxBoxSizer			*b_outer_sizer,
 						*b_edit_inner_box;
