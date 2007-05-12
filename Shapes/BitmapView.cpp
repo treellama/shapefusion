@@ -26,7 +26,8 @@ BEGIN_EVENT_TABLE(BitmapView, wxScrolledWindow)
 	EVT_SIZE(BitmapView::OnSize)
 END_EVENT_TABLE()
 
-BitmapView::BitmapView(wxWindow *parent): wxScrolledWindow(parent, -1, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER),
+BitmapView::BitmapView(wxWindow *parent):
+	wxScrolledWindow(parent, -1, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER | wxFULL_REPAINT_ON_RESIZE),
 	enc_bmp(NULL), ctable(NULL), dragging(false)
 {
 	SetBackgroundColour(wxColour(255, 255, 255));

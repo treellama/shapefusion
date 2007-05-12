@@ -27,7 +27,8 @@ BEGIN_EVENT_TABLE(FrameView, wxScrolledWindow)
 	EVT_SIZE(FrameView::OnSize)
 END_EVENT_TABLE()
 
-FrameView::FrameView(wxWindow *parent): wxScrolledWindow(parent, -1, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER),
+FrameView::FrameView(wxWindow *parent):
+	wxScrolledWindow(parent, -1, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER | wxFULL_REPAINT_ON_RESIZE),
 	frame(NULL), enc_bmp(NULL), ctable(NULL), panning(false), dragging_origin(false), dragging_key(false), near_origin(false), near_key(false)
 {
 	SetBackgroundColour(wxColour(255, 255, 255));

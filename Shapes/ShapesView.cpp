@@ -196,11 +196,11 @@ bool ShapesView::OnCreate(wxDocument *doc, long WXUNUSED(flags) )
 	ct_edit_static_box = new wxStaticBox(frame, -1, wxT("Color table N of M"));
 	ct_edit_box = new wxStaticBoxSizer(ct_edit_static_box, wxVERTICAL);
 	ct_view = new CTView(frame);
-	ct_self_lumin_checkbox = new wxCheckBox(frame, CB_SELF_LUMINESCENT, wxT("Self-luminescent color"));
+	ct_self_lumin_checkbox = new wxCheckBox(frame, CB_SELF_LUMINESCENT, wxT("Self-luminescent color"), wxDefaultPosition, wxDefaultSize, wxCHK_3STATE);
 	ct_edit_box->Add(ct_view, 1, wxEXPAND | wxLEFT | wxTOP | wxRIGHT | wxBOTTOM, 5);
 	ct_edit_box->Add(ct_self_lumin_checkbox, 0, wxEXPAND | wxLEFT | wxTOP | wxRIGHT | wxBOTTOM, 5);
 	ct_outer_sizer->Add(ctb, 1, wxGROW);
-	ct_outer_sizer->Add(ct_count_label, 0, wxALIGN_LEFT | wxLEFT | wxTOP | wxBOTTOM, 10);
+	ct_outer_sizer->Add(ct_count_label, 1, wxALIGN_LEFT | wxLEFT | wxTOP | wxBOTTOM, 10);
 	ct_outer_sizer->Add(ct_edit_box, 1, wxEXPAND | wxLEFT | wxRIGHT | wxTOP | wxBOTTOM, 10);
 	ct_outer_sizer->Show(ct_edit_box, false);
 	mainbox->Add(ct_outer_sizer, 5, wxEXPAND);
@@ -224,7 +224,7 @@ bool ShapesView::OnCreate(wxDocument *doc, long WXUNUSED(flags) )
 	b_edit_box->Add(b_edit_inner_box, 0, wxEXPAND | wxLEFT | wxTOP | wxRIGHT | wxBOTTOM, 5);
 	b_edit_box->Add(b_view, 1, wxEXPAND | wxLEFT | wxTOP | wxRIGHT | wxBOTTOM, 5);
 	b_outer_sizer->Add(bb, 1, wxGROW);
-	b_outer_sizer->Add(b_count_label, 0, wxALIGN_LEFT | wxLEFT | wxTOP | wxBOTTOM, 10);
+	b_outer_sizer->Add(b_count_label, 1, wxALIGN_LEFT | wxLEFT | wxTOP | wxBOTTOM, 10);
 	b_outer_sizer->Add(b_edit_box, 1, wxEXPAND | wxLEFT | wxRIGHT | wxTOP | wxBOTTOM, 10);
 	b_outer_sizer->Show(b_edit_box, false);
 	mainbox->Add(b_outer_sizer, 5, wxEXPAND);
@@ -281,7 +281,7 @@ bool ShapesView::OnCreate(wxDocument *doc, long WXUNUSED(flags) )
 	f_edit_box->Add(f_edit_inner_box, 0, wxEXPAND | wxLEFT | wxRIGHT | wxTOP | wxBOTTOM, 5);
 	f_edit_box->Add(f_view, 1, wxEXPAND | wxLEFT | wxTOP | wxRIGHT | wxBOTTOM, 5);
 	f_outer_sizer->Add(fb, 1, wxGROW);
-	f_outer_sizer->Add(f_count_label, 0, wxALIGN_LEFT | wxLEFT | wxTOP | wxBOTTOM, 10);
+	f_outer_sizer->Add(f_count_label, 1, wxALIGN_LEFT | wxLEFT | wxTOP | wxBOTTOM, 10);
 	f_outer_sizer->Add(f_edit_box, 1, wxEXPAND | wxLEFT | wxRIGHT | wxTOP | wxBOTTOM, 10);
 	f_outer_sizer->Show(f_edit_box, false);
 	mainbox->Add(f_outer_sizer, 5, wxEXPAND);

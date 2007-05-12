@@ -31,7 +31,7 @@ BEGIN_EVENT_TABLE(BitmapBrowser, wxScrolledWindow)
 END_EVENT_TABLE()
 
 BitmapBrowser::BitmapBrowser(wxWindow *parent, wxWindowID id):
-	wxScrolledWindow(parent, id, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER),
+	wxScrolledWindow(parent, id, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER | wxFULL_REPAINT_ON_RESIZE),
 	ctable(NULL), selection(-1), num_cols(0), num_rows(0), frozen_count(0)
 {
 	SetBackgroundColour(wxColour(255, 255, 255));

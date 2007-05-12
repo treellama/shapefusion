@@ -36,9 +36,12 @@ class CTView: public wxPanel {
 private:
 	ShapesColorTable	*mColorTable;		// link to the color table
 	wxPen				mInvisiblePen;
+	unsigned int		mSwatchSize,
+						mMargin;
 
 protected:
 	DECLARE_EVENT_TABLE();
+	void CalculateSwatchSize(void);
 
 public:
 	CTView(wxWindow *parent);
