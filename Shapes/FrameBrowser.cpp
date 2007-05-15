@@ -270,7 +270,7 @@ void FrameBrowser::AddBitmap(ShapesBitmap *bp)
 		if (bp->Pixels() != NULL)
 			bitmaps.push_back(bp);
 		else
-			std::cerr << "FrameBrowser: someone tried to add a bitmap with NULL pixels\n";
+			wxLogError(wxT("FrameBrowser: someone tried to add a bitmap with NULL pixels"));
 	}
 }
 

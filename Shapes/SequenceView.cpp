@@ -342,7 +342,7 @@ void SequenceView::AddBitmap(ShapesBitmap *bp)
 		if (bp->Pixels() != NULL)
 			bitmaps.push_back(bp);
 		else
-			std::cerr << "SequenceView: someone tried to add a bitmap with NULL pixels\n";
+			wxLogError(wxT("SequenceView: someone tried to add a bitmap with NULL pixels"));
 	}
 }
 
