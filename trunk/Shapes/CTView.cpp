@@ -20,19 +20,38 @@
 BEGIN_EVENT_TABLE(CTView, wxPanel)
 	EVT_PAINT(CTView::OnPaint)
 	EVT_SIZE(CTView::OnSize)
+	EVT_LEFT_DOWN(CTView::OnMouseDown)
 END_EVENT_TABLE()
+
+static char *self_luminescent_icon_xpm[] = {
+"8 8 2 1",
+"   c None",
+".  c #000000",
+"        ",
+" .      ",
+" ..     ",
+" ...    ",
+" ....   ",
+" .....  ",
+" ...... ",
+"        "};
 
 CTView::CTView(wxWindow *parent):
 	wxPanel(parent, -1, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER | wxFULL_REPAINT_ON_RESIZE),
-	mColorTable(NULL), mSwatchSize(0), mMargin(2)
+	mColorTable(NULL), mSwatchSize(0), mMargin(7), mLightBulbIcon(self_luminescent_icon_xpm), mSelection(-1)
 {
 	SetBackgroundColour(wxColour(255, 255, 255));
 	mInvisiblePen.SetColour(0, 0, 0);
 	mInvisiblePen.SetStyle(wxTRANSPARENT);
+	mSelectionPen.SetColour(0, 0, 0);
+	mSelectionPen.SetWidth(3);
 }
 
 void CTView::OnPaint(wxPaintEvent& e)
 {
+	if (mColorTable == NULL)
+		return;
+
 	wxPaintDC		tempdc(this);
 	wxBrush			brush(wxColour(0, 0, 0), wxSOLID);
 	unsigned int	x = mMargin, y = mMargin;
@@ -41,20 +60,28 @@ void CTView::OnPaint(wxPaintEvent& e)
 	tempdc.GetSize(&width, &height);
 	tempdc.SetPen(mInvisiblePen);
 	for (unsigned int j = 0; j < mColorTable->ColorCount(); j++) {
+		// draw selection marker
+		if ((int)j == mSelection) {
+			tempdc.SetPen(mSelectionPen);
+			tempdc.SetBrush(*wxWHITE_BRUSH);
+			tempdc.DrawRectangle(x-3, y-3, mSwatchSize+6, mSwatchSize+6);
+			tempdc.SetPen(mInvisiblePen);
+		}
+		// draw color swatch
 		brush.SetColour(mColorTable->GetColor(j)->Red() >> 8,
 						mColorTable->GetColor(j)->Green() >> 8,
 						mColorTable->GetColor(j)->Blue() >> 8);
 		tempdc.SetBrush(brush);
-		tempdc.DrawRectangle(x+2, y+2, mSwatchSize-4, mSwatchSize-4);
+		tempdc.DrawRectangle(x, y, mSwatchSize, mSwatchSize);
 		if (mColorTable->GetColor(j)->Luminescent()) {
-			// display the self-luminescent color flag
+			// display self-luminescent color flag
 			tempdc.SetBrush(*wxWHITE_BRUSH);
-			tempdc.DrawRectangle(x + 2, y + 2, 2, 2);
+			tempdc.DrawBitmap(mLightBulbIcon, x, y + mSwatchSize - mLightBulbIcon.GetHeight(), true);
 		}
-		x += mSwatchSize;
-		if (x + mSwatchSize >= width) {
+		x += mSwatchSize + mMargin;
+		if ((int)(x + mSwatchSize + mMargin) >= width) {
 			x = mMargin;
-			y += mSwatchSize;
+			y += mSwatchSize + mMargin;
 		}
 	}
 }
@@ -62,6 +89,18 @@ void CTView::OnPaint(wxPaintEvent& e)
 void CTView::OnSize(wxSizeEvent &e)
 {
 	CalculateSwatchSize();
+}
+
+void CTView::OnMouseDown(wxMouseEvent& e)
+{
+	wxPoint		mouse;
+
+	mouse = e.GetPosition();
+	switch (e.GetButton()) {
+		case wxMOUSE_BTN_LEFT:
+			break;
+	}
+	e.Skip();
 }
 
 void CTView::SetColorTable(ShapesColorTable *ct)
@@ -89,11 +128,11 @@ void CTView::CalculateSwatchSize(void)
 			unsigned int	x = mMargin, y = mMargin;
 
 			for (unsigned int i = 0; i < mColorTable->ColorCount(); i++) {
-				x += new_swatch_size;
-				if (x + new_swatch_size >= width) {
+				x += new_swatch_size + mMargin;
+				if (x + new_swatch_size + mMargin >= width) {
 					x = mMargin;
-					y += new_swatch_size;
-					if (y + new_swatch_size >= height) {
+					y += new_swatch_size + mMargin;
+					if (y + new_swatch_size + mMargin >= height) {
 						mSwatchSize = new_swatch_size - 1;
 						break;
 					}

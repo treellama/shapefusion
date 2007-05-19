@@ -1212,8 +1212,9 @@ void ShapesView::CTSelect(wxCommandEvent &e)
 		ShapesColorTable	*ct = ((ShapesDocument*)GetDocument())->GetColorTable(selected_coll, selected_vers, selection);
 
 		ct_view->SetColorTable(ct);
-		ct_edit_static_box->SetLabel(wxString::Format(wxT("Color table %d of %d"), selection,
-			((ShapesDocument*)GetDocument())->CollectionColorTableCount(selected_coll, selected_vers)));
+		ct_edit_static_box->SetLabel(wxString::Format(wxT("Color table %d of %d, %d colors per table"), selection,
+			((ShapesDocument*)GetDocument())->CollectionColorTableCount(selected_coll, selected_vers),
+			ct->ColorCount()));
 		ct_outer_sizer->Show(ct_count_label, false);
 		ct_outer_sizer->Show(ct_edit_box, true);
 		menubar->Enable(SHAPES_MENU_SAVECOLORTABLE, true);
@@ -1221,6 +1222,7 @@ void ShapesView::CTSelect(wxCommandEvent &e)
 		menubar->SetLabel(EDIT_MENU_DELETE, wxT("Delete color table"));
 		menubar->Enable(EDIT_MENU_DELETE, true);
 	}
+	ct_self_lumin_checkbox->Disable();
 	ct_outer_sizer->Layout();
 }
 

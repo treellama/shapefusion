@@ -35,9 +35,12 @@
 class CTView: public wxPanel {
 private:
 	ShapesColorTable	*mColorTable;		// link to the color table
-	wxPen				mInvisiblePen;
+	wxPen				mInvisiblePen,
+						mSelectionPen;
 	unsigned int		mSwatchSize,
 						mMargin;
+	wxBitmap			mLightBulbIcon;
+	int					mSelection;
 
 protected:
 	DECLARE_EVENT_TABLE();
@@ -48,6 +51,7 @@ public:
 	// event handlers
 	void OnPaint(wxPaintEvent &e);
 	void OnSize(wxSizeEvent &e);
+	void OnMouseDown(wxMouseEvent& e);
 	// access
 	void SetColorTable(ShapesColorTable *ct);
 };
