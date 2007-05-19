@@ -16,8 +16,8 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#ifndef __DRAWVIEW_H__
-#define __DRAWVIEW_H__
+#ifndef __SOUNDSVIEW_H__
+#define __SOUNDSVIEW_H__
 
 #include "wx/docview.h"
 #include "SoundsDocument.h"
