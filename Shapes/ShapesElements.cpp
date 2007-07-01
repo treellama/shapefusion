@@ -217,29 +217,19 @@ ShapesBitmap::ShapesBitmap(wxImage image, ShapesColorTable *colortable) :
 		return;
 	}
 	dst = mPixels;
-	// quantize from 8-bit RGB pixels to an indexed bitmap. We need to transform
-	// RGB to HSV and perform the comparison in that space to get good results.
-	// FIXME this is not yet perfect (not as good as PhotoShop or Gimp)
+	// quantize from 8-bit RGB pixels to an indexed bitmap
 	for (int i = 0; i < mWidth * mHeight; i++) {
-		unsigned char 	r = *src++, g = *src++, b = *src++;
-		float			hue, sat, val,
-						min_dist = 0;
-		unsigned char   best_value = 0;
-		
-		RGB2HSV(r / 255.0, g / 255.0, b / 255.0, &hue, &sat, &val);
+		unsigned char 	r = *src++, g = *src++, b = *src++,
+						best_value = 0;
+		float			min_dist = 0;
+
 		for (unsigned int j = 0; j < colortable->ColorCount(); j++) {
 			unsigned short	ct_r = colortable->GetColor(j)->Red(),
 							ct_g = colortable->GetColor(j)->Green(),
 							ct_b = colortable->GetColor(j)->Blue();
-			float			hue2, sat2, val2,
-				delta_h, delta_s, delta_v,
-				dist;
-			
-			RGB2HSV(ct_r / 65535.0, ct_g / 65535.0, ct_b / 65535.0, &hue2, &sat2, &val2);
-			delta_h = hue2 - hue;
-			delta_s = sat2 - sat;
-			delta_v = val2 - val;
-			dist = delta_h*delta_h + delta_s*delta_s + delta_v*delta_v;
+			float			dist = ColourDistance(r/255.0, g/255.0, b/255.0,
+													ct_r/65535.0, ct_g/65535.0, ct_b/65535.0);
+
 			if (dist < min_dist || j == 0) {
 				min_dist = dist;
 				best_value = colortable->GetColor(j)->Value();

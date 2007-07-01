@@ -165,32 +165,19 @@ wxBitmap BadThumbnail(int tn_size)
 	return wxBitmap(newimg);
 }
 
-float min(float a, float b)
+// compute (squared) distance between given RGB colours (range [0;1]).
+// This is used to quantize imported bitmaps against collection palettes.
+// The formula seems to work quite well even for photos and very bad
+// destination palettes. It was taken from the article "Colour metric"
+// by T. Riemersma, available under a Creative Commons license at
+// http://www.compuphase.com/cmetric.htm.
+float ColourDistance(float r1, float g1, float b1, float r2, float g2, float b2)
 {
-	return (a > b) ? b : a;
-}
-
-float max(float a, float b)
-{
-	return (a > b) ? a : b;
-}
-
-// RGB -> HSV color transform. Ranges: [0,1]
-void RGB2HSV(float r, float g, float b, float *hue, float *sat, float *val)
-{
-	float	v = max(max(r, g), b),
-			x = min(min(r, g), b);
-
-	*val = v;
-	if (v == x) {
-		*hue = 0;
-		*sat = 0;
-	} else {
-		float	f = (r == x) ? (g - b) : ((g == x) ? (b - r) : (r - g));
-		int		i = (r == x) ? 3 : ((g == x) ? 5 : 1);
-
-		*hue = (i - f / (v - x)) / 6;
-		*sat = (v - x) / v;
-	}
+	float	rMean = (r1 + r2) / 2.0,
+			deltaR = r1 - r2,
+			deltaG = g1 - g2,
+			deltaB = b1 - b2;
+	
+	return (2.0+rMean)*deltaR*deltaR + 4.0*deltaG*deltaG + (2.0+1.0-rMean)*deltaB*deltaB;
 }
 
