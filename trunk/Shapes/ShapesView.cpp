@@ -652,8 +652,9 @@ void ShapesView::MenuShapesSaveColorTable(wxCommandEvent &e)
 void ShapesView::MenuShapesAddBitmap(wxCommandEvent &e)
 {
 	if (((ShapesDocument*)GetDocument()) != NULL && selected_coll != -1 && selected_vers != -1) {
-		wxFileDialog	*dlg = new wxFileDialog(frame, wxT("Choose a bitmap to add"),
-													wxT(""), wxT(""), wxT("BMP files|*.bmp"), wxOPEN);
+		wxFileDialog	*dlg = new wxFileDialog(frame, wxT("Choose a bitmap to add"), wxT(""), wxT(""),
+												wxT("Common bitmap files (BMP, JPEG, PNG, GIF, TIFF)|*.bmp;*.jpg;*.jpeg;*.tif;*.tiff;*.png;*.gif"),
+												wxOPEN);
 
 		if (dlg->ShowModal() == wxID_OK) {
 			wxString	filename = dlg->GetPath();
