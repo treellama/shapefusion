@@ -36,6 +36,9 @@ bool ShapeFusionApp::OnInit(void)
 {
     if ( !wxApp::OnInit() )
         return false;
+	
+	// so that we can import every sort of bitmap format
+	wxInitAllImageHandlers();
 		
 	// Create a document manager
     m_docManager = new wxDocManager;
