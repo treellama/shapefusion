@@ -16,13 +16,16 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 #include "CTView.h"
+#include <wx/colordlg.h>
 
 BEGIN_EVENT_TABLE(CTView, wxPanel)
 	EVT_PAINT(CTView::OnPaint)
 	EVT_SIZE(CTView::OnSize)
 	EVT_LEFT_DOWN(CTView::OnMouseDown)
+	EVT_LEFT_DCLICK(CTView::OnMouseDoubleClick)
 END_EVENT_TABLE()
 
+// icon for the self-luminescent flag
 static char *self_luminescent_icon_xpm[] = {
 "8 8 2 1",
 "   c None",
@@ -38,7 +41,7 @@ static char *self_luminescent_icon_xpm[] = {
 
 CTView::CTView(wxWindow *parent):
 	wxPanel(parent, -1, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER | wxFULL_REPAINT_ON_RESIZE),
-	mColorTable(NULL), mSwatchSize(0), mMargin(7), mLightBulbIcon(self_luminescent_icon_xpm), mSelection(-1)
+	mColorTable(NULL), mSwatchSize(0), mMargin(7), mLightBulbIcon(self_luminescent_icon_xpm)
 {
 	SetBackgroundColour(wxColour(255, 255, 255));
 	mInvisiblePen.SetColour(0, 0, 0);
@@ -61,7 +64,7 @@ void CTView::OnPaint(wxPaintEvent& e)
 	tempdc.SetPen(mInvisiblePen);
 	for (unsigned int j = 0; j < mColorTable->ColorCount(); j++) {
 		// draw selection marker
-		if ((int)j == mSelection) {
+		if (mSelectionMask[j]) {
 			tempdc.SetPen(mSelectionPen);
 			tempdc.SetBrush(*wxWHITE_BRUSH);
 			tempdc.DrawRectangle(x-3, y-3, mSwatchSize+6, mSwatchSize+6);
@@ -93,12 +96,72 @@ void CTView::OnSize(wxSizeEvent &e)
 
 void CTView::OnMouseDown(wxMouseEvent& e)
 {
-	wxPoint		mouse;
+	wxPoint			mouse = e.GetPosition();
+	unsigned int	x = mMargin, y = mMargin;
+	int				width, height;
+	bool			found = false;
 
-	mouse = e.GetPosition();
+	GetClientSize(&width, &height);
 	switch (e.GetButton()) {
 		case wxMOUSE_BTN_LEFT:
+			// first deselect all, if we're not doing multiple selection
+			if (!wxGetMouseState().ShiftDown()) {
+				for (unsigned int j = 0; j < mColorTable->ColorCount(); j++)
+					mSelectionMask[j] = false;
+			}
+			// check for clicks inside a color swatch
+			for (unsigned int j = 0; j < mColorTable->ColorCount(); j++) {
+				wxRect	test(x, y, mSwatchSize, mSwatchSize);
+
+				if (test.Inside(mouse)) {
+					mSelectionMask[j] = true;
+					found = true;
+					break;
+				}
+				x += mSwatchSize + mMargin;
+				if ((int)(x + mSwatchSize + mMargin) >= width) {
+					x = mMargin;
+					y += mSwatchSize + mMargin;
+				}
+			}
+			Refresh();
 			break;
+	}
+	e.Skip();
+}
+
+// handle double-clicks on swatches, showing the
+// color chooser to alter the swatch color
+void CTView::OnMouseDoubleClick(wxMouseEvent& e)
+{
+	wxPoint			mouse = e.GetPosition();
+	unsigned int	x = mMargin, y = mMargin;
+	int				width, height;
+
+	GetClientSize(&width, &height);
+	for (unsigned int j = 0; j < mColorTable->ColorCount(); j++) {
+		wxRect	test(x, y, mSwatchSize, mSwatchSize);
+
+		if (test.Inside(mouse)) {
+			wxColour	newColor = ::wxGetColourFromUser(this,
+										wxColour(mColorTable->GetColor(j)->Red() >> 8,
+										mColorTable->GetColor(j)->Green() >> 8,
+										mColorTable->GetColor(j)->Blue() >> 8));
+
+			if (newColor.Ok()) {
+				mColorTable->GetColor(j)->SetRed(newColor.Red() << 8);
+				mColorTable->GetColor(j)->SetGreen(newColor.Green() << 8);
+				mColorTable->GetColor(j)->SetBlue(newColor.Blue() << 8);
+			}
+			Refresh();
+			// TODO send an event so that the document knows it's been modified
+			break;
+		}
+		x += mSwatchSize + mMargin;
+		if ((int)(x + mSwatchSize + mMargin) >= width) {
+			x = mMargin;
+			y += mSwatchSize + mMargin;
+		}
 	}
 	e.Skip();
 }
@@ -109,6 +172,13 @@ void CTView::SetColorTable(ShapesColorTable *ct)
 				&& (ct->ColorCount() != mColorTable->ColorCount());
 
 	mColorTable = ct;
+	// update selection mask
+	mSelectionMask.clear();
+	if (mColorTable != NULL) {
+		for (unsigned int i = 0; i < mColorTable->ColorCount(); i++)
+			mSelectionMask.push_back(false);
+	}
+	// visual updates
 	if (need_recalc)
 		CalculateSwatchSize();
 	Refresh();
