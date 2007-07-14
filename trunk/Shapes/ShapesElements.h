@@ -73,6 +73,9 @@ public:
 	unsigned short Red(void) const {return mRed;}
 	unsigned short Green(void) const {return mGreen;}
 	unsigned short Blue(void) const {return mBlue;}
+	void SetRed(unsigned short c) {mRed = c;}
+	void SetGreen(unsigned short c) {mGreen = c;}
+	void SetBlue(unsigned short c) {mBlue = c;}
 	
 	// Utilities
     BigEndianBuffer& SaveObject(BigEndianBuffer& buffer);

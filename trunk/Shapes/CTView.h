@@ -40,7 +40,7 @@ private:
 	unsigned int		mSwatchSize,
 						mMargin;
 	wxBitmap			mLightBulbIcon;
-	int					mSelection;
+	vector<bool>		mSelectionMask;
 
 protected:
 	DECLARE_EVENT_TABLE();
@@ -52,6 +52,7 @@ public:
 	void OnPaint(wxPaintEvent &e);
 	void OnSize(wxSizeEvent &e);
 	void OnMouseDown(wxMouseEvent& e);
+	void OnMouseDoubleClick(wxMouseEvent& e);
 	// access
 	void SetColorTable(ShapesColorTable *ct);
 };
