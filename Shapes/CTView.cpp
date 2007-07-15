@@ -18,6 +18,9 @@
 #include "CTView.h"
 #include <wx/colordlg.h>
 
+DEFINE_EVENT_TYPE(wxEVT_CTVIEW_SELECTION)
+DEFINE_EVENT_TYPE(wxEVT_CTVIEW_COLOR)
+
 BEGIN_EVENT_TABLE(CTView, wxPanel)
 	EVT_PAINT(CTView::OnPaint)
 	EVT_SIZE(CTView::OnSize)
@@ -125,6 +128,17 @@ void CTView::OnMouseDown(wxMouseEvent& e)
 				}
 			}
 			Refresh();
+			// send selection event (telling just how many items are selected)
+			{
+				wxCommandEvent	event(wxEVT_CTVIEW_SELECTION, GetId());
+				int				selectedCount = 0;
+
+				for (unsigned int j = 0; j < mColorTable->ColorCount(); j++)
+					selectedCount += mSelectionMask[j] ? 1 : 0;
+				event.SetEventObject(this);
+				event.SetInt(selectedCount);
+				GetEventHandler()->ProcessEvent(event);
+			}
 			break;
 	}
 	e.Skip();
@@ -143,6 +157,7 @@ void CTView::OnMouseDoubleClick(wxMouseEvent& e)
 		wxRect	test(x, y, mSwatchSize, mSwatchSize);
 
 		if (test.Inside(mouse)) {
+			// FIXME is it ok to set the CTView as the parent?
 			wxColour	newColor = ::wxGetColourFromUser(this,
 										wxColour(mColorTable->GetColor(j)->Red() >> 8,
 										mColorTable->GetColor(j)->Green() >> 8,
@@ -154,7 +169,12 @@ void CTView::OnMouseDoubleClick(wxMouseEvent& e)
 				mColorTable->GetColor(j)->SetBlue(newColor.Blue() << 8);
 			}
 			Refresh();
-			// TODO send an event so that the document knows it's been modified
+			// send an event to let the world know
+			wxCommandEvent	event(wxEVT_CTVIEW_COLOR, GetId());
+
+			event.SetEventObject(this);
+			event.SetInt(j);
+			GetEventHandler()->ProcessEvent(event);
 			break;
 		}
 		x += mSwatchSize + mMargin;
@@ -182,6 +202,11 @@ void CTView::SetColorTable(ShapesColorTable *ct)
 	if (need_recalc)
 		CalculateSwatchSize();
 	Refresh();
+}
+
+vector<bool> CTView::GetSelection(void) const
+{
+	return mSelectionMask;
 }
 
 // calculate best swatch size fitting into the widget area

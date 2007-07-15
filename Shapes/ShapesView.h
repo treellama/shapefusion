@@ -42,7 +42,7 @@ private:
 	enum {
 		// color tables
 		CB_SELF_LUMINESCENT,
-		BTN_BLEND,
+		BTN_GRADIENT,
 		// bitmaps
 		BITMAP_BROWSER,
 		CB_COLUMN_ORDER,
@@ -105,8 +105,9 @@ private:
 	wxStaticBox			*ct_edit_static_box;
 	wxStaticBoxSizer	*ct_edit_box;
 	CTView					*ct_view;
-	wxCheckBox				*ct_self_lumin_checkbox;
-	wxButton				*ct_blend_button;
+	wxBoxSizer				*ct_inner_edit_box;
+	wxCheckBox					*ct_self_lumin_checkbox;
+	wxButton					*ct_gradient_button;
 	// widgets for bitmaps section
 	wxBoxSizer			*b_outer_sizer,
 						*b_edit_inner_box;
@@ -232,6 +233,10 @@ public:
 	void BitmapSelect(wxCommandEvent &e);
 	void BitmapDelete(wxCommandEvent &e);
 	void CTSelect(wxCommandEvent &e);
+	void CTColorSelect(wxCommandEvent &e);
+	void CTColorChanged(wxCommandEvent &e);
+	void ToggleSelfLuminCheckbox(wxCommandEvent &e);
+	void MakeCTGradient(wxCommandEvent &e);
 	void ToggleBitmapCheckboxes(wxCommandEvent &e);
 	void FrameSelect(wxCommandEvent &e);
 	void FrameDelete(wxCommandEvent &e);

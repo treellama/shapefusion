@@ -32,6 +32,9 @@
 #endif
 #include "ShapesElements.h"
 
+DECLARE_EVENT_TYPE(wxEVT_CTVIEW_SELECTION, -1)
+DECLARE_EVENT_TYPE(wxEVT_CTVIEW_COLOR, -1)
+
 class CTView: public wxPanel {
 private:
 	ShapesColorTable	*mColorTable;		// link to the color table
@@ -55,6 +58,7 @@ public:
 	void OnMouseDoubleClick(wxMouseEvent& e);
 	// access
 	void SetColorTable(ShapesColorTable *ct);
+	vector<bool> GetSelection(void) const;
 };
 
 #endif
