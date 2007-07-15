@@ -45,6 +45,10 @@ BEGIN_EVENT_TABLE(ShapesView, wxView)
 	EVT_COMMAND_RANGE(CB_COLUMN_ORDER, CB_ENABLE_TRANSPARENCY, wxEVT_COMMAND_CHECKBOX_CLICKED, ShapesView::ToggleBitmapCheckboxes)
 	// color tables
 	EVT_COMMAND(wxID_ANY, wxEVT_CTBROWSER, ShapesView::CTSelect)
+	EVT_COMMAND(wxID_ANY, wxEVT_CTVIEW_SELECTION, ShapesView::CTColorSelect)
+	EVT_COMMAND(wxID_ANY, wxEVT_CTVIEW_COLOR, ShapesView::CTColorChanged)
+	EVT_COMMAND(CB_SELF_LUMINESCENT, wxEVT_COMMAND_CHECKBOX_CLICKED, ShapesView::ToggleSelfLuminCheckbox)
+	EVT_BUTTON(BTN_GRADIENT, ShapesView::MakeCTGradient)
 	// frames
 	EVT_COMMAND(FRAME_BROWSER, wxEVT_FRAMEBROWSER, ShapesView::FrameSelect)
 	EVT_COMMAND(FRAME_BROWSER, wxEVT_FRAMEBROWSER_DELETE, ShapesView::FrameDelete)
@@ -196,9 +200,14 @@ bool ShapesView::OnCreate(wxDocument *doc, long WXUNUSED(flags) )
 	ct_edit_static_box = new wxStaticBox(frame, -1, wxT("Color table N of M"));
 	ct_edit_box = new wxStaticBoxSizer(ct_edit_static_box, wxVERTICAL);
 	ct_view = new CTView(frame);
+	ct_inner_edit_box = new wxBoxSizer(wxHORIZONTAL);
 	ct_self_lumin_checkbox = new wxCheckBox(frame, CB_SELF_LUMINESCENT, wxT("Self-luminescent color"), wxDefaultPosition, wxDefaultSize, wxCHK_3STATE);
+	ct_gradient_button = new wxButton(frame, BTN_GRADIENT, wxT("Make gradient"));
 	ct_edit_box->Add(ct_view, 1, wxEXPAND | wxLEFT | wxTOP | wxRIGHT | wxBOTTOM, 5);
-	ct_edit_box->Add(ct_self_lumin_checkbox, 0, wxEXPAND | wxLEFT | wxTOP | wxRIGHT | wxBOTTOM, 5);
+	ct_edit_box->Add(ct_inner_edit_box, 0, wxEXPAND | wxLEFT | wxTOP | wxRIGHT | wxBOTTOM, 5);
+	ct_inner_edit_box->Add(ct_self_lumin_checkbox, 0, wxALIGN_CENTER);
+	ct_inner_edit_box->AddStretchSpacer();
+	ct_inner_edit_box->Add(ct_gradient_button, 0, wxALIGN_CENTER);
 	ct_outer_sizer->Add(ctb, 1, wxGROW);
 	ct_outer_sizer->Add(ct_count_label, 1, wxALIGN_LEFT | wxLEFT | wxTOP | wxBOTTOM, 10);
 	ct_outer_sizer->Add(ct_edit_box, 1, wxEXPAND | wxLEFT | wxRIGHT | wxTOP | wxBOTTOM, 10);
@@ -1195,6 +1204,7 @@ void ShapesView::ToggleBitmapCheckboxes(wxCommandEvent &e)
 	}
 }
 
+// callback for selections in the color table browser
 void ShapesView::CTSelect(wxCommandEvent &e)
 {
 	int	selection = e.GetInt();
@@ -1224,10 +1234,80 @@ void ShapesView::CTSelect(wxCommandEvent &e)
 		menubar->Enable(EDIT_MENU_DELETE, true);
 	}
 	ct_self_lumin_checkbox->Disable();
+	ct_gradient_button->Disable();
 	ct_outer_sizer->Layout();
 }
 
-// selection event in the frame browser
+// callback for color selections in the color table editor
+void ShapesView::CTColorSelect(wxCommandEvent &e)
+{
+	ct_self_lumin_checkbox->Disable();
+	ct_gradient_button->Disable();
+	switch (e.GetInt()) {
+		default:	// more colors selected
+			ct_gradient_button->Enable();
+		case 1:		// just one color selected
+			ct_self_lumin_checkbox->Enable();
+			// set the checkbox value
+			{
+				ShapesColorTable	*ct = ((ShapesDocument*)GetDocument())->GetColorTable(selected_coll,
+										selected_vers, ctb->GetSelection());
+				vector<bool>		selection = ct_view->GetSelection();
+				bool				someAreOn = false,
+									someAreOff = false;
+
+				for (unsigned int i = 0; i < selection.size(); i++) {
+					if (selection[i]) {
+						if (ct->GetColor(i)->Luminescent())
+							someAreOn = true;
+						else
+							someAreOff = true;
+					}
+				}
+				if (someAreOn && someAreOff)
+					ct_self_lumin_checkbox->Set3StateValue(wxCHK_UNDETERMINED);
+				else if (someAreOn && !someAreOff)
+					ct_self_lumin_checkbox->Set3StateValue(wxCHK_CHECKED);
+				else
+					ct_self_lumin_checkbox->Set3StateValue(wxCHK_UNCHECKED);
+			}
+		case 0:		// no colors selected
+			break;
+	}
+}
+
+// callback for color alteration in the color table editor
+void ShapesView::CTColorChanged(wxCommandEvent &e)
+{
+	((ShapesDocument*)GetDocument())->Modify(true);
+	ctb->Refresh();
+	// TODO invalidate thumbnails if needed
+}
+
+// callback for the "self luminescent color" checkbox
+void ShapesView::ToggleSelfLuminCheckbox(wxCommandEvent &e)
+{
+	ShapesColorTable	*ct = ((ShapesDocument*)GetDocument())->GetColorTable(selected_coll,
+								selected_vers, ctb->GetSelection());
+	vector<bool>		selection = ct_view->GetSelection();
+
+	for (unsigned int i = 0; i < selection.size(); i++) {
+		if (selection[i])
+			ct->GetColor(i)->SetLuminescent(e.IsChecked());
+	}
+	((ShapesDocument*)GetDocument())->Modify(true);
+	ctb->Refresh();
+	ct_view->Refresh();
+}
+
+// callback for the "make gradient" button in the color table editor
+void ShapesView::MakeCTGradient(wxCommandEvent &e)
+{
+	// TODO grab the first and last selected colors,
+	// interpolate RGB values between them
+}
+
+// callback for selections in the frame browser
 void ShapesView::FrameSelect(wxCommandEvent &e)
 {
 	int selection = e.GetInt();
@@ -1382,7 +1462,7 @@ void ShapesView::EditFrameFields(wxCommandEvent &e)
 	}
 }
 
-// "delete sequence" button click
+// callback for "delete sequence" button clicks
 void ShapesView::DeleteSequence(wxCommandEvent &e)
 {
 	// first delete the sequence for real
