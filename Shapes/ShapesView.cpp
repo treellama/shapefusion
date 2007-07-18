@@ -1281,7 +1281,15 @@ void ShapesView::CTColorChanged(wxCommandEvent &e)
 {
 	((ShapesDocument*)GetDocument())->Modify(true);
 	ctb->Refresh();
-	// TODO invalidate thumbnails if needed
+	// refresh thumbnails if needed
+	if (ctb->GetSelection() == view_ct) {
+		bb->Freeze();
+		bb->RebuildThumbnails();
+		bb->Thaw();
+		fb->Freeze();
+		fb->RebuildThumbnails();
+		fb->Thaw();
+	}
 }
 
 // callback for the "self luminescent color" checkbox
@@ -1298,13 +1306,55 @@ void ShapesView::ToggleSelfLuminCheckbox(wxCommandEvent &e)
 	((ShapesDocument*)GetDocument())->Modify(true);
 	ctb->Refresh();
 	ct_view->Refresh();
+	// TODO invalidate thumbnails if needed
 }
 
 // callback for the "make gradient" button in the color table editor
 void ShapesView::MakeCTGradient(wxCommandEvent &e)
 {
-	// TODO grab the first and last selected colors,
-	// interpolate RGB values between them
+	vector<bool>	selection = ct_view->GetSelection();
+	int				firstIndex = -1, lastIndex = -1;
+
+	// find first and last selected items
+	for (unsigned int i = 0; i < selection.size(); i++) {
+		if (selection[i]) {
+			if (firstIndex == -1)
+				firstIndex = i;
+			lastIndex = i;
+		}
+	}
+	if (firstIndex > -1 && firstIndex < lastIndex) {
+		// linearly interpolate colors in between
+		ShapesColorTable	*ct = ((ShapesDocument*)GetDocument())->GetColorTable(selected_coll,
+								selected_vers, ctb->GetSelection());
+		int					r1 = ct->GetColor(firstIndex)->Red(),
+							g1 = ct->GetColor(firstIndex)->Green(),
+							b1 = ct->GetColor(firstIndex)->Blue(),
+							r2 = ct->GetColor(lastIndex)->Red(),
+							g2 = ct->GetColor(lastIndex)->Green(),
+							b2 = ct->GetColor(lastIndex)->Blue(),
+							delta = lastIndex - firstIndex;
+
+		for (int k = firstIndex+1; k < lastIndex; k++) {
+			ShapesColor	*color = ct->GetColor(k);
+
+			color->SetRed(r1 + (r2-r1)*(k-firstIndex)/delta);
+			color->SetGreen(g1 + (g2-g1)*(k-firstIndex)/delta);
+			color->SetBlue(b1 + (b2-b1)*(k-firstIndex)/delta);
+		}
+	}
+	((ShapesDocument*)GetDocument())->Modify(true);
+	ctb->Refresh();
+	ct_view->Refresh();
+	// refresh thumbnails if needed
+	if (ctb->GetSelection() == view_ct) {
+		bb->Freeze();
+		bb->RebuildThumbnails();
+		bb->Thaw();
+		fb->Freeze();
+		fb->RebuildThumbnails();
+		fb->Thaw();
+	}
 }
 
 // callback for selections in the frame browser
