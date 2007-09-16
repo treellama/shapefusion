@@ -248,6 +248,7 @@ public:
 	void EditSequenceXferMode(wxCommandEvent &e);
 	void EditSequenceFields(wxCommandEvent &e);
 
+	void DoDeleteColorTable(int which);
 	void DoDeleteBitmap(int which);
 	void DoDeleteFrame(int which);
 };

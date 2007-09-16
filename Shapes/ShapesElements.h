@@ -65,6 +65,7 @@ private:
 public:
 	// Constructor / Destructor
 	ShapesColor(bool verbose = false);
+	ShapesColor(unsigned int r, unsigned int g, unsigned int b, unsigned int value, bool luminescent = false, bool verbose = false);
 	~ShapesColor(void);
 	
 	// Accessors
@@ -91,10 +92,12 @@ private:
 
 public:
 	ShapesColorTable(bool verbose = false);
+	ShapesColorTable(std::ifstream& ifs, wxString file_ext);
 	~ShapesColorTable(void);
 
-	unsigned int ColorCount(void) const {return mColors.size();}
-	ShapesColor *GetColor(unsigned int index) const {return mColors[index];}
+	unsigned int ColorCount(void) const { return mColors.size(); }
+	ShapesColor *GetColor(unsigned int index) const { return mColors[index]; }
+	void InsertColor(ShapesColor *color) { mColors.push_back(color); }
 	
 	unsigned int SizeInFile() const;
 	

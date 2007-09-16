@@ -22,7 +22,6 @@
 #include "wx/docview.h"
 
 // Define a new frame
-class MyCanvas;
 class ShapeFusionMain: public wxDocParentFrame
 {
     DECLARE_CLASS(FusionMain)
