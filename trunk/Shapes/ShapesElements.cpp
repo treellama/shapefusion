@@ -56,6 +56,12 @@ ShapesColor::ShapesColor(bool verbose) : ShapesElement(verbose)
 
 }
 
+ShapesColor::ShapesColor(unsigned int r, unsigned int g, unsigned int b, unsigned int value, bool luminescent, bool verbose):
+	mRed(r), mGreen(g), mBlue(b), mValue(value), mLuminescent(luminescent), ShapesElement(verbose)
+{
+
+}
+
 ShapesColor::~ShapesColor(void)
 {
 
@@ -93,6 +99,30 @@ BigEndianBuffer& ShapesColor::LoadObject(BigEndianBuffer& buffer)
 ShapesColorTable::ShapesColorTable(bool verbose) : ShapesElement(verbose)
 {
 
+}
+
+ShapesColorTable::ShapesColorTable(std::ifstream& ifs, wxString file_ext): ShapesElement(false)
+{
+	if (file_ext == wxString(wxT("act"))) {
+		// Photoshop binary color table file
+		
+	} else if (file_ext == wxString(wxT("gpl"))) {
+		// Gimp ASCII palette file
+		unsigned int	value = 0;
+
+		while (ifs.good() && value < 256) {
+			char			buffer[256] = "";
+			unsigned int	red, green, blue;
+
+			ifs.getline(buffer, 255);
+			if (sscanf(buffer, "%u %u %u", &red, &green, &blue) == 3) {
+				ShapesColor	*newColor = new ShapesColor(red << 8, green << 8, blue << 8, value);
+
+				mColors.push_back(newColor);
+				value++;
+			}
+		}
+	}
 }
 
 ShapesColorTable::~ShapesColorTable(void)

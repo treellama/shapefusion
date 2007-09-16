@@ -524,6 +524,9 @@ void ShapesView::MenuEditDelete(wxCommandEvent &e)
 	if (selected_item_data != NULL) {
 		// what should we delete?
 		switch (selected_item_data->Section()) {
+			case TREESECTION_COLORTABLES:
+				DoDeleteColorTable(ctb->GetSelection());
+				break;
 			case TREESECTION_BITMAPS:
 				DoDeleteBitmap(bb->GetSelection());
 				break;
@@ -553,7 +556,8 @@ void ShapesView::MenuViewCT(wxCommandEvent &e)
 {
 	view_ct = e.GetId() - VIEW_MENU_COLORTABLE_0;
 
-	ShapesColorTable	*ctp = ((ShapesDocument*)GetDocument())->GetColorTable(selected_coll, selected_vers, view_ct);
+	ShapesColorTable	*ctp = ((ShapesDocument*)GetDocument())->GetColorTable(
+									selected_coll, selected_vers, view_ct);
 
 	wxBeginBusyCursor();
 	bb->SetColorTable(ctp);
@@ -590,26 +594,61 @@ void ShapesView::MenuViewTNSize(wxCommandEvent &e)
 	wxEndBusyCursor();
 }
 
-// TODO
 void ShapesView::MenuShapesAddColorTable(wxCommandEvent &e)
 {
-	wxFileDialog	*dlg = new wxFileDialog(frame, wxT("Choose a GIMP color table"), 
-					                                wxT(""), wxT(""), wxT("*"), wxOPEN);
+	wxFileDialog	*dlg = new wxFileDialog(frame, wxT("Import a color table"), wxT(""), wxT(""),
+											wxT("Photoshop color table|*.act|Gimp palette|*.gpl"), wxOPEN);
 
 	if (dlg->ShowModal() == wxID_OK) {
 		wxString		filename = dlg->GetPath();
-/*		std::ifstream	fstream(filename.mb_str(), std::ios::in);
+		std::ifstream	ifs(filename.mb_str(), std::ios::in);
 
-		if (fstream.good()) {
-			// TODO handle both GIMP and Photoshop palettes
-			// if this is going to be the first color table,
-			// then add every color. Otherwise, keep only the
-			// first <color per table> colors (warn the user)
-			fstream.close();
-			((ShapesDocument*)GetDocument())->Modify(true);
+		if (ifs.good()) {
+			ShapesColorTable	*newct = new ShapesColorTable(ifs, filename.AfterLast('.')),
+								*firstct = ((ShapesDocument*)GetDocument())->GetColorTable(selected_coll, selected_vers, 0);
+
+			ifs.close();
+			if (newct->ColorCount() > 0) {
+				if (newct->GetColor(0)->Red() != 0 || newct->GetColor(0)->Green() != 0 || newct->GetColor(0)->Blue() != 255)
+					wxMessageBox(wxT("The first color of the table being imported is not the usual Marathon chroma key color"
+									" (no red, no green, maximum blue). It should be corrected manually to avoid problems."),
+									wxT("Invalid chroma key color"), wxOK | wxICON_WARNING, frame);
+				if (firstct != NULL) {
+					// handle cases in which the new color table has more or less colors than existing ones
+					if (newct->ColorCount() > firstct->ColorCount()) {
+						// more colors, append dummy colors to existing tables
+						unsigned int	numcolors = newct->ColorCount() - firstct->ColorCount(),
+										numcts = ((ShapesDocument*)GetDocument())->CollectionColorTableCount(selected_coll, selected_vers);
+
+						for (unsigned int i = 0; i < numcts; i++) {
+							ShapesColorTable	*ct = ((ShapesDocument*)GetDocument())->GetColorTable(selected_coll, selected_vers, i);
+
+							for (unsigned int j = 0; j < numcolors; j++)
+								ct->InsertColor(new ShapesColor(0, 0, 0, numcolors + j));
+						}
+					} else if (newct->ColorCount() < firstct->ColorCount()) {
+						// less colors, append dummy colors to the new table
+						unsigned int	numcolors = firstct->ColorCount() - newct->ColorCount();
+
+						for (unsigned int i = 0; i < numcolors; i++)
+							newct->InsertColor(new ShapesColor(0, 0, 0, newct->ColorCount() + i));
+					}
+				}
+				((ShapesDocument*)GetDocument())->InsertColorTable(newct, selected_coll, selected_vers);
+				((ShapesDocument*)GetDocument())->Modify(true);
+			} else {
+				wxString	errormsg;
+
+				errormsg << wxT("Sorry, could not load a color table from ") << filename << wxT(" because the file format is unknown or the file contains no colors.");
+				wxMessageBox(errormsg, wxT("Error loading color table"), wxOK | wxICON_ERROR, frame);
+				delete newct;
+			}
 		} else {
-			std::cerr << "Error loading palette " << filename.mb_str() << "\n";
-		}*/
+			wxString	errormsg;
+
+			errormsg << wxT("Sorry, could not load a color table from ") << filename << wxT(" because the file is not readable.");
+			wxMessageBox(errormsg, wxT("Error loading color table"), wxOK | wxICON_ERROR, frame);
+		}
 	}
 	dlg->Destroy();
 }
@@ -900,6 +939,7 @@ void ShapesView::TreeSelect(wxTreeEvent &e)
 					wxString		count_string;
 
 					wxBeginBusyCursor();
+					menubar->Enable(SHAPES_MENU_ADDCOLORTABLE, true);
 					menubar->Enable(SHAPES_MENU_ADDBITMAP, true);
 					menubar->Enable(SHAPES_MENU_EXPORTBITMAPS, true);
 					menubar->Enable(SHAPES_MENU_EXPORTMASKS, true);
@@ -953,6 +993,7 @@ void ShapesView::TreeSelect(wxTreeEvent &e)
 
 					wxEndBusyCursor();
 				} else {
+					menubar->Enable(SHAPES_MENU_ADDCOLORTABLE, false);
 					menubar->Enable(SHAPES_MENU_ADDBITMAP, false);
 					menubar->Enable(SHAPES_MENU_EXPORTBITMAPS, false);
 					menubar->Enable(SHAPES_MENU_EXPORTMASKS, false);
@@ -960,6 +1001,7 @@ void ShapesView::TreeSelect(wxTreeEvent &e)
 					menubar->Enable(SHAPES_MENU_ADDSEQUENCE, false);
 				}
 			} else {
+				menubar->Enable(SHAPES_MENU_ADDCOLORTABLE, false);
 				menubar->Enable(SHAPES_MENU_ADDBITMAP, false);
 				menubar->Enable(SHAPES_MENU_EXPORTBITMAPS, false);
 				menubar->Enable(SHAPES_MENU_EXPORTMASKS, false);
@@ -1113,6 +1155,64 @@ void ShapesView::BitmapDelete(wxCommandEvent &e)
 	DoDeleteBitmap(e.GetSelection());
 }
 
+void ShapesView::DoDeleteColorTable(int which)
+{
+	if (which >= 0) {
+		// first do like a color table deselection
+		ct_view->SetColorTable(NULL);
+		ct_outer_sizer->Show(ct_count_label, true);
+		ct_outer_sizer->Show(ct_edit_box, false);
+		menubar->Enable(SHAPES_MENU_SAVECOLORTABLE, false);
+		menubar->Enable(SHAPES_MENU_SAVECOLORTABLETOPS, false);
+		menubar->SetLabel(EDIT_MENU_DELETE, wxT("Delete"));
+		menubar->Enable(EDIT_MENU_DELETE, false);
+		ctb->Freeze();
+		ctb->Clear();
+		// delete
+		((ShapesDocument*)GetDocument())->DeleteColorTable(selected_coll, selected_vers, which);
+		// update the view color table
+		if (view_ct == which) {
+			view_ct = 0;
+			ShapesColorTable	*ctp = ((ShapesDocument*)GetDocument())->GetColorTable(
+											selected_coll, selected_vers, view_ct);
+
+			wxBeginBusyCursor();
+			bb->SetColorTable(ctp);
+			b_view->SetColorTable(ctp);
+			fb->SetColorTable(ctp);
+			f_view->SetColorTable(ctp);
+			s_fb->SetColorTable(ctp);
+			wxEndBusyCursor();
+		} else if (view_ct > which) {
+			view_ct = view_ct - 1;
+			ShapesColorTable    *ctp = ((ShapesDocument*)GetDocument())->GetColorTable(
+											selected_coll, selected_vers, view_ct);
+
+			wxBeginBusyCursor();
+			bb->SetColorTable(ctp);
+			b_view->SetColorTable(ctp);
+			fb->SetColorTable(ctp);
+			f_view->SetColorTable(ctp);
+			s_fb->SetColorTable(ctp);
+			wxEndBusyCursor();
+		}
+		// reset other gui elements
+		unsigned int	colorTableCount = ((ShapesDocument*)GetDocument())->CollectionColorTableCount(
+											selected_coll, selected_vers);
+
+		for (unsigned int i = 0; i < colorTableCount; i++)
+			ctb->AddColorTable(((ShapesDocument*)GetDocument())->GetColorTable(selected_coll, selected_vers, i));
+		ctb->Thaw();
+		wxMenu	*colortables_submenu;
+		menubar->FindItem(VIEW_MENU_COLORTABLE_0, &colortables_submenu);
+		for (unsigned int i = 0; i < colortables_submenu->GetMenuItemCount(); i++) {
+			menubar->Enable(VIEW_MENU_COLORTABLE_0 + i, i < colorTableCount);
+			menubar->Check(VIEW_MENU_COLORTABLE_0 + view_ct, i == (unsigned int)view_ct);
+		}
+		((ShapesDocument*)GetDocument())->Modify(true);
+	}
+}
+
 void ShapesView::DoDeleteBitmap(int which)
 {
 	if (which >= 0) {
@@ -1231,7 +1331,11 @@ void ShapesView::CTSelect(wxCommandEvent &e)
 		menubar->Enable(SHAPES_MENU_SAVECOLORTABLE, true);
 		menubar->Enable(SHAPES_MENU_SAVECOLORTABLETOPS, true);
 		menubar->SetLabel(EDIT_MENU_DELETE, wxT("Delete color table"));
-		menubar->Enable(EDIT_MENU_DELETE, true);
+		// FIXME make sure there is at least one color table for now
+		if (((ShapesDocument*)GetDocument())->CollectionColorTableCount(selected_coll, selected_vers) > 1)
+			menubar->Enable(EDIT_MENU_DELETE, true);
+		else
+			menubar->Enable(EDIT_MENU_DELETE, false);
 	}
 	ct_self_lumin_checkbox->Disable();
 	ct_gradient_button->Disable();
