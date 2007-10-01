@@ -42,8 +42,6 @@ LittleEndianBuffer::~LittleEndianBuffer(void)
 	}
 }
 
-#pragma mark Read
-
 char LittleEndianBuffer::ReadChar(void)
 {
 	if ((unsigned int)(position - data) < size) {
@@ -136,8 +134,6 @@ void LittleEndianBuffer::ReadBlock(unsigned long _size, unsigned char *dest)
 	}
 }
 
-#pragma mark Write
-
 void LittleEndianBuffer::WriteChar(char v)
 {
 	if ((unsigned int)(position - data) < size)
@@ -217,8 +213,6 @@ void LittleEndianBuffer::WriteZeroes(unsigned int n)
 		std::cerr << "LittleEndianBuffer: attempted write beyond buffer limits\n";
 	}
 }
-
-#pragma mark Internal access
 
 unsigned char *LittleEndianBuffer::Data(void) const
 {

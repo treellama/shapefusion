@@ -42,8 +42,6 @@ BigEndianBuffer::~BigEndianBuffer(void)
 	}
 }
 
-#pragma mark Read
-
 char BigEndianBuffer::ReadChar(void)
 {
 	if ((unsigned int)(position - data) < size) {
@@ -136,8 +134,6 @@ void BigEndianBuffer::ReadBlock(unsigned long _size, unsigned char *dest)
 	}
 }
 
-#pragma mark Write
-
 void BigEndianBuffer::WriteChar(char v)
 {
 	if ((unsigned int)(position - data) < size)
@@ -217,8 +213,6 @@ void BigEndianBuffer::WriteZeroes(unsigned int n)
 		std::cerr << "BigEndianBuffer: attempted write beyond buffer limits\n";
 	}
 }
-
-#pragma mark Internal access
 
 unsigned char *BigEndianBuffer::Data(void) const
 {
