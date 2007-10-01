@@ -224,10 +224,10 @@ void CTView::CalculateSwatchSize(void)
 
 			for (unsigned int i = 0; i < mColorTable->ColorCount(); i++) {
 				x += new_swatch_size + mMargin;
-				if (x + new_swatch_size + mMargin >= width) {
+				if ((int)(x + new_swatch_size + mMargin) >= width) {
 					x = mMargin;
 					y += new_swatch_size + mMargin;
-					if (y + new_swatch_size + mMargin >= height) {
+					if ((int)(y + new_swatch_size + mMargin) >= height) {
 						mSwatchSize = new_swatch_size - 1;
 						break;
 					}

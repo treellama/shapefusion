@@ -57,7 +57,7 @@ ShapesColor::ShapesColor(bool verbose) : ShapesElement(verbose)
 }
 
 ShapesColor::ShapesColor(unsigned int r, unsigned int g, unsigned int b, unsigned int value, bool luminescent, bool verbose):
-	mRed(r), mGreen(g), mBlue(b), mValue(value), mLuminescent(luminescent), ShapesElement(verbose)
+	 ShapesElement(verbose), mLuminescent(luminescent), mValue(value), mRed(r), mGreen(g), mBlue(b)
 {
 
 }
@@ -526,7 +526,7 @@ void ShapesBitmap::SaveToBMP(wxString path, ShapesColorTable *colorTable) const
 		// 8-bit raster data
 		LittleEndianBuffer	rasterBlock(paddedWidth * mHeight);
 
-		for (unsigned int y = 0; y < mHeight; y++) {
+		for (int y = 0; y < mHeight; y++) {
 			rasterBlock.WriteBlock(mWidth, mPixels + (mHeight - y - 1) * mWidth);
 			rasterBlock.WriteZeroes(paddedWidth - mWidth);
 		}
@@ -582,13 +582,13 @@ void ShapesBitmap::SaveMaskToBMP(wxString path) const
 		LittleEndianBuffer	rasterBlock(rowBytes * mHeight);
 		
 		rasterBlock.WriteZeroes(rowBytes * mHeight);
-		for (unsigned int y = 0; y < mHeight; y++) {
+		for (unsigned int y = 0; (int)y < mHeight; y++) {
 			unsigned char	*p = mPixels + y * mWidth,
 							bit = 128,
 							byte = 0;
 
 			rasterBlock.Position((mHeight - y - 1) * rowBytes);
-			for (unsigned int x = 0; x < mWidth; x++) {
+			for (unsigned int x = 0; (int)x < mWidth; x++) {
 				if (*p++ != 0)
 					byte |= bit;
 				bit >>= 1;
