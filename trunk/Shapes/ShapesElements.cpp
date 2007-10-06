@@ -104,8 +104,32 @@ ShapesColorTable::ShapesColorTable(bool verbose) : ShapesElement(verbose)
 ShapesColorTable::ShapesColorTable(std::ifstream& ifs, wxString file_ext): ShapesElement(false)
 {
 	if (file_ext == wxString(wxT("act"))) {
-		// Photoshop binary color table file
-		
+		// Photoshop binary color table file (Adobe Color Table, .act)
+		// FIXME find better doc about the file format and rewrite this
+		ifs.seekg(0, std::ios::end);
+		unsigned int	fileSize = ifs.tellg(),
+						colorCount = 0;
+		ifs.seekg(0, std::ios::beg);
+
+		if (fileSize == 3*256+4) {
+			// less than 256 colors
+			unsigned char	tailData[4];
+
+			ifs.seekg(fileSize - 4);
+			ifs.read((char *)tailData, 4);
+			if (tailData[0] == 0 && tailData[2] == 0xff && tailData[3] == 0xff)
+				colorCount = tailData[1];
+		} else if (fileSize == 3*256) {
+			// exactly 256 colors
+			colorCount = 256;
+		}
+		ifs.seekg(0, std::ios::beg);
+		for (unsigned int value = 0; value < colorCount; value++) {
+			unsigned char	rgb[3];
+			ifs.read((char *)rgb, 3);
+			ShapesColor		*newColor = new ShapesColor(rgb[0]<<8, rgb[1]<<8, rgb[2]<<8, value);
+			mColors.push_back(newColor);
+		}
 	} else if (file_ext == wxString(wxT("gpl"))) {
 		// Gimp ASCII palette file
 		unsigned int	value = 0;
@@ -116,7 +140,7 @@ ShapesColorTable::ShapesColorTable(std::ifstream& ifs, wxString file_ext): Shape
 
 			ifs.getline(buffer, 255);
 			if (sscanf(buffer, "%u %u %u", &red, &green, &blue) == 3) {
-				ShapesColor	*newColor = new ShapesColor(red << 8, green << 8, blue << 8, value);
+				ShapesColor	*newColor = new ShapesColor(red<<8, green<<8, blue<<8, value);
 
 				mColors.push_back(newColor);
 				value++;
@@ -187,7 +211,7 @@ int ShapesColorTable::SaveToGimp(wxString path) const
 }
 
 // export a color table to Photoshop binary format
-// (MacOS file type is '8BCT', extension '.act')
+// (MacOS file type is '8BCT', extension '.act', Adobe Color Table)
 int ShapesColorTable::SaveToPhotoshop(wxString path) const
 {
 	std::ofstream	cts(path.fn_str());

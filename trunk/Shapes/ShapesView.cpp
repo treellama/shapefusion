@@ -609,7 +609,7 @@ void ShapesView::MenuShapesAddColorTable(wxCommandEvent &e)
 
 			ifs.close();
 			if (newct->ColorCount() > 0) {
-				if (newct->GetColor(0)->Red() != 0 || newct->GetColor(0)->Green() != 0 || newct->GetColor(0)->Blue() != 255)
+				if (newct->GetColor(0)->Red() != 0 || newct->GetColor(0)->Green() != 0 || newct->GetColor(0)->Blue() != 255<<8)
 					wxMessageBox(wxT("The first color of the table being imported is not the usual Marathon chroma key color"
 									" (no red, no green, maximum blue). It should be corrected manually to avoid problems."),
 									wxT("Invalid chroma key color"), wxOK | wxICON_WARNING, frame);
@@ -636,6 +636,16 @@ void ShapesView::MenuShapesAddColorTable(wxCommandEvent &e)
 				}
 				((ShapesDocument*)GetDocument())->InsertColorTable(newct, selected_coll, selected_vers);
 				((ShapesDocument*)GetDocument())->Modify(true);
+				// update the GUI
+				ctb->AddColorTable(newct);
+				unsigned int	colorTableCount = ((ShapesDocument*)GetDocument())->CollectionColorTableCount(
+													selected_coll, selected_vers);
+				wxMenu 			*colortables_submenu;
+				menubar->FindItem(VIEW_MENU_COLORTABLE_0, &colortables_submenu);
+				for (unsigned int i = 0; i < colortables_submenu->GetMenuItemCount(); i++) {
+					menubar->Enable(VIEW_MENU_COLORTABLE_0 + i, i < colorTableCount);
+					menubar->Check(VIEW_MENU_COLORTABLE_0 + view_ct, i == (unsigned int)view_ct);
+				}
 			} else {
 				wxString	errormsg;
 
