@@ -25,25 +25,6 @@ As for the license, ShapeFusion is free software, released under the terms of
 the GNU General Public License. For more information see the COPYING file
 that comes with ShapeFusion.
 
-History
--------
-ShapeFusion was born in 2000 as a MacOS Classic application. Working releases
-were produced, but then I moved to other projects and the development ended
-while ShapeFusion was still far from being a complete editor.
-
-With the death of the Classic platform and the spread of AlephOne on different
-operating systems I became more and more attracted by the idea of porting
-ShapeFusion to other systems too. This couldn't be done easily with the
-original MacOS code, so eventually I started to rewrite everything using the
-portable wxWidgets toolkit. I also had the opportunity to rework the user
-interface, since I never liked the Anvil approach that I was trying to follow
-in the original ShapeFusion. Etienne joined the project at this stage.
-
-The new editor is not yet complete, but it's a great improvement at least on
-the technical side (stability, code organization, portability). Adding new
-features and fixing existing ones will be much easier with respect to the old
-version.
-
 Supported platforms
 -------------------
 ShapeFusion is being developed and constantly tested both on Linux and MacOS
@@ -68,7 +49,7 @@ executable (you can put it anywhere in your PATH).
 
 On MacOS X you should be able to use the provided Xcode project in the
 osx-build directory. You'll need both the MacOS X developer tools and
-wxWidgets. Note that we are releasing MacOS X binary builds along with each
+wxWidgets. Note that MacOS X binary builds are released together with each
 source release: they should work out-of-the-box without the need to install
 anything else. In case you're wondering why they are so large in size, it is
 because they carry the whole wxWidgets code linked statically.
@@ -151,6 +132,25 @@ Shapes files are known to rarely contain strange data, like negative sequence
 ticks_per_frame. Maybe this comes from some broken Shapes editor, but it could
 be just Anvil. ShapeFusion doesn't handle this invalid data very well, but I
 plan to implement some consistency checks in the future.
+
+History
+-------
+ShapeFusion was born in 2000 as a MacOS Classic application. Working releases
+were produced, but then I moved to other projects and the development ended
+while ShapeFusion was still far from being a complete editor.
+
+With the death of the Classic platform and the spread of AlephOne on different
+operating systems I became more and more attracted by the idea of porting
+ShapeFusion to other systems too. This couldn't be done easily with the
+original MacOS code, so eventually I started to rewrite everything using the
+portable wxWidgets toolkit. I also had the opportunity to rework the user
+interface, since I never liked the Anvil approach that I was trying to follow
+in the original ShapeFusion. Etienne joined the project at this stage.
+
+The new editor is not yet complete, but it's a great improvement at least on
+the technical side (stability, code organization, portability). Adding new
+features and fixing existing ones will be much easier with respect to the old
+version.
 
 Changelog
 ---------
