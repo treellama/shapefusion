@@ -8,18 +8,18 @@ Copyright 2000-2007 Tito Dal Canton and Etienne Samson
 
 What is ShapeFusion?
 --------------------
-ShapeFusion is a scenario editor for the Bungie games "Marathon II: Durandal"
-and "Marathon Infinity". It's useful also for the AlephOne engine, the Open
-Source evolution of the original games (I consider it part of the AlephOne
-effort, actually). A Marathon scenario is made of several files; ShapeFusion
-is devoted to editing the "Shapes" file, which stores most of the game
-graphics and animation data. It's *not* a tool for editing maps. In case you
-ever used Bungie tools for editing Marathon scenarios, it's enough to say
-that ShapeFusion is meant as a replacement for Anvil, or better for its
-Shapes editor. Anvil has always been a buggy, incomplete, closed-source and
-Mac-only editor: I hope things will be better with ShapeFusion. Thanks to
-Etienne Samson, since version 0.4 ShapeFusion can open Sounds files too;
-the Sounds editor is in progress.
+ShapeFusion is a scenario editor for the AlephOne game engine, also
+compatible with Bungie's original Marathon II and Marathon Infinity engines.
+An AlephOne scenario is made of several files; ShapeFusion is devoted to
+editing the "Shapes" file, which stores most of the scenario graphics and
+animation data. It's *not* a tool for editing maps. In case you ever used
+Bungie tools for editing Marathon scenarios, it's enough to say that
+ShapeFusion is meant as a replacement for Anvil, or better for its Shapes
+editor. Such a replacement is mainly needed because Anvil is proprietary,
+non-free and Mac-only software, which makes it very difficult to use on
+modern platforms. Thanks to Etienne Samson, since version 0.4 ShapeFusion
+can open Sounds files too; the Sounds editor is in progress and I hope it will
+reach the level of the Shapes counterpart soon.
 
 As for the license, ShapeFusion is free software, released under the terms of
 the GNU General Public License. For more information see the COPYING file
@@ -96,7 +96,7 @@ Notes
 -----
 Please be careful when editing your scenario with ShapeFusion. We had no big
 problems so far, but it's still under development and it may corrupt your
-files, so be sure to keep backup copies. You shouldn't use versions before
+files, so be sure to keep backup copies. You should not use versions before
 0.3, as they are affected by a bug regarding frames minimum light intensity
 value. If you think your files got corrupted by ShapeFusion, please let us
 know what happened.
@@ -110,8 +110,8 @@ table that is currently used for viewing, as selected in the View menu.
 When you import a bitmap, ShapeFusion tries to map its colors to the collection
 color table as best as it can. Although the algorithm often yelds good results,
 you can help it a lot by converting the bitmap to indexed before (using
-PhotoShop or Gimp, for example) so that it contains just colors belonging to the
-collection color table.
+PhotoShop or Gimp, for example) so that it contains just colors belonging to
+the collection color table.
 
 In ShapeFusion, a frame can be referenced by many sequences. This may sound
 strange at first, but in Shapes file format logic it's perfectly legal and I
