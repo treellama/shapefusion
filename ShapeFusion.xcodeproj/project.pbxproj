@@ -29,6 +29,9 @@
 		1FE8DF8A0B9C4431003EF856 /* README.txt in Resources */ = {isa = PBXBuildFile; fileRef = 1FE8DF880B9C4431003EF856 /* README.txt */; };
 		1FEDD4640B9C3F9D00D69B62 /* utilities.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FEDD4610B9C3F9D00D69B62 /* utilities.cpp */; };
 		4D82FB3E0CBF814E009D007C /* libwx_mac.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D82FB3D0CBF814E009D007C /* libwx_mac.dylib */; };
+		4D82FB550CBF8369009D007C /* libwx_mac.dylib in Copy wx Library */ = {isa = PBXBuildFile; fileRef = 4D82FB3D0CBF814E009D007C /* libwx_mac.dylib */; };
+		4DDF09F00CBF8CF70027402B /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F08B4CB30AB0C0E700896399 /* OpenGL.framework */; };
+		4DE10B410CC3992D00BAEC76 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F08B4C360AB0B06D00896399 /* Carbon.framework */; };
 		F08B4C5A0AB0B31E00896399 /* ShapeFusionApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F08B4B780AB0AE4B00896399 /* ShapeFusionApp.cpp */; };
 /* End PBXBuildFile section */
 
@@ -42,6 +45,20 @@
 			);
 		};
 /* End PBXBuildRule section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		4D82FB530CBF835E009D007C /* Copy wx Library */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				4D82FB550CBF8369009D007C /* libwx_mac.dylib in Copy wx Library */,
+			);
+			name = "Copy wx Library";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		1F3345480BC95CA300A15A32 /* LittleEndianBuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = LittleEndianBuffer.cpp; sourceTree = "<group>"; };
@@ -70,7 +87,7 @@
 		1FE8DF880B9C4431003EF856 /* README.txt */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = README.txt; sourceTree = "<group>"; };
 		1FEDD4610B9C3F9D00D69B62 /* utilities.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = utilities.cpp; sourceTree = "<group>"; };
 		1FEDD4620B9C3F9D00D69B62 /* utilities.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = utilities.h; sourceTree = "<group>"; };
-		4D82FB3D0CBF814E009D007C /* libwx_mac.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libwx_mac.dylib; path = "../../../../Others/wxWidgets-2.8-branch/src/build/Development/libwx_mac.dylib"; sourceTree = SOURCE_ROOT; };
+		4D82FB3D0CBF814E009D007C /* libwx_mac.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libwx_mac.dylib; path = "../../../../Others/wxWidgets-2.8-branch/src/build/Deployment/libwx_mac.dylib"; sourceTree = SOURCE_ROOT; };
 		F08B4B760AB0AE2000896399 /* wxmac.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = wxmac.icns; path = /Library/Frameworks/wx.framework/Versions/2.8/Resources/wxmac.icns; sourceTree = "<absolute>"; };
 		F08B4B780AB0AE4B00896399 /* ShapeFusionApp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ShapeFusionApp.cpp; sourceTree = "<group>"; };
 		F08B4B7A0AB0AE4B00896399 /* FrameView.cpp */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.cpp.cpp; path = FrameView.cpp; sourceTree = "<group>"; };
@@ -102,6 +119,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				4D82FB3E0CBF814E009D007C /* libwx_mac.dylib in Frameworks */,
+				4DDF09F00CBF8CF70027402B /* OpenGL.framework in Frameworks */,
+				4DE10B410CC3992D00BAEC76 /* Carbon.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -221,6 +240,7 @@
 			buildPhases = (
 				F08B4C400AB0B10000896399 /* Resources */,
 				F08B4C410AB0B10000896399 /* Sources */,
+				4D82FB530CBF835E009D007C /* Copy wx Library */,
 				F08B4C420AB0B10000896399 /* Frameworks */,
 			);
 			buildRules = (
@@ -298,6 +318,7 @@
 				ARCHS = "$(NATIVE_ARCH)";
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
+				LIBRARY_SEARCH_PATHS = "$(WX_LIB_ROOT)";
 				USER_HEADER_SEARCH_PATHS = "$(WX_SRC_ROOT)/include/ $(WX_SRC_ROOT)/src/build/include";
 				WARNING_CFLAGS = "-Wall";
 				WX_SRC_ROOT = "/Volumes/myHD/Sources/Others/wxWidgets-2.8-branch";
@@ -312,6 +333,7 @@
 					"$(NATIVE_ARCH)",
 				);
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				LIBRARY_SEARCH_PATHS = "$(WX_LIB_ROOT)";
 				USER_HEADER_SEARCH_PATHS = "$(WX_SRC_ROOT)/include/ $(WX_SRC_ROOT)/src/build/include";
 				WX_SRC_ROOT = "/Volumes/myHD/Sources/Others/wxWidgets-2.8-branch";
 			};
@@ -332,13 +354,9 @@
 					__WXDEBUG__,
 				);
 				INFOPLIST_FILE = "ShapeFusion-Info.plist";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
-				);
-				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/../../../../Others/wxWidgets-2.8-branch/src/build/Development\"";
 				PRODUCT_NAME = ShapeFusion;
 				WRAPPER_EXTENSION = app;
+				WX_LIB_ROOT = "$(WX_SRC_ROOT)/src/build/Development";
 			};
 			name = Debug;
 		};
@@ -354,16 +372,11 @@
 					"__WXMAC_XCODE__=1",
 					"WX_PRECOMP=1",
 					MACOS_CLASSIC,
-					__WXDEBUG__,
 				);
 				INFOPLIST_FILE = "ShapeFusion-Info.plist";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
-				);
-				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/../../../../Others/wxWidgets-2.8-branch/src/build/Development\"";
 				PRODUCT_NAME = ShapeFusion;
 				WRAPPER_EXTENSION = app;
+				WX_LIB_ROOT = "$(WX_SRC_ROOT)/src/build/Deployment";
 			};
 			name = Release;
 		};
