@@ -28,10 +28,14 @@
 		1FE8DF890B9C4431003EF856 /* COPYING.txt in Resources */ = {isa = PBXBuildFile; fileRef = 1FE8DF870B9C4431003EF856 /* COPYING.txt */; };
 		1FE8DF8A0B9C4431003EF856 /* README.txt in Resources */ = {isa = PBXBuildFile; fileRef = 1FE8DF880B9C4431003EF856 /* README.txt */; };
 		1FEDD4640B9C3F9D00D69B62 /* utilities.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FEDD4610B9C3F9D00D69B62 /* utilities.cpp */; };
-		4D82FB3E0CBF814E009D007C /* libwx_mac.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D82FB3D0CBF814E009D007C /* libwx_mac.dylib */; };
-		4D82FB550CBF8369009D007C /* libwx_mac.dylib in Copy wx Library */ = {isa = PBXBuildFile; fileRef = 4D82FB3D0CBF814E009D007C /* libwx_mac.dylib */; };
-		4DDF09F00CBF8CF70027402B /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F08B4CB30AB0C0E700896399 /* OpenGL.framework */; };
 		4DE10B410CC3992D00BAEC76 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F08B4C360AB0B06D00896399 /* Carbon.framework */; };
+		4DE10B480CC39B8800BAEC76 /* libwx_mac_static.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DE10B470CC39B8800BAEC76 /* libwx_mac_static.a */; };
+		4DE10B4A0CC39BF200BAEC76 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F08B4C760AB0B7E300896399 /* IOKit.framework */; };
+		4DE10B4B0CC39BF400BAEC76 /* System.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F08B4C370AB0B09A00896399 /* System.framework */; };
+		4DE10B4E0CC39C2E00BAEC76 /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DE10B4D0CC39C2E00BAEC76 /* libiconv.dylib */; };
+		4DE10B500CC39C4200BAEC76 /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DE10B4F0CC39C4200BAEC76 /* QuickTime.framework */; };
+		4DE10B530CC39C8E00BAEC76 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DE10B520CC39C8E00BAEC76 /* Cocoa.framework */; };
+		4DE10B570CC39CAB00BAEC76 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DE10B560CC39CAB00BAEC76 /* libz.dylib */; };
 		F08B4C5A0AB0B31E00896399 /* ShapeFusionApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F08B4B780AB0AE4B00896399 /* ShapeFusionApp.cpp */; };
 /* End PBXBuildFile section */
 
@@ -53,7 +57,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				4D82FB550CBF8369009D007C /* libwx_mac.dylib in Copy wx Library */,
 			);
 			name = "Copy wx Library";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -87,7 +90,11 @@
 		1FE8DF880B9C4431003EF856 /* README.txt */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = README.txt; sourceTree = "<group>"; };
 		1FEDD4610B9C3F9D00D69B62 /* utilities.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = utilities.cpp; sourceTree = "<group>"; };
 		1FEDD4620B9C3F9D00D69B62 /* utilities.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = utilities.h; sourceTree = "<group>"; };
-		4D82FB3D0CBF814E009D007C /* libwx_mac.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libwx_mac.dylib; path = "../../../../Others/wxWidgets-2.8-branch/src/build/Deployment/libwx_mac.dylib"; sourceTree = SOURCE_ROOT; };
+		4DE10B470CC39B8800BAEC76 /* libwx_mac_static.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libwx_mac_static.a; path = "../../../../Others/wxWidgets-2.8-branch/src/build/Deployment/libwx_mac_static.a"; sourceTree = SOURCE_ROOT; };
+		4DE10B4D0CC39C2E00BAEC76 /* libiconv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.dylib; path = /usr/lib/libiconv.dylib; sourceTree = "<absolute>"; };
+		4DE10B4F0CC39C4200BAEC76 /* QuickTime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickTime.framework; path = /System/Library/Frameworks/QuickTime.framework; sourceTree = "<absolute>"; };
+		4DE10B520CC39C8E00BAEC76 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
+		4DE10B560CC39CAB00BAEC76 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = /usr/lib/libz.dylib; sourceTree = "<absolute>"; };
 		F08B4B760AB0AE2000896399 /* wxmac.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = wxmac.icns; path = /Library/Frameworks/wx.framework/Versions/2.8/Resources/wxmac.icns; sourceTree = "<absolute>"; };
 		F08B4B780AB0AE4B00896399 /* ShapeFusionApp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ShapeFusionApp.cpp; sourceTree = "<group>"; };
 		F08B4B7A0AB0AE4B00896399 /* FrameView.cpp */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.cpp.cpp; path = FrameView.cpp; sourceTree = "<group>"; };
@@ -118,9 +125,14 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4D82FB3E0CBF814E009D007C /* libwx_mac.dylib in Frameworks */,
-				4DDF09F00CBF8CF70027402B /* OpenGL.framework in Frameworks */,
 				4DE10B410CC3992D00BAEC76 /* Carbon.framework in Frameworks */,
+				4DE10B480CC39B8800BAEC76 /* libwx_mac_static.a in Frameworks */,
+				4DE10B4A0CC39BF200BAEC76 /* IOKit.framework in Frameworks */,
+				4DE10B4B0CC39BF400BAEC76 /* System.framework in Frameworks */,
+				4DE10B4E0CC39C2E00BAEC76 /* libiconv.dylib in Frameworks */,
+				4DE10B500CC39C4200BAEC76 /* QuickTime.framework in Frameworks */,
+				4DE10B530CC39C8E00BAEC76 /* Cocoa.framework in Frameworks */,
+				4DE10B570CC39CAB00BAEC76 /* libz.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -214,7 +226,11 @@
 		F08B4B9E0AB0B02A00896399 /* External things */ = {
 			isa = PBXGroup;
 			children = (
-				4D82FB3D0CBF814E009D007C /* libwx_mac.dylib */,
+				4DE10B560CC39CAB00BAEC76 /* libz.dylib */,
+				4DE10B520CC39C8E00BAEC76 /* Cocoa.framework */,
+				4DE10B4F0CC39C4200BAEC76 /* QuickTime.framework */,
+				4DE10B4D0CC39C2E00BAEC76 /* libiconv.dylib */,
+				4DE10B470CC39B8800BAEC76 /* libwx_mac_static.a */,
 				F08B4C360AB0B06D00896399 /* Carbon.framework */,
 				F08B4C370AB0B09A00896399 /* System.framework */,
 				F08B4C760AB0B7E300896399 /* IOKit.framework */,
@@ -354,6 +370,11 @@
 					__WXDEBUG__,
 				);
 				INFOPLIST_FILE = "ShapeFusion-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
+				);
+				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/../../../../Others/wxWidgets-2.8-branch/src/build/Deployment\"";
 				PRODUCT_NAME = ShapeFusion;
 				WRAPPER_EXTENSION = app;
 				WX_LIB_ROOT = "$(WX_SRC_ROOT)/src/build/Development";
@@ -374,6 +395,11 @@
 					MACOS_CLASSIC,
 				);
 				INFOPLIST_FILE = "ShapeFusion-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_1)",
+				);
+				LIBRARY_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/../../../../Others/wxWidgets-2.8-branch/src/build/Deployment\"";
 				PRODUCT_NAME = ShapeFusion;
 				WRAPPER_EXTENSION = app;
 				WX_LIB_ROOT = "$(WX_SRC_ROOT)/src/build/Deployment";
