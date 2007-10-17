@@ -142,7 +142,10 @@ bool ShapesView::OnCreate(wxDocument *doc, long WXUNUSED(flags) )
 	wxTreeItemId	treeroot = colltree->AddRoot(doc->GetFilename());
 	mainbox->Add(colltree, 2, wxEXPAND);
 	// empty space (e.g. what is displayed when selecting the Sequences node)
+	// adding at least a panel is apparently needed to make sizers work
 	dummy_sizer = new wxBoxSizer(wxVERTICAL);
+	wxPanel	*dummy_panel = new wxPanel(frame);
+	dummy_sizer->Add(dummy_panel, 1, wxEXPAND);
 	mainbox->Add(dummy_sizer, 5, wxEXPAND);
 	// collection section
 	coll_sizer = new wxBoxSizer(wxVERTICAL);
@@ -298,7 +301,6 @@ bool ShapesView::OnCreate(wxDocument *doc, long WXUNUSED(flags) )
 	// create the sequences section
 	s_outer_static_box = new wxStaticBox(frame, -1, wxT("Sequence"));
 	s_outer_sizer = new wxStaticBoxSizer(s_outer_static_box, wxVERTICAL);
-	mainbox->Add(s_outer_sizer, 5, wxEXPAND | wxLEFT | wxRIGHT | wxTOP | wxBOTTOM, 10);
 
 	s_box1 = new wxBoxSizer(wxHORIZONTAL);
 	s_outer_sizer->Add(s_box1, 0, wxEXPAND | wxALIGN_TOP | wxALL, 5);
@@ -390,8 +392,9 @@ bool ShapesView::OnCreate(wxDocument *doc, long WXUNUSED(flags) )
 
 	s_fb = new SequenceView(frame, wxID_ANY);
 	s_outer_sizer->Add(s_fb, 1, wxEXPAND | wxALL, 5);
+	mainbox->Add(s_outer_sizer, 5, wxEXPAND | wxLEFT | wxRIGHT | wxTOP | wxBOTTOM, 10);
 	mainbox->Show(s_outer_sizer, false);
-	
+
 	mainbox->Layout();
 	frame->SetSizer(mainbox);
 	
