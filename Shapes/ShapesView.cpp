@@ -461,7 +461,6 @@ void ShapesView::OnUpdate(wxView *WXUNUSED(sender), wxObject *WXUNUSED(hint) )
 			}
 		}
 	}
-	colltree->Expand(colltree->GetRootItem());
 }
 
 bool ShapesView::OnClose(bool deleteWindow)
