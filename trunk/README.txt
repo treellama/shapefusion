@@ -47,12 +47,15 @@ Linux distribution rules. To compile ShapeFusion, just do a 'make' inside the
 source directory. When compilation is complete, simply run the 'shapefusion'
 executable (you can put it anywhere in your PATH).
 
-On MacOS X you should be able to use the provided Xcode project in the
-osx-build directory. You'll need both the MacOS X developer tools and
-wxWidgets. Note that MacOS X binary builds are released together with each
-source release: they should work out-of-the-box without the need to install
-anything else. In case you're wondering why they are so large in size, it is
-because they carry the whole wxWidgets code linked statically.
+On MacOS X you should be able to use the provided Xcode project
+(ShapeFusion.xcodeproj). You'll need both the MacOS X developer tools and
+wxWidgets (which will take some time to build). Once in the ShapeFusion
+Xcode project, before building you must change the WX_SRC_ROOT variable to
+point to your wxWidgets source directory. Note that MacOS X binary builds are
+released together with each source release: they should work out-of-the-box
+without the need to install anything else. In case you're wondering why they
+are so large in size, it is because they carry the whole wxWidgets code
+linked statically.
 
 Overview of the Shapes editor window
 ------------------------------------
