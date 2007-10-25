@@ -383,6 +383,7 @@
 					i386,
 				);
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_OPTIMIZATION_LEVEL = 2;
 				HEADER_SEARCH_PATHS = (
 					"$(WX_SRC_ROOT)/include/",
 					"$(WX_SRC_ROOT)/src/build/include",
@@ -432,6 +433,7 @@
 					"__WXMAC_XCODE__=1",
 					"WX_PRECOMP=1",
 					MACOS_CLASSIC,
+					__WXDEBUG__,
 				);
 				INFOPLIST_FILE = "ShapeFusion-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
