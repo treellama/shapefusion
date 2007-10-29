@@ -116,7 +116,7 @@ void CTView::OnMouseDown(wxMouseEvent& e)
 			for (unsigned int j = 0; j < mColorTable->ColorCount(); j++) {
 				wxRect	test(x, y, mSwatchSize, mSwatchSize);
 
-				if (test.Inside(mouse)) {
+				if (test.Contains(mouse)) {
 					mSelectionMask[j] = true;
 					found = true;
 					break;
@@ -156,7 +156,7 @@ void CTView::OnMouseDoubleClick(wxMouseEvent& e)
 	for (unsigned int j = 0; j < mColorTable->ColorCount(); j++) {
 		wxRect	test(x, y, mSwatchSize, mSwatchSize);
 
-		if (test.Inside(mouse)) {
+		if (test.Contains(mouse)) {
 			// FIXME is it ok to set the CTView as the parent?
 			wxColour	newColor = ::wxGetColourFromUser(this,
 										wxColour(mColorTable->GetColor(j)->Red() >> 8,

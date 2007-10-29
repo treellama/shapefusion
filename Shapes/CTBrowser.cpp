@@ -103,7 +103,7 @@ void CTBrowser::OnMouseDown(wxMouseEvent& e)
 				for (unsigned int i = 0; i < cts.size(); i++) {
 					wxRect	test(margin, margin + i * (sample_h + margin), sample_w*colors_per_table, sample_h);
 
-					if (test.Inside(mouse)) {
+					if (test.Contains(mouse)) {
 						new_selection = i;
 						break;
 					}

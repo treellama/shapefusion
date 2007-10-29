@@ -112,7 +112,7 @@ void FrameBrowser::OnMouseDown(wxMouseEvent& e)
 				for (unsigned int i = 0; i < tn_positions.size(); i++) {
 					wxRect	test(tn_positions[i].x, tn_positions[i].y, tn_size, tn_size);
 
-					if (test.Inside(mouse)) {
+					if (test.Contains(mouse)) {
 						new_selection = i;
 						break;
 					}

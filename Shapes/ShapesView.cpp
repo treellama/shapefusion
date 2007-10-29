@@ -959,10 +959,10 @@ void ShapesView::TreeSelect(wxTreeEvent &e)
 					menubar->Enable(SHAPES_MENU_ADDSEQUENCE, true);
 
 					// chunk info panel
-					chunk_version_field->SetValue(INT_TO_WXSTRING(((ShapesDocument*)GetDocument())->CollectionVersion(new_coll, new_vers)));
+					chunk_version_field->ChangeValue(INT_TO_WXSTRING(((ShapesDocument*)GetDocument())->CollectionVersion(new_coll, new_vers)));
 					chunk_type_menu->SetSelection(((ShapesDocument*)GetDocument())->CollectionType(new_coll, new_vers));
-					chunk_flags_field->SetValue(INT_TO_WXSTRING(((ShapesDocument*)GetDocument())->CollectionFlags(new_coll, new_vers)));
-					chunk_sf_field->SetValue(INT_TO_WXSTRING(((ShapesDocument*)GetDocument())->CollectionScaleFactor(new_coll, new_vers)));
+					chunk_flags_field->ChangeValue(INT_TO_WXSTRING(((ShapesDocument*)GetDocument())->CollectionFlags(new_coll, new_vers)));
+					chunk_sf_field->ChangeValue(INT_TO_WXSTRING(((ShapesDocument*)GetDocument())->CollectionScaleFactor(new_coll, new_vers)));
 
 					// color tables
 					view_ct = 0;
@@ -1034,7 +1034,7 @@ void ShapesView::TreeSelect(wxTreeEvent &e)
 			// setup sequence panel controls
 			s_outer_static_box->SetLabel(wxString::Format(wxT("Sequence %d of %u"),
 									selected_sequence, ((ShapesDocument*)GetDocument())->CollectionSequenceCount(new_coll, new_vers)));
-			s_name_field->SetValue(seq->Name());
+			s_name_field->ChangeValue(seq->Name());
 			switch (seq->NumberOfViews()) {
 				case UNANIMATED:	s_type_menu->SetSelection(0);	break;
 				case ANIMATED_1:	s_type_menu->SetSelection(1);	break;
@@ -1051,15 +1051,15 @@ void ShapesView::TreeSelect(wxTreeEvent &e)
 									wxT("Warning"), wxOK | wxICON_ERROR, frame);
 					break;
 			}
-			s_fpv_field->SetValue(INT_TO_WXSTRING(seq->FramesPerView()));
-			s_tpf_field->SetValue(INT_TO_WXSTRING(seq->TicksPerFrame()));
-			s_lf_field->SetValue(INT_TO_WXSTRING(seq->LoopFrame()));
-			s_kf_field->SetValue(INT_TO_WXSTRING(seq->KeyFrame()));
+			s_fpv_field->ChangeValue(INT_TO_WXSTRING(seq->FramesPerView()));
+			s_tpf_field->ChangeValue(INT_TO_WXSTRING(seq->TicksPerFrame()));
+			s_lf_field->ChangeValue(INT_TO_WXSTRING(seq->LoopFrame()));
+			s_kf_field->ChangeValue(INT_TO_WXSTRING(seq->KeyFrame()));
 			s_xfermode_menu->SetSelection(seq->TransferMode());
-			s_xferperiod_field->SetValue(INT_TO_WXSTRING(seq->TransferModePeriod()));
-			s_ffs_field->SetValue(INT_TO_WXSTRING(seq->FirstFrameSound()));
-			s_kfs_field->SetValue(INT_TO_WXSTRING(seq->KeyFrameSound()));
-			s_lfs_field->SetValue(INT_TO_WXSTRING(seq->LastFrameSound()));
+			s_xferperiod_field->ChangeValue(INT_TO_WXSTRING(seq->TransferModePeriod()));
+			s_ffs_field->ChangeValue(INT_TO_WXSTRING(seq->FirstFrameSound()));
+			s_kfs_field->ChangeValue(INT_TO_WXSTRING(seq->KeyFrameSound()));
+			s_lfs_field->ChangeValue(INT_TO_WXSTRING(seq->LastFrameSound()));
 			// setup the sequence view
 			wxBeginBusyCursor();
 			s_fb->Freeze();
@@ -1503,12 +1503,12 @@ void ShapesView::FrameSelect(wxCommandEvent &e)
 		f_xmirror_checkbox->SetValue(sel_frame->IsXmirrored());
 		f_ymirror_checkbox->SetValue(sel_frame->IsYmirrored());
 		f_keypoint_checkbox->SetValue(sel_frame->IsKeypointObscured());
-		f_origin_x_field->SetValue(INT_TO_WXSTRING(sel_frame->OriginX()));
-		f_origin_y_field->SetValue(INT_TO_WXSTRING(sel_frame->OriginY()));
-		f_key_x_field->SetValue(INT_TO_WXSTRING(sel_frame->KeyX()));
-		f_key_y_field->SetValue(INT_TO_WXSTRING(sel_frame->KeyY()));
-		f_scalefactor_field->SetValue(INT_TO_WXSTRING(sel_frame->ScaleFactor()));
-		f_mli_field->SetValue(INT_TO_WXSTRING((int)roundf(sel_frame->MinimumLightIntensity() * 100.0)));
+		f_origin_x_field->ChangeValue(INT_TO_WXSTRING(sel_frame->OriginX()));
+		f_origin_y_field->ChangeValue(INT_TO_WXSTRING(sel_frame->OriginY()));
+		f_key_x_field->ChangeValue(INT_TO_WXSTRING(sel_frame->KeyX()));
+		f_key_y_field->ChangeValue(INT_TO_WXSTRING(sel_frame->KeyY()));
+		f_scalefactor_field->ChangeValue(INT_TO_WXSTRING(sel_frame->ScaleFactor()));
+		f_mli_field->ChangeValue(INT_TO_WXSTRING((int)roundf(sel_frame->MinimumLightIntensity() * 100.0)));
 		f_outer_sizer->Show(f_count_label, false);
 		f_outer_sizer->Show(f_edit_box, true);
 		menubar->SetLabel(EDIT_MENU_DELETE, wxT("Delete frame"));
@@ -1596,11 +1596,11 @@ void ShapesView::EditFrameFields(wxCommandEvent &e)
 				case FIELD_MIN_LIGHT_INT:
 					if (v > 100) {
 						wxBell();
-						f_mli_field->SetValue(wxT("100"));
+						f_mli_field->ChangeValue(wxT("100"));
 						v = 100;
 					} else if (v < 0) {
 						wxBell();
-						f_mli_field->SetValue(wxT("0"));
+						f_mli_field->ChangeValue(wxT("0"));
 						v = 0;
 					}
 					sel_frame->SetMinimumLightIntensity(v / 100.0);
@@ -1622,8 +1622,7 @@ void ShapesView::EditFrameFields(wxCommandEvent &e)
 				sel_frame->SetWorldY0(-scale_factor * (sel_frame->KeyY() - sel_frame->OriginY()));
 			}
 			f_view->Refresh();
-			// TODO set document to modified when transition to
-			// wxTextCtrl::ChangeValue is done
+			((ShapesDocument*)GetDocument())->Modify(true);
 		}
 	}
 }
@@ -1710,8 +1709,6 @@ void ShapesView::EditSequenceXferMode(wxCommandEvent &e)
 }
 
 // user messed with fields in the sequence editor
-// TODO set document to modified when transition to
-// wxTextCtrl::ChangeValue is done
 void ShapesView::EditSequenceFields(wxCommandEvent &e)
 {
 	if (selected_sequence >= 0) {
@@ -1741,6 +1738,7 @@ void ShapesView::EditSequenceFields(wxCommandEvent &e)
 					}
 					id = colltree->GetNextChild(seqnode, cookie);
 				}
+				((ShapesDocument*)GetDocument())->Modify(true);
 			} else {
 				// numeric fields
 				long	v;
@@ -1793,6 +1791,7 @@ void ShapesView::EditSequenceFields(wxCommandEvent &e)
 							sel_seq->SetLastFrameSound(v);
 							break;
 					}
+					((ShapesDocument*)GetDocument())->Modify(true);
 				}
 			}
 		}
