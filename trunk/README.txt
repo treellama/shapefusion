@@ -37,8 +37,7 @@ are appreciated!).
 
 Building
 --------
-You'll need wxWidgets (at least version 2.6.1) to compile ShapeFusion. Version
-2.8 is strongly recommended and will become the required one in next releases.
+You'll need wxWidgets (at least version 2.8.x) to compile ShapeFusion.
 
 On Linux systems you can test the presence of wxWidgets by running the command
 'wx-config --version'. If that command is available and gives you the right
@@ -54,8 +53,8 @@ Xcode project, before building you must change the WX_SRC_ROOT variable to
 point to your wxWidgets source directory. Note that MacOS X binary builds are
 released together with each source release: they should work out-of-the-box
 without the need to install anything else. In case you're wondering why they
-are so large in size, it is because they carry the whole wxWidgets code
-linked statically.
+are so large in size, it is because they carry the whole wxWidgets library
+together with ShapeFusion itself.
 
 Overview of the Shapes editor window
 ------------------------------------

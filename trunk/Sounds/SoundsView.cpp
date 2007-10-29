@@ -346,7 +346,7 @@ void SoundsView::Update(void)
 		def = payload->Get8BitSoundDefinition(mSoundClass);
 				
 		sound_class_number_field->SetLabel(wxString::Format(wxT("%d"), mSoundClass));
-		sound_class_id_field->SetValue(wxString::Format(wxT("%d"), def->GetSoundCode()));
+		sound_class_id_field->ChangeValue(wxString::Format(wxT("%d"), def->GetSoundCode()));
 		
 		sound_volume_radio_button->SetSelection(def->GetBehaviorIndex());
 		sound_chance_menu->SetSelection(def->GetChance());
@@ -358,15 +358,8 @@ void SoundsView::Update(void)
 		sound_flag_obstructed_checkbox->SetValue(def->IsNotObstructed());
 		sound_flag_mobstructed_checkbox->SetValue(def->IsNotMediaObstructed());
 		sound_flag_ambient_checkbox->SetValue(def->IsAmbient());
-
-#if ((wxMAJOR_VERSION < 2) || (wxMAJOR_VERSION == 2 && wxMINOR_VERSION < 7))
-	#warning You better use a newer version of wxWidgets
-		sound_low_pitch_field->SetValue(wxString::Format(wxT("%g"), def->GetLowPitch()));
-		sound_high_pitch_field->SetValue(wxString::Format(wxT("%g"), def->GetHighPitch()));
-#else
 		sound_low_pitch_field->ChangeValue(wxString::Format(wxT("%g"), def->GetLowPitch()));
 		sound_high_pitch_field->ChangeValue(wxString::Format(wxT("%g"), def->GetHighPitch()));
-#endif
 	}
 }
 

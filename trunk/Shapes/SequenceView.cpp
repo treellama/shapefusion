@@ -94,7 +94,7 @@ void SequenceView::OnPaint(wxPaintEvent& e)
 		// draw arrow buttons if mouse is over this thumbnail
 		wxRect	tnrect(x, y, tn_size, tn_size);
 
-		if (tnrect.Inside(mouse)) {
+		if (tnrect.Contains(mouse)) {
 			wxString	label = wxString::Format(wxT("%d"), (*frame_indexes)[i]);
 			int			labelw, labelh;
 
@@ -151,7 +151,7 @@ void SequenceView::OnMouseDown(wxMouseEvent& e)
 				for (unsigned int i = 0; i < tn_positions.size(); i++) {
 					wxRect	test(tn_positions[i].x, tn_positions[i].y, tn_size, tn_size);
 
-					if (test.Inside(mouse)) {
+					if (test.Contains(mouse)) {
 						new_selection = i;
 						break;
 					}
@@ -193,7 +193,7 @@ void SequenceView::OnMouseUp(wxMouseEvent& e)
 				for (unsigned int i = 0; i < tn_positions.size(); i++) {
 					wxRect  test(tn_positions[i].x, tn_positions[i].y, tn_size, tn_size);
 					
-					if (test.Inside(mouse)) {
+					if (test.Contains(mouse)) {
 						touched_thumbnail = i;
 						break;
 					}
@@ -207,13 +207,13 @@ void SequenceView::OnMouseUp(wxMouseEvent& e)
 							next_rect(x + tn_size - next_btn.GetWidth() - 2, y + tn_size - next_btn.GetHeight() - 2,
 								prev_btn.GetWidth(), prev_btn.GetHeight());
 					
-					if (prev_rect.Inside(mouse)) {
+					if (prev_rect.Contains(mouse)) {
 						if ((*frame_indexes)[touched_thumbnail] > -1) {
 							(*frame_indexes)[touched_thumbnail]--;
 							RebuildThumbnail(touched_thumbnail);
 							Refresh();
 						}
-					} else if (next_rect.Inside(mouse)) {
+					} else if (next_rect.Contains(mouse)) {
 						if ((*frame_indexes)[touched_thumbnail] < ((int)frames.size()-1)) {
 							(*frame_indexes)[touched_thumbnail]++;
 							RebuildThumbnail(touched_thumbnail);
