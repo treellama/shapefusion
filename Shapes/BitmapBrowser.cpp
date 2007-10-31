@@ -32,19 +32,17 @@ END_EVENT_TABLE()
 
 BitmapBrowser::BitmapBrowser(wxWindow *parent, wxWindowID id):
 	wxScrolledWindow(parent, id, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER | wxFULL_REPAINT_ON_RESIZE),
-	ctable(NULL), selection(-1), num_cols(0), num_rows(0), frozen_count(0)
+	mColorTable(NULL), mSelection(-1), mNumCols(0), mNumRows(0), mFrozenCount(0)
 {
 	SetBackgroundColour(wxColour(255, 255, 255));
-	tn_pen.SetColour(200, 200, 200);
-	selection_pen.SetColour(0, 0, 0);
-	selection_pen.SetWidth(3);
-	invisible_pen.SetColour(0, 0, 0);
-	invisible_pen.SetStyle(wxTRANSPARENT);
+	mTNPen.SetColour(200, 200, 200);
+	mSelectionPen.SetColour(0, 0, 0);
+	mSelectionPen.SetWidth(3);
 	SetScrollRate(0, 2);
-	tn_size = 64;
-	margin = 7;
-	white_transparency = true;
-	auto_size = false;
+	mTNSize = 64;
+	mMargin = 7;
+	mWhiteTransparency = true;
+	mAutoSize = false;
 }
 
 void BitmapBrowser::OnPaint(wxPaintEvent& e)
@@ -56,28 +54,28 @@ void BitmapBrowser::OnPaint(wxPaintEvent& e)
 	GetClientSize(&cw, &ch);
 	CalcUnscrolledPosition(0, 0, &rx, &ry);
 	// draw thumbnails
-	tempdc.SetPen(tn_pen);
+	tempdc.SetPen(mTNPen);
 	tempdc.SetBrush(*wxTRANSPARENT_BRUSH);
-	for (int i = 0; i < (int)shp_bitmaps.size(); i++) {
-		int	x = tn_positions[i].x,
-			y = tn_positions[i].y;
+	for (int i = 0; i < (int)mBitmaps.size(); i++) {
+		int	x = mTNPositions[i].x,
+			y = mTNPositions[i].y;
 
-		if (y + tn_size < ry)
+		if (y + mTNSize < ry)
 			continue;
 		if (y > ry + ch)
 			break;
 			
-		int	bw = thumbnails[i].GetWidth(),
-			bh = thumbnails[i].GetHeight();
+		int	bw = mThumbnails[i].GetWidth(),
+			bh = mThumbnails[i].GetHeight();
 
-		if (i == selection) {
-			tempdc.DrawBitmap(thumbnails[i], x + tn_size/2 - bw/2, y + tn_size/2 - bh/2);
-			tempdc.SetPen(selection_pen);
-			tempdc.DrawRectangle(x-2, y-2, tn_size+4, tn_size+4);
-			tempdc.SetPen(tn_pen);
+		if (i == mSelection) {
+			tempdc.DrawBitmap(mThumbnails[i], x + mTNSize/2 - bw/2, y + mTNSize/2 - bh/2);
+			tempdc.SetPen(mSelectionPen);
+			tempdc.DrawRectangle(x-2, y-2, mTNSize+4, mTNSize+4);
+			tempdc.SetPen(mTNPen);
 		} else {
-			tempdc.DrawRectangle(x-1, y-1, tn_size+2, tn_size+2);
-			tempdc.DrawBitmap(thumbnails[i], x + tn_size/2 - bw/2, y + tn_size/2 - bh/2);
+			tempdc.DrawRectangle(x-1, y-1, mTNSize+2, mTNSize+2);
+			tempdc.DrawBitmap(mThumbnails[i], x + mTNSize/2 - bw/2, y + mTNSize/2 - bh/2);
 		}
 	}
 }
@@ -102,23 +100,23 @@ void BitmapBrowser::OnMouseDown(wxMouseEvent& e)
 			{
 				int	new_selection = -1;
 
-				for (unsigned int i = 0; i < tn_positions.size(); i++) {
-					wxRect	test(tn_positions[i].x, tn_positions[i].y, tn_size, tn_size);
+				for (unsigned int i = 0; i < mTNPositions.size(); i++) {
+					wxRect	test(mTNPositions[i].x, mTNPositions[i].y, mTNSize, mTNSize);
 
 					if (test.Contains(mouse)) {
 						new_selection = i;
 						break;
 					}
 				}
-				if (new_selection != selection) {
-					selection = new_selection;
+				if (new_selection != mSelection) {
+					mSelection = new_selection;
 					Refresh();
 
 					// send selection event
 					wxCommandEvent	event(wxEVT_BITMAPBROWSER, GetId());
 
 					event.SetEventObject(this);
-					event.SetInt(selection);
+					event.SetInt(mSelection);
 					GetEventHandler()->ProcessEvent(event);
 				}
 			}
@@ -138,52 +136,52 @@ void BitmapBrowser::OnKeyDown(wxKeyEvent &e)
 		case WXK_UP:
 		case WXK_DOWN:
 			{
-				int	new_selection = selection;
+				int	new_selection = mSelection;
 
-				if (selection >= 0 && selection < (int)shp_bitmaps.size()) {
+				if (mSelection >= 0 && mSelection < (int)mBitmaps.size()) {
 					switch (e.GetKeyCode()) {
 						case WXK_LEFT:
-							if (selection % num_cols > 0)
+							if (mSelection % mNumCols > 0)
 								new_selection--;
 							break;
 						case WXK_RIGHT:
-							if (selection % num_cols < (num_cols-1))
+							if (mSelection % mNumCols < (mNumCols-1))
 								new_selection++;
 							break;
 						case WXK_UP:
-							if (selection / num_cols > 0)
-								new_selection -= num_cols;
+							if (mSelection / mNumCols > 0)
+								new_selection -= mNumCols;
 							break;
 						case WXK_DOWN:
-							if (selection / num_cols < (num_rows-1))
-								new_selection += num_cols;
+							if (mSelection / mNumCols < (mNumRows-1))
+								new_selection += mNumCols;
 							break;
 					}
-				} else if (shp_bitmaps.size() > 0) {
+				} else if (mBitmaps.size() > 0) {
 					new_selection = 0;
 				}
-				if (new_selection != selection && new_selection >= 0
-						&& new_selection < (int)shp_bitmaps.size()) {
+				if (new_selection != mSelection && new_selection >= 0
+						&& new_selection < (int)mBitmaps.size()) {
 					// TODO scroll to show the new selection
-					selection = new_selection;
+					mSelection = new_selection;
 					Refresh();
 
 					// send bitmap selection event
 					wxCommandEvent	event(wxEVT_BITMAPBROWSER, GetId());
 
 					event.SetEventObject(this);
-					event.SetInt(selection);
+					event.SetInt(mSelection);
 					GetEventHandler()->ProcessEvent(event);
 				}
 			}
 			break;
 		case WXK_DELETE:
 			// send a bitmap delete event
-			if (selection >= 0 && selection < (int)shp_bitmaps.size()) {
+			if (mSelection >= 0 && mSelection < (int)mBitmaps.size()) {
 				wxCommandEvent	event(wxEVT_BITMAPBROWSER_DELETE, GetId());
 
 				event.SetEventObject(this);
-				event.SetInt(selection);
+				event.SetInt(mSelection);
 				GetEventHandler()->ProcessEvent(event);
 			}
 			break;
@@ -199,14 +197,14 @@ void BitmapBrowser::OnKeyDown(wxKeyEvent &e)
 // every time the user changes collection
 void BitmapBrowser::Freeze(void)
 {
-	frozen_count++;
+	mFrozenCount++;
 }
 
 void BitmapBrowser::Thaw(void)
 {
-	if (frozen_count > 0) {
-		frozen_count--;
-		if (frozen_count == 0) {
+	if (mFrozenCount > 0) {
+		mFrozenCount--;
+		if (mFrozenCount == 0) {
 			UpdateVirtualSize();
 			Refresh();
 		}
@@ -215,21 +213,21 @@ void BitmapBrowser::Thaw(void)
 
 int BitmapBrowser::GetSelection(void) const
 {
-	return selection;
+	return mSelection;
 }
 
 // set the thumbnail size in pixels. Specify -1 to enable best-fit mode.
 void BitmapBrowser::SetThumbnailSize(int size)
 {
 	if (size > 0) {
-		tn_size = size;
-		auto_size = false;
+		mTNSize = size;
+		mAutoSize = false;
 	} else {
-		auto_size = true;
+		mAutoSize = true;
 	}
-	if (frozen_count == 0) {
+	if (mFrozenCount == 0) {
 		UpdateVirtualSize();
-		if (!auto_size)
+		if (!mAutoSize)
 			RebuildThumbnails();
 		Refresh();
 	}
@@ -237,8 +235,8 @@ void BitmapBrowser::SetThumbnailSize(int size)
 
 void BitmapBrowser::SetTranspPixelsDisplay(bool show)
 {
-	white_transparency = show;
-	if (frozen_count == 0) {
+	mWhiteTransparency = show;
+	if (mFrozenCount == 0) {
 		RebuildThumbnails();
 		Refresh();
 	}
@@ -249,9 +247,9 @@ void BitmapBrowser::AddBitmap(ShapesBitmap *bp)
 {
 	if (bp != NULL) {
 		if (bp->Pixels() != NULL) {
-			shp_bitmaps.push_back(bp);
-			thumbnails.push_back(CreateThumbnail(bp));
-			if (frozen_count == 0) {
+			mBitmaps.push_back(bp);
+			mThumbnails.push_back(CreateThumbnail(bp));
+			if (mFrozenCount == 0) {
 				UpdateVirtualSize();
 				Refresh();
 			}
@@ -264,20 +262,20 @@ void BitmapBrowser::AddBitmap(ShapesBitmap *bp)
 // clear the thumbnail list
 void BitmapBrowser::Clear(void)
 {
-	thumbnails.clear();
-	shp_bitmaps.clear();
-	tn_positions.clear();
-	selection = -1;
+	mThumbnails.clear();
+	mBitmaps.clear();
+	mTNPositions.clear();
+	mSelection = -1;
 	UpdateVirtualSize();
-	if (frozen_count == 0)
+	if (mFrozenCount == 0)
 		Refresh();
 }
 
 // call before adding bitmaps!
 void BitmapBrowser::SetColorTable(ShapesColorTable *ct)
 {
-	ctable = ct;
-	if (frozen_count == 0) {
+	mColorTable = ct;
+	if (mFrozenCount == 0) {
 		RebuildThumbnails();
 		Refresh();
 	}
@@ -289,7 +287,7 @@ void BitmapBrowser::SetColorTable(ShapesColorTable *ct)
 void BitmapBrowser::UpdateVirtualSize(void)
 {
 	wxClientDC		dc(this);
-	unsigned int	numbitmaps = shp_bitmaps.size();
+	unsigned int	numbitmaps = mBitmaps.size();
 	int				width, height;
 
 	GetClientSize(&width, &height);
@@ -298,30 +296,30 @@ void BitmapBrowser::UpdateVirtualSize(void)
 		return;
 	}
 
-	if (auto_size) {
-		// calculate the best tn_size
-		// (its maximum value not requiring window scrolling)
+	if (mAutoSize) {
+		// calculate the best mTNSize
+		// (maximum value not requiring window scrolling)
 		int	max_bitmap_dimension = 10,
 			new_tn_size;
 
 		SetScrollRate(0, 0);
 		// find greatest dimension among all bitmaps
 		for (unsigned int i = 0; i < numbitmaps; i++) {
-			if (shp_bitmaps[i]->Width() > max_bitmap_dimension)
-				max_bitmap_dimension = shp_bitmaps[i]->Width();
-			if (shp_bitmaps[i]->Height() > max_bitmap_dimension)
-				max_bitmap_dimension = shp_bitmaps[i]->Height();
+			if (mBitmaps[i]->Width() > max_bitmap_dimension)
+				max_bitmap_dimension = mBitmaps[i]->Width();
+			if (mBitmaps[i]->Height() > max_bitmap_dimension)
+				max_bitmap_dimension = mBitmaps[i]->Height();
 		}
-		// FIXME a better algorythm, without looping?
-		for (new_tn_size = margin; ; new_tn_size++) {
-			int	numcols = (width - margin) / (new_tn_size + margin),
+		// FIXME a better algorithm, without looping?
+		for (new_tn_size = mMargin; ; new_tn_size++) {
+			int	numcols = (width - mMargin) / (new_tn_size + mMargin),
 				numrows = (numcols > 0) ? (numbitmaps / numcols) : numbitmaps;
 
 			if (numrows * numcols < (int)numbitmaps)
 				numrows++;
-			int	total_height = numrows * (new_tn_size + margin) + margin;
+			int	total_height = numrows * (new_tn_size + mMargin) + mMargin;
 
-			if (total_height > height || (new_tn_size + 2 * margin) > width) {
+			if (total_height > height || (new_tn_size + 2 * mMargin) > width) {
 				new_tn_size--;
 				break;
 			}
@@ -332,52 +330,52 @@ void BitmapBrowser::UpdateVirtualSize(void)
 				break;
 			}
 		}
-		if (new_tn_size != tn_size) {
-			tn_size = new_tn_size;
+		if (new_tn_size != mTNSize) {
+			mTNSize = new_tn_size;
 			RebuildThumbnails();
 		}
 	} else {
 		SetScrollRate(0, 2);
 	}
 
-	num_cols = (width - margin) / (tn_size + margin);
-	num_rows = (num_cols > 0) ? (numbitmaps / num_cols) : numbitmaps;
+	mNumCols = (width - mMargin) / (mTNSize + mMargin);
+	mNumRows = (mNumCols > 0) ? (numbitmaps / mNumCols) : numbitmaps;
 
-	if (num_rows * num_cols < (int)numbitmaps)
-		num_rows++;
+	if (mNumRows * mNumCols < (int)numbitmaps)
+		mNumRows++;
 
-	SetVirtualSize(width, num_rows * (tn_size + margin) + margin);
+	SetVirtualSize(width, mNumRows * (mTNSize + mMargin) + mMargin);
 
 	// recalculate thumbnail positions
-	int	x = margin,
-		y = margin;
+	int	x = mMargin,
+		y = mMargin;
 
-	tn_positions.clear();
+	mTNPositions.clear();
 	for (unsigned int i = 0; i < numbitmaps; i++) {
-		tn_positions.push_back(wxPoint(x, y));
+		mTNPositions.push_back(wxPoint(x, y));
 
-		x += tn_size + margin;
-		if (x + tn_size + margin > width) {
-			x = margin;
-			y += tn_size + margin;
+		x += mTNSize + mMargin;
+		if (x + mTNSize + mMargin > width) {
+			x = mMargin;
+			y += mTNSize + mMargin;
 		}
 	}
 }
 
-// transform an ShapesBitmap to a wxBitmap thumbnail
+// transform a ShapesBitmap to a wxBitmap thumbnail
 wxBitmap BitmapBrowser::CreateThumbnail(ShapesBitmap *bp)
 {
 	wxImage newimg;
 
-	if (ctable)
-		newimg = ShapesBitmapToImage(bp, ctable, white_transparency);
-	return ImageThumbnail(newimg, tn_size, true);
+	if (mColorTable)
+		newimg = ShapesBitmapToImage(bp, mColorTable, mWhiteTransparency);
+	return ImageThumbnail(newimg, mTNSize, true);
 }
 
 void BitmapBrowser::RebuildThumbnail(unsigned int i)
 {
-	if (i < shp_bitmaps.size())
-		thumbnails[i] = CreateThumbnail(shp_bitmaps[i]);
+	if (i < mBitmaps.size())
+		mThumbnails[i] = CreateThumbnail(mBitmaps[i]);
 }
 
 // just re-decode the ShapesBitmaps to their thumbnail previews,
@@ -386,7 +384,7 @@ void BitmapBrowser::RebuildThumbnail(unsigned int i)
 // altering the ShapesBitmaps
 void BitmapBrowser::RebuildThumbnails(void)
 {
-	for (unsigned int i = 0; i < shp_bitmaps.size(); i++)
-		thumbnails[i] = CreateThumbnail(shp_bitmaps[i]);
+	for (unsigned int i = 0; i < mBitmaps.size(); i++)
+		mThumbnails[i] = CreateThumbnail(mBitmaps[i]);
 }
 

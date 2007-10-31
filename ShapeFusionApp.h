@@ -28,14 +28,14 @@
 
 class ShapeFusionApp: public wxApp {
 public:
-    ShapeFusionApp(void);
-    bool OnInit(void);
-    int OnExit(void);
-    
+	ShapeFusionApp(void);
+	bool OnInit(void);
+	int OnExit(void);
+	
 	wxFrame *CreateChildFrame(wxDocument *doc, wxView *view, const wxString title, wxPoint point, wxSize size, long style = wxDEFAULT_FRAME_STYLE);
-    
+
 protected:
-    wxDocManager* m_docManager;
+	wxDocManager*	m_docManager;
 };
 
 DECLARE_APP(ShapeFusionApp);

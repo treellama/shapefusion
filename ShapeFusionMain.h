@@ -24,16 +24,15 @@
 // Define a new frame
 class ShapeFusionMain: public wxDocParentFrame
 {
-    DECLARE_CLASS(FusionMain)
+	DECLARE_CLASS(FusionMain)
+
 public:
-    
-    ShapeFusionMain(wxDocManager *manager, wxFrame *frame, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size,
-        const long type);
-    
-    void OnAbout(wxCommandEvent& event);
+	ShapeFusionMain(wxDocManager *manager, wxFrame *frame, wxWindowID id, const wxString& title,
+					const wxPoint& pos, const wxSize& size, const long type);
+	void OnAbout(wxCommandEvent& event);
 	void OnMenuHistory(wxCommandEvent& event);
-    
-    DECLARE_EVENT_TABLE()
+	
+	DECLARE_EVENT_TABLE()
 };
 
 #endif
