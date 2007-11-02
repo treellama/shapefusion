@@ -19,60 +19,27 @@
 #include "BigEndianBuffer.h"
 
 BigEndianBuffer::BigEndianBuffer(unsigned int _size):
-		size(0), self_allocated(true)
+		GenericEndianBuffer(_size)
 {
-	data = new unsigned char[_size];
-	if (data != NULL) {
-		position = data;
-		size = _size;
-	}
+
 }
 
 BigEndianBuffer::BigEndianBuffer(unsigned char *_data, unsigned int _size):
-		data(_data), position(_data), size(_size), self_allocated(false)
+		GenericEndianBuffer(_data, _size)
 {
-	
+
 }
 
 BigEndianBuffer::~BigEndianBuffer(void)
 {
-	if (self_allocated && data != NULL) {
-		delete[] data;
-		data = NULL;
-	}
-}
 
-char BigEndianBuffer::ReadChar(void)
-{
-	if ((unsigned int)(position - data) < size) {
-		unsigned char	v = *position;
-
-		position++;
-		return (char)v;
-	} else {
-		std::cerr << "BigEndianBuffer: attempted read beyond buffer limits\n";
-		return 0;
-	}
-}
-
-unsigned char BigEndianBuffer::ReadUChar(void)
-{
-	if ((unsigned int)(position - data) < size) {
-		unsigned char	v = *position;
-
-		position++;
-		return v;
-	} else {
-		std::cerr << "BigEndianBuffer: attempted read beyond buffer limits\n";
-		return 0;
-	}
 }
 
 short BigEndianBuffer::ReadShort(void)
 {
-	if ((unsigned int)(position - data + 1) < size) {
-		unsigned char	hi = *position++,
-						lo = *position++;
+	if ((unsigned int)(mPosition - mData + 1) < mSize) {
+		unsigned char	hi = *mPosition++,
+						lo = *mPosition++;
 
 		return (short)((hi << 8) | lo);
 	} else {
@@ -83,9 +50,9 @@ short BigEndianBuffer::ReadShort(void)
 
 unsigned short BigEndianBuffer::ReadUShort(void)
 {
-	if ((unsigned int)(position - data + 1) < size) {
-		unsigned char	hi = *position++,
-						lo = *position++;
+	if ((unsigned int)(mPosition - mData + 1) < mSize) {
+		unsigned char	hi = *mPosition++,
+						lo = *mPosition++;
 		
 		return (unsigned short)((hi << 8) | lo);
 	} else {
@@ -96,11 +63,11 @@ unsigned short BigEndianBuffer::ReadUShort(void)
 
 long BigEndianBuffer::ReadLong(void)
 {
-	if ((unsigned int)(position - data + 3) < size) {
-		unsigned char   a = *position++,
-						b = *position++,
-						c = *position++,
-						d = *position++;
+	if ((unsigned int)(mPosition - mData + 3) < mSize) {
+		unsigned char   a = *mPosition++,
+						b = *mPosition++,
+						c = *mPosition++,
+						d = *mPosition++;
 		
 		return (long)((a << 24) | (b << 16) | (c << 8) | d);
 	} else {
@@ -111,11 +78,11 @@ long BigEndianBuffer::ReadLong(void)
 
 unsigned long BigEndianBuffer::ReadULong(void)
 {
-	if ((unsigned int)(position - data + 3) < size) {
-		unsigned char   a = *position++,
-						b = *position++,
-						c = *position++,
-						d = *position++;
+	if ((unsigned int)(mPosition - mData + 3) < mSize) {
+		unsigned char   a = *mPosition++,
+						b = *mPosition++,
+						c = *mPosition++,
+						d = *mPosition++;
 		
 		return (unsigned long)((a << 24) | (b << 16) | (c << 8) | d);
 	} else {
@@ -124,37 +91,11 @@ unsigned long BigEndianBuffer::ReadULong(void)
 	}
 }
 
-void BigEndianBuffer::ReadBlock(unsigned long _size, unsigned char *dest)
-{
-	if ((unsigned int)(position - data + _size - 1) < size) {
-		memcpy(dest, position, _size);
-		position += _size;
-	} else {
-		std::cerr << "BigEndianBuffer: attempted read beyond buffer limits\n";
-	}
-}
-
-void BigEndianBuffer::WriteChar(char v)
-{
-	if ((unsigned int)(position - data) < size)
-		*position++ = v;
-	else
-		std::cerr << "BigEndianBuffer: attempted write beyond buffer limits\n";
-}
-
-void BigEndianBuffer::WriteUChar(unsigned char v)
-{
-	if ((unsigned int)(position - data) < size)
-		*position++ = v;
-	else
-		std::cerr << "BigEndianBuffer: attempted write beyond buffer limits\n";
-}
-
 void BigEndianBuffer::WriteShort(short v)
 {
-	if ((unsigned int)(position - data + 1) < size) {
-		*position++ = (v >> 8) & 0xff;
-		*position++ = v & 0xff;
+	if ((unsigned int)(mPosition - mData + 1) < mSize) {
+		*mPosition++ = (v >> 8) & 0xff;
+		*mPosition++ = v & 0xff;
 	} else {
 		std::cerr << "BigEndianBuffer: attempted write beyond buffer limits\n";
 	}
@@ -162,9 +103,9 @@ void BigEndianBuffer::WriteShort(short v)
 
 void BigEndianBuffer::WriteUShort(unsigned short v)
 {
-	if ((unsigned int)(position - data + 1) < size) {
-		*position++ = (v >> 8) & 0xff;
-		*position++ = v & 0xff;
+	if ((unsigned int)(mPosition - mData + 1) < mSize) {
+		*mPosition++ = (v >> 8) & 0xff;
+		*mPosition++ = v & 0xff;
 	} else {
 		std::cerr << "BigEndianBuffer: attempted write beyond buffer limits\n";
 	}
@@ -172,11 +113,11 @@ void BigEndianBuffer::WriteUShort(unsigned short v)
 
 void BigEndianBuffer::WriteLong(long v)
 {
-	if ((unsigned int)(position - data + 3) < size) {
-		*position++ = (v >> 24) & 0xff;
-		*position++ = (v >> 16) & 0xff;
-		*position++ = (v >> 8) & 0xff;
-		*position++ = v & 0xff;
+	if ((unsigned int)(mPosition - mData + 3) < mSize) {
+		*mPosition++ = (v >> 24) & 0xff;
+		*mPosition++ = (v >> 16) & 0xff;
+		*mPosition++ = (v >> 8) & 0xff;
+		*mPosition++ = v & 0xff;
 	} else {
 		std::cerr << "BigEndianBuffer: attempted write beyond buffer limits\n";
 	}
@@ -184,56 +125,13 @@ void BigEndianBuffer::WriteLong(long v)
 
 void BigEndianBuffer::WriteULong(unsigned long v)
 {
-	if ((unsigned int)(position - data + 3) < size) {
-		*position++ = (v >> 24) & 0xff;
-		*position++ = (v >> 16) & 0xff;
-		*position++ = (v >> 8) & 0xff;
-		*position++ = v & 0xff;
+	if ((unsigned int)(mPosition - mData + 3) < mSize) {
+		*mPosition++ = (v >> 24) & 0xff;
+		*mPosition++ = (v >> 16) & 0xff;
+		*mPosition++ = (v >> 8) & 0xff;
+		*mPosition++ = v & 0xff;
 	} else {
 		std::cerr << "BigEndianBuffer: attempted write beyond buffer limits\n";
 	}
-}
-
-void BigEndianBuffer::WriteBlock(unsigned long _size, const void *src)
-{
-	if ((unsigned int)(position - data + _size - 1) < size) {
-		memcpy(position, src, _size);
-		position += _size;
-	} else {
-		std::cerr << "BigEndianBuffer: attempted write beyond buffer limits\n";
-	}
-}
-
-void BigEndianBuffer::WriteZeroes(unsigned int n)
-{
-	if ((unsigned int)(position - data + n - 1) < size) {
-		memset(position, 0, n);
-		position += n;
-	} else {
-		std::cerr << "BigEndianBuffer: attempted write beyond buffer limits\n";
-	}
-}
-
-unsigned char *BigEndianBuffer::Data(void) const
-{
-	return data;
-}
-
-unsigned int BigEndianBuffer::Size(void) const
-{
-	return size;
-}
-
-void BigEndianBuffer::Position(unsigned int pos)
-{
-	if (pos < size)
-		position = data + pos;
-	else
-		std::cerr << "BigEndianBuffer: attempted to position beyond buffer limits (" << pos << "/" << (size-1) << ")\n";
-}
-
-unsigned int BigEndianBuffer::Position(void) const
-{
-	return position - data;
 }
 

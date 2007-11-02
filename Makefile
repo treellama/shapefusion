@@ -7,7 +7,8 @@ CFLAGS = -g -Wall -O2
 WXCFLAGS = `wx-config --cxxflags`
 WXLIBS = `wx-config --libs`
 
-OBJECTS =		BigEndianBuffer.o LittleEndianBuffer.o ShapeFusionApp.o ShapeFusionMain.o ShapeFusionMenus.o
+OBJECTS =		GenericEndianBuffer.o BigEndianBuffer.o LittleEndianBuffer.o ShapeFusionApp.o \
+				ShapeFusionMain.o ShapeFusionMenus.o
 SHAPESOBJECTS = Shapes/BitmapBrowser.o Shapes/BitmapView.o Shapes/CTBrowser.o Shapes/CTView.o \
 				Shapes/FrameBrowser.o Shapes/FrameView.o Shapes/SequenceView.o \
 				Shapes/ShapesDocument.o Shapes/ShapesElements.o Shapes/ShapesView.o \
@@ -20,10 +21,13 @@ VPATH = Shapes:Sounds
 shapefusion: $(OBJECTS) $(SHAPESOBJECTS) $(SOUNDSOBJECTS)
 	g++ -o shapefusion $(OBJECTS) $(SHAPESOBJECTS) $(SOUNDSOBJECTS) $(WXLIBS)
 
-BigEndianBuffer.o: BigEndianBuffer.cpp BigEndianBuffer.h
+GenericEndianBuffer.o: GenericEndianBuffer.cpp GenericEndianBuffer.h
 	g++ -c $(CFLAGS) $<
 
-LittleEndianBuffer.o: LittleEndianBuffer.cpp LittleEndianBuffer.h
+BigEndianBuffer.o: BigEndianBuffer.cpp BigEndianBuffer.h GenericEndianBuffer.h
+	g++ -c $(CFLAGS) $<
+
+LittleEndianBuffer.o: LittleEndianBuffer.cpp LittleEndianBuffer.h GenericEndianBuffer.h
 	g++ -c $(CFLAGS) $<
 
 ShapeFusionApp.o: ShapeFusionApp.cpp ShapeFusionApp.h ShapeFusionMain.h ShapeFusionMenus.h \

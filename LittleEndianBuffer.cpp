@@ -19,60 +19,27 @@
 #include "LittleEndianBuffer.h"
 
 LittleEndianBuffer::LittleEndianBuffer(unsigned int _size):
-		size(0), self_allocated(true)
+		GenericEndianBuffer(_size)
 {
-	data = new unsigned char[_size];
-	if (data != NULL) {
-		position = data;
-		size = _size;
-	}
+
 }
 
 LittleEndianBuffer::LittleEndianBuffer(unsigned char *_data, unsigned int _size):
-		data(_data), position(_data), size(_size), self_allocated(false)
+		GenericEndianBuffer(_data, _size)
 {
 	
 }
 
 LittleEndianBuffer::~LittleEndianBuffer(void)
 {
-	if (self_allocated && data != NULL) {
-		delete[] data;
-		data = NULL;
-	}
-}
 
-char LittleEndianBuffer::ReadChar(void)
-{
-	if ((unsigned int)(position - data) < size) {
-		unsigned char	v = *position;
-
-		position++;
-		return (char)v;
-	} else {
-		std::cerr << "LittleEndianBuffer: attempted read beyond buffer limits\n";
-		return 0;
-	}
-}
-
-unsigned char LittleEndianBuffer::ReadUChar(void)
-{
-	if ((unsigned int)(position - data) < size) {
-		unsigned char	v = *position;
-
-		position++;
-		return v;
-	} else {
-		std::cerr << "LittleEndianBuffer: attempted read beyond buffer limits\n";
-		return 0;
-	}
 }
 
 short LittleEndianBuffer::ReadShort(void)
 {
-	if ((unsigned int)(position - data + 1) < size) {
-		unsigned char	lo = *position++,
-						hi = *position++;
+	if ((unsigned int)(mPosition - mData + 1) < mSize) {
+		unsigned char	lo = *mPosition++,
+						hi = *mPosition++;
 
 		return (short)((hi << 8) | lo);
 	} else {
@@ -83,9 +50,9 @@ short LittleEndianBuffer::ReadShort(void)
 
 unsigned short LittleEndianBuffer::ReadUShort(void)
 {
-	if ((unsigned int)(position - data + 1) < size) {
-		unsigned char	lo = *position++,
-						hi = *position++;
+	if ((unsigned int)(mPosition - mData + 1) < mSize) {
+		unsigned char	lo = *mPosition++,
+						hi = *mPosition++;
 		
 		return (unsigned short)((hi << 8) | lo);
 	} else {
@@ -96,11 +63,11 @@ unsigned short LittleEndianBuffer::ReadUShort(void)
 
 long LittleEndianBuffer::ReadLong(void)
 {
-	if ((unsigned int)(position - data + 3) < size) {
-		unsigned char   a = *position++,
-						b = *position++,
-						c = *position++,
-						d = *position++;
+	if ((unsigned int)(mPosition - mData + 3) < mSize) {
+		unsigned char   a = *mPosition++,
+						b = *mPosition++,
+						c = *mPosition++,
+						d = *mPosition++;
 		
 		return (long)((d << 24) | (c << 16) | (b << 8) | a);
 	} else {
@@ -111,11 +78,11 @@ long LittleEndianBuffer::ReadLong(void)
 
 unsigned long LittleEndianBuffer::ReadULong(void)
 {
-	if ((unsigned int)(position - data + 3) < size) {
-		unsigned char   a = *position++,
-						b = *position++,
-						c = *position++,
-						d = *position++;
+	if ((unsigned int)(mPosition - mData + 3) < mSize) {
+		unsigned char   a = *mPosition++,
+						b = *mPosition++,
+						c = *mPosition++,
+						d = *mPosition++;
 		
 		return (unsigned long)((d << 24) | (c << 16) | (b << 8) | a);
 	} else {
@@ -124,37 +91,11 @@ unsigned long LittleEndianBuffer::ReadULong(void)
 	}
 }
 
-void LittleEndianBuffer::ReadBlock(unsigned long _size, unsigned char *dest)
-{
-	if ((unsigned int)(position - data + _size - 1) < size) {
-		memcpy(dest, position, _size);
-		position += _size;
-	} else {
-		std::cerr << "LittleEndianBuffer: attempted read beyond buffer limits\n";
-	}
-}
-
-void LittleEndianBuffer::WriteChar(char v)
-{
-	if ((unsigned int)(position - data) < size)
-		*position++ = v;
-	else
-		std::cerr << "LittleEndianBuffer: attempted write beyond buffer limits\n";
-}
-
-void LittleEndianBuffer::WriteUChar(unsigned char v)
-{
-	if ((unsigned int)(position - data) < size)
-		*position++ = v;
-	else
-		std::cerr << "LittleEndianBuffer: attempted write beyond buffer limits\n";
-}
-
 void LittleEndianBuffer::WriteShort(short v)
 {
-	if ((unsigned int)(position - data + 1) < size) {
-		*position++ = v & 0xff;
-		*position++ = (v >> 8) & 0xff;
+	if ((unsigned int)(mPosition - mData + 1) < mSize) {
+		*mPosition++ = v & 0xff;
+		*mPosition++ = (v >> 8) & 0xff;
 	} else {
 		std::cerr << "LittleEndianBuffer: attempted write beyond buffer limits\n";
 	}
@@ -162,9 +103,9 @@ void LittleEndianBuffer::WriteShort(short v)
 
 void LittleEndianBuffer::WriteUShort(unsigned short v)
 {
-	if ((unsigned int)(position - data + 1) < size) {
-		*position++ = v & 0xff;
-		*position++ = (v >> 8) & 0xff;
+	if ((unsigned int)(mPosition - mData + 1) < mSize) {
+		*mPosition++ = v & 0xff;
+		*mPosition++ = (v >> 8) & 0xff;
 	} else {
 		std::cerr << "LittleEndianBuffer: attempted write beyond buffer limits\n";
 	}
@@ -172,11 +113,11 @@ void LittleEndianBuffer::WriteUShort(unsigned short v)
 
 void LittleEndianBuffer::WriteLong(long v)
 {
-	if ((unsigned int)(position - data + 3) < size) {
-		*position++ = v & 0xff;
-		*position++ = (v >> 8) & 0xff;
-		*position++ = (v >> 16) & 0xff;
-		*position++ = (v >> 24) & 0xff;
+	if ((unsigned int)(mPosition - mData + 3) < mSize) {
+		*mPosition++ = v & 0xff;
+		*mPosition++ = (v >> 8) & 0xff;
+		*mPosition++ = (v >> 16) & 0xff;
+		*mPosition++ = (v >> 24) & 0xff;
 	} else {
 		std::cerr << "LittleEndianBuffer: attempted write beyond buffer limits\n";
 	}
@@ -184,56 +125,13 @@ void LittleEndianBuffer::WriteLong(long v)
 
 void LittleEndianBuffer::WriteULong(unsigned long v)
 {
-	if ((unsigned int)(position - data + 3) < size) {
-		*position++ = v & 0xff;
-		*position++ = (v >> 8) & 0xff;
-		*position++ = (v >> 16) & 0xff;
-		*position++ = (v >> 24) & 0xff;
+	if ((unsigned int)(mPosition - mData + 3) < mSize) {
+		*mPosition++ = v & 0xff;
+		*mPosition++ = (v >> 8) & 0xff;
+		*mPosition++ = (v >> 16) & 0xff;
+		*mPosition++ = (v >> 24) & 0xff;
 	} else {
 		std::cerr << "LittleEndianBuffer: attempted write beyond buffer limits\n";
 	}
-}
-
-void LittleEndianBuffer::WriteBlock(unsigned long _size, const void *src)
-{
-	if ((unsigned int)(position - data + _size - 1) < size) {
-		memcpy(position, src, _size);
-		position += _size;
-	} else {
-		std::cerr << "LittleEndianBuffer: attempted write beyond buffer limits\n";
-	}
-}
-
-void LittleEndianBuffer::WriteZeroes(unsigned int n)
-{
-	if ((unsigned int)(position - data + n - 1) < size) {
-		memset(position, 0, n);
-		position += n;
-	} else {
-		std::cerr << "LittleEndianBuffer: attempted write beyond buffer limits\n";
-	}
-}
-
-unsigned char *LittleEndianBuffer::Data(void) const
-{
-	return data;
-}
-
-unsigned int LittleEndianBuffer::Size(void) const
-{
-	return size;
-}
-
-void LittleEndianBuffer::Position(unsigned int pos)
-{
-	if (pos < size)
-		position = data + pos;
-	else
-		std::cerr << "LittleEndianBuffer: attempted to position beyond buffer limits (" << pos << "/" << (size-1) << ")\n";
-}
-
-unsigned int LittleEndianBuffer::Position(void) const
-{
-	return position - data;
 }
 
