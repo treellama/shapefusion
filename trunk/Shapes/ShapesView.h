@@ -49,6 +49,7 @@ private:
 		CB_ENABLE_TRANSPARENCY,
 		// frames
 		FRAME_BROWSER,
+		FRAME_VIEW,
 		FIELD_BITMAP_INDEX,
 		CB_XMIRROR,
 		CB_YMIRROR,
@@ -195,7 +196,7 @@ private:
 					selected_sequence,
 					view_ct;
 	bool			show_transparent_pixels;
-    wxFrame			*frame;
+    wxFrame			*mFrame;
 	
 protected:
 	DECLARE_EVENT_TABLE();
@@ -240,6 +241,7 @@ public:
 	void ToggleBitmapCheckboxes(wxCommandEvent &e);
 	void FrameSelect(wxCommandEvent &e);
 	void FrameDelete(wxCommandEvent &e);
+	void OnFramePointDrag(wxCommandEvent &e);
 	void BitmapIndexSpin(wxSpinEvent &e);
 	void ToggleFrameCheckboxes(wxCommandEvent &e);
 	void EditFrameFields(wxCommandEvent &e);

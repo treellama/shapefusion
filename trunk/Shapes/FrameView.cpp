@@ -19,6 +19,8 @@
 #include "FrameView.h"
 #include "utilities.h"
 
+DEFINE_EVENT_TYPE(wxEVT_FRAMEVIEW_DRAG)
+
 BEGIN_EVENT_TABLE(FrameView, wxScrolledWindow)
 	EVT_PAINT(FrameView::OnPaint)
 	EVT_LEFT_DOWN(FrameView::OnDrag)
@@ -27,23 +29,21 @@ BEGIN_EVENT_TABLE(FrameView, wxScrolledWindow)
 	EVT_SIZE(FrameView::OnSize)
 END_EVENT_TABLE()
 
-FrameView::FrameView(wxWindow *parent):
-	wxScrolledWindow(parent, -1, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER | wxFULL_REPAINT_ON_RESIZE),
-	frame(NULL), enc_bmp(NULL), ctable(NULL), panning(false), dragging_origin(false), dragging_key(false), near_origin(false), near_key(false)
+FrameView::FrameView(wxWindow *parent, wxWindowID id):
+	wxScrolledWindow(parent, id, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER | wxFULL_REPAINT_ON_RESIZE),
+	mFrame(NULL), mEncBmp(NULL), mColorTable(NULL), mPanning(false), mDraggingOrigin(false), mDraggingKey(false), mNearOrigin(false), mNearKey(false)
 {
 	SetBackgroundColour(wxColour(255, 255, 255));
 	SetScrollRate(1, 1);
 	EnableScrolling(false, false);
 	// origin cursor pen
-	origin_pen.SetColour(0, 128, 128);
+	mOriginPen.SetColour(0, 128, 128);
 	// key cursor pen
-	key_pen.SetColour(128, 0, 128);
-	// invisible pen
-	invisible_pen.SetColour(255, 255, 255);
+	mKeypointPen.SetColour(128, 0, 128);
 	// mouse cursors
-	pan_cursor = wxCursor(wxCURSOR_ARROW);
-	point_cursor = wxCursor(wxCURSOR_CROSS);
-	white_transparency = true;
+	mPanCursor = wxCursor(wxCURSOR_ARROW);
+	mPointCursor = wxCursor(wxCURSOR_CROSS);
+	mWhiteTransparency = true;
 }
 
 void FrameView::OnPaint(wxPaintEvent& e)
@@ -56,22 +56,21 @@ void FrameView::OnPaint(wxPaintEvent& e)
 	// fill with white
 	GetClientSize(&cw, &ch);
 	CalcUnscrolledPosition(0, 0, &rx, &ry);
-	tempdc.SetPen(invisible_pen);
-	if (frame != NULL && ctable != NULL) {
-		if (enc_bmp != NULL) {
-			int		origin_x = vw/2 - dec_bmp.GetWidth()/2,
-					origin_y = vh/2 - dec_bmp.GetHeight()/2;
+	if (mFrame != NULL && mColorTable != NULL) {
+		if (mEncBmp != NULL) {
+			int		origin_x = vw/2 - mDecBmp.GetWidth()/2,
+					origin_y = vh/2 - mDecBmp.GetHeight()/2;
 
 			// draw bitmap
-			tempdc.DrawBitmap(dec_bmp, origin_x, origin_y);
+			tempdc.DrawBitmap(mDecBmp, origin_x, origin_y);
 			// mark bitmap origin
-			tempdc.SetPen(origin_pen);
-			tempdc.CrossHair(frame->OriginX() + origin_x, frame->OriginY() + origin_y);
-			tempdc.DrawCircle(frame->OriginX() + origin_x, frame->OriginY() + origin_y, 2);
+			tempdc.SetPen(mOriginPen);
+			tempdc.CrossHair(mFrame->OriginX() + origin_x, mFrame->OriginY() + origin_y);
+			tempdc.DrawCircle(mFrame->OriginX() + origin_x, mFrame->OriginY() + origin_y, 2);
 			// mark bitmap keypoint
-			tempdc.SetPen(key_pen);
-			tempdc.CrossHair(frame->KeyX() + origin_x, frame->KeyY() + origin_y);
-			tempdc.DrawCircle(frame->KeyX() + origin_x, frame->KeyY() + origin_y, 2);
+			tempdc.SetPen(mKeypointPen);
+			tempdc.CrossHair(mFrame->KeyX() + origin_x, mFrame->KeyY() + origin_y);
+			tempdc.DrawCircle(mFrame->KeyX() + origin_x, mFrame->KeyY() + origin_y, 2);
 			// origin & key labels
 			wxString	origin_label = wxT("Origin"),
 						key_label = wxT("Keypoint");
@@ -81,15 +80,15 @@ void FrameView::OnPaint(wxPaintEvent& e)
 			tempdc.GetTextExtent(origin_label, &text1w, &text1h);
 			tempdc.GetTextExtent(key_label, &text2w, &text2h);
 			tempdc.SetTextForeground(wxColour(0, 128, 128));
-			if (frame->OriginY() + origin_y >= text1h + 2)
-				tempdc.DrawText(origin_label, vw - text1w - 2, frame->OriginY() + origin_y - text1h - 2);
+			if (mFrame->OriginY() + origin_y >= text1h + 2)
+				tempdc.DrawText(origin_label, vw - text1w - 2, mFrame->OriginY() + origin_y - text1h - 2);
 			else
-				tempdc.DrawText(origin_label, vw - text1w - 2, frame->OriginY() + origin_y + 2);
+				tempdc.DrawText(origin_label, vw - text1w - 2, mFrame->OriginY() + origin_y + 2);
 			tempdc.SetTextForeground(wxColour(128, 0, 128));
-			if (frame->KeyY() + origin_y >= text2h + 2)
-				tempdc.DrawText(key_label, vw - text2w - 2, frame->KeyY() + origin_y - text2h - 2);
+			if (mFrame->KeyY() + origin_y >= text2h + 2)
+				tempdc.DrawText(key_label, vw - text2w - 2, mFrame->KeyY() + origin_y - text2h - 2);
 			else
-				tempdc.DrawText(key_label, vw - text2w - 2, frame->KeyY() + origin_y + 2);
+				tempdc.DrawText(key_label, vw - text2w - 2, mFrame->KeyY() + origin_y + 2);
 		} else {
 			wxString	no_bmp_label = wxT("No associated bitmap");
 			int			text_w, text_h,
@@ -111,52 +110,62 @@ void FrameView::OnDrag(wxMouseEvent &e)
 		int scroll_x, scroll_y;
 
 		GetViewStart(&scroll_x, &scroll_y);
-		if (near_origin) {
+		if (mNearOrigin) {
 			// start dragging origin
-			dragging_origin = true;
-		} else if (near_key) {
+			mDraggingOrigin = true;
+		} else if (mNearKey) {
 			// start dragging keypoint
-			dragging_key = true;
+			mDraggingKey = true;
 		} else {
 			// start panning
-			panning = true;
-			drag_start_x = e.GetPosition().x + scroll_x;
-			drag_start_y = e.GetPosition().y + scroll_y;
+			mPanning = true;
+			mDragStartX = e.GetPosition().x + scroll_x;
+			mDragStartY = e.GetPosition().y + scroll_y;
 		}
 	} else if (e.Dragging()) {
-		if (panning) {
+		if (mPanning) {
 			// pan
-			int	dx = drag_start_x - e.GetPosition().x,
-				dy = drag_start_y - e.GetPosition().y;
+			int	dx = mDragStartX - e.GetPosition().x,
+				dy = mDragStartY - e.GetPosition().y;
 
 			Scroll(dx, dy);
-		} else if (dragging_origin) {
+		} else if (mDraggingOrigin) {
 			// set origin
 			int	vw, vh, scroll_x, scroll_y, origin_x, origin_y;
 
 			GetVirtualSize(&vw, &vh);
 			GetViewStart(&scroll_x, &scroll_y);
-			origin_x = vw/2 - dec_bmp.GetWidth()/2;
-			origin_y = vh/2 - dec_bmp.GetHeight()/2;
-			frame->SetOriginX(e.GetPosition().x + scroll_x - origin_x);
-			frame->SetOriginY(e.GetPosition().y + scroll_y - origin_y);
-			// TODO generate event
+			origin_x = vw/2 - mDecBmp.GetWidth()/2;
+			origin_y = vh/2 - mDecBmp.GetHeight()/2;
+			mFrame->SetOriginX(e.GetPosition().x + scroll_x - origin_x);
+			mFrame->SetOriginY(e.GetPosition().y + scroll_y - origin_y);
+			// send an event so that other gui elements can update
+			wxCommandEvent  event(wxEVT_FRAMEVIEW_DRAG, GetId());
+
+			event.SetEventObject(this);
+			//event.SetInt(j);
+			GetEventHandler()->ProcessEvent(event);
 			Refresh();
-		} else if (dragging_key) {
+		} else if (mDraggingKey) {
 			// set keypoint
 			int vw, vh, scroll_x, scroll_y, origin_x, origin_y;
 
 			GetVirtualSize(&vw, &vh);
 			GetViewStart(&scroll_x, &scroll_y);
-			origin_x = vw/2 - dec_bmp.GetWidth()/2;
-			origin_y = vh/2 - dec_bmp.GetHeight()/2;
-			frame->SetKeyX(e.GetPosition().x + scroll_x - origin_x);
-			frame->SetKeyY(e.GetPosition().y + scroll_y - origin_y);
-			// TODO generate event
+			origin_x = vw/2 - mDecBmp.GetWidth()/2;
+			origin_y = vh/2 - mDecBmp.GetHeight()/2;
+			mFrame->SetKeyX(e.GetPosition().x + scroll_x - origin_x);
+			mFrame->SetKeyY(e.GetPosition().y + scroll_y - origin_y);
+			// send an event so that other gui elements can update
+			wxCommandEvent  event(wxEVT_FRAMEVIEW_DRAG, GetId());
+
+			event.SetEventObject(this);
+			//event.SetInt(j);
+			GetEventHandler()->ProcessEvent(event);
 			Refresh();
 		}
 	} else if (e.ButtonUp()) {
-		panning = dragging_origin = dragging_key = false;
+		mPanning = mDraggingOrigin = mDraggingKey = false;
 	} else if (e.Moving()) {
 		// mouse moved without buttons
 		int	vw, vh, scroll_x, scroll_y;
@@ -164,8 +173,8 @@ void FrameView::OnDrag(wxMouseEvent &e)
 		GetVirtualSize(&vw, &vh);
 		GetViewStart(&scroll_x, &scroll_y);
 
-		int origin_x = vw/2 - dec_bmp.GetWidth()/2,
-			origin_y = vh/2 - dec_bmp.GetHeight()/2,
+		int origin_x = vw/2 - mDecBmp.GetWidth()/2,
+			origin_y = vh/2 - mDecBmp.GetHeight()/2,
 			x = e.GetPosition().x + scroll_x,
 			y = e.GetPosition().y + scroll_y,
 			delta_x,
@@ -173,24 +182,24 @@ void FrameView::OnDrag(wxMouseEvent &e)
 			dist_origin,
 			dist_keypoint;
 
-		delta_x = x - (frame->OriginX() + origin_x);
-		delta_y = y - (frame->OriginY() + origin_y);
+		delta_x = x - (mFrame->OriginX() + origin_x);
+		delta_y = y - (mFrame->OriginY() + origin_y);
 		dist_origin = delta_x*delta_x + delta_y*delta_y;
-		delta_x = x - (frame->KeyX() + origin_x);
-		delta_y = y - (frame->KeyY() + origin_y);
+		delta_x = x - (mFrame->KeyX() + origin_x);
+		delta_y = y - (mFrame->KeyY() + origin_y);
 		dist_keypoint = delta_x*delta_x + delta_y*delta_y;
 		// are we near origin or keypoint?
 		if (dist_origin < 25) {
-			SetCursor(point_cursor);
-			near_origin = true;
-			near_key = false;
+			SetCursor(mPointCursor);
+			mNearOrigin = true;
+			mNearKey = false;
 		} else if (dist_keypoint < 25) {
-			SetCursor(point_cursor);
-			near_origin = false;
-			near_key = true;
+			SetCursor(mPointCursor);
+			mNearOrigin = false;
+			mNearKey = true;
 		} else {
-			SetCursor(pan_cursor);
-			near_origin = near_key = false;
+			SetCursor(mPanCursor);
+			mNearOrigin = mNearKey = false;
 		}
 	}
 }
@@ -198,11 +207,11 @@ void FrameView::OnDrag(wxMouseEvent &e)
 void FrameView::OnSize(wxSizeEvent &e)
 {
 	int cw, ch,
-		vw = (frame == NULL || enc_bmp == NULL) ? 0 : enc_bmp->Width(),
-		vh = (frame == NULL || enc_bmp == NULL) ? 0 : enc_bmp->Height();
+		vw = (mFrame == NULL || mEncBmp == NULL) ? 0 : mEncBmp->Width(),
+		vh = (mFrame == NULL || mEncBmp == NULL) ? 0 : mEncBmp->Height();
 
 	GetClientSize(&cw, &ch);
-	if (enc_bmp != NULL && enc_bmp->Pixels() != NULL) {
+	if (mEncBmp != NULL && mEncBmp->Pixels() != NULL) {
 		if (vw < cw)
 			vw = cw;
 		if (vh < ch)
@@ -216,22 +225,22 @@ void FrameView::OnSize(wxSizeEvent &e)
 
 void FrameView::SetTranspPixelsDisplay(bool show)
 {
-	white_transparency = show;
-	SetBitmap(enc_bmp);
+	mWhiteTransparency = show;
+	SetBitmap(mEncBmp);
 	Refresh();
 }
 
 // associate a frame
 void FrameView::SetFrame(ShapesFrame *fp)
 {
-	frame = fp;
-	SetBitmap(enc_bmp);
+	mFrame = fp;
+	SetBitmap(mEncBmp);
 	Refresh();
 }
 
 ShapesFrame *FrameView::GetFrame(void) const
 {
-	return frame;
+	return mFrame;
 }
 
 // associate a bitmap to display (we could do this in SetFrame
@@ -241,12 +250,12 @@ void FrameView::SetBitmap(ShapesBitmap *bp)
 	int	cw, ch;
 
 	GetClientSize(&cw, &ch);
-	enc_bmp = bp;
+	mEncBmp = bp;
 	if (bp != NULL) {
 		if (bp->Pixels() != NULL) {
 			// adjust sizes
-			int	vw = enc_bmp->Width(),
-				vh = enc_bmp->Height();
+			int	vw = mEncBmp->Width(),
+				vh = mEncBmp->Height();
 
 			if (vw < cw)
 				vw = cw;
@@ -254,17 +263,17 @@ void FrameView::SetBitmap(ShapesBitmap *bp)
 				vh = ch;
 			SetVirtualSize(vw, vh);
 			// decode bitmap
-			if (ctable != NULL) {
-				wxImage	img = ShapesBitmapToImage(bp, ctable, white_transparency);
+			if (mColorTable != NULL) {
+				wxImage	img = ShapesBitmapToImage(bp, mColorTable, mWhiteTransparency);
 
 				// apply transformations
-				if (frame) {
-					if (frame->IsXmirrored())
+				if (mFrame) {
+					if (mFrame->IsXmirrored())
 						img = img.Mirror(true);
-					if (frame->IsYmirrored())
+					if (mFrame->IsYmirrored())
 						img = img.Mirror(false);
 				}
-				dec_bmp = wxBitmap(img);
+				mDecBmp = wxBitmap(img);
 			}
 			Refresh();
 		} else {
@@ -279,8 +288,8 @@ void FrameView::SetBitmap(ShapesBitmap *bp)
 // call this before Set'tingBitmap!
 void FrameView::SetColorTable(ShapesColorTable *ct)
 {
-	ctable = ct;
-	SetBitmap(enc_bmp);
+	mColorTable = ct;
+	SetBitmap(mEncBmp);
 	Refresh();
 }
 
