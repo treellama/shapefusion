@@ -30,32 +30,33 @@
 #endif
 #include "ShapesElements.h"
 
+DECLARE_EVENT_TYPE(wxEVT_FRAMEVIEW_DRAG, -1)
+
 class FrameView: public wxScrolledWindow {
 private:
-	ShapesFrame			*frame;				// frame data
-	ShapesBitmap		*enc_bmp;			// encoded bitmap
-	wxBitmap			dec_bmp;			// ready-to-draw associated frame bitmap
-	ShapesColorTable	*ctable;			// which palette to use for display
-	bool			white_transparency;	// hide transparent pixels
-	wxPen			origin_pen,
-					key_pen,
-					invisible_pen;
-	wxCursor		pan_cursor,
-					point_cursor;
+	ShapesFrame			*mFrame;			// frame data
+	ShapesBitmap		*mEncBmp;			// encoded bitmap
+	wxBitmap			mDecBmp;			// ready-to-draw associated frame bitmap
+	ShapesColorTable	*mColorTable;		// which palette to use for display
+	bool				mWhiteTransparency;	// hide transparent pixels
+	wxPen				mOriginPen,
+						mKeypointPen;
+	wxCursor			mPanCursor,
+						mPointCursor;
 
-	bool			panning,
-					dragging_origin,
-					dragging_key,
-					near_origin,
-					near_key;
-	int				drag_start_x,
-					drag_start_y;
+	bool				mPanning,
+						mDraggingOrigin,
+						mDraggingKey,
+						mNearOrigin,
+						mNearKey;
+	int					mDragStartX,
+						mDragStartY;
 
 protected:
 	DECLARE_EVENT_TABLE();
 
 public:
-	FrameView(wxWindow *parent);
+	FrameView(wxWindow *parent, wxWindowID id);
 	// event handlers
 	void OnPaint(wxPaintEvent &e);
 	void OnSize(wxSizeEvent &e);
