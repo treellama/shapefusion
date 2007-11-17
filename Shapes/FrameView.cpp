@@ -106,6 +106,9 @@ void FrameView::OnPaint(wxPaintEvent& e)
 // handle mouse drag (pan view, edit origin/keypoint)
 void FrameView::OnDrag(wxMouseEvent &e)
 {
+	if (mFrame == NULL || mEncBmp == NULL)
+		return;
+
 	if (e.ButtonDown()) {
 		int scroll_x, scroll_y;
 
