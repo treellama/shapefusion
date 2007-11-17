@@ -132,6 +132,9 @@ bool ShapesView::OnCreate(wxDocument *doc, long WXUNUSED(flags) )
 	CreateViewMenu(mFrame->GetMenuBar());
 	CreateShapesMenu(mFrame->GetMenuBar());
 	menubar = mFrame->GetMenuBar();
+	// FIXME crash on windows if this is initialized in its right place.
+ 	// Something in FrameView is probably bad.
+	f_view = new FrameView(mFrame, FRAME_VIEW);
 
 	mainbox = new wxBoxSizer(wxHORIZONTAL);
 	// create the collection tree
@@ -285,7 +288,6 @@ bool ShapesView::OnCreate(wxDocument *doc, long WXUNUSED(flags) )
 	f_origin_box->AddStretchSpacer();
 	f_origin_box->Add(f_mli_label, 1, wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
 	f_origin_box->Add(f_mli_field, 0, wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
-	f_view = new FrameView(mFrame, FRAME_VIEW);
 	f_edit_inner_box = new wxBoxSizer(wxVERTICAL);
 	f_edit_inner_box->Add(f_origin_box, 0, wxALIGN_LEFT);
 	f_edit_box->Add(f_edit_inner_box, 0, wxEXPAND | wxLEFT | wxRIGHT | wxTOP | wxBOTTOM, 5);
