@@ -135,6 +135,13 @@ ticks_per_frame. Maybe this comes from some broken Shapes editor, but it could
 be just Anvil. ShapeFusion doesn't handle this invalid data very well, but I
 plan to implement some consistency checks in the future.
 
+Feedback
+--------
+You can send screenshots, bug reports and any comment to tito(at)dalcanton.it.
+Better yet, you can join the ShapeFusion development mailing list
+(see http://www.sourceforge.net/projects/shapefusion for details) and report
+things there.
+
 History
 -------
 ShapeFusion was born in 2000 as a MacOS Classic application. Working releases
