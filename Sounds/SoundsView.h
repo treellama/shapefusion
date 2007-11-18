@@ -45,7 +45,6 @@ private:
 		SOUND_EIGHT_BIT_PERMUTATIONS_LIST,
 		SOUND_SIXTEEN_BIT_PERMUTATIONS_LIST,
 		SOUND_REMAP_CHECK_BOX
-		
 	};
 
 	wxBoxSizer		*frame_sizer;
@@ -91,7 +90,6 @@ private:
 					mSoundPermutation;
 	
 public:
-    
     SoundsView(void);
     ~SoundsView(void) {};
     
@@ -99,10 +97,9 @@ public:
     void OnDraw(wxDC *dc);
     void OnUpdate(wxView *sender, wxObject *hint = (wxObject *) NULL);
     bool OnClose(bool deleteWindow = true);
-	
+
 	void Update(void);
-	
-	
+
 	void SoundClassChanged(wxCommandEvent &e);
 	void AddSound(wxCommandEvent &e);
 	void RemoveSound(wxCommandEvent &e);
@@ -120,9 +117,9 @@ public:
 	void MenuAddSoundClass(wxCommandEvent &e);
 	void MenuImportSound(wxCommandEvent &e);
 	void MenuExportSound(wxCommandEvent &e);
-	
+
 	void ExportSound(wxString filepath);
-	
+
 protected:
     DECLARE_EVENT_TABLE()
 };

@@ -126,7 +126,7 @@ bool SoundsView::OnCreate(wxDocument *doc, long WXUNUSED(flags) )
 	sound_class_number_text = new wxStaticText(frame, wxID_ANY, wxT("Class Number: "));
 	sound_class_number_field = new wxStaticText(frame, SOUND_CLASS_NUMBER_FIELD, wxT(""));
 	
-	sound_class_list = new wxListBox(frame, SOUND_CLASS_LIST, wxDefaultPosition, wxDefaultSize, 0, NULL);
+	sound_class_list = new wxListBox(frame, (wxWindowID)SOUND_CLASS_LIST);
 	
 	sound_flag_restart_checkbox = new wxCheckBox(frame, SOUND_FLAGS_RESTART, wxT("Cannot be restarted"));
 	sound_flag_abort_checkbox = new wxCheckBox(frame, SOUND_FLAGS_ABORT, wxT("Does not self-abort"));
@@ -147,10 +147,10 @@ bool SoundsView::OnCreate(wxDocument *doc, long WXUNUSED(flags) )
 	sound_high_pitch_field = new wxTextCtrl(frame, SOUND_HIGH_PITCH_FIELD);
 	
 	sound_eight_bit_text = new wxStaticText(frame, wxID_ANY, wxT("8-bit Sounds:"));
-	sound_eight_bit_list = new wxListBox(frame, SOUND_EIGHT_BIT_PERMUTATIONS_LIST, wxDefaultPosition, wxDefaultSize, 0, NULL);
+	sound_eight_bit_list = new wxListBox(frame, (wxWindowID)SOUND_EIGHT_BIT_PERMUTATIONS_LIST);
 	
 	sound_sixteen_bit_text = new wxStaticText(frame, wxID_ANY, wxT("16-bit Sounds: "));
-	sound_sixteen_bit_list = new wxListBox(frame, SOUND_SIXTEEN_BIT_PERMUTATIONS_LIST, wxDefaultPosition, wxDefaultSize, 0, NULL);
+	sound_sixteen_bit_list = new wxListBox(frame, (wxWindowID)SOUND_SIXTEEN_BIT_PERMUTATIONS_LIST);
 	
 	sound_remap_check_box = new wxCheckBox(frame, SOUND_REMAP_CHECK_BOX, wxT("Remap 8-bit"));
 	
