@@ -40,15 +40,15 @@ private:
 	vector<ShapesBitmap*>	mBitmaps;			// pointers to the encoded bitmaps
 	vector<wxBitmap>		mThumbnails;		// scaled/rendered bitmap thumbnails
 	ShapesColorTable		*mColorTable;		// which palette to use for display
-	vector<wxPoint>			mTNPositions;		// thumbnail positions within window
-	wxCoord					mTNSize,			// thumbnail size
+	vector<wxPoint>			mThumbnailPositions;	// thumbnail positions within window
+	wxCoord					mThumbnailSize,
 							mMargin;			// margin between thumbnails and window edges
 	bool					mAutoSize,			// auto-calculate best thumbnail size
 							mWhiteTransparency;	// hide transparent pixels
 	int						mSelection,			// selected thumbnail
 							mNumCols,
 							mNumRows;
-	wxPen					mTNPen,
+	wxPen					mThumbnailPen,
 							mSelectionPen;
 	unsigned int			mFrozenCount;
 

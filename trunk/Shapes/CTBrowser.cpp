@@ -28,15 +28,15 @@ END_EVENT_TABLE()
 
 CTBrowser::CTBrowser(wxWindow *parent):
 	wxScrolledWindow(parent, -1, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER | wxFULL_REPAINT_ON_RESIZE),
-	sample_w(1), sample_h(20), selection(-1)
+	mSampleW(1), mSampleH(20), mSelection(-1)
 {
 	SetBackgroundColour(wxColour(255, 255, 255));
-	invisible_pen.SetColour(0, 0, 0);
-	invisible_pen.SetStyle(wxTRANSPARENT);
-	selection_pen.SetColour(0, 0, 0);
-	selection_pen.SetWidth(3);
+	mInvisiblePen.SetColour(0, 0, 0);
+	mInvisiblePen.SetStyle(wxTRANSPARENT);
+	mSelectionPen.SetColour(0, 0, 0);
+	mSelectionPen.SetWidth(3);
 	SetScrollRate(2, 2);
-	margin = 10;
+	mMargin = 10;
 }
 
 void CTBrowser::OnPaint(wxPaintEvent& e)
@@ -44,41 +44,41 @@ void CTBrowser::OnPaint(wxPaintEvent& e)
 	wxPaintDC	tempdc(this);
 	int			visible_w, visible_h,
 				rx, ry,
-				x = margin, y = margin;
+				x = mMargin, y = mMargin;
 
 	DoPrepareDC(tempdc);
 	GetClientSize(&visible_w, &visible_h);
 	// fill with white
 	CalcUnscrolledPosition(0, 0, &rx, &ry);
-	tempdc.SetPen(invisible_pen);
+	tempdc.SetPen(mInvisiblePen);
 	// draw color samples
-	for (unsigned int i = 0; i < cts.size(); i++) {
+	for (unsigned int i = 0; i < mColorTables.size(); i++) {
 		wxBrush	brush(wxColour(0, 0, 0), wxSOLID);
 
 		// mark selected ct
-		if ((int)i == selection) {
-			tempdc.SetPen(selection_pen);
+		if ((int)i == mSelection) {
+			tempdc.SetPen(mSelectionPen);
 			tempdc.SetBrush(*wxWHITE_BRUSH);
-			tempdc.DrawRectangle(x-3, y-3, sample_w*colors_per_table+6, sample_h+6);
-			tempdc.SetPen(invisible_pen);
+			tempdc.DrawRectangle(x-3, y-3, mSampleW*mColorsPerTable+6, mSampleH+6);
+			tempdc.SetPen(mInvisiblePen);
 			tempdc.SetBrush(*wxTRANSPARENT_BRUSH);
 		}
 		// draw a square for each color
-		for (unsigned int j = 0; j < colors_per_table; j++) {
-			brush.SetColour(cts[i]->GetColor(j)->Red() >> 8,
-							cts[i]->GetColor(j)->Green() >> 8,
-							cts[i]->GetColor(j)->Blue() >> 8);
+		for (unsigned int j = 0; j < mColorsPerTable; j++) {
+			brush.SetColour(mColorTables[i]->GetColor(j)->Red() >> 8,
+							mColorTables[i]->GetColor(j)->Green() >> 8,
+							mColorTables[i]->GetColor(j)->Blue() >> 8);
 			tempdc.SetBrush(brush);
-			tempdc.DrawRectangle(x, y, sample_w, sample_h);
-			if (cts[i]->GetColor(j)->Luminescent()) {
+			tempdc.DrawRectangle(x, y, mSampleW, mSampleH);
+			if (mColorTables[i]->GetColor(j)->Luminescent()) {
 				// display the self-luminescent color flag
 				tempdc.SetBrush(*wxWHITE_BRUSH);
 				tempdc.DrawRectangle(x + 2, y + 2, 2, 2);
 			}
-			x += sample_w;
+			x += mSampleW;
 		}
-		x = margin;
-		y += sample_h + margin;
+		x = mMargin;
+		y += mSampleH + mMargin;
 	}
 }
 
@@ -100,22 +100,22 @@ void CTBrowser::OnMouseDown(wxMouseEvent& e)
 			{
 				int	new_selection = -1;
 				
-				for (unsigned int i = 0; i < cts.size(); i++) {
-					wxRect	test(margin, margin + i * (sample_h + margin), sample_w*colors_per_table, sample_h);
+				for (unsigned int i = 0; i < mColorTables.size(); i++) {
+					wxRect	test(mMargin, mMargin + i * (mSampleH + mMargin), mSampleW*mColorsPerTable, mSampleH);
 
 					if (test.Contains(mouse)) {
 						new_selection = i;
 						break;
 					}
 				}
-				if (new_selection != selection) {
-					selection = new_selection;
+				if (new_selection != mSelection) {
+					mSelection = new_selection;
 					Refresh();
 					// send selection event
 					wxCommandEvent	event(wxEVT_CTBROWSER, GetId());
 
 					event.SetEventObject(this);
-					event.SetInt(selection);
+					event.SetInt(mSelection);
 					GetEventHandler()->ProcessEvent(event);
 				}
 			}
@@ -126,33 +126,33 @@ void CTBrowser::OnMouseDown(wxMouseEvent& e)
 
 void CTBrowser::OnKeyDown(wxKeyEvent &e)
 {
-	int new_selection = selection;
+	int new_selection = mSelection;
 
-	if (selection >= 0 && selection < (int)cts.size()) {
+	if (mSelection >= 0 && mSelection < (int)mColorTables.size()) {
 		// arrow keys move the selection
 		switch (e.GetKeyCode()) {
 			case WXK_UP:
-				if (selection > 0)
+				if (mSelection > 0)
 					new_selection--;
 				break;
 			case WXK_DOWN:
-				if (selection < ((int)cts.size()-1))
+				if (mSelection < ((int)mColorTables.size()-1))
 					new_selection++;
 				break;
 			default:
 				e.Skip();
 		}
-	} else if (cts.size() > 0 && (e.GetKeyCode() == WXK_UP || e.GetKeyCode() == WXK_DOWN)) {
+	} else if (mColorTables.size() > 0 && (e.GetKeyCode() == WXK_UP || e.GetKeyCode() == WXK_DOWN)) {
 		new_selection = 0;
 	}
-	if (new_selection != selection) {
-		selection = new_selection;
+	if (new_selection != mSelection) {
+		mSelection = new_selection;
 		Refresh();
 		// send selection event
 		wxCommandEvent  event(wxEVT_CTBROWSER, GetId());
 		
 		event.SetEventObject(this);
-		event.SetInt(selection);
+		event.SetInt(mSelection);
 		GetEventHandler()->ProcessEvent(event);
 	}
 }
@@ -162,8 +162,8 @@ void CTBrowser::AddColorTable(ShapesColorTable *ctp)
 {
 	if (ctp == NULL)
 		return;
-	colors_per_table = ctp->ColorCount();
-	cts.push_back(ctp);
+	mColorsPerTable = ctp->ColorCount();
+	mColorTables.push_back(ctp);
 	UpdateVirtualSize();
 	Refresh();
 }
@@ -171,16 +171,16 @@ void CTBrowser::AddColorTable(ShapesColorTable *ctp)
 // clear the color table list
 void CTBrowser::Clear(void)
 {
-	cts.clear();
-	selection = -1;
-	colors_per_table = 0;
+	mColorTables.clear();
+	mSelection = -1;
+	mColorsPerTable = 0;
 	UpdateVirtualSize();
 //	Refresh();	// not needed since the ShapesEditor only clears before refilling
 }
 
 int CTBrowser::GetSelection(void) const
 {
-	return selection;
+	return mSelection;
 }
 
 // calculate and set the wxWindow virtual size,
@@ -189,20 +189,19 @@ int CTBrowser::GetSelection(void) const
 void CTBrowser::UpdateVirtualSize(void)
 {
 	wxClientDC	dc(this);
-	int			numcts = cts.size(),
+	int			numcts = mColorTables.size(),
 				width, height;
 
 	GetClientSize(&width, &height);
 	// calculate best sample_w
-	for (int w = 1; w < sample_h; w++) {
-		if (2*margin + w*(int)colors_per_table > width) {
-			sample_w = w - 1;
+	for (int w = 1; w < mSampleH; w++) {
+		if (2*mMargin + w*(int)mColorsPerTable > width) {
+			mSampleW = w - 1;
 			break;
 		}
 	}
-	if (sample_w < 1)
-		sample_w = 1;
-	// set virtual size
-	SetVirtualSize(2*margin + sample_w*colors_per_table, margin + numcts * (sample_h + margin));
+	if (mSampleW < 1)
+		mSampleW = 1;
+	SetVirtualSize(2*mMargin + mSampleW*mColorsPerTable, mMargin + numcts * (mSampleH + mMargin));
 }
 

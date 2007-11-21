@@ -35,28 +35,27 @@ DECLARE_EVENT_TYPE(wxEVT_SEQUENCEVIEW, -1)
 
 class SequenceView: public wxScrolledWindow {
 private:
-	vector<ShapesFrame*>	frames;				// pointers to frames
-	vector<ShapesBitmap*>	bitmaps;			// pointers to bitmaps
-	vector<wxBitmap>		thumbnails;			// scaled/rendered frame thumbnails
-	ShapesColorTable	*ctable;			// which palette to use for display
-	vector<wxPoint>		tn_positions;		// thumbnail positions within window
-	wxCoord				tn_size,			// thumbnail size
-						margin,				// margin between thumbnails and window edges
-						angle_label_space;
-	wxBitmap			prev_btn,
-						next_btn;
-	bool				auto_size,
-						white_transparency;
-	int					selection;			// selected thumbnail
-	wxPen				tn_pen,
-						selection_pen,
-						invisible_pen;
-	wxBrush				angle_brush;
+	vector<ShapesFrame*>	mFrames;		// pointers to frames
+	vector<ShapesBitmap*>	mBitmaps;		// pointers to bitmaps
+	vector<wxBitmap>		mThumbnails;	// scaled/rendered frame thumbnails
+	ShapesColorTable		*mColorTable;		// which palette to use for display
+	vector<wxPoint>			mThumbnailPositions;	// thumbnail positions within window
+	wxCoord					mThumbnailSize,
+							mMargin,			// margin between thumbnails and window edges
+							mAngleLabelSpace;
+	wxBitmap				mPrevBtnIcon,
+							mNextBtnIcon;
+	bool					mAutoSize,
+							mWhiteTransparency;
+	int						mSelection;			// selected thumbnail
+	wxPen					mThumbnailPen,
+							mSelectionPen;
+	wxBrush					mAngleBrush;
 
-	int					number_of_views,
-						frames_per_view,
-						animation_type;
-	vector<short>		*frame_indexes;
+	int						mNumberOfViews,
+							mFramesPerView,
+							mAnimationType;
+	vector<short>			*mFrameIndexes;
 
 	wxBitmap CreateThumbnail(ShapesFrame *fp);
 	void UpdateVirtualSize(void);
