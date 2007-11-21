@@ -94,6 +94,18 @@ void GenericEndianBuffer::WriteUChar(unsigned char v)
 		std::cerr << "GenericEndianBuffer: attempted write beyond buffer limits\n";
 }
 
+void GenericEndianBuffer::Write4CharCode(char c1, char c2, char c3, char c4)
+{
+	if ((unsigned int)(mPosition - mData + 4 - 1) < mSize) {
+		*mPosition++ = c1;
+		*mPosition++ = c2;
+		*mPosition++ = c3;
+		*mPosition++ = c4;
+	} else {
+		std::cerr << "GenericEndianBuffer: attempted write beyond buffer limits\n";
+	}
+}
+
 void GenericEndianBuffer::WriteBlock(unsigned long _size, const void *src)
 {
 	if ((unsigned int)(mPosition - mData + _size - 1) < mSize) {

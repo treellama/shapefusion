@@ -121,11 +121,11 @@ bool AppleSoundHeader::SaveToWave(wxString path)
 		return false;
 	}
 	// RIFF chunk
-	riffHeader.WriteULong('FFIR');				// RIFF signature
+	riffHeader.Write4CharCode('R','I','F','F');	// RIFF signature
 	riffHeader.WriteULong(riffHeader.Size() + fmtChunk.Size() + dataChunk.Size() - 8);	// total file size
-	riffHeader.WriteULong('EVAW');				// WAVE signature
+	riffHeader.Write4CharCode('W','A','V','E');	// WAVE signature
 	// format chunk
-	fmtChunk.WriteULong(' tmf');				// fmt signature
+	fmtChunk.Write4CharCode('f','m','t',' ');	// fmt signature
 	fmtChunk.WriteULong(fmtChunk.Size() - 8);	// chunk size
 	fmtChunk.WriteUShort(1);					// PCM data
 	fmtChunk.WriteUShort(wavChannels);
@@ -134,7 +134,7 @@ bool AppleSoundHeader::SaveToWave(wxString path)
 	fmtChunk.WriteUShort(wavChannels * wavBitsPerSample / 8);	// block align
 	fmtChunk.WriteUShort(wavBitsPerSample);
 	// data chunk
-	dataChunk.WriteULong('atad');				// data signature
+	dataChunk.Write4CharCode('d','a','t','a');	// data signature
 	dataChunk.WriteULong(dataChunk.Size() - 8);	// chunk size
 	if (wavBitsPerSample == 8) {
 		dataChunk.WriteBlock(wavFrames * wavChannels, mData->Data() + mData->Position());
@@ -212,13 +212,13 @@ bool AppleSoundHeader::SaveToAiff(wxString path)
 		return false;
 	}
 	// FORM AIFF chunk
-	formHeader.WriteULong('FORM');				// groupID
+	formHeader.Write4CharCode('F','O','R','M');	// groupID
 	formHeader.WriteULong(formHeader.Size() + commChunk.Size() + ssndChunk.Size() - 8);
 												// fileSize
-	formHeader.WriteULong('AIFF');				// typeID
+	formHeader.Write4CharCode('A','I','F','F');	// typeID
 	
 	// Common chunk
-	commChunk.WriteULong('COMM');				// chunkID
+	commChunk.Write4CharCode('C','O','M','M');	// chunkID
 	commChunk.WriteULong(commChunk.Size() - 8);	// chunkSize
 	commChunk.WriteShort(aiffChannels);			// numChannels
 	commChunk.WriteULong(aiffFrames);			// numSampleFrames
@@ -228,7 +228,7 @@ bool AppleSoundHeader::SaveToAiff(wxString path)
 	commChunk.WriteLong(aiffSampleRate);		// sampleRate
 	
 	// Sound Data chunk
-	ssndChunk.WriteULong('SSND');				// chunkID
+	ssndChunk.Write4CharCode('S','S','N','D');	// chunkID
 	ssndChunk.WriteULong(ssndChunk.Size() - 8);	// chunkSize
 	ssndChunk.WriteULong(0);					// offset
 	ssndChunk.WriteULong(0);					// blockSize

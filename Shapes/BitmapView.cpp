@@ -28,12 +28,12 @@ END_EVENT_TABLE()
 
 BitmapView::BitmapView(wxWindow *parent):
 	wxScrolledWindow(parent, -1, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER | wxFULL_REPAINT_ON_RESIZE),
-	enc_bmp(NULL), ctable(NULL), dragging(false)
+	mEncBmp(NULL), mColorTable(NULL), mDragging(false)
 {
 	SetBackgroundColour(wxColour(255, 255, 255));
 	SetScrollRate(1, 1);
-	white_transparency = true;
-	invisible_pen.SetColour(255, 255, 255);
+	mWhiteTransparency = true;
+	mInvisiblePen.SetColour(255, 255, 255);
 }
 
 void BitmapView::OnPaint(wxPaintEvent& e)
@@ -46,9 +46,9 @@ void BitmapView::OnPaint(wxPaintEvent& e)
 	// fill with white
 	GetClientSize(&cw, &ch);
 	CalcUnscrolledPosition(0, 0, &rx, &ry);
-	tempdc.SetPen(invisible_pen);
-	if (enc_bmp != NULL && ctable != NULL)
-		tempdc.DrawBitmap(dec_bmp, vw/2 - dec_bmp.GetWidth()/2, vh/2 - dec_bmp.GetHeight()/2);
+	tempdc.SetPen(mInvisiblePen);
+	if (mEncBmp != NULL && mColorTable != NULL)
+		tempdc.DrawBitmap(mDecBmp, vw/2 - mDecBmp.GetWidth()/2, vh/2 - mDecBmp.GetHeight()/2);
 }
 
 // handle mouse drag (pan view)
@@ -59,26 +59,26 @@ void BitmapView::OnDrag(wxMouseEvent &e)
 		int scroll_x, scroll_y;
 
 		GetViewStart(&scroll_x, &scroll_y);
-		dragging = true;
-		drag_start_x = e.GetPosition().x + scroll_x;
-		drag_start_y = e.GetPosition().y + scroll_y;
-	} else if (e.Dragging() && dragging) {
+		mDragging = true;
+		mDragStartX = e.GetPosition().x + scroll_x;
+		mDragStartY = e.GetPosition().y + scroll_y;
+	} else if (e.Dragging() && mDragging) {
 		// pan
-		int	dx = drag_start_x - e.GetPosition().x,
-			dy = drag_start_y - e.GetPosition().y;
+		int	dx = mDragStartX - e.GetPosition().x,
+			dy = mDragStartY - e.GetPosition().y;
 
 		Scroll(dx, dy);
 	} else if (e.ButtonUp()) {
 		// end panning
-		dragging = false;
+		mDragging = false;
 	}
 }
 
 void BitmapView::OnSize(wxSizeEvent &e)
 {
 	int cw, ch,
-		vw = (enc_bmp == NULL) ? 0 : enc_bmp->Width(),
-		vh = (enc_bmp == NULL) ? 0 : enc_bmp->Height();
+		vw = (mEncBmp == NULL) ? 0 : mEncBmp->Width(),
+		vh = (mEncBmp == NULL) ? 0 : mEncBmp->Height();
 	
 	GetClientSize(&cw, &ch);
 	if (vw < cw)
@@ -90,22 +90,22 @@ void BitmapView::OnSize(wxSizeEvent &e)
 
 void BitmapView::SetTranspPixelsDisplay(bool show)
 {
-	white_transparency = show;
-	if (enc_bmp != NULL && enc_bmp->Pixels() != NULL && ctable != NULL)
-		dec_bmp = wxBitmap(ShapesBitmapToImage(enc_bmp, ctable, white_transparency));
+	mWhiteTransparency = show;
+	if (mEncBmp != NULL && mEncBmp->Pixels() != NULL && mColorTable != NULL)
+		mDecBmp = wxBitmap(ShapesBitmapToImage(mEncBmp, mColorTable, mWhiteTransparency));
 	Refresh();
 }
 
 // add a new ShapesBitmap to the thumbnail list
 void BitmapView::SetBitmap(ShapesBitmap *bp)
 {
-	enc_bmp = bp;
-	if (bp != NULL) {
-		if (bp->Pixels() != NULL) {
+	mEncBmp = bp;
+	if (mEncBmp != NULL) {
+		if (mEncBmp->Pixels() != NULL) {
 			// adjust sizes
 			int	cw, ch,
-				vw = enc_bmp->Width(),
-				vh = enc_bmp->Height();
+				vw = mEncBmp->Width(),
+				vh = mEncBmp->Height();
 
 			GetClientSize(&cw, &ch);
 			if (vw < cw)
@@ -114,8 +114,8 @@ void BitmapView::SetBitmap(ShapesBitmap *bp)
 				vh = ch;
 			SetVirtualSize(vw, vh);
 			// decode bitmap
-			if (ctable != NULL)
-				dec_bmp = wxBitmap(ShapesBitmapToImage(bp, ctable, white_transparency));
+			if (mColorTable != NULL)
+				mDecBmp = wxBitmap(ShapesBitmapToImage(mEncBmp, mColorTable, mWhiteTransparency));
 			Refresh();
 		} else {
 			wxLogError(wxT("[BitmapView] Addes a bitmap with NULL pixels"));
@@ -128,15 +128,15 @@ void BitmapView::SetBitmap(ShapesBitmap *bp)
 
 ShapesBitmap *BitmapView::GetBitmap(void) const
 {
-	return enc_bmp;
+	return mEncBmp;
 }
 
 // call this before SettingBitmap!
 void BitmapView::SetColorTable(ShapesColorTable *ct)
 {
-	ctable = ct;
-	if (enc_bmp != NULL && enc_bmp->Pixels() != NULL && ctable != NULL)
-		dec_bmp = wxBitmap(ShapesBitmapToImage(enc_bmp, ctable, white_transparency));
+	mColorTable = ct;
+	if (mEncBmp != NULL && mEncBmp->Pixels() != NULL && mColorTable != NULL)
+		mDecBmp = wxBitmap(ShapesBitmapToImage(mEncBmp, mColorTable, mWhiteTransparency));
 	Refresh();
 }
 

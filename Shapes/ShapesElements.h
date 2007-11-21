@@ -31,7 +31,7 @@ using std::vector;
 
 #define SIZEOF_collection_header	32
 
-class ShapesElement /*: public wxObject*/
+class ShapesElement
 {
 private:
 	bool	mVerboseLoading;
@@ -41,11 +41,11 @@ protected:
 	bool	mGoodData;
 
 public:
-	ShapesElement(bool verbose) : mVerboseLoading(verbose), mGoodData(false) {}
+	ShapesElement(bool verbose): mVerboseLoading(verbose), mGoodData(false) {}
 	~ShapesElement(void) {}
 	
-	bool IsGood() const {return mGoodData;}
-	bool IsVerbose() const {return mVerboseLoading;}
+	bool IsGood() const { return mGoodData; }
+	bool IsVerbose() const { return mVerboseLoading; }
 };
 
 // internal-use utility constants
@@ -55,7 +55,7 @@ enum {
 };
 
 // a color
-class ShapesColor : public ShapesElement
+class ShapesColor: public ShapesElement
 {
 private:
 	bool			mLuminescent;
@@ -63,29 +63,27 @@ private:
 	unsigned short	mRed, mGreen, mBlue;
 
 public:
-	// Constructor / Destructor
+	// constructor/destructor
 	ShapesColor(bool verbose = false);
 	ShapesColor(unsigned int r, unsigned int g, unsigned int b, unsigned int value, bool luminescent = false, bool verbose = false);
 	~ShapesColor(void);
-	
-	// Accessors
-	bool Luminescent(void) const {return mLuminescent;}
-	unsigned char Value(void) const {return mValue;}
-	unsigned short Red(void) const {return mRed;}
-	unsigned short Green(void) const {return mGreen;}
-	unsigned short Blue(void) const {return mBlue;}
-	void SetLuminescent(bool l) {mLuminescent = l;}
-	void SetRed(unsigned short c) {mRed = c;}
-	void SetGreen(unsigned short c) {mGreen = c;}
-	void SetBlue(unsigned short c) {mBlue = c;}
-	
-	// Utilities
+	// accessors
+	bool Luminescent(void) const { return mLuminescent; }
+	unsigned char Value(void) const { return mValue; }
+	unsigned short Red(void) const { return mRed; }
+	unsigned short Green(void) const { return mGreen; }
+	unsigned short Blue(void) const { return mBlue; }
+	void SetLuminescent(bool l) { mLuminescent = l; }
+	void SetRed(unsigned short c) { mRed = c; }
+	void SetGreen(unsigned short c) { mGreen = c; }
+	void SetBlue(unsigned short c) { mBlue = c; }
+	// utilities
     BigEndianBuffer& SaveObject(BigEndianBuffer& buffer);
     BigEndianBuffer& LoadObject(BigEndianBuffer& buffer);
 };
 
 // a color table
-class ShapesColorTable : public ShapesElement
+class ShapesColorTable: public ShapesElement
 {
 private:
 	vector<ShapesColor*>	mColors;
@@ -98,9 +96,9 @@ public:
 	unsigned int ColorCount(void) const { return mColors.size(); }
 	ShapesColor *GetColor(unsigned int index) const { return mColors[index]; }
 	void InsertColor(ShapesColor *color) { mColors.push_back(color); }
-	
+
 	unsigned int SizeInFile() const;
-	
+
     BigEndianBuffer& SaveObject(BigEndianBuffer& buffer);
     BigEndianBuffer& LoadObject(BigEndianBuffer& buffer, unsigned int offset, unsigned int color_count);
 	int SaveToGimp(wxString path) const;
@@ -108,7 +106,7 @@ public:
 };
 
 // a bitmap
-class ShapesBitmap : public ShapesElement
+class ShapesBitmap: public ShapesElement
 {
 private:
 	short			mWidth, mHeight,
@@ -121,31 +119,27 @@ private:
 	vector<int>		mUsers;
 
 public:
-	// Constructor / Destructor
+	// constructor/destructor
 	ShapesBitmap(bool verbose = false);
 	ShapesBitmap(wxImage image, ShapesColorTable *colortable);
 	~ShapesBitmap(void);
-
-	// Accessors
-	short Width(void) const {return mWidth;}
-	short Height(void) const {return mHeight;}
-	short BytesPerRow(void) const {return mBytesPerRow;}
-	short BitDepth(void) const {return mBitDepth;}
-	bool IsColumnOrdered(void) const {return mColumnOrder;}
-	bool IsTransparent(void) const {return mTransparent;}
-	unsigned char* Pixels(void) const {return mPixels;}
-	
-	// Mutators
-	void SetWidth(short w) {mWidth = w;}
-	void SetHeight(short h) {mHeight = h;}
-	void SetBytesPerRow(short b) {mBytesPerRow = b;}
-	void SetBitDepth(short b) {mBitDepth = b;}
-	void SetColumnOrdered(bool b) {mColumnOrder = b;}
-	void SetTransparent(bool n) {mTransparent = n;}
-
-	// Utilities
+	// accessors
+	short Width(void) const { return mWidth; }
+	short Height(void) const { return mHeight; }
+	short BytesPerRow(void) const { return mBytesPerRow; }
+	short BitDepth(void) const { return mBitDepth; }
+	bool IsColumnOrdered(void) const { return mColumnOrder; }
+	bool IsTransparent(void) const { return mTransparent; }
+	unsigned char* Pixels(void) const { return mPixels; }
+	// mutators
+	void SetWidth(short w) { mWidth = w; }
+	void SetHeight(short h) { mHeight = h; }
+	void SetBytesPerRow(short b) { mBytesPerRow = b; }
+	void SetBitDepth(short b) { mBitDepth = b; }
+	void SetColumnOrdered(bool b) { mColumnOrder = b; }
+	void SetTransparent(bool n) { mTransparent = n; }
+	// utilities
 	unsigned int SizeInFile() const;
-	
     BigEndianBuffer& SaveObject(BigEndianBuffer& buffer);
     BigEndianBuffer& LoadObject(BigEndianBuffer& buffer, unsigned int offset);
 	void SaveToBMP(wxString path, ShapesColorTable *colorTable) const;
@@ -183,12 +177,12 @@ private:
 	short		mWorldX0, mWorldY0;
 	// list of sequences referencing this frame
 	vector<int>	mUsers;
+
 public:
-	// Constructor / Destructor
+	// constructor/destructor
 	ShapesFrame(bool verbose = false);
 	~ShapesFrame(void);
-
-	// Accessors
+	// accessors
 	bool IsXmirrored(void) const {return mXmirror;}
 	bool IsYmirrored(void) const {return mYmirror;}
 	bool IsKeypointObscured(void) const {return mKeypointObscured;}
@@ -205,8 +199,7 @@ public:
 	short WorldBottom(void) const {return mWorldBottom;}
 	short WorldX0(void) const {return mWorldX0;}
 	short WorldY0(void) const {return mWorldY0;}
-
-	// Mutators
+	// mutators
 	void SetXmirrored(bool b) {mXmirror = b;}
 	void SetYmirrored(bool b) {mYmirror = b;}
 	void SetKeypointObscured(bool b) {mKeypointObscured = b;}
@@ -223,10 +216,8 @@ public:
 	void SetWorldBottom(short s)  {mWorldBottom = s;}
 	void SetWorldX0(short s) {mWorldX0 = s;}
 	void SetWorldY0(short s) {mWorldY0 = s;}
-
-	// Utilities
+	// utilities
 	unsigned int SizeInFile() const;
-
     BigEndianBuffer& SaveObject(BigEndianBuffer& buffer);
     BigEndianBuffer& LoadObject(BigEndianBuffer& buffer, unsigned int offset);
 };
@@ -247,7 +238,7 @@ enum {
 };
 
 // a sequence, aka "high level shape definition"
-class ShapesSequence : public ShapesElement
+class ShapesSequence: public ShapesElement
 {
 private:
 	short			mType;
@@ -269,11 +260,10 @@ public:
 	vector<short>	mFrameIndexes;
 
 public:
-	// Constructor / Destructor
+	// constructor/destructor
 	ShapesSequence(bool verbose = false);
 	~ShapesSequence(void);
-
-	// Accessors
+	// accessors
 	short Type(void) const {return mType;}
 	unsigned short Flags(void) const {return mFlags;}
 	wxString Name(void) const {return mName;}
@@ -288,8 +278,9 @@ public:
 	short LastFrameSound(void) const {return mLastFrameSound;}
 	short PixelsToWorld(void) const {return mPixelsToWorld;}
 	short LoopFrame(void) const {return mLoopFrame;}
-
-	// Mutators
+	unsigned int FrameIndexCount(void) const {return mFrameIndexes.size();}
+	short GetFrameIndex(unsigned int index) const {return mFrameIndexes[index];}
+	// mutators
 	void SetType(short t) {mType = t;}
 	void SetFlags(unsigned short f) {mFlags = f;}
 	void SetName(wxString name) {mName = name;}
@@ -304,14 +295,9 @@ public:
 	void SetLastFrameSound(short n) {mLastFrameSound = n;}
 	void SetPixelsToWorld(short n) {mPixelsToWorld = n;}
 	void SetLoopFrame(short n) {mLoopFrame = n;}
-	
-	unsigned int FrameIndexCount(void) const {return mFrameIndexes.size();} 
-	short GetFrameIndex(unsigned int index) const {return mFrameIndexes[index];} 
-	void SetFrameIndex(unsigned int index, short value) {mFrameIndexes[index] = value;} 
-	
-	// Utilities
+	void SetFrameIndex(unsigned int index, short value) {mFrameIndexes[index] = value;} 	
+	// utilities
 	unsigned int SizeInFile() const;
-	
     BigEndianBuffer& SaveObject(BigEndianBuffer& buffer);
     BigEndianBuffer& LoadObject(BigEndianBuffer& buffer, long offset);
 };
@@ -328,7 +314,7 @@ enum {
 };
 
 // a Shapes chunk
-class ShapesChunk : public ShapesElement
+class ShapesChunk: public ShapesElement
 {
 private:
 	short			mVersion;	// COLLECTION_VERSION (same for all Marathon games)
@@ -342,11 +328,10 @@ private:
 	vector<ShapesBitmap*>		mBitmaps;
 
 public:
-	// Constructor / Destructor
+	// constructor/destructor
 	ShapesChunk(bool verbose = false);
 	~ShapesChunk(void);
-
-	// Chunk Data access
+	// chunk data access
 	int Version() const {return mVersion;}
 	int Type() const {return mType;}
 	int Flags() const {return mFlags;}
@@ -359,7 +344,7 @@ public:
 	ShapesBitmap* GetBitmap(unsigned int index) const;
 	ShapesFrame* GetFrame(unsigned int index) const;
 	ShapesSequence* GetSequence(unsigned int index) const;
-	// Chunk Alteration
+	// chunk alteration
 	void InsertColorTable(ShapesColorTable *ct);
 	void DeleteColorTable(unsigned int ct);
 	void InsertBitmap(ShapesBitmap *b);
@@ -368,16 +353,14 @@ public:
 	void DeleteFrame(unsigned int f);
 	void InsertSequence(ShapesSequence *s);
 	void DeleteSequence(unsigned int s);
-	
-	// Utilities
+	// utilities
 	unsigned int SizeInFile() const;
-
     BigEndianBuffer& SaveObject(BigEndianBuffer& stream);
     BigEndianBuffer& LoadObject(BigEndianBuffer& stream);
 };
 
 // a Shapes collection
-class ShapesCollection : public ShapesElement
+class ShapesCollection: public ShapesElement
 {
 private:
 	short			mStatus;
@@ -387,12 +370,10 @@ private:
 public:
 	ShapesCollection(bool verbose = false);
 	~ShapesCollection(void);
-
-	// Accessors
+	// accessors
 	int Status(void) const {return mStatus;}
 	int Flags(void) const {return mFlags;}
-
-	// Collection Data access
+	// collection data access
 	bool Defined(unsigned int chunk) const;
 	int Version(unsigned int chunk) const;
 	int Type(unsigned int chunk) const;
@@ -406,7 +387,6 @@ public:
 	ShapesBitmap* GetBitmap(unsigned int chunk, unsigned int index) const;
 	ShapesFrame* GetFrame(unsigned int chunk, unsigned int index) const;
 	ShapesSequence* GetSequence(unsigned int chunk, unsigned int index) const;
-	
 	// collection alteration
 	void InsertColorTable(ShapesColorTable *ct, unsigned int chunk);
 	void DeleteColorTable(unsigned int chunk, unsigned int ct);
@@ -416,8 +396,7 @@ public:
 	void DeleteFrame(unsigned int chunk, unsigned int f);
 	void InsertSequence(ShapesSequence *s, unsigned int chunk);
 	void DeleteSequence(unsigned int chunk, unsigned int s);
-	
-	// Utilities
+	// utilities
 	unsigned int SizeInFile(unsigned int chunk) const;
 	
 #if wxUSE_STD_IOSTREAM

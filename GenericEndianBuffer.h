@@ -47,6 +47,7 @@ public:
 	// write values, advance position accordingly
 	void WriteChar(char v);
 	void WriteUChar(unsigned char v);
+	void Write4CharCode(char c1, char c2, char c3, char c4);
 	void WriteBlock(unsigned long _size, const void *src);
 	void WriteZeroes(unsigned int n);
 	// stuff access

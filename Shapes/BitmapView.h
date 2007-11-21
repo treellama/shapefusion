@@ -32,15 +32,15 @@
 
 class BitmapView: public wxScrolledWindow {
 private:
-	ShapesBitmap		*enc_bmp;			// encoded bitmap
-	wxBitmap			dec_bmp;			// ready-to-draw bitmap
-	ShapesColorTable	*ctable;			// which palette to use for display
-	bool				white_transparency;	// hide transparent pixels
-	wxPen				invisible_pen;
+	ShapesBitmap		*mEncBmp;			// encoded bitmap
+	wxBitmap			mDecBmp;			// ready-to-draw bitmap
+	ShapesColorTable	*mColorTable;		// which palette to use for display
+	bool				mWhiteTransparency;	// hide transparent pixels
+	wxPen				mInvisiblePen;
 
-	bool				dragging;
-	int					drag_start_x,
-						drag_start_y;
+	bool				mDragging;
+	int					mDragStartX,
+						mDragStartY;
 
 protected:
 	DECLARE_EVENT_TABLE();

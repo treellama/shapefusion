@@ -35,11 +35,11 @@ BitmapBrowser::BitmapBrowser(wxWindow *parent, wxWindowID id):
 	mColorTable(NULL), mSelection(-1), mNumCols(0), mNumRows(0), mFrozenCount(0)
 {
 	SetBackgroundColour(wxColour(255, 255, 255));
-	mTNPen.SetColour(200, 200, 200);
+	mThumbnailPen.SetColour(200, 200, 200);
 	mSelectionPen.SetColour(0, 0, 0);
 	mSelectionPen.SetWidth(3);
 	SetScrollRate(0, 2);
-	mTNSize = 64;
+	mThumbnailSize = 64;
 	mMargin = 7;
 	mWhiteTransparency = true;
 	mAutoSize = false;
@@ -54,13 +54,13 @@ void BitmapBrowser::OnPaint(wxPaintEvent& e)
 	GetClientSize(&cw, &ch);
 	CalcUnscrolledPosition(0, 0, &rx, &ry);
 	// draw thumbnails
-	tempdc.SetPen(mTNPen);
+	tempdc.SetPen(mThumbnailPen);
 	tempdc.SetBrush(*wxTRANSPARENT_BRUSH);
 	for (int i = 0; i < (int)mBitmaps.size(); i++) {
-		int	x = mTNPositions[i].x,
-			y = mTNPositions[i].y;
+		int	x = mThumbnailPositions[i].x,
+			y = mThumbnailPositions[i].y;
 
-		if (y + mTNSize < ry)
+		if (y + mThumbnailSize < ry)
 			continue;
 		if (y > ry + ch)
 			break;
@@ -69,13 +69,13 @@ void BitmapBrowser::OnPaint(wxPaintEvent& e)
 			bh = mThumbnails[i].GetHeight();
 
 		if (i == mSelection) {
-			tempdc.DrawBitmap(mThumbnails[i], x + mTNSize/2 - bw/2, y + mTNSize/2 - bh/2);
+			tempdc.DrawBitmap(mThumbnails[i], x + mThumbnailSize/2 - bw/2, y + mThumbnailSize/2 - bh/2);
 			tempdc.SetPen(mSelectionPen);
-			tempdc.DrawRectangle(x-2, y-2, mTNSize+4, mTNSize+4);
-			tempdc.SetPen(mTNPen);
+			tempdc.DrawRectangle(x-2, y-2, mThumbnailSize+4, mThumbnailSize+4);
+			tempdc.SetPen(mThumbnailPen);
 		} else {
-			tempdc.DrawRectangle(x-1, y-1, mTNSize+2, mTNSize+2);
-			tempdc.DrawBitmap(mThumbnails[i], x + mTNSize/2 - bw/2, y + mTNSize/2 - bh/2);
+			tempdc.DrawRectangle(x-1, y-1, mThumbnailSize+2, mThumbnailSize+2);
+			tempdc.DrawBitmap(mThumbnails[i], x + mThumbnailSize/2 - bw/2, y + mThumbnailSize/2 - bh/2);
 		}
 	}
 }
@@ -100,8 +100,8 @@ void BitmapBrowser::OnMouseDown(wxMouseEvent& e)
 			{
 				int	new_selection = -1;
 
-				for (unsigned int i = 0; i < mTNPositions.size(); i++) {
-					wxRect	test(mTNPositions[i].x, mTNPositions[i].y, mTNSize, mTNSize);
+				for (unsigned int i = 0; i < mThumbnailPositions.size(); i++) {
+					wxRect	test(mThumbnailPositions[i].x, mThumbnailPositions[i].y, mThumbnailSize, mThumbnailSize);
 
 					if (test.Contains(mouse)) {
 						new_selection = i;
@@ -220,7 +220,7 @@ int BitmapBrowser::GetSelection(void) const
 void BitmapBrowser::SetThumbnailSize(int size)
 {
 	if (size > 0) {
-		mTNSize = size;
+		mThumbnailSize = size;
 		mAutoSize = false;
 	} else {
 		mAutoSize = true;
@@ -264,7 +264,7 @@ void BitmapBrowser::Clear(void)
 {
 	mThumbnails.clear();
 	mBitmaps.clear();
-	mTNPositions.clear();
+	mThumbnailPositions.clear();
 	mSelection = -1;
 	UpdateVirtualSize();
 	if (mFrozenCount == 0)
@@ -297,7 +297,7 @@ void BitmapBrowser::UpdateVirtualSize(void)
 	}
 
 	if (mAutoSize) {
-		// calculate the best mTNSize
+		// calculate the best mThumbnailSize
 		// (maximum value not requiring window scrolling)
 		int	max_bitmap_dimension = 10,
 			new_tn_size;
@@ -330,34 +330,34 @@ void BitmapBrowser::UpdateVirtualSize(void)
 				break;
 			}
 		}
-		if (new_tn_size != mTNSize) {
-			mTNSize = new_tn_size;
+		if (new_tn_size != mThumbnailSize) {
+			mThumbnailSize = new_tn_size;
 			RebuildThumbnails();
 		}
 	} else {
 		SetScrollRate(0, 2);
 	}
 
-	mNumCols = (width - mMargin) / (mTNSize + mMargin);
+	mNumCols = (width - mMargin) / (mThumbnailSize + mMargin);
 	mNumRows = (mNumCols > 0) ? (numbitmaps / mNumCols) : numbitmaps;
 
 	if (mNumRows * mNumCols < (int)numbitmaps)
 		mNumRows++;
 
-	SetVirtualSize(width, mNumRows * (mTNSize + mMargin) + mMargin);
+	SetVirtualSize(width, mNumRows * (mThumbnailSize + mMargin) + mMargin);
 
 	// recalculate thumbnail positions
 	int	x = mMargin,
 		y = mMargin;
 
-	mTNPositions.clear();
+	mThumbnailPositions.clear();
 	for (unsigned int i = 0; i < numbitmaps; i++) {
-		mTNPositions.push_back(wxPoint(x, y));
+		mThumbnailPositions.push_back(wxPoint(x, y));
 
-		x += mTNSize + mMargin;
-		if (x + mTNSize + mMargin > width) {
+		x += mThumbnailSize + mMargin;
+		if (x + mThumbnailSize + mMargin > width) {
 			x = mMargin;
-			y += mTNSize + mMargin;
+			y += mThumbnailSize + mMargin;
 		}
 	}
 }
@@ -369,7 +369,7 @@ wxBitmap BitmapBrowser::CreateThumbnail(ShapesBitmap *bp)
 
 	if (mColorTable)
 		newimg = ShapesBitmapToImage(bp, mColorTable, mWhiteTransparency);
-	return ImageThumbnail(newimg, mTNSize, true);
+	return ImageThumbnail(newimg, mThumbnailSize, true);
 }
 
 void BitmapBrowser::RebuildThumbnail(unsigned int i)

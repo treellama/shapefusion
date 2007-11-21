@@ -37,10 +37,11 @@
 class ShapesDocument: public wxDocument, public ShapesElement
 {
     DECLARE_DYNAMIC_CLASS(ShapesDocument)
+
 private:
 	vector<ShapesCollection*>	mCollections;
-public:
 
+public:
 	unsigned int CollectionCount(void) const;
 	// collection data access
 	int CollectionStatus(unsigned int id);
@@ -67,9 +68,9 @@ public:
 	void DeleteFrame(unsigned int coll, unsigned int chunk, unsigned int f);
 	void InsertSequence(ShapesSequence *s, unsigned int coll, unsigned int chunk);
 	void DeleteSequence(unsigned int coll, unsigned int chunk, unsigned int s);
-	
+
 	bool DoOpenDocument(const wxString& file);
-	
+
 #if wxUSE_STD_IOSTREAM
     wxSTD ostream& SaveObject(wxSTD ostream& stream);
     wxSTD istream& LoadObject(wxSTD istream& stream);
