@@ -191,25 +191,23 @@ private:
 								*s_lfs_field;
 	SequenceView		*s_fb;
 
-	int				selected_coll,
-					selected_vers,
-					selected_sequence,
-					view_ct;
-	bool			show_transparent_pixels;
-    wxFrame			*mFrame;
+	int		mSelectedColl,
+			mSelectedVers,
+			mSelectedSequence,
+			mViewColorTable;
+    wxFrame	*mFrame;
 	
 protected:
 	DECLARE_EVENT_TABLE();
 
 public:
-    
-    ShapesView();
-    ~ShapesView(void);
-    
-    bool OnCreate(wxDocument *doc, long flags);
-    void OnDraw(wxDC *dc);
-    void OnUpdate(wxView *sender, wxObject *hint = (wxObject *) NULL);
-    bool OnClose(bool deleteWindow = true);
+	ShapesView();
+	~ShapesView(void);
+	
+	bool OnCreate(wxDocument *doc, long flags);
+	void OnDraw(wxDC *dc);
+	void OnUpdate(wxView *sender, wxObject *hint = (wxObject *) NULL);
+	bool OnClose(bool deleteWindow = true);
 	wxTreeItemId GetSequencesTreeItem(unsigned int collection, unsigned int version) const;
 	// menu event callbacks
 	void MenuFileOpen(wxCommandEvent &e);
@@ -230,16 +228,16 @@ public:
 	void MenuShapesNewFrame(wxCommandEvent &e);
 	void MenuShapesNewSequence(wxCommandEvent &e);
 	// control callbacks
-	void TreeSelect(wxTreeEvent &e);
-	void BitmapSelect(wxCommandEvent &e);
+	void OnTreeSelect(wxTreeEvent &e);
+	void OnBitmapSelect(wxCommandEvent &e);
 	void BitmapDelete(wxCommandEvent &e);
-	void CTSelect(wxCommandEvent &e);
+	void OnCTSelect(wxCommandEvent &e);
 	void CTColorSelect(wxCommandEvent &e);
 	void CTColorChanged(wxCommandEvent &e);
 	void ToggleSelfLuminCheckbox(wxCommandEvent &e);
 	void MakeCTGradient(wxCommandEvent &e);
 	void ToggleBitmapCheckboxes(wxCommandEvent &e);
-	void FrameSelect(wxCommandEvent &e);
+	void OnFrameSelect(wxCommandEvent &e);
 	void FrameDelete(wxCommandEvent &e);
 	void OnFramePointDrag(wxCommandEvent &e);
 	void BitmapIndexSpin(wxSpinEvent &e);
