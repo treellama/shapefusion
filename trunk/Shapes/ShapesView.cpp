@@ -20,6 +20,7 @@
 #include "ShapesView.h"
 #include "ShapesDocument.h"
 #include "utilities.h"
+#include <wx/textfile.h>
 
 #define INT_TO_WXSTRING(a)	wxString::Format(wxT("%d"), a)
 
@@ -75,39 +76,6 @@ BEGIN_EVENT_TABLE(ShapesView, wxView)
 	EVT_TEXT(FIELD_SEQ_KEY_FRAME_SND, ShapesView::EditSequenceFields)
 	EVT_TEXT(FIELD_SEQ_LAST_FRAME_SND, ShapesView::EditSequenceFields)
 END_EVENT_TABLE()
-
-char	*collnames[] = {	"Interface graphics",
-							"Weapons in hand",
-							"Juggernaut",
-							"Tick",
-							"Projectiles & explosions",
-							"Hunter",
-							"Player",
-							"Items",
-							"Trooper",
-							"Pfhor fighter",
-							"Defender",
-							"Yeti",
-							"Bob",
-							"Vacuum Bob",
-							"Enforcer",
-							"Hummer",
-							"Compiler",
-							"Walls 1 (water)",
-							"Walls 2 (lava)",
-							"Walls 3 (sewage)",
-							"Walls 4 (jiaro)",
-							"Walls 5 (pfhor)",
-							"Scenery 1 (water)",
-							"Scenery 2 (lava)",
-							"Scenery 3 (sewage)",
-							"Scenery 4 (jiaro)",
-							"Scenery 5 (pfhor)",
-							"Landscape 1",
-							"Landscape 2",
-							"Landscape 3",
-							"Landscape 4",
-							"Cyborg" };
 							
 IMPLEMENT_DYNAMIC_CLASS(ShapesView, wxView)
 
@@ -414,12 +382,50 @@ void ShapesView::OnDraw(wxDC *WXUNUSED(dc))
 
 void ShapesView::OnUpdate(wxView *WXUNUSED(sender), wxObject *WXUNUSED(hint))
 {
+	unsigned int	collCount = ((ShapesDocument*)GetDocument())->CollectionCount();
+
+	if (collCount == 0)
+		return;
+	
+	// init the name array to dummy default values
+	std::vector<wxString>	collNames;
+
+	for (unsigned int i = 0; i < collCount; i++)
+		collNames.push_back(wxString::Format(wxT("Collection %u"), i));
+	
+	// look for a names file and use it in case
+	wxTextFile	namesFile(wxT("/usr/local/share/shapefusion/DefaultNames.txt"));
+
+	if (namesFile.Exists()) {
+		// file exists
+		if (namesFile.Open()) {
+			// file opened successfully
+			for (wxString str = namesFile.GetFirstLine(); !namesFile.Eof(); str = namesFile.GetNextLine()) {
+				// trim leading and trailing blanks
+				str.Trim(true);
+				str.Trim(false);
+				wxString	args;
+				if (str.StartsWith(wxT("collection"), &args)) {
+					// ok, a line we are interested in
+					args.Trim(false);
+					size_t			firstBlank = args.find_first_of(wxT(" \t"));
+					unsigned long	collNum = 0;
+					if ((args.Left(firstBlank)).ToULong(&collNum) && collNum < collCount) {
+						// valid collection name, store
+						collNames[collNum] = (args.Mid(firstBlank)).Trim(false);
+					}
+				}
+			}
+			namesFile.Close();
+		}
+	}
+
 	// update all levels of the tree control
-	for (unsigned int i = 0; i < ((ShapesDocument*)GetDocument())->CollectionCount(); i++) {
+	for (unsigned int i = 0; i < collCount; i++) {
 		// collection name nodes
 		ShapesTreeItemData	*itemdata = new ShapesTreeItemData(i, -1, TREESECTION_COLLECTION);
-		wxString			itemLabel = (i < 32) ? wxString(collnames[i], wxConvUTF8) : wxString::Format(wxT("Collection %u"), i);
-		wxTreeItemId		coll = colltree->AppendItem(colltree->GetRootItem(), itemLabel, -1, -1, itemdata);
+		wxTreeItemId		coll = colltree->AppendItem(colltree->GetRootItem(), collNames[i],
+															-1, -1, itemdata);
 
 		for (unsigned int j = 0; j < 2; j++) {
 			// color version nodes
