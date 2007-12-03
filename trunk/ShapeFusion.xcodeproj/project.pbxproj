@@ -35,6 +35,7 @@
 		4DE10B500CC39C4200BAEC76 /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DE10B4F0CC39C4200BAEC76 /* QuickTime.framework */; };
 		4DE10B530CC39C8E00BAEC76 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DE10B520CC39C8E00BAEC76 /* Cocoa.framework */; };
 		4DE10B570CC39CAB00BAEC76 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DE10B560CC39CAB00BAEC76 /* libz.dylib */; };
+		F03A573C0D0381F00057BB53 /* GenericEndianBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F03A573B0D0381F00057BB53 /* GenericEndianBuffer.cpp */; };
 		F08B4C5A0AB0B31E00896399 /* ShapeFusionApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F08B4B780AB0AE4B00896399 /* ShapeFusionApp.cpp */; };
 		F0C5CDD90CC6BDEC002EE00E /* libwx_mac.dylib in Copy wx Library */ = {isa = PBXBuildFile; fileRef = F0C5CDD80CC6BDEC002EE00E /* libwx_mac.dylib */; };
 		F0C5CDE10CC6C06E002EE00E /* libwx_mac.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F0C5CDD80CC6BDEC002EE00E /* libwx_mac.dylib */; };
@@ -113,6 +114,8 @@
 		4DE10B4F0CC39C4200BAEC76 /* QuickTime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickTime.framework; path = /System/Library/Frameworks/QuickTime.framework; sourceTree = "<absolute>"; };
 		4DE10B520CC39C8E00BAEC76 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		4DE10B560CC39CAB00BAEC76 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = /usr/lib/libz.dylib; sourceTree = "<absolute>"; };
+		F03A573B0D0381F00057BB53 /* GenericEndianBuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.cpp.cpp; path = GenericEndianBuffer.cpp; sourceTree = "<group>"; };
+		F03A573D0D0381F80057BB53 /* GenericEndianBuffer.h */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.c.h; path = GenericEndianBuffer.h; sourceTree = "<group>"; };
 		F08B4B760AB0AE2000896399 /* wxmac.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = wxmac.icns; path = /Library/Frameworks/wx.framework/Versions/2.8/Resources/wxmac.icns; sourceTree = "<absolute>"; };
 		F08B4B780AB0AE4B00896399 /* ShapeFusionApp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ShapeFusionApp.cpp; sourceTree = "<group>"; };
 		F08B4B7A0AB0AE4B00896399 /* FrameView.cpp */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.cpp.cpp; path = FrameView.cpp; sourceTree = "<group>"; };
@@ -223,6 +226,8 @@
 				1F9857320B8A2CDC00D0395F /* ShapeFusionMenus.h */,
 				1F98572F0B8A2CDC00D0395F /* ShapeFusionMain.cpp */,
 				1F9857300B8A2CDC00D0395F /* ShapeFusionMain.h */,
+				F03A573B0D0381F00057BB53 /* GenericEndianBuffer.cpp */,
+				F03A573D0D0381F80057BB53 /* GenericEndianBuffer.h */,
 				F096F44E0AD2DD97005A633A /* BigEndianBuffer.cpp */,
 				F096F4500AD2DD9F005A633A /* BigEndianBuffer.h */,
 				1F3345480BC95CA300A15A32 /* LittleEndianBuffer.cpp */,
@@ -345,6 +350,7 @@
 				1FAD85D20BB1E9410024D113 /* SoundsDocument.cpp in Sources */,
 				1FAD85D30BB1E9410024D113 /* SoundsElements.cpp in Sources */,
 				1FAD85D40BB1E9410024D113 /* SoundsView.cpp in Sources */,
+				F03A573C0D0381F00057BB53 /* GenericEndianBuffer.cpp in Sources */,
 				1FD941E10B92D5CD00DD1EEC /* BigEndianBuffer.cpp in Sources */,
 				1F33454A0BC95CA300A15A32 /* LittleEndianBuffer.cpp in Sources */,
 			);
