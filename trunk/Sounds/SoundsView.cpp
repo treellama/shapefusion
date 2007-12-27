@@ -28,6 +28,7 @@
 #endif
 
 #include "wx/wfstream.h"
+#include <wx/textfile.h>
 
 #include "../ShapeFusionApp.h"
 #include "../ShapeFusionMenus.h"
@@ -233,12 +234,46 @@ void SoundsView::OnDraw(wxDC *dc)
 
 void SoundsView::OnUpdate(wxView *WXUNUSED(sender), wxObject *WXUNUSED(hint))
 {
-	sound_class_list->Clear();
-	
-	bool gequals = true;
+	// init the name array to dummy default values
+	std::vector<wxString>   classNames;
 
-	for (unsigned int i = 0; i < payload->GetSoundCount() ; i++) {
-		sound_class_list->Append(wxString::Format(wxT("Sound %d"), i));
+	for (unsigned int i = 0; i < payload->GetSoundCount(); i++)
+		classNames.push_back(wxString::Format(wxT("Sound %u"), i));
+	
+	// look for a names file and use it in case
+	// FIXME code duplication with ShapesView.cpp
+	wxTextFile	namesFile(wxT("/usr/local/share/shapefusion/DefaultNames.txt"));
+
+	if (namesFile.Exists()) {
+		// file exists
+		if (namesFile.Open()) {
+			// file opened successfully
+			for (wxString str = namesFile.GetFirstLine(); !namesFile.Eof();
+				str = namesFile.GetNextLine()) {
+				// trim leading and trailing blanks
+				str.Trim(true);
+				str.Trim(false);
+				wxString    args;
+				if (str.StartsWith(wxT("sound"), &args)) {
+					// ok, a line we are interested in
+					args.Trim(false);
+					size_t          firstBlank = args.find_first_of(wxT(" \t"));
+					unsigned long   classNum = 0;
+					if ((args.Left(firstBlank)).ToULong(&classNum) && classNum < payload->GetSoundCount()) {
+						// valid class name, store
+						classNames[classNum] = (args.Mid(firstBlank)).Trim(false);
+					}
+				}
+			}
+			namesFile.Close();
+		}
+	}
+
+	bool	gequals = true;
+
+	sound_class_list->Clear();
+	for (unsigned int i = 0; i < payload->GetSoundCount(); i++) {
+		sound_class_list->Append(classNames[i]);
 		// We check if there is a difference between 8-bit and 16-bit
 		// SoundsDefinitions
 		SoundsDefinition	*def8 = payload->Get8BitSoundDefinition(i),
@@ -254,7 +289,6 @@ void SoundsView::OnUpdate(wxView *WXUNUSED(sender), wxObject *WXUNUSED(hint))
 			wxLogDebug(wxT("Sound source different at %d"), i);
 		gequals = gequals && equals;
 	}
-
 	if (!gequals) {
 		// FIXME : Update this when we have a "complete" editor...
 		wxMessageDialog msg(frame,
@@ -267,7 +301,6 @@ void SoundsView::OnUpdate(wxView *WXUNUSED(sender), wxObject *WXUNUSED(hint))
 						
 		msg.ShowModal();
 	}
-	
 	Update();
 }
 
@@ -451,8 +484,8 @@ void SoundsView::FlagsChanged(wxCommandEvent &e)
 
 void SoundsView::LowPitchValueChanged(wxScrollEvent &e)
 {
-
 	long int l;
+
 	sound_low_pitch_field->GetValue().ToLong(&l);
 	
 	SoundsDefinition *def = payload->Get8BitSoundDefinition(mSoundClass);
@@ -465,6 +498,7 @@ void SoundsView::LowPitchValueChanged(wxScrollEvent &e)
 void SoundsView::HighPitchValueChanged(wxScrollEvent &e)
 {
 	long int l;
+
 	sound_high_pitch_field->GetValue().ToLong(&l);
 	
 	SoundsDefinition *def = payload->Get8BitSoundDefinition(mSoundClass);
@@ -477,7 +511,7 @@ void SoundsView::HighPitchValueChanged(wxScrollEvent &e)
 void SoundsView::MenuDelete(wxCommandEvent &e)
 {
 	wxWindow *win = sound_class_list->FindFocus();
-	
+
 	switch (win->GetId()) {
 		case SOUND_CLASS_LIST:
 			wxLogDebug(wxT("Delete Sound Class"));
@@ -564,3 +598,4 @@ void SoundsView::SoundPermutationDoubleClicked(wxCommandEvent &e)
 	SoundsDefinition *def = payload->GetSoundDefinition(mSoundSource, mSoundClass);
 	def->GetPermutation(mSoundPermutation)->PlaySound();
 }
+

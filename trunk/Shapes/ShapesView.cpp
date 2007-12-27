@@ -400,7 +400,8 @@ void ShapesView::OnUpdate(wxView *WXUNUSED(sender), wxObject *WXUNUSED(hint))
 		// file exists
 		if (namesFile.Open()) {
 			// file opened successfully
-			for (wxString str = namesFile.GetFirstLine(); !namesFile.Eof(); str = namesFile.GetNextLine()) {
+			for (wxString str = namesFile.GetFirstLine(); !namesFile.Eof();
+					str = namesFile.GetNextLine()) {
 				// trim leading and trailing blanks
 				str.Trim(true);
 				str.Trim(false);
