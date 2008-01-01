@@ -100,25 +100,30 @@ ShapesColorTable::ShapesColorTable(bool verbose): ShapesElement(verbose)
 
 ShapesColorTable::ShapesColorTable(std::ifstream& ifs, wxString file_ext): ShapesElement(false)
 {
+	// FIXME better error checking and reporting
 	if (file_ext == wxString(wxT("act"))) {
 		// Photoshop binary color table file (Adobe Color Table, .act)
-		// FIXME find better doc about the file format and rewrite this
 		ifs.seekg(0, std::ios::end);
 		unsigned int	fileSize = ifs.tellg(),
 						colorCount = 0;
 		ifs.seekg(0, std::ios::beg);
 
-		if (fileSize == 3*256+4) {
-			// less than 256 colors
-			unsigned char	tailData[4];
+		if (fileSize >= 3*256+4) {
+			// extra info found - get the color count from that
+			BigEndianBuffer	extraInfo(4);
 
-			ifs.seekg(fileSize - 4);
-			ifs.read((char *)tailData, 4);
-			if (tailData[0] == 0 && tailData[2] == 0xff && tailData[3] == 0xff)
-				colorCount = tailData[1];
+			ifs.seekg(3 * 256);
+			ifs.read((char *)extraInfo.Data(), 4);
+			colorCount = (unsigned int)extraInfo.ReadShort();
+			if (colorCount > 256)
+				colorCount = 256;
 		} else if (fileSize == 3*256) {
-			// exactly 256 colors
+			// no extra info - exactly 256 colors and no transparent color
 			colorCount = 256;
+		} else {
+			// we need at least 3*256 bytes
+			wxLogError(wxT("This Adobe Color Table file has an invalid size: will not try to load it."));
+			return;
 		}
 		ifs.seekg(0, std::ios::beg);
 		for (unsigned int value = 0; value < colorCount; value++) {
@@ -213,35 +218,24 @@ int ShapesColorTable::SaveToPhotoshop(wxString path) const
 	std::ofstream	cts(path.fn_str());
 
 	if (cts.good()) {
-		unsigned char	*rgb = new unsigned char[ColorCount() * 3];
-
-		if (rgb != NULL) {
-			unsigned char   *prgb = rgb;
+		BigEndianBuffer	actData(3*256+4);
+		
+		actData.WriteZeroes(3*256+4);
+		actData.Position(0);
+		// write the RGB byte triplets for our colors
+		for (unsigned int i = 0; i < ColorCount(); i++) {
+			ShapesColor *color = GetColor(i);
 			
-			// first a block of RGB byte triplets
-			for (unsigned int i = 0; i < ColorCount(); i++) {
-				ShapesColor *color = GetColor(i);
-
-				*prgb++ = color->Red() >> 8;
-				*prgb++ = color->Green() >> 8;
-				*prgb++ = color->Blue() >> 8;
-			}
-			cts.write((char *)rgb, ColorCount() * 3);
-			delete[] rgb;
-			// if we didn't reach 256 colors, pad with zeroes to fill and end with
-			//    00 n ff ff
-			// where n is the number of colors
-			if (ColorCount() < 256) {
-				unsigned int	padsize = 3 * (256 - ColorCount());
-				unsigned char	*pad = new unsigned char[padsize],
-								tail[4] = { 0, ColorCount(), 0xff, 0xff};
-				
-				memset(pad, 0, padsize);
-				cts.write((char *)pad, padsize);
-				cts.write((char *)tail, 4);
-				delete[] pad;
-			}
+			actData.WriteChar(color->Red() >> 8);
+			actData.WriteChar(color->Green() >> 8);
+			actData.WriteChar(color->Blue() >> 8);
 		}
+		// write the extra info at the end:
+		// number of colors and index of the transparent color
+		actData.Position(3*256);
+		actData.WriteShort(ColorCount());
+		actData.WriteShort(0);
+		cts.write((char *)actData.Data(), actData.Size());
 		cts.close();
 		return 0;
 	} else {

@@ -163,6 +163,12 @@ version.
 
 Changelog
 ---------
+0.5
+	Collection and sound names are now read from a simple external text file.
+	ShapeFusion now requires at least wxWidgets 2.8.x.
+	Fixed a bug that prevented opening shapes files on Windows.
+	Code cleanup and minor fixes.
+
 0.4
 	Switched to multidocument wxWidgets framework (major code rewrite).
 	Implemented a preliminary Sounds editor.
