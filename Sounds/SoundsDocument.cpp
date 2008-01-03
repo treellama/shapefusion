@@ -47,8 +47,7 @@ enum {
 
 IMPLEMENT_DYNAMIC_CLASS(SoundsDocument, wxDocument)
 
-SoundsDocument::SoundsDocument():
-	wxDocument(), SoundsElement(true), mM2Demo(false)
+SoundsDocument::SoundsDocument(): wxDocument(), SoundsElement(true), mM2Demo(false)
 {
 	// We need storage for our sound sources...
 	mSoundDefinitions.resize(NUMBER_OF_SOUND_SOURCES);
@@ -62,10 +61,8 @@ SoundsDefinition *SoundsDocument::GetSoundDefinition(unsigned short source_index
 {
 	if (source_index > mSoundDefinitions.size())
 		return NULL;
-	
 	if (sound_index > mSoundDefinitions[source_index].size())
 		return NULL;
-
 	return mSoundDefinitions[source_index][sound_index];
 }
 
@@ -113,8 +110,7 @@ bool SoundsDocument::DoOpenDocument(const wxString& file)
 {
 	bool wxOpen = wxDocument::DoOpenDocument(file);
 	
-	if (!(wxOpen && mGoodData))
-	{
+	if (!(wxOpen && mGoodData)) {
 		wxLogError(wxT("[SoundsDocument] There was an error while loading, see log"));
 		return false;
 	}

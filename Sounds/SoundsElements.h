@@ -95,27 +95,25 @@ public:
 class AppleSoundHeader : public SoundsElement
 {
 private:
-// Stuff for reading System 7 Sound info
-/*sampled sound header encoding options*/
+	// Stuff for reading System 7 Sound info
+	/*sampled sound header encoding options*/
 	enum {
 		standardSoundHeader		= 0x00,
 		extendedSoundHeader		= 0xFF,
 		compressedSoundHeader	= 0xFE
 	};
-	
+
 	BigEndianBuffer* mData;
+
 public:
 	AppleSoundHeader(unsigned int sndSize, bool verbose = false);
 	~AppleSoundHeader();
 	
 	bool LoadFromWave(wxString path);
-	bool SaveToWave(wxString path);
-	
+	bool SaveToWave(wxString path);	
 	bool LoadFromAiff(wxString path);
 	bool SaveToAiff(wxString path);
-	
 	void PlaySound(void);
-	
 	// Utilities
 	unsigned int Size(void);
 	unsigned char* Data(void);
@@ -148,6 +146,7 @@ private:
 //	int size;
 	
 	bool mRemap8bit;
+
 public:
 	SoundsDefinition(bool verbose = false);
 	~SoundsDefinition();

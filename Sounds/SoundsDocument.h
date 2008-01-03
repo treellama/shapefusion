@@ -26,23 +26,22 @@
 class SoundsDocument: public wxDocument, public SoundsElement
 {
     DECLARE_DYNAMIC_CLASS(SoundsDocument)
+
 private:
 	/* Marathon Sound Header */
 	int mVersion;
 	int mTag;
-	
+
 	short mSourceCount; // usually 2 (8-bit, 16-bit)
 	short mSoundCount;
 	
-//	short unused[124];
-	
 	// immediately followed by source_count*sound_count sound_definition structures
 	std::vector< std::vector<SoundsDefinition*> > mSoundDefinitions;
-	
-	/* some of our needed info */
-	 bool mM2Demo;
-public:
 
+	/* some of our needed info */
+	bool mM2Demo;
+
+public:
     SoundsDocument(void);
     ~SoundsDocument(void);
 	
