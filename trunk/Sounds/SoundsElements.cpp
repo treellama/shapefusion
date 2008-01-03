@@ -37,7 +37,7 @@
 #include "SoundsElements.h"
 #include "../LittleEndianBuffer.h"
 
-AppleSoundHeader::AppleSoundHeader(unsigned int sndSize, bool verbose) : SoundsElement(verbose)
+AppleSoundHeader::AppleSoundHeader(unsigned int sndSize, bool verbose): SoundsElement(verbose)
 {
 	mData = new BigEndianBuffer(sndSize);
 }
@@ -264,7 +264,7 @@ unsigned char* AppleSoundHeader::Data(void)
 	return mData->Data();
 }
 
-SoundsDefinition::SoundsDefinition(bool verbose) : SoundsElement(verbose)
+SoundsDefinition::SoundsDefinition(bool verbose): SoundsElement(verbose)
 {
 	mSoundCode = -1;
 	mBehaviorIndex = _sound_is_quiet;
@@ -273,60 +273,56 @@ SoundsDefinition::SoundsDefinition(bool verbose) : SoundsElement(verbose)
 	mSounds.resize(0);
 }
 
-SoundsDefinition::~SoundsDefinition() {}
+SoundsDefinition::~SoundsDefinition()
+{
+}
 
 bool SoundsDefinition::HaveSameAttributesAs(const SoundsDefinition& right) const
 {
-	return (
-			(mSoundCode == right.mSoundCode) &&
+	return ((mSoundCode == right.mSoundCode) &&
 			(mBehaviorIndex == right.mBehaviorIndex) &&
 			(mFlags == right.mFlags) &&
 			(mChance == right.mChance) &&
 			(mLowPitch == right.mLowPitch) &&
-			(mHighPitch == right.mHighPitch)
-		   );
+			(mHighPitch == right.mHighPitch));
 }
 
 bool SoundsDefinition::HaveSameSoundsAs(const SoundsDefinition& right) const
 {
-	bool isSame = ((&right) != this) && (mSounds.size() == right.mSounds.size());
-	
-	unsigned int i = 0;
+	bool			isSame = ((&right) != this) && (mSounds.size() == right.mSounds.size());
+	unsigned int	i = 0;
+
 	while (isSame && (i < mSounds.size())) {
 		isSame = isSame && mSounds[i] == right.mSounds[i];
 	}
-	
 	return isSame;
 }
 
-bool SoundsDefinition::operator== (const SoundsDefinition&	right) const
+bool SoundsDefinition::operator== (const SoundsDefinition& right) const
 {
-	return (HaveSameAttributesAs(right) &&
-			HaveSameSoundsAs(right));
+	return (HaveSameAttributesAs(right) && HaveSameSoundsAs(right));
 }
-
 
 bool SoundsDefinition::operator!=(const SoundsDefinition& right) const
 {
-	return (!HaveSameAttributesAs(right) ||
-			!HaveSameSoundsAs(right));
+	return (!HaveSameAttributesAs(right) || !HaveSameSoundsAs(right));
 }
 
 unsigned int SoundsDefinition::GetSizeInFile(void)
 {
-	unsigned int size = SIZEOF_sound_definition;
-	
+	unsigned int	size = SIZEOF_sound_definition;
+
 	for (unsigned int i = 0; i < mSounds.size(); i++)
 		size += mSounds[i]->Size();
-	
 	return size;
 }
 
 short SoundsDefinition::GetChance(void) const
 {
-	for (int i = 0; i < 10; i++)
-		if (mChance == 32768*i/10) return i;
-	
+	for (int i = 0; i < 10; i++) {
+		if (mChance == 32768*i/10)
+			return i;
+	}
 	wxLogDebug(wxT("Invalid chance %d"), mChance);
 	return -1;
 }
@@ -335,7 +331,6 @@ void SoundsDefinition::SetChance(short chance)
 {
 	if (chance < 0 || chance > 10)
 		wxLogDebug(wxT("Invalid chance %d"), mChance);
-	
 	mChance = 32768*chance/10;
 }
 
@@ -351,9 +346,9 @@ BigEndianBuffer& SoundsDefinition::SaveObject(BigEndianBuffer& buffer, unsigned 
 	
 	buffer.WriteUShort(mChance);
 	
-	float			low_pitch_integer, low_pitch_fractional,
-					high_pitch_integer, high_pitch_fractional;
-	long			low_pitch = 0, high_pitch = 0;
+	float	low_pitch_integer, low_pitch_fractional,
+			high_pitch_integer, high_pitch_fractional;
+	long	low_pitch = 0, high_pitch = 0;
 	
 	// float to fixed
 	low_pitch_fractional = modff(mLowPitch, &low_pitch_integer);
@@ -510,6 +505,5 @@ AppleSoundHeader* SoundsDefinition::GetPermutation(unsigned int permutation_inde
 {
 	if (permutation_index >= mSounds.size())
 		return NULL;
-	
 	return mSounds[permutation_index];
 }

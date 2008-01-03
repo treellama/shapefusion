@@ -55,44 +55,9 @@ BEGIN_EVENT_TABLE(SoundsView, wxView)
 	EVT_MENU(SOUNDS_MENU_IMPORT, SoundsView::MenuImportSound)
 END_EVENT_TABLE()
 
-/*char *randomsndnames[] = {	"Water",
-							"Sewage",
-							"Lava",
-							"Goo",
-							"Under Media",
-							"Wind",
-							"Waterfall",
-							"Siren",
-							"Fan",
-							"S'pht Door",
-							"S'pht Platform",
-							"Heavy S'pht Door",
-							"Heavy S'pht Platform",
-							"Light Machinery",
-							"Heavy Machinery",
-							"Transformer",
-							"Sparking Transformer",
-							"Machine Binder",
-							"Machine Bookpress",
-							"Machine Puncher",
-							"Electric",
-							"Alarm",
-							"Night Wind",
-							"Pfhor Door",
-							"Pfhor Platform",
-							"Alien Noise 1",
-							"Alien Noise 2",
-							"Alien Harmonics" };
-							
-char *ambientsndnames[] = {	"Water Drip",
-							"Surface Explosion",
-							"Underground Explosion",
-							"Owl",
-							"Creak" };*/
-
 IMPLEMENT_DYNAMIC_CLASS(SoundsView, wxView)
 
-SoundsView::SoundsView() : mSoundClass(wxNOT_FOUND), mSoundSource(wxNOT_FOUND), mSoundPermutation(wxNOT_FOUND)
+SoundsView::SoundsView(): mSoundClass(wxNOT_FOUND), mSoundSource(wxNOT_FOUND), mSoundPermutation(wxNOT_FOUND)
 {
 	frame = NULL;
 	menubar = NULL;
@@ -101,30 +66,30 @@ SoundsView::SoundsView() : mSoundClass(wxNOT_FOUND), mSoundSource(wxNOT_FOUND), 
 
 // What to do when a view is created. Creates actual
 // windows for displaying the view.
-bool SoundsView::OnCreate(wxDocument *doc, long WXUNUSED(flags) )
+bool SoundsView::OnCreate(wxDocument *doc, long WXUNUSED(flags))
 {
 	wxString frameTitle = _T("ShapeFusion : Sounds : ");
+
 	frameTitle.Append(doc->GetFilename());
 	
     frame = wxGetApp().CreateChildFrame(doc, this, frameTitle, wxPoint(0, 0), wxSize(600, 400), wxDEFAULT_FRAME_STYLE);// & ~ (wxRESIZE_BORDER | wxRESIZE_BOX | wxMAXIMIZE_BOX));
 	
 	payload = (SoundsDocument*)doc;
 	
-	menubar = frame->GetMenuBar();
-	
+	menubar = frame->GetMenuBar();	
 	CreateSoundsMenu(menubar);
 	
 	// Because we can always add sound classes
 	menubar->Enable(SOUNDS_MENU_ADDCLASS, true);
-		
+
 	wxString volume_labels[] = { wxT("Soft"), wxT("Medium"), wxT("Loud") };
 	wxString chances_labels[] = { wxT("100%"), wxT("90%"), wxT("80%"), wxT("70%"), wxT("60%"), wxT("50%"), wxT("40%"), wxT("30%"), wxT("20%"), wxT("10%") };
-	
-	sound_class_text = new wxStaticText(frame, wxID_ANY, wxT("Sound Classes: "));
+
+	sound_class_text = new wxStaticText(frame, wxID_ANY, wxT("Sound classes: "));
 	sound_class_id_text = new wxStaticText(frame, wxID_ANY, wxT("Class ID: "));
 	sound_class_id_field = new wxTextCtrl(frame, SOUND_CLASS_ID_FIELD, wxT(""));
 	
-	sound_class_number_text = new wxStaticText(frame, wxID_ANY, wxT("Class Number: "));
+	sound_class_number_text = new wxStaticText(frame, wxID_ANY, wxT("Class number: "));
 	sound_class_number_field = new wxStaticText(frame, SOUND_CLASS_NUMBER_FIELD, wxT(""));
 	
 	sound_class_list = new wxListBox(frame, (wxWindowID)SOUND_CLASS_LIST);
@@ -142,15 +107,15 @@ bool SoundsView::OnCreate(wxDocument *doc, long WXUNUSED(flags) )
 	sound_chance_text = new wxStaticText(frame, wxID_ANY, wxT("Chance: "));
 	sound_chance_menu = new wxChoice(frame, SOUND_CHANCE_MENU, wxDefaultPosition, wxDefaultSize, 10, chances_labels);
 	
-	sound_low_pitch_text = new wxStaticText(frame, wxID_ANY, wxT("Low Pitch: "));
+	sound_low_pitch_text = new wxStaticText(frame, wxID_ANY, wxT("Low pitch: "));
 	sound_low_pitch_field = new wxTextCtrl(frame, SOUND_LOW_PITCH_FIELD);
-	sound_high_pitch_text = new wxStaticText(frame, wxID_ANY, wxT("High Pitch: "));
+	sound_high_pitch_text = new wxStaticText(frame, wxID_ANY, wxT("High pitch: "));
 	sound_high_pitch_field = new wxTextCtrl(frame, SOUND_HIGH_PITCH_FIELD);
 	
-	sound_eight_bit_text = new wxStaticText(frame, wxID_ANY, wxT("8-bit Sounds:"));
+	sound_eight_bit_text = new wxStaticText(frame, wxID_ANY, wxT("8-bit sounds:"));
 	sound_eight_bit_list = new wxListBox(frame, (wxWindowID)SOUND_EIGHT_BIT_PERMUTATIONS_LIST);
 	
-	sound_sixteen_bit_text = new wxStaticText(frame, wxID_ANY, wxT("16-bit Sounds: "));
+	sound_sixteen_bit_text = new wxStaticText(frame, wxID_ANY, wxT("16-bit sounds: "));
 	sound_sixteen_bit_list = new wxListBox(frame, (wxWindowID)SOUND_SIXTEEN_BIT_PERMUTATIONS_LIST);
 	
 	sound_remap_check_box = new wxCheckBox(frame, SOUND_REMAP_CHECK_BOX, wxT("Remap 8-bit"));
@@ -229,7 +194,6 @@ bool SoundsView::OnCreate(wxDocument *doc, long WXUNUSED(flags) )
 // as well as drawing on the screen.
 void SoundsView::OnDraw(wxDC *dc)
 {
-
 }
 
 void SoundsView::OnUpdate(wxView *WXUNUSED(sender), wxObject *WXUNUSED(hint))
@@ -399,18 +363,15 @@ void SoundsView::Update(void)
 // Clean up windows used for displaying the view.
 bool SoundsView::OnClose(bool deleteWindow)
 {
-    if (!GetDocument()->Close())
-        return false;
-    
-    SetFrame((wxFrame *) NULL);
-    
-    Activate(false);
-    
-    if (deleteWindow) {
-        delete frame;
-        return true;
-    }
-    return true;
+	if (!GetDocument()->Close())
+		return false;
+	SetFrame((wxFrame *) NULL);
+	Activate(false);
+	if (deleteWindow) {
+		delete frame;
+		return true;
+	}
+	return true;
 }
 
 void SoundsView::SoundClassChanged(wxCommandEvent &e)
@@ -445,37 +406,30 @@ void SoundsView::FlagsChanged(wxCommandEvent &e)
 			def8->SetNotRestartable(e.IsChecked());
 			def16->SetNotRestartable(e.IsChecked());
 			break;
-		
 		case SOUND_FLAGS_ABORT:
 			def8->SetNotSelfAbortable(e.IsChecked());
 			def16->SetNotSelfAbortable(e.IsChecked());
 			break;
-		
 		case SOUND_FLAGS_RESIST:
 			def8->SetPitchChangeResistant(e.IsChecked());
 			def16->SetPitchChangeResistant(e.IsChecked());
 			break;
-		
 		case SOUND_FLAGS_CHANGE:
 			def8->SetNotPitchChangeable(e.IsChecked());
 			def16->SetNotPitchChangeable(e.IsChecked());
 			break;
-		
 		case SOUND_FLAGS_OBSTRUCTED:
 			def8->SetNotObstructed(e.IsChecked());
 			def16->SetNotObstructed(e.IsChecked());
 			break;
-		
 		case SOUND_FLAGS_MOBSTRUCTED:
 			def8->SetNotMediaObstructed(e.IsChecked());
 			def16->SetNotMediaObstructed(e.IsChecked());
 			break;
-		
 		case SOUND_FLAGS_AMBIENT:
 			def8->SetAmbient(e.IsChecked());
 			def16->SetAmbient(e.IsChecked());
 			break;
-		
 		default:
 			wxLogDebug(wxT("Invalid control id in FlagsChanged"));
 			break;
@@ -516,15 +470,12 @@ void SoundsView::MenuDelete(wxCommandEvent &e)
 		case SOUND_CLASS_LIST:
 			wxLogDebug(wxT("Delete Sound Class"));
 			break;
-		
 		case SOUND_EIGHT_BIT_PERMUTATIONS_LIST:
 			wxLogDebug(wxT("Delete 8-bit sound"));
 			break;
-			
 		case SOUND_SIXTEEN_BIT_PERMUTATIONS_LIST:
 			wxLogDebug(wxT("Delete 16-bit sound"));
 			break;
-		
 		default:
 			break;
 	}
@@ -543,7 +494,6 @@ void SoundsView::MenuAddSoundClass(wxCommandEvent &e)
 
 void SoundsView::MenuImportSound(wxCommandEvent &e)
 {
-	
 }
 
 void SoundsView::MenuExportSound(wxCommandEvent &e)
