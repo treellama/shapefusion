@@ -39,13 +39,11 @@ BitmapView::BitmapView(wxWindow *parent):
 void BitmapView::OnPaint(wxPaintEvent& e)
 {
 	wxPaintDC   tempdc(this);
-	int			vw, vh, cw, ch, rx, ry;
+	int			vw, vh, cw, ch;
 
 	GetVirtualSize(&vw, &vh);
 	DoPrepareDC(tempdc);
-	// fill with white
 	GetClientSize(&cw, &ch);
-	CalcUnscrolledPosition(0, 0, &rx, &ry);
 	tempdc.SetPen(mInvisiblePen);
 	if (mEncBmp != NULL && mColorTable != NULL)
 		tempdc.DrawBitmap(mDecBmp, vw/2 - mDecBmp.GetWidth()/2, vh/2 - mDecBmp.GetHeight()/2);

@@ -59,7 +59,6 @@ void FrameBrowser::OnPaint(wxPaintEvent& e)
 	int			cw, ch, rx, ry;
 
 	DoPrepareDC(tempdc);
-	// fill with white
 	GetClientSize(&cw, &ch);
 	CalcUnscrolledPosition(0, 0, &rx, &ry);
 	// draw thumbnails

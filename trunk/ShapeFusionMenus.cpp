@@ -127,6 +127,7 @@ void CreateViewMenu(wxMenuBar *menu_bar)
 	view_menu->Append(VIEW_MENU_COLOR_TABLE, wxT("Use color table"), view_colortable_submenu);
 	view_menu->Append(VIEW_MENU_THUMBNAIL_SIZE, wxT("Thumbnail size"), view_tnsize_submenu);
 	view_menu->AppendCheckItem(VIEW_MENU_TRANSPARENCY, wxT("Show transparent pixels"));
+	view_menu->AppendCheckItem(VIEW_MENU_CENTERORIGIN, wxT("Fix frame origins"));
 
 	// We add that to the passed menubar
 	menu_bar->Append(view_menu, wxT("&View"));

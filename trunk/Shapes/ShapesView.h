@@ -217,6 +217,7 @@ public:
 	void MenuViewCT(wxCommandEvent &e);
 	void MenuViewTNSize(wxCommandEvent &e);
 	void MenuViewTransparency(wxCommandEvent &e);
+	void MenuViewCenterOrigin(wxCommandEvent &e);
 	void MenuShapesAddColorTable(wxCommandEvent &e);
 	void MenuShapesSaveColorTable(wxCommandEvent &e);
 	void MenuShapesSaveColorTableToPS(wxCommandEvent &e);
