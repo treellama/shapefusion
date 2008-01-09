@@ -44,23 +44,28 @@ FrameView::FrameView(wxWindow *parent, wxWindowID id):
 	mPanCursor = wxCursor(wxCURSOR_ARROW);
 	mPointCursor = wxCursor(wxCURSOR_CROSS);
 	mWhiteTransparency = true;
+	mCenterOrigin = false;
 }
 
 void FrameView::OnPaint(wxPaintEvent& e)
 {
 	wxPaintDC   tempdc(this);
-	int			vw, vh, cw, ch, rx, ry;
+	int			vw, vh, cw, ch;
 
 	GetVirtualSize(&vw, &vh);
 	DoPrepareDC(tempdc);
-	// fill with white
 	GetClientSize(&cw, &ch);
-	CalcUnscrolledPosition(0, 0, &rx, &ry);
 	if (mFrame != NULL && mColorTable != NULL) {
 		if (mEncBmp != NULL) {
-			int		origin_x = vw/2 - mDecBmp.GetWidth()/2,
-					origin_y = vh/2 - mDecBmp.GetHeight()/2;
+			int	origin_x, origin_y;
 
+			if (mCenterOrigin) {
+				origin_x = vw/2 - mFrame->OriginX();
+				origin_y = vh/2 - mFrame->OriginY();
+			} else {
+				origin_x = vw/2 - mDecBmp.GetWidth()/2;
+				origin_y = vh/2 - mDecBmp.GetHeight()/2;
+			}
 			// draw bitmap
 			tempdc.DrawBitmap(mDecBmp, origin_x, origin_y);
 			// mark bitmap origin
@@ -106,7 +111,7 @@ void FrameView::OnPaint(wxPaintEvent& e)
 // handle mouse drag (pan view, edit origin/keypoint)
 void FrameView::OnDrag(wxMouseEvent &e)
 {
-	if (mFrame == NULL || mEncBmp == NULL)
+	if (mFrame == NULL || mEncBmp == NULL || mCenterOrigin)
 		return;
 
 	if (e.ButtonDown()) {
@@ -210,8 +215,8 @@ void FrameView::OnDrag(wxMouseEvent &e)
 void FrameView::OnSize(wxSizeEvent &e)
 {
 	int cw, ch,
-		vw = (mFrame == NULL || mEncBmp == NULL) ? 0 : mEncBmp->Width(),
-		vh = (mFrame == NULL || mEncBmp == NULL) ? 0 : mEncBmp->Height();
+		vw = (mFrame == NULL || mEncBmp == NULL || mCenterOrigin) ? 0 : mEncBmp->Width(),
+		vh = (mFrame == NULL || mEncBmp == NULL || mCenterOrigin) ? 0 : mEncBmp->Height();
 
 	GetClientSize(&cw, &ch);
 	if (mEncBmp != NULL && mEncBmp->Pixels() != NULL) {
@@ -229,6 +234,13 @@ void FrameView::OnSize(wxSizeEvent &e)
 void FrameView::SetTranspPixelsDisplay(bool show)
 {
 	mWhiteTransparency = show;
+	SetBitmap(mEncBmp);
+	Refresh();
+}
+
+void FrameView::SetCenterOrigin(bool center)
+{
+	mCenterOrigin = center;
 	SetBitmap(mEncBmp);
 	Refresh();
 }
@@ -256,15 +268,20 @@ void FrameView::SetBitmap(ShapesBitmap *bp)
 	mEncBmp = bp;
 	if (bp != NULL) {
 		if (bp->Pixels() != NULL) {
-			// adjust sizes
-			int	vw = mEncBmp->Width(),
-				vh = mEncBmp->Height();
+			if (mCenterOrigin) {
+				// no scrolling
+				SetVirtualSize(cw, ch);
+			} else {
+				// adjust sizes to make scrolling work
+				int	vw = mEncBmp->Width(),
+					vh = mEncBmp->Height();
 
-			if (vw < cw)
-				vw = cw;
-			if (vh < ch)
-				vh = ch;
-			SetVirtualSize(vw, vh);
+				if (vw < cw)
+					vw = cw;
+				if (vh < ch)
+					vh = ch;
+				SetVirtualSize(vw, vh);
+			}
 			// decode bitmap
 			if (mColorTable != NULL) {
 				wxImage	img = ShapesBitmapToImage(bp, mColorTable, mWhiteTransparency);

@@ -48,7 +48,8 @@ private:
 						mDraggingOrigin,
 						mDraggingKey,
 						mNearOrigin,
-						mNearKey;
+						mNearKey,
+						mCenterOrigin;	// center frame origin rather than frame bitmap
 	int					mDragStartX,
 						mDragStartY;
 
@@ -63,6 +64,7 @@ public:
 	void OnDrag(wxMouseEvent &e);
 	// access
 	void SetTranspPixelsDisplay(bool show);
+	void SetCenterOrigin(bool center);
 	void SetFrame(ShapesFrame *fp);
 	ShapesFrame *GetFrame(void) const;
 	void SetBitmap(ShapesBitmap *bp);

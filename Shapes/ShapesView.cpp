@@ -29,6 +29,7 @@ BEGIN_EVENT_TABLE(ShapesView, wxView)
 	EVT_MENU_RANGE(VIEW_MENU_COLORTABLE_0, VIEW_MENU_COLORTABLE_7, ShapesView::MenuViewCT)
 	EVT_MENU_RANGE(VIEW_MENU_TNSIZE_SMALL, VIEW_MENU_TNSIZE_AUTO, ShapesView::MenuViewTNSize)
 	EVT_MENU(VIEW_MENU_TRANSPARENCY, ShapesView::MenuViewTransparency)
+	EVT_MENU(VIEW_MENU_CENTERORIGIN, ShapesView::MenuViewCenterOrigin)
 	EVT_MENU(SHAPES_MENU_ADDCOLORTABLE, ShapesView::MenuShapesAddColorTable)
 	EVT_MENU(SHAPES_MENU_SAVECOLORTABLE, ShapesView::MenuShapesSaveColorTable)
 	EVT_MENU(SHAPES_MENU_SAVECOLORTABLETOPS, ShapesView::MenuShapesSaveColorTable)
@@ -555,6 +556,11 @@ void ShapesView::MenuViewTransparency(wxCommandEvent &e)
 	f_view->SetTranspPixelsDisplay(!showTranspPixels);
 	s_fb->SetTranspPixelsDisplay(!showTranspPixels);
 	wxEndBusyCursor();
+}
+
+void ShapesView::MenuViewCenterOrigin(wxCommandEvent &e)
+{
+	f_view->SetCenterOrigin(e.IsChecked());
 }
 
 // color table menu handler

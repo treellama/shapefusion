@@ -61,6 +61,7 @@ enum {
 	// Shapes editing menus
 	// View Menu
 	VIEW_MENU_TRANSPARENCY,
+	VIEW_MENU_CENTERORIGIN,
 	// Thumbnails submenu
 	VIEW_MENU_THUMBNAIL_SIZE,
 	VIEW_MENU_TNSIZE_SMALL,

@@ -43,13 +43,10 @@ void CTBrowser::OnPaint(wxPaintEvent& e)
 {
 	wxPaintDC	tempdc(this);
 	int			visible_w, visible_h,
-				rx, ry,
 				x = mMargin, y = mMargin;
 
 	DoPrepareDC(tempdc);
 	GetClientSize(&visible_w, &visible_h);
-	// fill with white
-	CalcUnscrolledPosition(0, 0, &rx, &ry);
 	tempdc.SetPen(mInvisiblePen);
 	// draw color samples
 	for (unsigned int i = 0; i < mColorTables.size(); i++) {

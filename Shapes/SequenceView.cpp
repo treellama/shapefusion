@@ -62,7 +62,6 @@ void SequenceView::OnPaint(wxPaintEvent& e)
 		return;
 
 	DoPrepareDC(tempdc);
-	// fill with white
 	GetClientSize(&cw, &ch);
 	CalcUnscrolledPosition(0, 0, &rx, &ry);
 	// get mouse position in scrolled coords
