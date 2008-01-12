@@ -1,0 +1,256 @@
+#
+# Default names for elements related to ShapeFusion
+#
+# This file lists names for Infinity-like scenarios
+#
+
+# collection names
+collection 0	Interface graphics
+collection 1	Weapons in hand
+collection 2	Juggernaut
+collection 3	Tick
+collection 4	Projectiles & explosions
+collection 5	Hunter
+collection 6	Player
+collection 7	Items
+collection 8	Trooper
+collection 9	Pfhor fighter
+collection 10	Defender
+collection 11	Yeti
+collection 12	Bob
+collection 13	Vacuum Bob
+collection 14	Enforcer
+collection 15	Hummer
+collection 16	Compiler
+collection 17	Walls 1 (water)
+collection 18	Walls 2 (lava)
+collection 19	Walls 3 (sewage)
+collection 20	Walls 4 (jiaro)
+collection 21	Walls 5 (pfhor)
+collection 22	Scenery 1 (water)
+collection 23	Scenery 2 (lava)
+collection 24	Scenery 3 (sewage)
+collection 25	Scenery 4 (jiaro)
+collection 26	Scenery 5 (pfhor)
+collection 27	Landscape 1 (daytime)
+collection 28	Landscape 2 (nighttime)
+collection 29	Landscape 3 (moon)
+collection 30	Landscape 4 (space)
+collection 31	Cyborg
+
+# sound class names (from AlephOne sources)
+sound 0		Startup
+sound 1		Teleport in
+sound 2		Teleport out
+sound 3		Body being crunched
+sound 4 	Jjaro ship creak
+sound 5		Absorbed
+sound 6		Breathing
+sound 7 	Oxygen warning
+sound 8		Suffocation
+sound 9		Energy refuel
+sound 10	Oxygen refuel
+sound 11	Can't toggle switch
+sound 12	Switch on
+sound 13	Switch off
+sound 14	Puzzle switch
+sound 15	Chip insertion
+sound 16	Pattern buffer
+sound 17	Destroy control panel
+sound 18	Adjust volume
+sound 19	Got powerup
+sound 20	Got item
+sound 21	Bullet ricochet
+sound 22	Metallic ricochet
+sound 23	Empty gun
+sound 24	S'pht door opening
+sound 25	S'pht door closing
+sound 26	S'pht door obstructed
+sound 27	S'pht platform starting
+sound 28	S'pht platform stopping
+sound 29	Owl
+sound 30	SMG firing
+sound 31	SMG reloading
+sound 32	Heavy s'pht platform starting
+sound 33	Heavy s'pht platform stopping
+sound 34	Fist hitting
+sound 35	Magnum firing
+sound 36	Magnum reloading
+sound 37	Assault rifle firing
+sound 38	Grenade launcher firing
+sound 39	Grenade exploding
+sound 40	Grenade flyby
+sound 41	Fusion firing
+sound 42	Fusion exploding
+sound 43	Fusion flyby
+sound 44	Fusion charging
+sound 45	Rocket exploding
+sound 46	Rocket flyby
+sound 47	Rocket firing
+sound 48	Flamethrower
+sound 49	Body falling
+sound 50	Body exploding
+sound 51	Bullet hitting flesh
+sound 52	Fighter activate
+sound 53	Fighter wail
+sound 54	Fighter scream
+sound 55	Fighter chatter
+sound 56	Fighter attack
+sound 57	Fighter projectile hit
+sound 58	Fighter projectile flyby
+sound 59	Compiler attack
+sound 60	Compiler death
+sound 61	Compiler hit
+sound 62	Compiler projectile flyby
+sound 63	Compiler projectile hit
+sound 64	Cyborg moving
+sound 65	Cyborg attack
+sound 66	Cyborg hit
+sound 67	Cyborg death
+sound 68	Cyborg projectile bounce
+sound 69	Cyborg projectile hit
+sound 70	Cyborg projectile flyby
+sound 71	Hummer activate
+sound 72	Hummer start attack
+sound 73	Hummer attack
+sound 74	Hummer dying
+sound 75	Hummer death
+sound 76	Hummer projectile hit
+sound 77	Hummer projectile flyby
+sound 78	Human wail
+sound 79	Human scream
+sound 80	Human hit
+sound 81	Human chatter
+sound 82	Assimilated human chatter
+sound 83	Human trash talk
+sound 84	Human apology
+sound 85	Human activation
+sound 86	Human clear
+sound 87	Human stop shooting me you bastard
+sound 88	Human area secure
+sound 89	Kill the player
+sound 90	Water
+sound 91	Sewage
+sound 92	Lava
+sound 93	Goo
+sound 94	Under media
+sound 95	Wind
+sound 96	Waterfall
+sound 97	Siren
+sound 98	Fan
+sound 99	S'pht door
+sound 100	S'pht platform
+sound 101	Alien harmonics
+sound 102	Heavy s'pht platform
+sound 103	Light machinery
+sound 104	Heavy machinery
+sound 105	Transformer
+sound 106	Sparking transformer
+sound 107	Water drip
+sound 108	Walking in water
+sound 109	Exit water
+sound 110	Enter water
+sound 111	Small water splash
+sound 112	Medium water splash
+sound 113	Large water splash
+sound 114	Walking in lava
+sound 115	Enter lava
+sound 116	Exit lava
+sound 117	Small lava splash
+sound 118	Medium lava splash
+sound 119	Large lava splash
+sound 120	Walking in sewage
+sound 121	Exit sewage
+sound 122	Enter sewage
+sound 123	Small sewage splash
+sound 124	Medium sewage splash
+sound 125	Large sewage splash
+sound 126	Walking in goo
+sound 127	Exit goo
+sound 128	Enter goo
+sound 129	Small goo splash
+sound 130	Medium goo splash
+sound 131	Large goo splash
+sound 132	Major fusion firing
+sound 133	Major fusion charged
+sound 134	Assault rifle reloading
+sound 135	Assault rifle shell casings
+sound 136	Shotgun firing
+sound 137	Shotgun reloading
+sound 138	Ball bounce
+sound 139	You are it
+sound 140	Got ball
+sound 141	Computer interface logon
+sound 142	Computer interface logout
+sound 143	Computer interface page
+sound 144	Heavy s'pht door
+sound 145	Heavy s'pht door opening
+sound 146	Heavy s'pht door closing
+sound 147	Heavy s'pht door open
+sound 148	Heavy s'pht door closed
+sound 149	Heavy s'pht door obstructed
+sound 150	Hunter activate
+sound 151	Hunter attack
+sound 152	Hunter dying
+sound 153	Hunter landing
+sound 154	Hunter exploding
+sound 155	Hunter projectile hit
+sound 156	Hunter projectile flyby
+sound 157	Enforcer activate
+sound 158	Enforcer attack
+sound 159	Enforcer projectile hit
+sound 160	Enforcer projectile flyby
+sound 161	Yeti melee attack
+sound 162	Yeti melee attack hit
+sound 163	Yeti projectile attack
+sound 164	Yeti projectile sewage attack hit
+sound 165	Yeti projectile sewage flyby
+sound 166	Yeti projectile lava attack hit
+sound 167	Yeti projectile lava flyby
+sound 168	Yeti dying
+sound 169	Machine binder
+sound 170	Machine bookpress
+sound 171	Machine puncher
+sound 172	Electric
+sound 173	Alarm
+sound 174	Night wind
+sound 175	Surface explosion
+sound 176	Underground explosion
+sound 177	Defender attack
+sound 178	Defender hit
+sound 179	Defender flyby
+sound 180	Defender being hit
+sound 181	Defender exploding
+sound 182	Tick chatter
+sound 183	Tick falling
+sound 184	Tick flapping
+sound 185	Tick exploding
+sound 186	Ceiling lamp exploding
+sound 187	Pfhor platform starting
+sound 188	Pfhor platform stopping
+sound 189	Pfhor platform
+sound 190	Pfhor door opening
+sound 191	Pfhor door closing
+sound 192	Pfhor door obstructed
+sound 193	Pfhor door
+sound 194	Pfhor switch off
+sound 195	Pfhor switch on
+sound 196	Juggernaut firing
+sound 197	Juggernaut warning
+sound 198	Juggernaut exploding
+sound 199	Juggernaut preparing to fire
+sound 200	Enforcer exploding
+sound 201	Alien noise 1
+sound 202	Alien noise 2
+sound 203	Civilian fusion wail
+sound 204	Civilian fusion scream
+sound 205	Civilian fusion hit
+sound 206	Civilian fusion chatter
+sound 207	Assimilated civilian fusion chatter
+sound 208	Civilian fusion trash talk
+sound 209	Civilian fusion apology
+sound 210	Civilian fusion activation
+sound 211	Civilian fusion clear
+sound 212	Civilian fusion stop shooting me you bastard
+sound 213	Civilian fusion area secure
+sound 214	Civilian fusion kill the player
