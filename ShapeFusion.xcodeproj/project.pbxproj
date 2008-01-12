@@ -37,8 +37,7 @@
 		4DE10B570CC39CAB00BAEC76 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DE10B560CC39CAB00BAEC76 /* libz.dylib */; };
 		F03A573C0D0381F00057BB53 /* GenericEndianBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F03A573B0D0381F00057BB53 /* GenericEndianBuffer.cpp */; };
 		F08B4C5A0AB0B31E00896399 /* ShapeFusionApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F08B4B780AB0AE4B00896399 /* ShapeFusionApp.cpp */; };
-		F0C5CDD90CC6BDEC002EE00E /* libwx_mac.dylib in Copy wx Library */ = {isa = PBXBuildFile; fileRef = F0C5CDD80CC6BDEC002EE00E /* libwx_mac.dylib */; };
-		F0C5CDE10CC6C06E002EE00E /* libwx_mac.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F0C5CDD80CC6BDEC002EE00E /* libwx_mac.dylib */; };
+		F0D3EA400D0ADC19003484F1 /* libwx_mac_static.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F0D3EA3F0D0ADC19003484F1 /* libwx_mac_static.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -68,20 +67,6 @@
 			name = Deployment;
 		};
 /* End PBXBuildStyle section */
-
-/* Begin PBXCopyFilesBuildPhase section */
-		4D82FB530CBF835E009D007C /* Copy wx Library */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = ../Frameworks;
-			dstSubfolderSpec = 6;
-			files = (
-				F0C5CDD90CC6BDEC002EE00E /* libwx_mac.dylib in Copy wx Library */,
-			);
-			name = "Copy wx Library";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		1F3345480BC95CA300A15A32 /* LittleEndianBuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = LittleEndianBuffer.cpp; sourceTree = "<group>"; };
@@ -139,7 +124,7 @@
 		F0966E040B551E5100820E4F /* SequenceView.h */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.c.h; path = SequenceView.h; sourceTree = "<group>"; };
 		F096F44E0AD2DD97005A633A /* BigEndianBuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.cpp.cpp; path = BigEndianBuffer.cpp; sourceTree = "<group>"; };
 		F096F4500AD2DD9F005A633A /* BigEndianBuffer.h */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.c.h; path = BigEndianBuffer.h; sourceTree = "<group>"; };
-		F0C5CDD80CC6BDEC002EE00E /* libwx_mac.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libwx_mac.dylib; path = "/Applications/wxMac-2.8.6/src/build/Development/libwx_mac.dylib"; sourceTree = "<absolute>"; };
+		F0D3EA3F0D0ADC19003484F1 /* libwx_mac_static.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libwx_mac_static.a; path = "/Applications/wxMac-2.8.6/src/build/Deployment/libwx_mac_static.a"; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -147,7 +132,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F0C5CDE10CC6C06E002EE00E /* libwx_mac.dylib in Frameworks */,
 				4DE10B410CC3992D00BAEC76 /* Carbon.framework in Frameworks */,
 				4DE10B4A0CC39BF200BAEC76 /* IOKit.framework in Frameworks */,
 				4DE10B4B0CC39BF400BAEC76 /* System.framework in Frameworks */,
@@ -155,6 +139,7 @@
 				4DE10B530CC39C8E00BAEC76 /* Cocoa.framework in Frameworks */,
 				4DE10B4E0CC39C2E00BAEC76 /* libiconv.dylib in Frameworks */,
 				4DE10B570CC39CAB00BAEC76 /* libz.dylib in Frameworks */,
+				F0D3EA400D0ADC19003484F1 /* libwx_mac_static.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -250,7 +235,7 @@
 		F08B4B9E0AB0B02A00896399 /* External things */ = {
 			isa = PBXGroup;
 			children = (
-				F0C5CDD80CC6BDEC002EE00E /* libwx_mac.dylib */,
+				F0D3EA3F0D0ADC19003484F1 /* libwx_mac_static.a */,
 				4DE10B560CC39CAB00BAEC76 /* libz.dylib */,
 				4DE10B520CC39C8E00BAEC76 /* Cocoa.framework */,
 				4DE10B4F0CC39C4200BAEC76 /* QuickTime.framework */,
@@ -279,7 +264,6 @@
 			buildConfigurationList = F08B4C480AB0B10000896399 /* Build configuration list for PBXNativeTarget "ShapeFusion" */;
 			buildPhases = (
 				F08B4C400AB0B10000896399 /* Resources */,
-				4D82FB530CBF835E009D007C /* Copy wx Library */,
 				F08B4C410AB0B10000896399 /* Sources */,
 				F08B4C420AB0B10000896399 /* Frameworks */,
 			);
@@ -419,7 +403,7 @@
 				INFOPLIST_FILE = "ShapeFusion-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(BUILD_DIR)/$(CONFIGURATION)/$(CONTENTS_FOLDER_PATH)/Frameworks",
+					"$(WX_LIB_ROOT)",
 				);
 				PRODUCT_NAME = ShapeFusion;
 				WRAPPER_EXTENSION = app;
@@ -430,6 +414,7 @@
 		F08B4C4A0AB0B10000896399 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				DEAD_CODE_STRIPPING = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					NO_GCC_PRAGMA,
 					__WXMAC__,
@@ -439,14 +424,16 @@
 					"__WXMAC_XCODE__=1",
 					"WX_PRECOMP=1",
 					MACOS_CLASSIC,
-					__WXDEBUG__,
 				);
+				GCC_VERSION_I386 = 4.0;
+				GCC_VERSION_ppc = 3.3;
 				INFOPLIST_FILE = "ShapeFusion-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(BUILD_DIR)/$(CONFIGURATION)/$(CONTENTS_FOLDER_PATH)/Frameworks",
+					"$(WX_LIB_ROOT)",
 				);
 				PRODUCT_NAME = ShapeFusion;
+				STRIP_INSTALLED_PRODUCT = YES;
 				WRAPPER_EXTENSION = app;
 				WX_LIB_ROOT = "$(WX_SRC_ROOT)/src/build/Deployment";
 			};
