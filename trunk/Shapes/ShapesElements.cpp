@@ -191,7 +191,7 @@ BigEndianBuffer& ShapesColorTable::LoadObject(BigEndianBuffer& buffer, unsigned 
 // export a color table to Gimp ASCII format
 int ShapesColorTable::SaveToGimp(wxString path) const
 {
-	std::ofstream	cts(path.fn_str());
+	std::ofstream	cts(path.fn_str(), std::ios::binary);
 
 	if (cts.good()) {
 		cts << "GIMP Palette\n";
@@ -215,7 +215,7 @@ int ShapesColorTable::SaveToGimp(wxString path) const
 // (MacOS file type is '8BCT', extension '.act', Adobe Color Table)
 int ShapesColorTable::SaveToPhotoshop(wxString path) const
 {
-	std::ofstream	cts(path.fn_str());
+	std::ofstream	cts(path.fn_str(), std::ios::binary);
 
 	if (cts.good()) {
 		BigEndianBuffer	actData(3*256+4);
@@ -494,7 +494,7 @@ BigEndianBuffer& ShapesBitmap::LoadObject(BigEndianBuffer& buffer, unsigned int 
 // export the ShapesBitmap to an indexed BMP file specified by path
 void ShapesBitmap::SaveToBMP(wxString path, ShapesColorTable *colorTable) const
 {
-	std::ofstream	stream(path.fn_str());
+	std::ofstream	stream(path.fn_str(), std::ios::binary);
 
 	if (stream.good()) {
 		unsigned int	colorCount = colorTable->ColorCount();
@@ -550,7 +550,7 @@ void ShapesBitmap::SaveToBMP(wxString path, ShapesColorTable *colorTable) const
 // export the ShapesBitmap mask to a 1-bit BMP file specified by path
 void ShapesBitmap::SaveMaskToBMP(wxString path) const
 {
-	std::ofstream	stream(path.fn_str());
+	std::ofstream	stream(path.fn_str(), std::ios::binary);
 
 	if (stream.good()) {
 		unsigned long	rowBytes = ((mWidth + 31) & 0xffffffe0) >> 3;

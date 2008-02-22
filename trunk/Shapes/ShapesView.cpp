@@ -613,7 +613,7 @@ void ShapesView::MenuShapesAddColorTable(wxCommandEvent &e)
 
 	if (dlg->ShowModal() == wxID_OK) {
 		wxString		filename = dlg->GetPath();
-		std::ifstream	ifs(filename.mb_str(), std::ios::in);
+		std::ifstream	ifs(filename.mb_str(), std::ios::binary);
 
 		if (ifs.good()) {
 			ShapesColorTable	*newct = new ShapesColorTable(ifs, filename.AfterLast('.')),
