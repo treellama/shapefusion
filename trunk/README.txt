@@ -84,7 +84,7 @@ references a set of frames, a frame references a bitmap, a bitmap naturally
 references a color table since it's indexed. So editing a sequence involves
 picking frames from the collection frame set, and editing a frame involves
 selecting a bitmap from the collection bitmap set. Get it? ;-) Of course you
-don't have to follow this flow, expecially if you are only adjusting some
+don't have to follow this flow, especially if you are only adjusting some
 settings.
 
 The View menu contains display settings such as thumbnail size. Nothing here
@@ -110,7 +110,7 @@ Bitmaps are exported as 8-bit Windows bitmap (.bmp) files. They get the color
 table that is currently used for viewing, as selected in the View menu.
 
 When you import a bitmap, ShapeFusion tries to map its colors to the collection
-color table as best as it can. Although the algorithm often yelds good results,
+color table as best as it can. Although the algorithm often yields good results,
 you can help it a lot by converting the bitmap to indexed before (using
 PhotoShop or Gimp, for example) so that it contains just colors belonging to
 the collection color table.
