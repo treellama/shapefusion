@@ -21,6 +21,7 @@
 #include "ShapesDocument.h"
 #include "utilities.h"
 #include <wx/textfile.h>
+#include <wx/stdpaths.h>
 
 #define INT_TO_WXSTRING(a)	wxString::Format(wxT("%d"), a)
 
@@ -395,7 +396,7 @@ void ShapesView::OnUpdate(wxView *WXUNUSED(sender), wxObject *WXUNUSED(hint))
 		collNames.push_back(wxString::Format(wxT("Collection %u"), i));
 	
 	// look for a names file and use it in case
-	wxTextFile	namesFile(wxT("/usr/local/share/shapefusion/DefaultNames.txt"));
+	wxTextFile	namesFile(wxStandardPaths::Get().GetResourcesDir() + wxT("/DefaultNames.txt"));
 
 	if (namesFile.Exists()) {
 		// file exists
