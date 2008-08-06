@@ -29,6 +29,7 @@
 
 #include "wx/wfstream.h"
 #include <wx/textfile.h>
+#include <wx/stdpaths.h>
 
 #include "../ShapeFusionApp.h"
 #include "../ShapeFusionMenus.h"
@@ -206,7 +207,7 @@ void SoundsView::OnUpdate(wxView *WXUNUSED(sender), wxObject *WXUNUSED(hint))
 	
 	// look for a names file and use it in case
 	// FIXME code duplication with ShapesView.cpp
-	wxTextFile	namesFile(wxT("/usr/local/share/shapefusion/DefaultNames.txt"));
+	wxTextFile	namesFile(wxStandardPaths::Get().GetResourcesDir() + wxT("/DefaultNames.txt"));
 
 	if (namesFile.Exists()) {
 		// file exists

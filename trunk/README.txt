@@ -44,7 +44,9 @@ On Linux systems you can test the presence of wxWidgets by running the command
 version, everything should work; otherwise install wxWidgets following your
 Linux distribution rules. To compile ShapeFusion, just do a 'make' inside the
 source directory. When compilation is complete, simply run the 'shapefusion'
-executable (you can put it anywhere in your PATH).
+executable (you can put it anywhere in your PATH). I finally suggest you place
+the attached DefaultNames.txt file in the /usr/local/share/shapefusion
+directory, so that collections and sounds will get Infinity-like names.
 
 On MacOS X you should be able to use the provided Xcode project
 (ShapeFusion.xcodeproj). You'll need both the MacOS X developer tools and
@@ -60,17 +62,19 @@ Overview of the Shapes editor window
 ------------------------------------
 When you open a Shapes file, the window shows its collection slots on the left.
 In standard Marathon Shapes there are always 32 of them; however, ShapeFusion
-tries to be flexible and can open "extended" Shapes files with more
-collections, like Damage Inc ones. Each slot can be opened revealing two
-sub-slots, the 8 bit and true color versions. They represent two independent
-versions of the same collection: the first will be used if the game is played
-on low-color displays, the second is for modern high-color displays (including
-the OpenGL mode in AlephOne). Each sub-slot can finally be opened to reveal
-its real content: bitmaps, color tables, frames and sequences. The contrast
-with Anvil is clear. Anvil tries to obfuscate some aspects of the Shapes file
-organization, but I feel that this creates a lot of confusion in the user. In
-my opinion, it makes more sense to treat Shapes files as they really are:
-archives of collections. The ShapeFusion window tries to reflect this idea.
+tries to be flexible and can open "extended" Shapes files with more collections,
+like Damage Inc ones. Collection names are read from the DefaultNames.txt file
+if it is available, otherwise they are set to simple numbers. Each collection
+slot can be opened revealing two sub-slots, the 8 bit and true color versions.
+They represent two independent versions of the same collection: the first will
+be used if the game is played on low-color displays, the second is for modern
+high-color displays (including the OpenGL mode in AlephOne). Each sub-slot can
+finally be opened to reveal its real content: bitmaps, color tables, frames and
+sequences. The contrast with Anvil is clear. Anvil tries to obfuscate some
+aspects of the Shapes file organization, but I feel that this creates a lot of
+confusion in the user. In my opinion, it makes more sense to treat Shapes files
+as they really are: archives of collections. The ShapeFusion window tries to
+reflect this idea.
 
 Bitmaps, color tables and frames are displayed as lists of preview thumbnails.
 Selecting one of them will pop up an edit panel for that item. Sequences are
@@ -89,6 +93,13 @@ settings.
 
 The View menu contains display settings such as thumbnail size. Nothing here
 affects what's inside the Shapes file.
+
+You may edit the DefaultNames.txt file at your will to provide collection and
+sound names that are more suited to your scenario. The syntax should be pretty
+self-explanatory. Under Linux/Unix this file should go into
+/usr/local/share/shapefusion; under MacOS X it should be embedded into the
+application package (Contents/Resources); under Windows it should sit next to
+the ShapeFusion executable.
 
 Overview of the Sounds editor window
 ------------------------------------
@@ -167,6 +178,7 @@ Changelog
 	Collection and sound names are now read from a simple external text file.
 	ShapeFusion now requires at least wxWidgets 2.8.x.
 	Fixed a bug that prevented opening shapes files on Windows.
+	Fixed a file I/O bug that prevented BMP exporting on Windows.
 	Code cleanup and minor fixes.
 
 0.4
