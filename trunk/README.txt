@@ -1,9 +1,9 @@
-ShapeFusion 0.4
+ShapeFusion 0.5
 http://shapefusion.sourceforge.net
 
 An editor for Marathon II, Marathon Infinity and AlephOne scenarios
 
-Copyright 2000-2007 Tito Dal Canton and Etienne Samson
+Copyright 2000-2008 Tito Dal Canton and Etienne Samson
 
 
 What is ShapeFusion?
@@ -27,13 +27,12 @@ that comes with ShapeFusion.
 
 Supported platforms
 -------------------
-ShapeFusion is being developed and constantly tested both on Linux and MacOS
-X. Thanks to wxWidgets it should compile and work also on Windows and maybe
-other systems, but I've never tried it, although I had reports of success.
-ShapeFusion could *in theory* compile and work also on MacOS Classic, but I
-have no plans on this side. If you build ShapeFusion on systems different
-from Linux and MacOS X, please let me know (screenshots and binary builds
-are appreciated!).
+ShapeFusion is being developed on Linux and continuously tested on Linux,
+MacOS X and Windows. Thanks to wxWidgets it should compile and work on other
+systems too, but I've never tried it. ShapeFusion could *in theory* compile
+and work also on MacOS Classic, but I have no plans on this side. If you build
+ShapeFusion on systems different from Linux, MacOS X and Windows, please let
+me know (screenshots and binary builds are appreciated!).
 
 Building
 --------
@@ -176,6 +175,7 @@ Changelog
 ---------
 0.5
 	Collection and sound names are now read from a simple external text file.
+	First release supporting Windows officially.
 	ShapeFusion now requires at least wxWidgets 2.8.x.
 	Fixed a bug that prevented opening shapes files on Windows.
 	Fixed a file I/O bug that prevented BMP exporting on Windows.
