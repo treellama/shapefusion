@@ -617,6 +617,7 @@ void ShapesBitmap::ClipboardPaste(ShapesColorTable* colortable)
 		if (wxTheClipboard->GetData(clipboardData)) {
 			FromImage(clipboardData.GetBitmap().ConvertToImage(), colortable);
 		}
+		wxTheClipboard->Close();
 	}
 }
 
