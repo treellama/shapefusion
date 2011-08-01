@@ -727,7 +727,7 @@ ShapesFrame::ShapesFrame(bool verbose): ShapesElement(verbose)
 	mBitmapIndex = -1;
 	mXmirror = mYmirror = mKeypointObscured = false;
 	mMinimumLightIntensity = 0;
-	mOriginX = mOriginY = mKeyX = mKeyX = 0;
+	mOriginX = mOriginY = mKeyX = mKeyY = 0;
 	mScaleFactor = 0;
 	mWorldLeft = mWorldRight = mWorldTop = mWorldBottom = 0;
 	mWorldX0 = mWorldY0 = 0;
