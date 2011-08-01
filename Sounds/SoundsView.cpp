@@ -472,11 +472,17 @@ void SoundsView::MenuDelete(wxCommandEvent &e)
 			wxLogDebug(wxT("Delete Sound Class"));
 			break;
 		case SOUND_EIGHT_BIT_PERMUTATIONS_LIST:
-			wxLogDebug(wxT("Delete 8-bit sound"));
-			break;
 		case SOUND_SIXTEEN_BIT_PERMUTATIONS_LIST:
-			wxLogDebug(wxT("Delete 16-bit sound"));
+		{
+			if (mSoundClass == wxNOT_FOUND || mSoundSource == wxNOT_FOUND || mSoundPermutation == wxNOT_FOUND) {
+				return;
+			}
+			
+			SoundsDefinition* def = payload->GetSoundDefinition(mSoundSource, mSoundClass);
+			def->DeletePermutation(mSoundPermutation);
+			Update();
 			break;
+		}
 		default:
 			break;
 	}
@@ -495,6 +501,34 @@ void SoundsView::MenuAddSoundClass(wxCommandEvent &e)
 
 void SoundsView::MenuImportSound(wxCommandEvent &e)
 {
+	wxWindow* w = wxWindow::FindFocus();
+	SoundsDefinition* definition = 0;
+	if (w == static_cast<wxWindow*>(sound_sixteen_bit_list)) {
+		definition = payload->Get16BitSoundDefinition(mSoundClass);
+	} else if (w == static_cast<wxWindow*>(sound_eight_bit_list)) {
+		definition = payload->Get8BitSoundDefinition(mSoundClass);
+	} else {
+		wxMessageDialog msg(frame, wxT("Sorry, you need to select a sound class and 8-bit or 16-bit to import a sound"), wxT("Error: No selection"), wxOK | wxICON_EXCLAMATION);
+		msg.ShowModal();
+		return;
+	}
+
+	if (definition->GetPermutationCount() >= MAXIMUM_PERMUTATIONS_PER_SOUND) {
+		wxMessageDialog msg(frame, wxT("There are already five permutations for this sound"), wxT("Error: permutation limit reached"), wxOK | wxICON_EXCLAMATION);
+		msg.ShowModal();
+		return;
+	}
+	
+	wxFileDialog dlg(frame, wxT("Choose a sound file to add"), wxT(""), wxT(""), wxT("Common sound files (AIFF, WAV)|*.aif;*.wav"), wxOPEN);
+	if (dlg.ShowModal() == wxID_OK) {
+		if (definition->NewPermutation(dlg.GetPath()) == NULL) {
+			wxMessageDialog msg(frame, wxT("Error importing sound"), wxT("Error"), wxOK | wxICON_EXCLAMATION);
+			msg.ShowModal();
+			return;
+		}
+	}
+
+	Update();
 }
 
 void SoundsView::MenuExportSound(wxCommandEvent &e)

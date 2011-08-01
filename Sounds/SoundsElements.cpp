@@ -37,209 +37,374 @@
 #include "SoundsElements.h"
 #include "../LittleEndianBuffer.h"
 
-AppleSoundHeader::AppleSoundHeader(unsigned int sndSize, bool verbose): SoundsElement(verbose)
+#include <sndfile.h>
+
+#define FOUR_CHARS_TO_INT(a,b,c,d) (((unsigned int)(a) << 24) | ((unsigned int)(b) << 16) | ((unsigned int)(c) << 8) | (unsigned int)(d))
+
+struct sf_adapter
 {
-	mData = new BigEndianBuffer(sndSize);
+public:
+	sf_adapter(std::vector<unsigned char>& data) : data_(data), p_(data.begin()) { }
+
+	static sf_count_t get_filelen(void *pv) {
+		return ((sf_adapter*) pv)->_get_filelen();
+	}
+
+	static sf_count_t seek(sf_count_t offset, int whence, void *pv) {
+		return ((sf_adapter*) pv)->_seek(offset, whence);
+	}
+
+	static sf_count_t read(void *ptr, sf_count_t count, void *pv) {
+		return ((sf_adapter*) pv)->_read(ptr, count);
+	}
+
+	static sf_count_t write(const void *ptr, sf_count_t count, void *pv) {
+		return ((sf_adapter*) pv)->_write(ptr, count);
+	}
+
+	static sf_count_t tell(void *pv) {
+		return ((sf_adapter*) pv)->_tell();
+	}
+
+private:
+	std::vector<unsigned char>& data_;
+	std::vector<unsigned char>::iterator p_;
+
+	sf_count_t _get_filelen() {
+		return data_.size();
+	}
+
+	sf_count_t _seek(sf_count_t offset, int whence) {
+		if (whence == SEEK_SET)
+			p_ = data_.begin() + offset;
+		else if (whence == SEEK_END)
+			p_ = data_.end() - offset;
+		else if (whence == SEEK_CUR)
+			p_ += offset;
+
+		return ((p_ >= data_.begin() && p_ <= data_.end()) ? 0 : -1);
+	}
+
+	sf_count_t _read(void *ptr, sf_count_t count) {
+		if (p_ >= data_.end()) return -1;
+		char *dst = reinterpret_cast<char *>(ptr);
+		int i = 0;
+		for (; i < count && p_ < data_.end(); ++i)
+		{
+			*(dst++) = *(p_++);
+		}
+
+		return i;
+	}
+
+	sf_count_t _write(const void *ptr, sf_count_t count) {
+		if (p_ >= data_.end()) return -1;
+
+		const char *src = reinterpret_cast<const char *>(ptr);
+		int i = 0;
+		for (; i < count && p_ < data_.end(); ++i)
+		{
+			*(p_++) = *(src++);
+		}
+
+		return i;
+	}
+
+	sf_count_t _tell() {
+		return p_ - data_.begin();
+	}
+
+};
+
+AppleSoundHeader::AppleSoundHeader(bool verbose): SoundsElement(verbose)
+{
 }
 
 AppleSoundHeader::~AppleSoundHeader()
 {
-	if (mData)
-		delete mData;
 }
 
-bool AppleSoundHeader::SaveToWave(wxString path)
+bool AppleSoundHeader::operator==(const AppleSoundHeader& right) const
 {
-	unsigned int	wavChannels, wavSampleRate, wavBitsPerSample, wavFrames;
-	unsigned long	sampleRate, loopStart, loopEnd;
-	unsigned char	baseFrequency;
-	
-	mData->Position(20);
-	unsigned char	encode = mData->ReadUChar();
-	switch (encode) {
+	return (mSixteenBit == right.mSixteenBit &&
+		mStereo == right.mStereo &&
+		mSigned == right.mSigned &&
+		mBytesPerFrame == right.mBytesPerFrame &&
+		mSampleRate == right.mSampleRate &&
+		mLoopStart == right.mLoopStart &&
+		mLoopEnd == right.mLoopEnd &&
+		mBaseFrequency == right.mBaseFrequency &&
+		mData == right.mData);
+}
+
+BigEndianBuffer& AppleSoundHeader::LoadObject(BigEndianBuffer& buffer)
+{
+	unsigned char headerType = buffer.Data()[buffer.Position() + 20];
+	switch (headerType) {
 		case standardSoundHeader:
-			// standard sound header
-			mData->Position(4);
-			wavFrames = mData->ReadULong();
-			sampleRate = mData->ReadULong();
-			loopStart = mData->ReadULong();
-			loopEnd = mData->ReadULong();
-			mData->Position(21);
-			baseFrequency = mData->ReadUChar();
-			wavChannels = 1;
-			wavSampleRate = sampleRate >> 16;
-			wavBitsPerSample = 8;
+		{
+			mBytesPerFrame = 1;
+			mSigned = false;
+			mStereo = false;
+			mSixteenBit = false;
+
+			buffer.ReadULong(); // sample pointer
+
+			int frames = buffer.ReadLong();
+			mSampleRate = buffer.ReadULong();
+			mLoopStart = buffer.ReadLong();
+			mLoopEnd = buffer.ReadLong();
+			
+			buffer.ReadUChar(); // type
+			mBaseFrequency = buffer.ReadUChar();
+			
+			mData.resize(frames);
+			buffer.ReadBlock(mData.size(), &mData[0]);
 			break;
+		}
 		case extendedSoundHeader:
-			// extended sound header
-			mData->Position(4);
-			wavChannels = mData->ReadULong();
-			sampleRate = mData->ReadULong();
-			loopStart = mData->ReadULong();
-			loopEnd = mData->ReadULong();
-			mData->Position(21);
-			baseFrequency = mData->ReadUChar();
-			wavFrames = mData->ReadULong();
-			mData->Position(48);
-			wavBitsPerSample = mData->ReadUShort();
-			wavSampleRate = sampleRate >> 16;
-			mData->Position(64);
-			break;
 		case compressedSoundHeader:
-			// compressed sound header
-			wxLogError(wxT("[AppleSoundHeader] Compressed sounds not yet supported, can not export this sound."));
-			return false;
+		{
+			buffer.ReadULong(); // samplePtr
+			mStereo = (buffer.ReadLong() == 2);
+			mSampleRate = buffer.ReadULong();
+			mLoopStart = buffer.ReadLong();
+			mLoopEnd = buffer.ReadLong();
+			
+			buffer.ReadUChar(); // type
+			mBaseFrequency = buffer.ReadUChar();
+
+			int frames = buffer.ReadLong();
+
+			if (headerType == compressedSoundHeader) {
+				buffer.Position(buffer.Position() + 10); // AIFF rate
+				buffer.ReadULong(); // marker chunk
+				unsigned int format = buffer.ReadULong();
+				buffer.ReadULong(); // future use
+				buffer.ReadULong(); // stateVars
+				buffer.ReadULong(); // leftOverSamples
+				short comp_id = buffer.ReadShort();
+				if (format != FOUR_CHARS_TO_INT('t', 'w', 'o', 's') || comp_id != -1) {
+					wxLogError(wxT("[AppleSoundHeader] Unsupported compression format '%.4s.'"), &format);
+					mGoodData = false;
+					return buffer;
+				}
+				mSigned = true;
+				buffer.ReadShort(); // packetSize
+				buffer.ReadShort(); // unused
+				mSixteenBit = (buffer.ReadShort() == 16);
+			} else {
+				mSigned = false;
+				buffer.Position(buffer.Position() + 22);
+				mSixteenBit = (buffer.ReadShort() == 16);
+				buffer.Position(buffer.Position() + 14);
+			}
+			
+			mBytesPerFrame = (mSixteenBit ? 2 : 1) * (mStereo ? 2 : 1);
+			mData.resize(frames * mBytesPerFrame);
+			buffer.ReadBlock(mData.size(), &mData[0]);
 			break;
+		}
 		default:
-			wxLogError(wxT("[AppleSoundHeader] Unknown sound encoding %.2x, can not export this sound."), encode);
-			return false;
-			break;
+			wxLogError(wxT("[AppleSoundHeader] Unknown header type %.2x."), headerType);
+			mGoodData = false;
+			return buffer;
 	}
 
-#if 0
-	// check alignment of loop* fields
-	// Apple docs say they are to be interpreted in byte values,
-	// so they should be frame-aligned. Marathon sound values are not
-	// like that, they seem to be in units of frames instead. This
-	// triggers the following error dialog almost always. A1 interprets
-	// those fields as byte values, and this causes problems with at
-	// least one sound from rubicon. WTF? FIXME!
-	if ((loopStart % (wavBitsPerSample / 8)) != 0 ||
-		(loopEnd % (wavBitsPerSample / 8)) != 0)
-		wxLogError(wxT("[AppleSoundHeader] This sound has broken loop values, it could cause problems when playing the game. loopStart=%lu, loopEnd=%lu, frameCount=%lu, bitsPerSample=%u"),
-					loopStart, loopEnd, wavFrames, wavBitsPerSample);
-#endif
+	mGoodData = true;
+	return buffer;
+}
 
-	// write the WAVE file
-	LittleEndianBuffer	riffHeader(12),
-						fmtChunk(24),
-						dataChunk(8 + wavFrames * wavBitsPerSample / 8);
-	std::ofstream		stream(path.fn_str(), std::ios::binary);
-	
-	if (!stream.good()) {
-		wxLogError(wxT("[AppleSoundHeader] Error opening stream"));
+BigEndianBuffer& AppleSoundHeader::SaveObject(BigEndianBuffer& buffer)
+{
+	if (mSixteenBit || mStereo || mSigned) {
+		// extended or compressed sound header
+		buffer.WriteULong(0); // samplePtr
+		buffer.WriteLong(mStereo ? 2 : 1);
+		buffer.WriteULong(mSampleRate);
+		buffer.WriteLong(mLoopStart);
+		buffer.WriteLong(mLoopEnd);
+		
+		buffer.WriteUChar((mSigned && !mSixteenBit) ? compressedSoundHeader : extendedSoundHeader);
+		buffer.WriteUChar(mBaseFrequency);
+		buffer.WriteLong(mData.size() / mBytesPerFrame);
+		buffer.WriteZeroes(10); // AIFF rate
+		buffer.WriteULong(0); // marker chunk
+		if (mSigned && !mSixteenBit) {
+			buffer.Write4CharCode('t', 'w', 'o', 's');
+			buffer.WriteLong(0); // futureUse2
+			buffer.WriteULong(0); // stateVars
+			buffer.WriteULong(0); // leftOverSamples
+			buffer.WriteShort(-1); // compressionID
+			buffer.WriteShort(0); // packetSize
+			buffer.WriteShort(0); // synthID
+			buffer.WriteShort(mSixteenBit ? 16 : 8);
+		} else {
+			buffer.WriteULong(0); // instrument chunks
+			buffer.WriteULong(0); // AESRecording
+			buffer.WriteShort(mSixteenBit ? 16 : 8);
+			buffer.WriteZeroes(14); // futureUse1 through futureUse4
+		}
+		buffer.WriteBlock(mData.size(), &mData[0]);
+	} else {
+		// standard sound header
+		buffer.WriteULong(0); // sample ptr
+		buffer.WriteLong(mData.size()); // frames
+		buffer.WriteULong(mSampleRate);
+		buffer.WriteLong(mLoopStart);
+		buffer.WriteLong(mLoopEnd);
+		buffer.WriteUChar(standardSoundHeader);
+		buffer.WriteUChar(mBaseFrequency);
+		buffer.WriteBlock(mData.size(), &mData[0]);
+	}
+
+	return buffer;
+}
+
+static const int kBufferSize = 8192;
+
+// RAII for SNDFILE*
+class SNDFILE_ptr {
+public:
+	SNDFILE_ptr(SNDFILE* file) : mFile(file) {}
+	~SNDFILE_ptr() { if (mFile) sf_close(mFile); mFile = 0; }
+	SNDFILE* get() { return mFile; }
+private:
+	SNDFILE_ptr(const SNDFILE_ptr&);
+	SNDFILE_ptr& operator= (const SNDFILE_ptr&);
+	SNDFILE* mFile;
+};
+
+bool AppleSoundHeader::LoadFromFile(wxString path)
+{
+	SF_INFO inputInfo;
+	SNDFILE_ptr infile(sf_open(path.fn_str(), SFM_READ, &inputInfo));
+	if (!infile.get()) {
+		wxLogError(wxT("[AppleSoundHeader] libsndfile could not open file."));
 		return false;
 	}
-	// RIFF chunk
-	riffHeader.Write4CharCode('R','I','F','F');	// RIFF signature
-	riffHeader.WriteULong(riffHeader.Size() + fmtChunk.Size() + dataChunk.Size() - 8);	// total file size
-	riffHeader.Write4CharCode('W','A','V','E');	// WAVE signature
-	// format chunk
-	fmtChunk.Write4CharCode('f','m','t',' ');	// fmt signature
-	fmtChunk.WriteULong(fmtChunk.Size() - 8);	// chunk size
-	fmtChunk.WriteUShort(1);					// PCM data
-	fmtChunk.WriteUShort(wavChannels);
-	fmtChunk.WriteULong(wavSampleRate);
-	fmtChunk.WriteULong(wavSampleRate * wavChannels * wavBitsPerSample / 8);	// byte rate
-	fmtChunk.WriteUShort(wavChannels * wavBitsPerSample / 8);	// block align
-	fmtChunk.WriteUShort(wavBitsPerSample);
-	// data chunk
-	dataChunk.Write4CharCode('d','a','t','a');	// data signature
-	dataChunk.WriteULong(dataChunk.Size() - 8);	// chunk size
-	if (wavBitsPerSample == 8) {
-		dataChunk.WriteBlock(wavFrames * wavChannels, mData->Data() + mData->Position());
-	} else if (wavBitsPerSample == 16) {
-		// need to flip endian order
-		for (unsigned int i = 0; i < wavFrames * wavChannels; i++)
-			dataChunk.WriteShort(mData->ReadShort());
+
+	mSixteenBit = !(inputInfo.format & (SF_FORMAT_PCM_S8 | SF_FORMAT_PCM_U8));
+	if (inputInfo.samplerate <= 44100) {
+		mSampleRate = inputInfo.samplerate << 16;
+	} else {
+		mSampleRate = 44100 << 16;
 	}
-	// actual write
-	stream.write((const char *)riffHeader.Data(), riffHeader.Size());
-	stream.write((const char *)fmtChunk.Data(), fmtChunk.Size());
-	stream.write((const char *)dataChunk.Data(), dataChunk.Size());
-	stream.close();
+	mStereo = (inputInfo.channels >= 2);
+	mSigned = false;
+	mBytesPerFrame = (mSixteenBit ? 2 : 1) * (mStereo ? 2 : 1);
+	mLoopStart = mLoopEnd = 0;
+	mBaseFrequency = 60;
+	
+	SF_INFO outputInfo;
+	outputInfo.samplerate = mSampleRate >> 16;
+	outputInfo.channels = mStereo ? 2 : 1;
+	if (mSixteenBit) {
+		outputInfo.format = SF_FORMAT_PCM_16 | SF_FORMAT_RAW | SF_ENDIAN_BIG;
+	} else {
+		outputInfo.format = SF_FORMAT_PCM_U8 | SF_FORMAT_RAW | SF_ENDIAN_BIG;
+	}
+
+	SF_VIRTUAL_IO virtual_io = {
+		&sf_adapter::get_filelen,
+		&sf_adapter::seek,
+		&sf_adapter::read,
+		&sf_adapter::write,
+		&sf_adapter::tell };
+	
+	mData.resize(inputInfo.frames * mBytesPerFrame);
+	sf_adapter adapter(mData);
+
+	SNDFILE_ptr outfile(sf_open_virtual(&virtual_io, SFM_WRITE, &outputInfo, &adapter));
+	if (!outfile.get()) {
+		wxLogError(wxT("[AppleSoundHeader] libsndfile write error."));
+		return false;
+	}
+
+	int frames_remaining = inputInfo.frames;
+	while (frames_remaining > 0) {
+		int buf[kBufferSize * 2];
+		int frames = std::min(kBufferSize, frames_remaining);
+		
+		if (sf_readf_int(infile.get(), buf, frames) != frames) {
+			wxLogError(wxT("[AppleSoundHeader] libsndfile read error."));
+			return false;
+		}
+		if (sf_writef_int(outfile.get(), buf, frames) != frames) {
+			wxLogError(wxT("[AppleSoundHeader] libsndfile write error."));
+			return false;
+		}
+
+		frames_remaining -= frames;
+	}
+
 	return true;
 }
 
-bool AppleSoundHeader::SaveToAiff(wxString path)
+bool AppleSoundHeader::SaveToWaveOrAiff(wxString path, bool aiff)
 {
-	unsigned int	aiffChannels, aiffSampleRate, aiffBitsPerSample, aiffFrames;
-	long			length, sampleRate, numChannels, numFrames;
-	short			sampleSize;
-	unsigned char	baseFrequency;
-	
-	mData->Position(20);
-	unsigned char	encode = mData->ReadUChar();
-	switch (encode) {
-		case standardSoundHeader:
-		// standard sound header
-		mData->Position(4);
-		length = mData->ReadLong();
-		sampleRate = mData->ReadLong();
-		mData->Position(21);
-		baseFrequency = mData->ReadUChar();
-		// <length> 8-bit signed samples follow
-		aiffChannels = 1;
-		aiffSampleRate = (unsigned int)(sampleRate >> 16);
-		aiffBitsPerSample = 8;
-		aiffFrames = (unsigned int)length;
-		break;
-	case extendedSoundHeader:
-		// extended sound header
-		mData->Position(4);
-		numChannels = mData->ReadLong();
-		sampleRate = mData->ReadLong();
-		mData->Position(21);
-		baseFrequency = mData->ReadUChar();
-		numFrames = mData->ReadLong();
-		mData->Position(48);
-		sampleSize = mData->ReadShort();
-		aiffChannels = (unsigned int)numChannels;
-		aiffSampleRate = (unsigned int)(sampleRate >> 16);
-		aiffBitsPerSample = (unsigned int)sampleSize;
-		aiffFrames = (unsigned int)numFrames;
-		mData->Position(64);
-		break;
-	case compressedSoundHeader:
-		// compressed sound header
-		wxLogError(wxT("[AppleSoundHeader] Compressed sounds not yet supported, can not export this sound."));
-		return false;
-		break;
-	default:
-		wxLogError(wxT("[AppleSoundHeader] Unknown sound encoding %.2x, can not export this sound."), encode);
-		return false;
-		break;
-	}
-	
-	// write the AIFF file
-	BigEndianBuffer		formHeader(12),
-						commChunk(24),
-						ssndChunk(16 + aiffFrames * aiffBitsPerSample / 8);
-	std::ofstream		stream(path.fn_str(), std::ios::binary);
-	
-	if (!stream.good()) {
-		wxLogError(wxT("[AppleSoundHeader] Error opening stream"));
-		return false;
-	}
-	// FORM AIFF chunk
-	formHeader.Write4CharCode('F','O','R','M');	// groupID
-	formHeader.WriteULong(formHeader.Size() + commChunk.Size() + ssndChunk.Size() - 8);
-												// fileSize
-	formHeader.Write4CharCode('A','I','F','F');	// typeID
-	
-	// Common chunk
-	commChunk.Write4CharCode('C','O','M','M');	// chunkID
-	commChunk.WriteULong(commChunk.Size() - 8);	// chunkSize
-	commChunk.WriteShort(aiffChannels);			// numChannels
-	commChunk.WriteULong(aiffFrames);			// numSampleFrames
-	commChunk.WriteShort(aiffBitsPerSample);	// sampleSize
-	// FIXME this is actually an 80 bit extended floating point value.
-	// See MPlayer/libavutil/intfloat_readwrite.* for code about this.
-	commChunk.WriteLong(aiffSampleRate);		// sampleRate
-	
-	// Sound Data chunk
-	ssndChunk.Write4CharCode('S','S','N','D');	// chunkID
-	ssndChunk.WriteULong(ssndChunk.Size() - 8);	// chunkSize
-	ssndChunk.WriteULong(0);					// offset
-	ssndChunk.WriteULong(0);					// blockSize
-	// FIXME?
-	ssndChunk.WriteBlock(aiffFrames * aiffChannels, mData->Data() + mData->Position());
+	int inputFormat;
+	int outputFormat;
 
-	// actual write
-	stream.write((const char *)formHeader.Data(), formHeader.Size());
-	stream.write((const char *)commChunk.Data(), commChunk.Size());
-	stream.write((const char *)ssndChunk.Data(), ssndChunk.Size());
-	stream.close();
+	if (mSixteenBit) {
+		inputFormat = outputFormat = SF_FORMAT_PCM_16;
+	} else if (mSigned) {
+		inputFormat = SF_FORMAT_PCM_S8;
+		outputFormat = SF_FORMAT_PCM_U8;
+	} else {
+		inputFormat = outputFormat = SF_FORMAT_PCM_U8;
+	}
+	
+	SF_INFO outputInfo;
+	outputInfo.samplerate = mSampleRate >> 16;
+	outputInfo.channels = mStereo ? 2 : 1;
+	if (aiff) {
+		outputInfo.format = SF_FORMAT_AIFF | outputFormat;
+	} else {
+		outputInfo.format = SF_FORMAT_WAV | outputFormat;
+	}
+	
+	SNDFILE* outfile = sf_open(path.fn_str(), SFM_WRITE, &outputInfo);
+
+	SF_VIRTUAL_IO virtual_io = {
+		&sf_adapter::get_filelen,
+		&sf_adapter::seek,
+		&sf_adapter::read,
+		&sf_adapter::write,
+		&sf_adapter::tell };
+
+	sf_adapter adapter(mData);
+
+	SF_INFO inputInfo;
+	inputInfo.samplerate = mSampleRate >> 16;
+	inputInfo.channels = mStereo ? 2 : 1;
+	inputInfo.format = SF_FORMAT_RAW | inputFormat | SF_ENDIAN_BIG;
+
+	SNDFILE* infile = sf_open_virtual(&virtual_io, SFM_READ, &inputInfo, &adapter);
+
+	int frames_remaining = mData.size() / mBytesPerFrame;
+	while (frames_remaining) {
+		int buf[kBufferSize * 2];
+		int frames = std::min(kBufferSize, frames_remaining);
+		if (sf_readf_int(infile, buf, frames) != frames) {
+			wxLogError(wxT("[AppleSoundHeader] libsndfile read error"));
+			sf_close(infile);
+			sf_close(outfile);
+			return false;
+		}
+		if (sf_writef_int(outfile, buf, frames) != frames) {
+			wxLogError(wxT("[AppleSoundHeader] libsndfile write error"));
+			sf_close(infile);
+			sf_close(outfile);
+			return false;
+		}
+
+		frames_remaining -= frames;
+	}
+	
+	sf_close(infile);
+	sf_close(outfile);
+
 	return true;
 }
 
@@ -256,12 +421,17 @@ void AppleSoundHeader::PlaySound(void)
 
 unsigned int AppleSoundHeader::Size(void)
 {
-	return mData->Size();
+	if (mSixteenBit || mStereo || mSigned) {
+		// compressed or extended header
+		return mData.size() + 64;
+	} else {
+		return mData.size() + 22;
+	}
 }
 
 unsigned char* AppleSoundHeader::Data(void)
 {
-	return mData->Data();
+	return &mData[0];
 }
 
 SoundsDefinition::SoundsDefinition(bool verbose): SoundsElement(verbose)
@@ -270,7 +440,7 @@ SoundsDefinition::SoundsDefinition(bool verbose): SoundsElement(verbose)
 	mBehaviorIndex = _sound_is_quiet;
 	mFlags = 0;
 	mChance = _always;
-	mSounds.resize(0);
+	mSounds.clear();
 }
 
 SoundsDefinition::~SoundsDefinition()
@@ -289,13 +459,7 @@ bool SoundsDefinition::HaveSameAttributesAs(const SoundsDefinition& right) const
 
 bool SoundsDefinition::HaveSameSoundsAs(const SoundsDefinition& right) const
 {
-	bool			isSame = ((&right) != this) && (mSounds.size() == right.mSounds.size());
-	unsigned int	i = 0;
-
-	while (isSame && (i < mSounds.size())) {
-		isSame = isSame && mSounds[i] == right.mSounds[i];
-	}
-	return isSame;
+	return (mSounds == right.mSounds);
 }
 
 bool SoundsDefinition::operator== (const SoundsDefinition& right) const
@@ -313,7 +477,7 @@ unsigned int SoundsDefinition::GetSizeInFile(void)
 	unsigned int	size = SIZEOF_sound_definition;
 
 	for (unsigned int i = 0; i < mSounds.size(); i++)
-		size += mSounds[i]->Size();
+		size += mSounds[i].Size();
 	return size;
 }
 
@@ -366,7 +530,7 @@ BigEndianBuffer& SoundsDefinition::SaveObject(BigEndianBuffer& buffer, unsigned 
 	buffer.WriteUShort(mPermutationsPlayed);
 	
 	// We need to recalculate those fields...
-	unsigned long single_length = (mSounds.size() >= 1 ? mSounds[0]->Size() : 0);
+	unsigned long single_length = (mSounds.size() >= 1 ? mSounds[0].Size() : 0);
 	unsigned long total_length = single_length;
 	std::vector<long> soundOffsets;
 	soundOffsets.push_back(0);
@@ -374,7 +538,7 @@ BigEndianBuffer& SoundsDefinition::SaveObject(BigEndianBuffer& buffer, unsigned 
 	// ... and the corresponding offsets ...
 	for (unsigned int i = 1; i < mSounds.size(); i++) {
 		soundOffsets.push_back(total_length);
-		total_length += mSounds[i]->Size();
+		total_length += mSounds[i].Size();
 	}
 	
 	// ... and write everything
@@ -396,7 +560,7 @@ BigEndianBuffer& SoundsDefinition::SaveObject(BigEndianBuffer& buffer, unsigned 
 	buffer.Position(offset);
 	
 	for (unsigned int i = 0; i < mSounds.size(); i++) {
-		buffer.WriteBlock(mSounds[i]->Size(), mSounds[i]->Data());
+		mSounds[i].SaveObject(buffer);
 	}
 	
 	// We put back position to the end of the written sound_definition...
@@ -488,11 +652,16 @@ BigEndianBuffer& SoundsDefinition::LoadObject(BigEndianBuffer& buffer)
 		else
 			size = soundOffsets[i + 1] - soundOffsets[i];
 		
-		AppleSoundHeader *sndbuffer = new AppleSoundHeader(size, IsVerbose());
+		AppleSoundHeader sndbuffer(IsVerbose());
 
 		buffer.Position(groupOffset + soundOffsets[i]);
-		buffer.ReadBlock(sndbuffer->Size(), sndbuffer->Data());
-		mSounds.push_back(sndbuffer);
+		sndbuffer.LoadObject(buffer);
+		if (sndbuffer.IsGood()) {
+			mSounds.push_back(sndbuffer);
+		} else {
+			mGoodData = false;
+			return buffer;
+		}
 	}
 
 	buffer.Position(oldpos);
@@ -505,5 +674,25 @@ AppleSoundHeader* SoundsDefinition::GetPermutation(unsigned int permutation_inde
 {
 	if (permutation_index >= mSounds.size())
 		return NULL;
-	return mSounds[permutation_index];
+	return &mSounds[permutation_index];
+}
+
+void SoundsDefinition::DeletePermutation(unsigned int permutation_index)
+{
+	mSounds.erase(mSounds.begin() + permutation_index);
+}
+
+AppleSoundHeader* SoundsDefinition::NewPermutation(wxString path)
+{
+	if (mSounds.size() >= MAXIMUM_PERMUTATIONS_PER_SOUND) {
+		return NULL;
+	}
+
+	AppleSoundHeader header(IsVerbose());
+	if (header.LoadFromFile(path)) {
+		mSounds.push_back(header);
+		return &mSounds.back();
+	} else {
+		return NULL;
+	}
 }
