@@ -35,6 +35,7 @@
 		4DE10B500CC39C4200BAEC76 /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DE10B4F0CC39C4200BAEC76 /* QuickTime.framework */; };
 		4DE10B530CC39C8E00BAEC76 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DE10B520CC39C8E00BAEC76 /* Cocoa.framework */; };
 		4DE10B570CC39CAB00BAEC76 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DE10B560CC39CAB00BAEC76 /* libz.dylib */; };
+		AEFAE1E811FC87C80088BC0D /* libsndfile.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AEFAE1E711FC87C80088BC0D /* libsndfile.framework */; };
 		F03A573C0D0381F00057BB53 /* GenericEndianBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F03A573B0D0381F00057BB53 /* GenericEndianBuffer.cpp */; };
 		F08B4C5A0AB0B31E00896399 /* ShapeFusionApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F08B4B780AB0AE4B00896399 /* ShapeFusionApp.cpp */; };
 		F0D12E670E503412001DB33D /* DefaultNames.txt in Resources */ = {isa = PBXBuildFile; fileRef = F0D12E660E503412001DB33D /* DefaultNames.txt */; };
@@ -82,6 +83,7 @@
 		4DE10B4F0CC39C4200BAEC76 /* QuickTime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickTime.framework; path = /System/Library/Frameworks/QuickTime.framework; sourceTree = "<absolute>"; };
 		4DE10B520CC39C8E00BAEC76 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		4DE10B560CC39CAB00BAEC76 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = /usr/lib/libz.dylib; sourceTree = "<absolute>"; };
+		AEFAE1E711FC87C80088BC0D /* libsndfile.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = libsndfile.framework; path = Library/Frameworks/libsndfile.framework; sourceTree = SDKROOT; };
 		F03A573B0D0381F00057BB53 /* GenericEndianBuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.cpp.cpp; path = GenericEndianBuffer.cpp; sourceTree = "<group>"; };
 		F03A573D0D0381F80057BB53 /* GenericEndianBuffer.h */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.c.h; path = GenericEndianBuffer.h; sourceTree = "<group>"; };
 		F08B4B760AB0AE2000896399 /* wxmac.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = wxmac.icns; path = /Library/Frameworks/wx.framework/Versions/2.8/Resources/wxmac.icns; sourceTree = "<absolute>"; };
@@ -122,6 +124,7 @@
 				4DE10B530CC39C8E00BAEC76 /* Cocoa.framework in Frameworks */,
 				4DE10B4E0CC39C2E00BAEC76 /* libiconv.dylib in Frameworks */,
 				4DE10B570CC39CAB00BAEC76 /* libz.dylib in Frameworks */,
+				AEFAE1E811FC87C80088BC0D /* libsndfile.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -226,6 +229,7 @@
 				F08B4C370AB0B09A00896399 /* System.framework */,
 				F08B4C760AB0B7E300896399 /* IOKit.framework */,
 				F08B4CB30AB0C0E700896399 /* OpenGL.framework */,
+				AEFAE1E711FC87C80088BC0D /* libsndfile.framework */,
 			);
 			name = "External things";
 			sourceTree = "<group>";
@@ -377,6 +381,7 @@
 				HEADER_SEARCH_PATHS = (
 					"/usr/local/lib/wx/include/mac-unicode-release-static-2.8",
 					"/usr/local/include/wx-2.8",
+					/Library/Frameworks/libsndfile.framework/Headers,
 				);
 				INFOPLIST_FILE = "ShapeFusion-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
@@ -440,6 +445,7 @@
 				HEADER_SEARCH_PATHS = (
 					"/usr/local/lib/wx/include/mac-unicode-release-static-2.8",
 					"/usr/local/include/wx-2.8",
+					/Library/Frameworks/libsndfile.framework/Headers,
 				);
 				INFOPLIST_FILE = "ShapeFusion-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
