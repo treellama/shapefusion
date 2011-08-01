@@ -19,7 +19,7 @@ VPATH = Shapes:Sounds
 
 
 shapefusion: $(OBJECTS) $(SHAPESOBJECTS) $(SOUNDSOBJECTS)
-	g++ -o shapefusion $(OBJECTS) $(SHAPESOBJECTS) $(SOUNDSOBJECTS) $(WXLIBS)
+	g++ -o shapefusion $(OBJECTS) $(SHAPESOBJECTS) $(SOUNDSOBJECTS) $(WXLIBS) `pkg-config --libs sndfile`
 
 GenericEndianBuffer.o: GenericEndianBuffer.cpp GenericEndianBuffer.h
 	g++ -c $(CFLAGS) $<
@@ -84,7 +84,7 @@ Sounds/SoundsDocument.o: SoundsDocument.cpp SoundsDocument.h SoundsElements.h So
 	g++ -c $(CFLAGS) $(WXCFLAGS) $< -o $@
 
 Sounds/SoundsElements.o: SoundsElements.cpp SoundsElements.h BigEndianBuffer.h LittleEndianBuffer.h
-	g++ -c $(CFLAGS) $(WXCFLAGS) $< -o $@
+	g++ -c $(CFLAGS) $(WXCFLAGS) `pkg-config --cflags sndfile` $< -o $@
 
 Sounds/SoundsView.o: SoundsView.cpp SoundsView.h SoundsDocument.h ShapeFusionApp.h ShapeFusionMenus.h
 	g++ -c $(CFLAGS) $(WXCFLAGS) $< -o $@

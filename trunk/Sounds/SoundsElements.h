@@ -103,17 +103,44 @@ private:
 		compressedSoundHeader	= 0xFE
 	};
 
-	BigEndianBuffer* mData;
+	bool mSixteenBit;
+	bool mStereo;
+	bool mSigned;
+	int mBytesPerFrame;
+	unsigned int mSampleRate; // 16.16 unsigned fixed
+	int mLoopStart;
+	int mLoopEnd;
+	unsigned char mBaseFrequency;
+
+	std::vector<unsigned char> mData;
+
+	bool SaveToWaveOrAiff(wxString path, bool aiff);
 
 public:
-	AppleSoundHeader(unsigned int sndSize, bool verbose = false);
+	AppleSoundHeader(bool verbose = false);
 	~AppleSoundHeader();
+
+	bool operator==(const AppleSoundHeader& right) const;
 	
+	bool LoadFromFile(wxString path);
 	bool LoadFromWave(wxString path);
-	bool SaveToWave(wxString path);	
+	bool SaveToWave(wxString path) { return SaveToWaveOrAiff(path, false); }
 	bool LoadFromAiff(wxString path);
-	bool SaveToAiff(wxString path);
+	bool SaveToAiff(wxString path) { return SaveToWaveOrAiff(path, true); }
 	void PlaySound(void);
+
+	bool IsSixteenBit() const { return mSixteenBit; }
+	bool IsStereo() const { return mStereo; }
+	bool IsSigned() const { return mSigned; }
+	int GetBytesPerFrame() const { return mBytesPerFrame; }
+	unsigned int GetSampleRate() const { return mSampleRate; }
+	
+	void SetSixteenBit(bool s) { mSixteenBit = s; }
+	void SetStereo(bool s) { mStereo = s; }
+	void SetSigned(bool s) { mSigned = s; }
+	void SetBytesPerFrame(int b) { mBytesPerFrame = b; }
+	void SetSampleRate(unsigned int sr) { mSampleRate = sr; }
+
 	// Utilities
 	unsigned int Size(void);
 	unsigned char* Data(void);
@@ -139,7 +166,7 @@ private:
 	unsigned short mPermutationsPlayed;
 //	int mGroupOffset, mSingleLength, mTotalLength; // magic numbers necessary to load sounds
 //	std::vector<int> mSoundOffsets;
-	std::vector<AppleSoundHeader*> mSounds;
+	std::vector<AppleSoundHeader> mSounds;
 	unsigned int mLastPlayed; // machine ticks
 	// Pointer to loaded sound and size of sound object pointed to
 //	short *ptr;
@@ -189,7 +216,9 @@ public:
 	void SetHighPitch(int p) {mHighPitch = p;}
 	
 	unsigned int GetPermutationCount(void) const {return mSounds.size();}
+	void DeletePermutation(unsigned int permutation_index);
 	AppleSoundHeader* GetPermutation(unsigned int permutation_index);
+	AppleSoundHeader* NewPermutation(wxString path);
 	
 	// Utilities
 	unsigned int GetSizeInFile(void);
