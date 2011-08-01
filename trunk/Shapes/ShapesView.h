@@ -213,7 +213,9 @@ public:
 	void MenuFileOpen(wxCommandEvent &e);
 	void MenuFileSave(wxCommandEvent&);
 	void MenuFileQuit(wxCommandEvent &e);
+	void MenuEditCopy(wxCommandEvent& e);
 	void MenuEditDelete(wxCommandEvent &e);
+	void MenuEditPaste(wxCommandEvent& e);
 	void MenuViewCT(wxCommandEvent &e);
 	void MenuViewTNSize(wxCommandEvent &e);
 	void MenuViewTransparency(wxCommandEvent &e);
@@ -248,6 +250,9 @@ public:
 	void EditSequenceType(wxCommandEvent &e);
 	void EditSequenceXferMode(wxCommandEvent &e);
 	void EditSequenceFields(wxCommandEvent &e);
+
+	void DoCopyBitmap(int which);
+	void DoPasteBitmap(int which);
 
 	void DoDeleteColorTable(int which);
 	void DoDeleteBitmap(int which);

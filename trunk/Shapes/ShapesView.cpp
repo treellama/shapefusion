@@ -26,7 +26,9 @@
 #define INT_TO_WXSTRING(a)	wxString::Format(wxT("%d"), a)
 
 BEGIN_EVENT_TABLE(ShapesView, wxView)
+        EVT_MENU(EDIT_MENU_COPY, ShapesView::MenuEditCopy)
 	EVT_MENU(EDIT_MENU_DELETE, ShapesView::MenuEditDelete)
+        EVT_MENU(EDIT_MENU_PASTE, ShapesView::MenuEditPaste)
 	EVT_MENU_RANGE(VIEW_MENU_COLORTABLE_0, VIEW_MENU_COLORTABLE_7, ShapesView::MenuViewCT)
 	EVT_MENU_RANGE(VIEW_MENU_TNSIZE_SMALL, VIEW_MENU_TNSIZE_AUTO, ShapesView::MenuViewTNSize)
 	EVT_MENU(VIEW_MENU_TRANSPARENCY, ShapesView::MenuViewTransparency)
@@ -523,6 +525,21 @@ wxTreeItemId ShapesView::GetSequencesTreeItem(unsigned int collection, unsigned 
 	return wxTreeItemId();	// ctor makes it invalid, so ok
 }
 
+void ShapesView::MenuEditCopy(wxCommandEvent& e)
+{
+	ShapesTreeItemData* selected_item_data = dynamic_cast<ShapesTreeItemData*>(colltree->GetItemData(colltree->GetSelection()));
+
+	if (selected_item_data != NULL) {
+		switch (selected_item_data->Section()) {
+		case TREESECTION_BITMAPS:
+			DoCopyBitmap(bb->GetSelection());
+			break;
+		default:
+			break;
+		}
+	}
+}
+
 // handle the Edit->Delete menu command, which is context-sensitive
 void ShapesView::MenuEditDelete(wxCommandEvent &e)
 {
@@ -542,6 +559,21 @@ void ShapesView::MenuEditDelete(wxCommandEvent &e)
 				break;
 			case TREESECTION_SEQUENCES:
 				break;
+		}
+	}
+}
+
+void ShapesView::MenuEditPaste(wxCommandEvent& e)
+{
+	ShapesTreeItemData* selected_item_data = dynamic_cast<ShapesTreeItemData*>(colltree->GetItemData(colltree->GetSelection()));
+
+	if (selected_item_data != NULL) {
+		switch (selected_item_data->Section()) {
+		case TREESECTION_BITMAPS:
+			DoPasteBitmap(bb->GetSelection());
+			break;
+		default:
+			break;
 		}
 	}
 }
@@ -924,7 +956,9 @@ void ShapesView::OnTreeSelect(wxTreeEvent &e)
 			f_view->SetBitmap(NULL);
 			s_fb->Clear();
 			menubar->SetLabel(EDIT_MENU_DELETE, wxT("Delete"));
+			menubar->Enable(EDIT_MENU_COPY, false);
 			menubar->Enable(EDIT_MENU_DELETE, false);
+			menubar->Enable(EDIT_MENU_PASTE, false);
 			for (unsigned int i = 0; i < ctmenucount; i++)
 				menubar->Enable(VIEW_MENU_COLORTABLE_0 + i, false);
 			menubar->Enable(SHAPES_MENU_SAVECOLORTABLE, false);
@@ -1083,7 +1117,9 @@ void ShapesView::OnTreeSelect(wxTreeEvent &e)
 			s_fb->SetSeqParameters(seq->NumberOfViews(), seq->FramesPerView(), &seq->mFrameIndexes);
 			s_fb->Thaw();
 			menubar->SetLabel(EDIT_MENU_DELETE, wxT("Delete sequence"));
+			menubar->Enable(EDIT_MENU_COPY, false);
 			menubar->Enable(EDIT_MENU_DELETE, true);
+			menubar->Enable(EDIT_MENU_PASTE, false);
 			wxEndBusyCursor();
 		}
 
@@ -1141,7 +1177,9 @@ void ShapesView::OnBitmapSelect(wxCommandEvent &e)
 		b_outer_sizer->Show(b_count_label, true);
 		b_outer_sizer->Show(b_edit_box, false);
 		menubar->SetLabel(EDIT_MENU_DELETE, wxT("Delete"));
+		menubar->Enable(EDIT_MENU_COPY, false);
 		menubar->Enable(EDIT_MENU_DELETE, false);
+		menubar->Enable(EDIT_MENU_PASTE, false);
 		menubar->Enable(SHAPES_MENU_EXPORTBITMAP, false);
 		menubar->Enable(SHAPES_MENU_EXPORTMASK, false);
 	} else {
@@ -1165,7 +1203,9 @@ void ShapesView::OnBitmapSelect(wxCommandEvent &e)
 		b_outer_sizer->Show(b_count_label, false);
 		b_outer_sizer->Show(b_edit_box, true);
 		menubar->SetLabel(EDIT_MENU_DELETE, wxT("Delete bitmap"));
+		menubar->Enable(EDIT_MENU_COPY, true);
 		menubar->Enable(EDIT_MENU_DELETE, true);
+		menubar->Enable(EDIT_MENU_PASTE, true);
 		menubar->Enable(SHAPES_MENU_EXPORTBITMAP, true);
 		menubar->Enable(SHAPES_MENU_EXPORTMASK, true);
 	}
@@ -1178,6 +1218,14 @@ void ShapesView::BitmapDelete(wxCommandEvent &e)
 	DoDeleteBitmap(e.GetSelection());
 }
 
+void ShapesView::DoCopyBitmap(int which)
+{
+	ShapesBitmap* bitmap = ((ShapesDocument*)GetDocument())->GetBitmap(mSelectedColl, mSelectedVers, which);
+	ShapesColorTable* colorTable = ((ShapesDocument*)GetDocument())->GetColorTable(mSelectedColl, mSelectedVers, mViewColorTable);
+	
+	bitmap->ClipboardCopy(colorTable);
+}
+
 void ShapesView::DoDeleteColorTable(int which)
 {
 	if (which >= 0) {
@@ -1188,7 +1236,9 @@ void ShapesView::DoDeleteColorTable(int which)
 		menubar->Enable(SHAPES_MENU_SAVECOLORTABLE, false);
 		menubar->Enable(SHAPES_MENU_SAVECOLORTABLETOPS, false);
 		menubar->SetLabel(EDIT_MENU_DELETE, wxT("Delete"));
+		menubar->Enable(EDIT_MENU_COPY, false);
 		menubar->Enable(EDIT_MENU_DELETE, false);
+		menubar->Enable(EDIT_MENU_PASTE, false);
 		ctb->Freeze();
 		ctb->Clear();
 		// delete
@@ -1305,6 +1355,34 @@ void ShapesView::DoDeleteFrame(int which)
 	}
 }
 
+void ShapesView::DoPasteBitmap(int which)
+{
+	ShapesBitmap* bitmap = ((ShapesDocument*)GetDocument())->GetBitmap(mSelectedColl, mSelectedVers, which);
+	ShapesColorTable* colorTable = ((ShapesDocument*)GetDocument())->GetColorTable(mSelectedColl, mSelectedVers, mViewColorTable);
+
+	wxBeginBusyCursor();
+	bitmap->ClipboardPaste(colorTable);
+
+	// automagically initialize bitmap flags
+	if (((ShapesDocument*)GetDocument())->CollectionType(mSelectedColl, mSelectedVers) == _object_collection ||
+	    ((ShapesDocument*)GetDocument())->CollectionType(mSelectedColl, mSelectedVers) == _scenery_collection) {
+		// compress weapons, monsters and scenery
+		bitmap->SetBytesPerRow(-1);
+	} else if (((ShapesDocument*)GetDocument())->CollectionType(mSelectedColl, mSelectedVers) == _interface_collection) {
+		// interface elements are row-ordered (not so important with A1 actually)
+		bitmap->SetColumnOrdered(false);
+	}
+
+	((ShapesDocument*)GetDocument())->Modify(true);
+	bb->RebuildThumbnail(bb->GetSelection());
+	bb->Refresh();
+	b_view->SetBitmap(bitmap);
+	fb->Freeze();
+	fb->RebuildThumbnails();
+	fb->Thaw();
+	wxEndBusyCursor();
+}
+
 void ShapesView::ToggleBitmapCheckboxes(wxCommandEvent &e)
 {
 	ShapesBitmap	*sel_bitmap = b_view->GetBitmap();
@@ -1340,7 +1418,9 @@ void ShapesView::OnCTSelect(wxCommandEvent &e)
 		menubar->Enable(SHAPES_MENU_SAVECOLORTABLE, false);
 		menubar->Enable(SHAPES_MENU_SAVECOLORTABLETOPS, false);
 		menubar->SetLabel(EDIT_MENU_DELETE, wxT("Delete"));
+		menubar->Enable(EDIT_MENU_COPY, false);
 		menubar->Enable(EDIT_MENU_DELETE, false);
+		menubar->Enable(EDIT_MENU_PASTE, false);
 	} else {
 		// selection
 		ShapesColorTable	*ct = ((ShapesDocument*)GetDocument())->GetColorTable(mSelectedColl, mSelectedVers, selection);
@@ -1359,6 +1439,8 @@ void ShapesView::OnCTSelect(wxCommandEvent &e)
 			menubar->Enable(EDIT_MENU_DELETE, true);
 		else
 			menubar->Enable(EDIT_MENU_DELETE, false);
+		menubar->Enable(EDIT_MENU_COPY, false);
+		menubar->Enable(EDIT_MENU_PASTE, false);
 	}
 	ct_self_lumin_checkbox->Disable();
 	ct_gradient_button->Disable();
@@ -1495,7 +1577,9 @@ void ShapesView::OnFrameSelect(wxCommandEvent &e)
 		f_outer_sizer->Show(f_count_label, true);
 		f_outer_sizer->Show(f_edit_box, false);
 		menubar->SetLabel(EDIT_MENU_DELETE, wxT("Delete"));
+		menubar->Enable(EDIT_MENU_COPY, false);
 		menubar->Enable(EDIT_MENU_DELETE, false);
+		menubar->Enable(EDIT_MENU_PASTE, false);
 	} else {
 		ShapesFrame	*sel_frame = ((ShapesDocument*)GetDocument())->GetFrame(mSelectedColl, mSelectedVers, selection);
 		ShapesBitmap	*assoc_bitmap = NULL;
@@ -1524,6 +1608,8 @@ void ShapesView::OnFrameSelect(wxCommandEvent &e)
 		f_outer_sizer->Show(f_edit_box, true);
 		menubar->SetLabel(EDIT_MENU_DELETE, wxT("Delete frame"));
 		menubar->Enable(EDIT_MENU_DELETE, true);
+		menubar->Enable(EDIT_MENU_COPY, false);
+		menubar->Enable(EDIT_MENU_PASTE, false);
 	}
 	f_outer_sizer->Layout();
 }

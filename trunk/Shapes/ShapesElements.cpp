@@ -248,41 +248,9 @@ ShapesBitmap::ShapesBitmap(bool verbose): ShapesElement(verbose), mPixels(NULL)
 }
 
 ShapesBitmap::ShapesBitmap(wxImage image, ShapesColorTable *colortable):
-	ShapesElement(false), mWidth(image.GetWidth()), mHeight(image.GetHeight()),
-	mBytesPerRow(image.GetWidth()), mBitDepth(8), mColumnOrder(true), mTransparent(false), mPixels(NULL)
+	ShapesElement(false), mPixels(NULL)
 {
-	unsigned char	*srcpixels = image.GetData(),
-					*src = srcpixels,
-					*dst;
-	
-	mPixels = new unsigned char[mWidth * mHeight];
-	if (mPixels == NULL) {
-		wxLogError(wxT("Could not allocate new %dx%d bitmap\n"), mWidth, mHeight);
-		return;
-	}
-	dst = mPixels;
-	// quantize from 8-bit RGB pixels to an indexed bitmap
-	for (int i = 0; i < mWidth * mHeight; i++) {
-		unsigned char 	r = *src++, g = *src++, b = *src++,
-						best_value = 0;
-		float			min_dist = 0;
-
-		for (unsigned int j = 0; j < colortable->ColorCount(); j++) {
-			unsigned short	ct_r = colortable->GetColor(j)->Red(),
-							ct_g = colortable->GetColor(j)->Green(),
-							ct_b = colortable->GetColor(j)->Blue();
-			float			dist = ColourDistance(r/255.0, g/255.0, b/255.0,
-													ct_r/65535.0, ct_g/65535.0, ct_b/65535.0);
-
-			if (dist < min_dist || j == 0) {
-				min_dist = dist;
-				best_value = colortable->GetColor(j)->Value();
-			}
-		}
-		*dst++ = best_value;
-		if (best_value == 0)
-			mTransparent = true;	// guess the user will want transparency
-	}
+	FromImage(image, colortable);
 }
 
 ShapesBitmap::~ShapesBitmap(void)
@@ -616,6 +584,85 @@ void ShapesBitmap::SaveMaskToBMP(wxString path) const
 
 		stream.close();
 	 }
+}
+
+void ShapesBitmap::ClipboardCopy(ShapesColorTable* colortable) const
+{
+	if (wxTheClipboard->Open()) {
+		// create an RGBA wxImage
+		wxImage image;
+		image.Create(mWidth, mHeight, false);
+
+		unsigned char* src = mPixels;
+		unsigned char* dst = image.GetData();
+		for (int x = 0; x < mWidth; ++x) {
+			for (int y = 0; y < mHeight; ++y) {
+				unsigned char c = *src++;
+				ShapesColor* color = colortable->GetColor(c);
+				*dst++ = color->Red();
+				*dst++ = color->Green();
+				*dst++ = color->Blue();
+			}
+		}
+
+		wxTheClipboard->SetData(new wxBitmapDataObject(wxBitmap(image)));
+		wxTheClipboard->Close();
+	}
+}
+
+void ShapesBitmap::ClipboardPaste(ShapesColorTable* colortable)
+{
+	if (wxTheClipboard->Open()) {
+		wxBitmapDataObject clipboardData;
+		if (wxTheClipboard->GetData(clipboardData)) {
+			FromImage(clipboardData.GetBitmap().ConvertToImage(), colortable);
+		}
+	}
+}
+
+void ShapesBitmap::FromImage(wxImage image, ShapesColorTable* colortable)
+{
+	mWidth = image.GetWidth();
+	mHeight = image.GetHeight();
+	mBytesPerRow = image.GetWidth();
+	mBitDepth = 8;
+	mColumnOrder = true;
+	mTransparent = false;
+	
+	if (mPixels) {
+		delete mPixels;
+	}
+
+	unsigned char* srcpixels = image.GetData(), *src = srcpixels, *dst;
+
+	mPixels = new unsigned char[mWidth * mHeight];
+	if (mPixels == NULL) {
+		wxLogError(wxT("Could not allocate new %dx%d bitmap\n"), mWidth, mHeight);
+		return;
+	}
+	dst = mPixels;
+	// quantize from 8-bit RGB pixels to an indexed bitmap
+	for (int i = 0; i < mWidth * mHeight; i++) {
+		unsigned char 	r = *src++, g = *src++, b = *src++,
+						best_value = 0;
+		float			min_dist = 0;
+
+		for (unsigned int j = 0; j < colortable->ColorCount(); j++) {
+			unsigned short	ct_r = colortable->GetColor(j)->Red(),
+							ct_g = colortable->GetColor(j)->Green(),
+							ct_b = colortable->GetColor(j)->Blue();
+			float			dist = ColourDistance(r/255.0, g/255.0, b/255.0,
+													ct_r/65535.0, ct_g/65535.0, ct_b/65535.0);
+
+			if (dist < min_dist || j == 0) {
+				min_dist = dist;
+				best_value = colortable->GetColor(j)->Value();
+			}
+		}
+		*dst++ = best_value;
+		if (best_value == 0)
+			mTransparent = true;	// guess the user will want transparency
+	}
 }
 
 ShapesFrame::ShapesFrame(bool verbose): ShapesElement(verbose)
