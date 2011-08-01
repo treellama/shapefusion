@@ -890,6 +890,9 @@ void ShapesView::MenuShapesNewFrame(wxCommandEvent &e)
 		ShapesFrame	*newframe = new ShapesFrame();
 
 		newframe->SetScaleFactor(((ShapesDocument*)GetDocument())->CollectionScaleFactor(mSelectedColl, mSelectedVers));
+		if (((ShapesDocument*)GetDocument())->CollectionBitmapCount(mSelectedColl, mSelectedVers) > ((ShapesDocument*)GetDocument())->CollectionFrameCount(mSelectedColl, mSelectedVers)) {
+			newframe->SetBitmapIndex(((ShapesDocument*)GetDocument())->CollectionFrameCount(mSelectedColl, mSelectedVers));
+		}
 		((ShapesDocument*)GetDocument())->InsertFrame(newframe, mSelectedColl, mSelectedVers);
 		fb->AddFrame(((ShapesDocument*)GetDocument())->GetFrame(mSelectedColl, mSelectedVers, ((ShapesDocument*)GetDocument())->CollectionFrameCount(mSelectedColl, mSelectedVers)-1));
 		// update frame count label
