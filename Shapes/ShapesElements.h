@@ -68,6 +68,10 @@ public:
 	ShapesColor(bool verbose = false);
 	ShapesColor(unsigned int r, unsigned int g, unsigned int b, unsigned int value, bool luminescent = false, bool verbose = false);
 	~ShapesColor(void);
+
+	// operators
+	bool operator==(const ShapesColor& other) const;
+	bool operator!=(const ShapesColor& other) const { return !(*this == other); }
 	// accessors
 	bool Luminescent(void) const { return mLuminescent; }
 	unsigned char Value(void) const { return mValue; }
@@ -93,6 +97,10 @@ public:
 	ShapesColorTable(bool verbose = false);
 	ShapesColorTable(std::ifstream& ifs, wxString file_ext);
 	~ShapesColorTable(void);
+
+	// operators
+	bool operator==(const ShapesColorTable& other) const;
+	bool operator!=(const ShapesColorTable& other) const { return !(*this == other); }
 
 	unsigned int ColorCount(void) const { return mColors.size(); }
 	ShapesColor *GetColor(unsigned int index) const { return mColors[index]; }
@@ -124,6 +132,11 @@ public:
 	ShapesBitmap(bool verbose = false);
 	ShapesBitmap(wxImage image, ShapesColorTable *colortable);
 	~ShapesBitmap(void);
+
+	// operators
+	bool operator==(const ShapesBitmap& other) const;
+	bool operator!=(const ShapesBitmap& other) const { return !(*this == other); }
+
 	// accessors
 	short Width(void) const { return mWidth; }
 	short Height(void) const { return mHeight; }
@@ -186,6 +199,9 @@ public:
 	// constructor/destructor
 	ShapesFrame(bool verbose = false);
 	~ShapesFrame(void);
+	// operators
+	bool operator==(const ShapesFrame& other) const;
+	bool operator!=(const ShapesFrame& other) const { return !(*this == other); }
 	// accessors
 	bool IsXmirrored(void) const {return mXmirror;}
 	bool IsYmirrored(void) const {return mYmirror;}
@@ -267,6 +283,9 @@ public:
 	// constructor/destructor
 	ShapesSequence(bool verbose = false);
 	~ShapesSequence(void);
+	// operators
+	bool operator==(const ShapesSequence& other) const;
+	bool operator!=(const ShapesSequence& other) const { return !(*this == other); }
 	// accessors
 	short Type(void) const {return mType;}
 	unsigned short Flags(void) const {return mFlags;}
@@ -335,6 +354,8 @@ public:
 	// constructor/destructor
 	ShapesChunk(bool verbose = false);
 	~ShapesChunk(void);
+	bool operator==(const ShapesChunk& other) const;
+	bool operator!=(const ShapesChunk& other) const { return !(*this == other); }
 	// chunk data access
 	int Version() const {return mVersion;}
 	int Type() const {return mType;}
