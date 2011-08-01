@@ -49,6 +49,8 @@ enum {
 	KEYPOINT_OBSCURED	= 1 << 13	// "host obscures parasite" (RenderPlaceObjs.cpp)
 };
 
+#define FOUR_CHARS_TO_INT(a,b,c,d) (((unsigned int)(a) << 24) | ((unsigned int)(b) << 16) | ((unsigned int)(c) << 8) | (unsigned int)(d))
+
 ShapesColor::ShapesColor(bool verbose): ShapesElement(verbose)
 {
 
@@ -180,7 +182,7 @@ bool ShapesColorTable::operator==(const ShapesColorTable& other) const
 		return false;
 	}
 }
-	
+
 BigEndianBuffer& ShapesColorTable::SaveObject(BigEndianBuffer& stream)
 {
 	for (unsigned int i = 0; i < mColors.size(); i++) {
@@ -189,6 +191,13 @@ BigEndianBuffer& ShapesColorTable::SaveObject(BigEndianBuffer& stream)
 		color->SaveObject(stream);
 	}
 	return stream;
+}
+
+BigEndianBuffer& ShapesColorTable::SavePatch(BigEndianBuffer& buffer, int index)
+{
+	buffer.WriteLong(FOUR_CHARS_TO_INT('c','t','a','b'));
+	buffer.WriteLong(index);
+	return SaveObject(buffer);
 }
 
 BigEndianBuffer& ShapesColorTable::LoadObject(BigEndianBuffer& buffer, unsigned int offset, unsigned int color_count)
@@ -405,6 +414,14 @@ BigEndianBuffer& ShapesBitmap::SaveObject(BigEndianBuffer& buffer)
 		}
 	}
 	return buffer;
+}
+
+BigEndianBuffer& ShapesBitmap::SavePatch(BigEndianBuffer& buffer, int index)
+{
+	buffer.WriteLong(FOUR_CHARS_TO_INT('b', 'm', 'a', 'p'));
+	buffer.WriteLong(index);
+	buffer.WriteLong(SizeInFile() + SIZEOF_bitmap_definition);
+	return SaveObject(buffer);
 }
 
 BigEndianBuffer& ShapesBitmap::LoadObject(BigEndianBuffer& buffer, unsigned int offset)
@@ -770,6 +787,13 @@ BigEndianBuffer& ShapesFrame::SaveObject(BigEndianBuffer& buffer)
 	return buffer;
 }
 
+BigEndianBuffer& ShapesFrame::SavePatch(BigEndianBuffer& buffer, int index)
+{
+	buffer.WriteLong(FOUR_CHARS_TO_INT('l','l','s','h'));
+	buffer.WriteLong(index);
+	return SaveObject(buffer);
+}
+
 BigEndianBuffer& ShapesFrame::LoadObject(BigEndianBuffer& buffer, unsigned int offset)
 {
 	unsigned short	flags;
@@ -896,6 +920,14 @@ BigEndianBuffer& ShapesSequence::SaveObject(BigEndianBuffer& buffer)
 	buffer.WriteShort(0);
 	
 	return buffer;
+}
+
+BigEndianBuffer& ShapesSequence::SavePatch(BigEndianBuffer& buffer, int index)
+{
+	buffer.WriteLong(FOUR_CHARS_TO_INT('h','l','s','h'));
+	buffer.WriteLong(index);
+	buffer.WriteLong(SizeInFile() + SIZEOF_high_level_shape_definition);
+	return SaveObject(buffer);
 }
 
 BigEndianBuffer& ShapesSequence::LoadObject(BigEndianBuffer& buffer, long offset)
@@ -1198,6 +1230,39 @@ unsigned int ShapesChunk::SizeInFile(void) const
 	return size;
 }
 
+unsigned int ShapesChunk::SizeInPatch(const ShapesChunk* other) const {
+	unsigned int size = 4; // 'cldf'
+
+	size += SIZEOF_collection_definition;
+	
+	for (unsigned int i = 0; i < mColorTables.size(); ++i) {
+		if (other == NULL || i >= other->mColorTables.size() || *mColorTables[i] != *other->mColorTables[i]) {
+			size += SIZEOF_rgb_color_value * mColorTables[i]->ColorCount() + 8;
+		}
+	}
+
+	for (unsigned int i = 0; i < mSequences.size(); ++i) {
+		if (other == NULL || i >= other->mSequences.size() || *mSequences[i] != *other->mSequences[i]) {
+			size += SIZEOF_high_level_shape_definition + mSequences[i]->SizeInPatch();
+		}
+	}
+
+
+	for (unsigned int i = 0; i < mFrames.size(); ++i) {
+		if (other == NULL || i >= other->mFrames.size() || *mFrames[i] != *other->mFrames[i]) {
+			size += SIZEOF_low_level_shape_definition + 8;
+		}
+	}
+	
+	for (unsigned int i = 0; i < mBitmaps.size(); ++i) {
+		if (other == NULL || i >= other->mBitmaps.size() || *mBitmaps[i] != *other->mBitmaps[i]) {
+			size += SIZEOF_bitmap_definition + mBitmaps[i]->SizeInPatch();
+		}
+	}
+
+	return size;
+}
+
 BigEndianBuffer& ShapesChunk::SaveObject(BigEndianBuffer& buffer)
 {
 	unsigned int	bitmap_count = BitmapCount(),
@@ -1281,6 +1346,54 @@ BigEndianBuffer& ShapesChunk::SaveObject(BigEndianBuffer& buffer)
 			buffer.WriteLong(sequence_offsets[i]);
 	}
 	
+	return buffer;
+}
+
+BigEndianBuffer& ShapesChunk::SavePatch(BigEndianBuffer& buffer, const ShapesChunk* other)
+{
+	buffer.WriteLong(FOUR_CHARS_TO_INT('c','l','d','f'));
+
+	// collection header
+	buffer.WriteShort(mVersion);
+	buffer.WriteShort(mType);
+	buffer.WriteUShort(mFlags);
+	buffer.WriteShort(GetColorTable(0)->ColorCount());
+	buffer.WriteShort(ColorTableCount());
+	buffer.WriteLong(SIZEOF_collection_definition);
+	buffer.WriteShort(SequenceCount());
+	buffer.WriteLong(0);
+	buffer.WriteShort(FrameCount());
+	buffer.WriteLong(0);
+	buffer.WriteShort(BitmapCount());
+	buffer.WriteLong(0);
+	buffer.WriteShort(mPixelsToWorld);
+	buffer.WriteLong(0);
+	buffer.WriteZeroes(506);
+
+	for (unsigned int i = 0; i < mColorTables.size(); ++i) {
+		if (other == NULL || i >= other->mColorTables.size() || *mColorTables[i] != *other->mColorTables[i]) {
+			mColorTables[i]->SavePatch(buffer, i);
+		}
+	}
+
+	for (unsigned int i = 0; i < mSequences.size(); ++i) {
+		if (other == NULL || i >= other->mSequences.size() || *mSequences[i] != *other->mSequences[i]) {
+			mSequences[i]->SavePatch(buffer, i);
+		}
+	}
+
+	for (unsigned int i = 0; i < mFrames.size(); ++i) {
+		if (other == NULL || i >= other->mFrames.size() || *mFrames[i] != *other->mFrames[i]) {
+			mFrames[i]->SavePatch(buffer, i);
+		}
+	}
+
+	for (unsigned int i = 0; i < mBitmaps.size(); ++i) {
+		if (other == NULL || i >= other->mBitmaps.size() || *mBitmaps[i] != *other->mBitmaps[i]) {
+			mBitmaps[i]->SavePatch(buffer, i);
+		}
+	}
+
 	return buffer;
 }
 
@@ -1633,6 +1746,34 @@ wxOutputStream& ShapesCollection::SaveObject(wxOutputStream& stream)
 #endif
 		}
 	}
+	return stream;
+}
+
+#if wxUSE_STD_IOSTREAM
+wxSTD ostream& ShapesCollection::SavePatch(wxSTD ostream& stream, const ShapesCollection& other, int index, int depth)
+#else
+wxOutputStream& ShapesCollection::SavePatch(wxOutputStream& stream, const ShapesCollection& other, int index, int depth)
+#endif
+{
+	bool diff = Defined(depth) && (other.mChunks[depth] == NULL || *mChunks[depth] != *other.mChunks[depth]);
+	unsigned int size = 12;
+	if (diff) {
+		size += mChunks[depth]->SizeInPatch(other.mChunks[depth]);
+	}
+
+	BigEndianBuffer chunkbuffer(size);
+	chunkbuffer.WriteLong(index);
+	chunkbuffer.WriteLong(depth ? 16 : 8);
+	if (diff) {
+		mChunks[depth]->SavePatch(chunkbuffer, other.mChunks[depth]);
+	}
+	chunkbuffer.WriteLong(FOUR_CHARS_TO_INT('e','n','d','c'));
+#if wxUSE_STD_IOSTREAM
+	stream.write((char *)chunkbuffer.Data(), chunkbuffer.Size());
+#else
+	stream.Write((char *)chunkbuffer.Data(), chunkbuffer.Size());
+#endif
+
 	return stream;
 }
 

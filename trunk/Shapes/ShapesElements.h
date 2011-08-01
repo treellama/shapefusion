@@ -83,8 +83,8 @@ public:
 	void SetGreen(unsigned short c) { mGreen = c; }
 	void SetBlue(unsigned short c) { mBlue = c; }
 	// utilities
-    BigEndianBuffer& SaveObject(BigEndianBuffer& buffer);
-    BigEndianBuffer& LoadObject(BigEndianBuffer& buffer);
+	BigEndianBuffer& SaveObject(BigEndianBuffer& buffer);
+	BigEndianBuffer& LoadObject(BigEndianBuffer& buffer);
 };
 
 // a color table
@@ -108,8 +108,9 @@ public:
 
 	unsigned int SizeInFile() const;
 
-    BigEndianBuffer& SaveObject(BigEndianBuffer& buffer);
-    BigEndianBuffer& LoadObject(BigEndianBuffer& buffer, unsigned int offset, unsigned int color_count);
+	BigEndianBuffer& SaveObject(BigEndianBuffer& buffer);
+	BigEndianBuffer& LoadObject(BigEndianBuffer& buffer, unsigned int offset, unsigned int color_count);
+	BigEndianBuffer& SavePatch(BigEndianBuffer& buffer, int index);
 	int SaveToGimp(wxString path) const;
 	int SaveToPhotoshop(wxString path) const;
 };
@@ -157,8 +158,10 @@ public:
 	void ClipboardPaste(ShapesColorTable* colorTable);
 	void FromImage(wxImage image, ShapesColorTable* colorTable);
 	unsigned int SizeInFile() const;
-    BigEndianBuffer& SaveObject(BigEndianBuffer& buffer);
-    BigEndianBuffer& LoadObject(BigEndianBuffer& buffer, unsigned int offset);
+	unsigned int SizeInPatch() const { return SizeInFile() + 12; }
+	BigEndianBuffer& SaveObject(BigEndianBuffer& buffer);
+	BigEndianBuffer& LoadObject(BigEndianBuffer& buffer, unsigned int offset);
+	BigEndianBuffer& SavePatch(BigEndianBuffer& buffer, int index);
 	void SaveToBMP(wxString path, ShapesColorTable *colorTable) const;
 	void SaveMaskToBMP(wxString path) const;
 };
@@ -238,8 +241,9 @@ public:
 	void SetWorldY0(short s) {mWorldY0 = s;}
 	// utilities
 	unsigned int SizeInFile() const;
-    BigEndianBuffer& SaveObject(BigEndianBuffer& buffer);
-    BigEndianBuffer& LoadObject(BigEndianBuffer& buffer, unsigned int offset);
+	BigEndianBuffer& SaveObject(BigEndianBuffer& buffer);
+	BigEndianBuffer& SavePatch(BigEndianBuffer& buffer, int index);
+	BigEndianBuffer& LoadObject(BigEndianBuffer& buffer, unsigned int offset);
 };
 
 // sequence types (ShapesSequence.number_of_views). Nobody
@@ -321,8 +325,10 @@ public:
 	void SetFrameIndex(unsigned int index, short value) {mFrameIndexes[index] = value;} 	
 	// utilities
 	unsigned int SizeInFile() const;
-    BigEndianBuffer& SaveObject(BigEndianBuffer& buffer);
-    BigEndianBuffer& LoadObject(BigEndianBuffer& buffer, long offset);
+	unsigned int SizeInPatch() const { return SizeInFile() + 12; }
+	BigEndianBuffer& SaveObject(BigEndianBuffer& buffer);
+	BigEndianBuffer& LoadObject(BigEndianBuffer& buffer, long offset);
+	BigEndianBuffer& SavePatch(BigEndianBuffer& buffer, int index);
 };
 
 int ActualNumberOfViews(int t);
@@ -380,8 +386,10 @@ public:
 	void DeleteSequence(unsigned int s);
 	// utilities
 	unsigned int SizeInFile() const;
-    BigEndianBuffer& SaveObject(BigEndianBuffer& stream);
-    BigEndianBuffer& LoadObject(BigEndianBuffer& stream);
+	unsigned int SizeInPatch(const ShapesChunk* other) const;
+	BigEndianBuffer& SaveObject(BigEndianBuffer& stream);
+	BigEndianBuffer& SavePatch(BigEndianBuffer& stream, const ShapesChunk* other);
+	BigEndianBuffer& LoadObject(BigEndianBuffer& stream);
 };
 
 // a Shapes collection
@@ -425,11 +433,13 @@ public:
 	unsigned int SizeInFile(unsigned int chunk) const;
 	
 #if wxUSE_STD_IOSTREAM
-    wxSTD ostream& SaveObject(wxSTD ostream& stream);
-    wxSTD istream& LoadObject(wxSTD istream& stream);
+	wxSTD ostream& SaveObject(wxSTD ostream& stream);
+	wxSTD ostream& SavePatch(wxSTD ostream& stream, const ShapesCollection& other, int index, int depth);
+	wxSTD istream& LoadObject(wxSTD istream& stream);
 #else
-    wxOutputStream& SaveObject(wxOutputStream& stream);
-    wxInputStream& LoadObject(wxInputStream& stream);
+	wxOutputStream& SaveObject(wxOutputStream& stream);
+	wxOutputStream& SavePatch(wxOutputStream& stream, int index, int depth);
+	wxInputStream& LoadObject(wxInputStream& stream);
 #endif
 };
 

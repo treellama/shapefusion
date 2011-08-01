@@ -152,6 +152,8 @@ void CreateShapesMenu(wxMenuBar *menu_bar)
 	shapes_menu->Append(SHAPES_MENU_ADDFRAME, wxT("New frame"));
 	shapes_menu->AppendSeparator();
 	shapes_menu->Append(SHAPES_MENU_ADDSEQUENCE, wxT("New sequence"));
+	shapes_menu->AppendSeparator();
+	shapes_menu->Append(SHAPES_MENU_GENERATEPATCH, wxT("Export Shapes Patch..."));
 	
 	// Let's disable all these items...
 	shapes_menu->Enable(SHAPES_MENU_ADDCOLORTABLE, false);

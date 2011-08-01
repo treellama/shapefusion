@@ -225,6 +225,29 @@ wxOutputStream& ShapesDocument::SaveObject(wxOutputStream& stream)
 }
 
 #if wxUSE_STD_IOSTREAM
+wxSTD ostream& ShapesDocument::SavePatch(wxSTD ostream& stream, const ShapesDocument& other)
+#else
+wxOutputStream& ShapesDocument::SavePatch(wxOutputStream& stream, const ShapesDocument& other);
+#endif
+{
+	if (mCollections.size() != other.mCollections.size()) {
+		wxLogError(wxT("[ShapesDocument] Shapes files must contain the same number of collections to generate a patch"));
+		return stream;
+	}
+
+	// 8-bit versions
+	for (unsigned int i = 0; i < mCollections.size(); ++i) {
+		mCollections[i]->SavePatch(stream, *other.mCollections[i], i, 0);
+	}
+
+	for (unsigned int i = 0; i < mCollections.size(); ++i) {
+		mCollections[i]->SavePatch(stream, *other.mCollections[i], i, 1);
+	}
+
+	return stream;
+}
+
+#if wxUSE_STD_IOSTREAM
 wxSTD istream& ShapesDocument::LoadObject(wxSTD istream& stream)
 #else
 wxInputStream& ShapesDocument::LoadObject(wxInputStream& stream)

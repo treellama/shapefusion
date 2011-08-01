@@ -230,6 +230,7 @@ public:
 	void MenuShapesExportBitmapMasks(wxCommandEvent &e);
 	void MenuShapesNewFrame(wxCommandEvent &e);
 	void MenuShapesNewSequence(wxCommandEvent &e);
+	void MenuShapesGeneratePatch(wxCommandEvent& e);
 	// control callbacks
 	void OnTreeSelect(wxTreeEvent &e);
 	void OnBitmapSelect(wxCommandEvent &e);
@@ -257,6 +258,7 @@ public:
 	void DoDeleteColorTable(int which);
 	void DoDeleteBitmap(int which);
 	void DoDeleteFrame(int which);
+
 };
 
 #endif
