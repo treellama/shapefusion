@@ -35,6 +35,8 @@
 		4DE10B500CC39C4200BAEC76 /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DE10B4F0CC39C4200BAEC76 /* QuickTime.framework */; };
 		4DE10B530CC39C8E00BAEC76 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DE10B520CC39C8E00BAEC76 /* Cocoa.framework */; };
 		4DE10B570CC39CAB00BAEC76 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DE10B560CC39CAB00BAEC76 /* libz.dylib */; };
+		AE33904A1290D7A2000DE273 /* shapefusion.icns in Resources */ = {isa = PBXBuildFile; fileRef = AE3390491290D7A2000DE273 /* shapefusion.icns */; };
+		AE3390651290D88F000DE273 /* libsndfile.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = AEFAE1E711FC87C80088BC0D /* libsndfile.framework */; };
 		AEFAE1E811FC87C80088BC0D /* libsndfile.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AEFAE1E711FC87C80088BC0D /* libsndfile.framework */; };
 		F03A573C0D0381F00057BB53 /* GenericEndianBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F03A573B0D0381F00057BB53 /* GenericEndianBuffer.cpp */; };
 		F08B4C5A0AB0B31E00896399 /* ShapeFusionApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F08B4B780AB0AE4B00896399 /* ShapeFusionApp.cpp */; };
@@ -51,6 +53,19 @@
 			);
 		};
 /* End PBXBuildRule section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		AE3390741290D895000DE273 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				AE3390651290D88F000DE273 /* libsndfile.framework in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		1F3345480BC95CA300A15A32 /* LittleEndianBuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = LittleEndianBuffer.cpp; sourceTree = "<group>"; };
@@ -83,10 +98,10 @@
 		4DE10B4F0CC39C4200BAEC76 /* QuickTime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickTime.framework; path = /System/Library/Frameworks/QuickTime.framework; sourceTree = "<absolute>"; };
 		4DE10B520CC39C8E00BAEC76 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		4DE10B560CC39CAB00BAEC76 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = /usr/lib/libz.dylib; sourceTree = "<absolute>"; };
+		AE3390491290D7A2000DE273 /* shapefusion.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = shapefusion.icns; path = Resources/shapefusion.icns; sourceTree = "<group>"; };
 		AEFAE1E711FC87C80088BC0D /* libsndfile.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = libsndfile.framework; path = Library/Frameworks/libsndfile.framework; sourceTree = SDKROOT; };
 		F03A573B0D0381F00057BB53 /* GenericEndianBuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.cpp.cpp; path = GenericEndianBuffer.cpp; sourceTree = "<group>"; };
 		F03A573D0D0381F80057BB53 /* GenericEndianBuffer.h */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.c.h; path = GenericEndianBuffer.h; sourceTree = "<group>"; };
-		F08B4B760AB0AE2000896399 /* wxmac.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = wxmac.icns; path = /Library/Frameworks/wx.framework/Versions/2.8/Resources/wxmac.icns; sourceTree = "<absolute>"; };
 		F08B4B780AB0AE4B00896399 /* ShapeFusionApp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ShapeFusionApp.cpp; sourceTree = "<group>"; };
 		F08B4B7A0AB0AE4B00896399 /* FrameView.cpp */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.cpp.cpp; path = FrameView.cpp; sourceTree = "<group>"; };
 		F08B4B7B0AB0AE4B00896399 /* FrameBrowser.cpp */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.cpp.cpp; path = FrameBrowser.cpp; sourceTree = "<group>"; };
@@ -209,10 +224,10 @@
 		F08B4B750AB0AE1200896399 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				AE3390491290D7A2000DE273 /* shapefusion.icns */,
 				1FE8DF870B9C4431003EF856 /* COPYING.txt */,
 				1FE8DF880B9C4431003EF856 /* README.txt */,
 				F08B4C470AB0B10000896399 /* ShapeFusion-Info.plist */,
-				F08B4B760AB0AE2000896399 /* wxmac.icns */,
 				F0D12E660E503412001DB33D /* DefaultNames.txt */,
 			);
 			name = Resources;
@@ -252,6 +267,7 @@
 				F08B4C400AB0B10000896399 /* Resources */,
 				F08B4C410AB0B10000896399 /* Sources */,
 				F08B4C420AB0B10000896399 /* Frameworks */,
+				AE3390741290D895000DE273 /* CopyFiles */,
 			);
 			buildRules = (
 				F08B4D9F0AB0CF7500896399 /* PBXBuildRule */,
@@ -296,6 +312,7 @@
 				1FE8DF890B9C4431003EF856 /* COPYING.txt in Resources */,
 				1FE8DF8A0B9C4431003EF856 /* README.txt in Resources */,
 				F0D12E670E503412001DB33D /* DefaultNames.txt in Resources */,
+				AE33904A1290D7A2000DE273 /* shapefusion.icns in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
