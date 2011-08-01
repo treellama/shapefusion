@@ -72,11 +72,13 @@ public:
 	bool DoOpenDocument(const wxString& file);
 
 #if wxUSE_STD_IOSTREAM
-    wxSTD ostream& SaveObject(wxSTD ostream& stream);
-    wxSTD istream& LoadObject(wxSTD istream& stream);
+	wxSTD ostream& SaveObject(wxSTD ostream& stream);
+	wxSTD istream& LoadObject(wxSTD istream& stream);
+	wxSTD ostream& SavePatch(wxSTD ostream& stream, const ShapesDocument& other);
 #else
-    wxOutputStream& SaveObject(wxOutputStream& stream);
-    wxInputStream& LoadObject(wxInputStream& stream);
+	wxOutputStream& SaveObject(wxOutputStream& stream);
+	wxInputStream& LoadObject(wxInputStream& stream);
+	wxOutputStream& SavePatch(wxSTD ostream& stream, const ShapesDocument& other);
 #endif
 
     ShapesDocument(void);

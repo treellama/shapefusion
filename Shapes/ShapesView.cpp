@@ -43,6 +43,7 @@ BEGIN_EVENT_TABLE(ShapesView, wxView)
 	EVT_MENU(SHAPES_MENU_EXPORTMASKS, ShapesView::MenuShapesExportBitmapMasks)
 	EVT_MENU(SHAPES_MENU_ADDFRAME, ShapesView::MenuShapesNewFrame)
 	EVT_MENU(SHAPES_MENU_ADDSEQUENCE, ShapesView::MenuShapesNewSequence)
+EVT_MENU(SHAPES_MENU_GENERATEPATCH, ShapesView::MenuShapesGeneratePatch)
 	EVT_TREE_SEL_CHANGED(-1, ShapesView::OnTreeSelect)
 	// bitmaps
 	EVT_COMMAND(BITMAP_BROWSER, wxEVT_BITMAPBROWSER, ShapesView::OnBitmapSelect)
@@ -927,6 +928,43 @@ void ShapesView::MenuShapesNewSequence(wxCommandEvent &e)
 		colltree->AppendItem(thenode, label, -1, -1, itemdata);
 		((ShapesDocument*)GetDocument())->Modify(true);
 	}
+}
+
+void ShapesView::MenuShapesGeneratePatch(wxCommandEvent&)
+{
+	ShapesDocument* document = (ShapesDocument*) GetDocument();
+
+	if (document == NULL) {
+		return;
+	}
+
+	// prompt the user for a base for the patch
+	wxFileDialog dlg(mFrame, wxT("Choose a base file (e.g. standard Infinity shapes)"), wxT(""), wxT(""), wxT("Shapes files (*.shpA)|*.shpA|All files (*.*)|*.*"), wxOPEN);
+	if (dlg.ShowModal() != wxID_OK) {
+		return;
+	}
+
+	ShapesDocument base;
+	if (!base.DoOpenDocument(dlg.GetPath())) {
+		return;
+	}
+	
+	// prompt the user for a patch location
+	wxString path = wxFileSelector(wxT("Export patch file"), wxT(""), wxT("Shapes Patch.ShPa"), wxT(""), wxT("Shapes patch|*.ShPa"), wxSAVE | wxOVERWRITE_PROMPT);
+	
+	if (path.empty()) {
+		return;
+	}
+
+#ifdef wxUSE_STD_IOSTREAM
+	wxSTD ofstream stream(path.mb_str(), wxSTD ios_base::out | wxSTD ios_base::binary | wxSTD ios_base::trunc);
+#else
+	wxFileOutputStream stream(path);
+	if (!stream.IsOK()) {
+		return;
+	}
+#endif
+	document->SavePatch(stream, base);
 }
 
 // user selected a tree entry
