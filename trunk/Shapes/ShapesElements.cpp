@@ -19,6 +19,7 @@
 #include "ShapesElements.h"
 #include "utilities.h"
 #include "../LittleEndianBuffer.h"
+#include <algorithm>
 
 // on-file struct sizes
 #define SIZEOF_collection_definition		544
@@ -62,6 +63,15 @@ ShapesColor::ShapesColor(unsigned int r, unsigned int g, unsigned int b, unsigne
 ShapesColor::~ShapesColor(void)
 {
 
+}
+
+bool ShapesColor::operator==(const ShapesColor& other) const
+{
+	return mLuminescent == other.mLuminescent 
+		&& mValue == other.mValue
+		&& mRed == other.mRed
+		&& mGreen == other.mGreen 
+		&& mBlue == other.mBlue;
 }
 
 BigEndianBuffer& ShapesColor::SaveObject(BigEndianBuffer& buffer)
@@ -155,6 +165,20 @@ ShapesColorTable::~ShapesColorTable(void)
 {
 	for (unsigned int i = 0; i < mColors.size(); i++)
 		delete mColors[i];
+}
+
+static bool compareShapesColorPtrs(ShapesColor* rhs, ShapesColor* lhs)
+{
+	return (*rhs == *lhs);
+}
+
+bool ShapesColorTable::operator==(const ShapesColorTable& other) const
+{
+	if (mColors.size() == other.mColors.size()) {
+		return std::equal(mColors.begin(), mColors.end(), other.mColors.begin(), compareShapesColorPtrs);
+	} else {
+		return false;
+	}
 }
 	
 BigEndianBuffer& ShapesColorTable::SaveObject(BigEndianBuffer& stream)
@@ -258,6 +282,20 @@ ShapesBitmap::~ShapesBitmap(void)
 	if (mPixels)
 		delete mPixels;
 	mPixels = NULL;
+}
+
+bool ShapesBitmap::operator==(const ShapesBitmap& other) const
+{
+	if (mWidth == other.mWidth 
+	    && mHeight == other.mHeight
+	    && mBytesPerRow == other.mBytesPerRow
+	    && mBitDepth == other.mBitDepth
+	    && mColumnOrder == other.mColumnOrder
+	    && mTransparent == other.mTransparent) {
+		return std::equal(mPixels, mPixels + (mWidth * mHeight), other.mPixels);
+	} else {
+		return false;
+	}
 }
 
 unsigned int ShapesBitmap::SizeInFile(void) const
@@ -683,6 +721,20 @@ ShapesFrame::~ShapesFrame(void)
 
 }
 
+bool ShapesFrame::operator==(const ShapesFrame& other) const
+{
+	return mXmirror == other.mXmirror
+		&& mYmirror == other.mYmirror
+		&& mKeypointObscured == other.mKeypointObscured
+		&& mMinimumLightIntensity == other.mMinimumLightIntensity
+		&& mBitmapIndex == other.mBitmapIndex
+		&& mScaleFactor == other.mScaleFactor
+		&& mOriginX == other.mOriginX
+		&& mOriginY == other.mOriginY
+		&& mKeyX == other.mKeyX
+		&& mKeyY == other.mKeyY;
+}
+
 BigEndianBuffer& ShapesFrame::SaveObject(BigEndianBuffer& buffer)
 {
 	unsigned short	flags = 0;
@@ -787,6 +839,29 @@ ShapesSequence::ShapesSequence(bool verbose): ShapesElement(verbose)
 ShapesSequence::~ShapesSequence(void)
 {
 
+}
+
+bool ShapesSequence::operator==(const ShapesSequence& other) const
+{
+	if (mType == other.mType 
+	    && mFlags == other.mFlags 
+	    && mName == other.mName
+	    && mNumberOfViews == other.mNumberOfViews
+	    && mFramesPerView == other.mFramesPerView
+	    && mTicksPerFrame == other.mTicksPerFrame
+	    && mKeyFrame == other.mKeyFrame
+	    && mTransferMode == other.mTransferMode
+	    && mTransferModePeriod == other.mTransferModePeriod
+	    && mFirstFrameSound == other.mFirstFrameSound
+	    && mKeyFrameSound == other.mKeyFrameSound
+	    && mLastFrameSound == other.mLastFrameSound
+	    && mPixelsToWorld == other.mPixelsToWorld
+	    && mLoopFrame == other.mLoopFrame
+	    && mFrameIndexes.size() == other.mFrameIndexes.size()) {
+		return std::equal(mFrameIndexes.begin(), mFrameIndexes.end(), other.mFrameIndexes.begin());
+	} else {
+		return false;
+	}
 }
 
 unsigned int ShapesSequence::SizeInFile() const
@@ -947,6 +1022,44 @@ ShapesChunk::~ShapesChunk(void)
 		delete mFrames[i];
 	for (i = 0; i < mBitmaps.size(); i++)
 		delete mBitmaps[i];
+}
+
+static bool compareColorTablePtrs(ShapesColorTable* lhs, ShapesColorTable* rhs) {
+	return *lhs == *rhs;
+}
+
+static bool compareSequencePtrs(ShapesSequence* lhs, ShapesSequence* rhs) {
+	return *lhs == *rhs;
+}
+
+static bool compareFramePtrs(ShapesFrame* lhs, ShapesFrame* rhs) {
+	return *lhs == *rhs;
+}
+
+static bool compareBitmapPtrs(ShapesBitmap* lhs, ShapesBitmap* rhs) {
+	return *lhs == *rhs;
+}
+
+bool ShapesChunk::operator==(const ShapesChunk& other) const
+{
+	if (mVersion == other.mVersion
+	    && mType == other.mType
+	    && mFlags == other.mFlags 
+	    && mPixelsToWorld == other.mPixelsToWorld
+	    && mColorTables.size() == other.mColorTables.size() 
+	    && mSequences.size() == other.mSequences.size()
+	    && mFrames.size() == other.mFrames.size()
+	    && mBitmaps.size() == other.mBitmaps.size()) {
+		if (!std::equal(mColorTables.begin(), mColorTables.end(), other.mColorTables.begin(), compareColorTablePtrs))
+			return false;
+		if (!std::equal(mSequences.begin(), mSequences.end(), other.mSequences.begin(), compareSequencePtrs))
+			return false;
+		if (!std::equal(mFrames.begin(), mFrames.end(), other.mFrames.begin(), compareFramePtrs))
+			return false;
+		return (std::equal(mBitmaps.begin(), mBitmaps.end(), other.mBitmaps.begin(), compareBitmapPtrs));
+	} else {
+		return false;
+	}
 }
 
 ShapesColorTable* ShapesChunk::GetColorTable(unsigned int index) const
