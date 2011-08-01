@@ -22,6 +22,7 @@
 #include "utilities.h"
 #include <wx/textfile.h>
 #include <wx/stdpaths.h>
+#include <wx/wfstream.h>
 
 #define INT_TO_WXSTRING(a)	wxString::Format(wxT("%d"), a)
 
@@ -956,11 +957,11 @@ void ShapesView::MenuShapesGeneratePatch(wxCommandEvent&)
 		return;
 	}
 
-#ifdef wxUSE_STD_IOSTREAM
+#if wxUSE_STD_IOSTREAM
 	wxSTD ofstream stream(path.mb_str(), wxSTD ios_base::out | wxSTD ios_base::binary | wxSTD ios_base::trunc);
 #else
 	wxFileOutputStream stream(path);
-	if (!stream.IsOK()) {
+	if (!stream.IsOk()) {
 		return;
 	}
 #endif

@@ -438,7 +438,7 @@ public:
 	wxSTD istream& LoadObject(wxSTD istream& stream);
 #else
 	wxOutputStream& SaveObject(wxOutputStream& stream);
-	wxOutputStream& SavePatch(wxOutputStream& stream, int index, int depth);
+	wxOutputStream& SavePatch(wxOutputStream& stream, const ShapesCollection& other, int index, int depth);
 	wxInputStream& LoadObject(wxInputStream& stream);
 #endif
 };

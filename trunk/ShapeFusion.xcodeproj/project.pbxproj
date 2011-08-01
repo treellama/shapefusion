@@ -270,7 +270,14 @@
 			isa = PBXProject;
 			buildConfigurationList = F08B4B5B0AB0ADBA00896399 /* Build configuration list for PBXProject "ShapeFusion" */;
 			compatibilityVersion = "Xcode 2.4";
+			developmentRegion = English;
 			hasScannedForEncodings = 0;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+			);
 			mainGroup = F08B4B580AB0ADBA00896399;
 			productRefGroup = F08B4C450AB0B10000896399 /* Products */;
 			projectDirPath = "";
