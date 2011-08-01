@@ -78,7 +78,7 @@ public:
 #else
 	wxOutputStream& SaveObject(wxOutputStream& stream);
 	wxInputStream& LoadObject(wxInputStream& stream);
-	wxOutputStream& SavePatch(wxSTD ostream& stream, const ShapesDocument& other);
+	wxOutputStream& SavePatch(wxOutputStream& stream, const ShapesDocument& other);
 #endif
 
     ShapesDocument(void);

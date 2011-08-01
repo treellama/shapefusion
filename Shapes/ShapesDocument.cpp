@@ -227,7 +227,7 @@ wxOutputStream& ShapesDocument::SaveObject(wxOutputStream& stream)
 #if wxUSE_STD_IOSTREAM
 wxSTD ostream& ShapesDocument::SavePatch(wxSTD ostream& stream, const ShapesDocument& other)
 #else
-wxOutputStream& ShapesDocument::SavePatch(wxOutputStream& stream, const ShapesDocument& other);
+wxOutputStream& ShapesDocument::SavePatch(wxOutputStream& stream, const ShapesDocument& other)
 #endif
 {
 	if (mCollections.size() != other.mCollections.size()) {
