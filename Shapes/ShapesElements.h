@@ -22,6 +22,7 @@
 #include "wx/wxprec.h"
 #ifndef WX_PRECOMP
     #include "wx/wx.h"
+#include "wx/clipbrd.h"
 #endif
 #include <vector>
 using std::vector;
@@ -139,6 +140,9 @@ public:
 	void SetColumnOrdered(bool b) { mColumnOrder = b; }
 	void SetTransparent(bool n) { mTransparent = n; }
 	// utilities
+	void ClipboardCopy(ShapesColorTable* colorTable) const;
+	void ClipboardPaste(ShapesColorTable* colorTable);
+	void FromImage(wxImage image, ShapesColorTable* colorTable);
 	unsigned int SizeInFile() const;
     BigEndianBuffer& SaveObject(BigEndianBuffer& buffer);
     BigEndianBuffer& LoadObject(BigEndianBuffer& buffer, unsigned int offset);
