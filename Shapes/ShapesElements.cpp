@@ -765,10 +765,8 @@ BigEndianBuffer& ShapesFrame::SaveObject(BigEndianBuffer& buffer)
 	if (mKeypointObscured)
 		flags |= KEYPOINT_OBSCURED;
 		
-	// float to fixed
-	mli_fractional = modff(mMinimumLightIntensity, &mli_integer);
-	min_light_intensity |= (((short)mli_integer) << 16) & 0xffff0000;
-	min_light_intensity |= (short)roundf(mli_fractional * 0xffff) & 0x0000ffff;
+	min_light_intensity = static_cast<long>(mMinimumLightIntensity * 65536.0 + 0.5); // convert float to 16.16 fixed
+
 	buffer.WriteUShort(flags);
 	buffer.WriteLong(min_light_intensity);
 	buffer.WriteShort(mBitmapIndex);
@@ -809,7 +807,7 @@ BigEndianBuffer& ShapesFrame::LoadObject(BigEndianBuffer& buffer, unsigned int o
 	
 	mli_fixed = buffer.ReadLong();
 	
-	mMinimumLightIntensity = ((mli_fixed >> 16) & 0xffff) + (float)(mli_fixed & 0xffff) / 65536.0;	// convert fixed point [0,1] to float
+	mMinimumLightIntensity = mli_fixed / 65536.0; // convert 16.16 fixed to float
 	
 	mBitmapIndex = buffer.ReadShort();
 	mOriginX = buffer.ReadShort();
