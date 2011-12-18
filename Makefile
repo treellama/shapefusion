@@ -7,7 +7,7 @@ CFLAGS = -g -Wall -O2
 WXCFLAGS = `wx-config --cxxflags`
 WXLIBS = `wx-config --libs`
 
-OBJECTS =		GenericEndianBuffer.o BigEndianBuffer.o LittleEndianBuffer.o ShapeFusionApp.o \
+OBJECTS =		GenericEndianBuffer.o BigEndianBuffer.o LittleEndianBuffer.o ShapeFusionApp.o ShapeFusionDocManager.o \
 				ShapeFusionMain.o ShapeFusionMenus.o
 SHAPESOBJECTS = Shapes/BitmapBrowser.o Shapes/BitmapView.o Shapes/CTBrowser.o Shapes/CTView.o \
 				Shapes/FrameBrowser.o Shapes/FrameView.o Shapes/SequenceView.o \
@@ -32,6 +32,9 @@ LittleEndianBuffer.o: LittleEndianBuffer.cpp LittleEndianBuffer.h GenericEndianB
 
 ShapeFusionApp.o: ShapeFusionApp.cpp ShapeFusionApp.h ShapeFusionMain.h ShapeFusionMenus.h \
 					ShapesDocument.h ShapesView.h SoundsDocument.h SoundsView.h
+	g++ -c $(CFLAGS) $(WXCFLAGS) -IShapes -ISounds $<
+
+ShapeFusionDocManager.o: ShapeFusionDocManager.cpp ShapeFusionDocManager.h
 	g++ -c $(CFLAGS) $(WXCFLAGS) -IShapes -ISounds $<
 
 ShapeFusionMain.o: ShapeFusionMain.cpp ShapeFusionMain.h ShapeFusionMenus.h
