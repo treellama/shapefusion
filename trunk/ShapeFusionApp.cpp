@@ -29,7 +29,7 @@ IMPLEMENT_APP(ShapeFusionApp)
 
 ShapeFusionApp::ShapeFusionApp(void)
 {
-    m_docManager = (wxDocManager *)NULL;
+    m_docManager = (ShapeFusionDocManager *)NULL;
 }
 
 bool ShapeFusionApp::OnInit(void)
@@ -41,7 +41,7 @@ bool ShapeFusionApp::OnInit(void)
 	wxInitAllImageHandlers();
 		
 	// Create a document manager
-	m_docManager = new wxDocManager;
+	m_docManager = new ShapeFusionDocManager;
 
 	// Create a template relating drawing documents to their views
 	(void) new wxDocTemplate(m_docManager, _T("Shapes"), _T("*"), _T(""), _T(""), _T("Shapes"), _T("Shapes"),

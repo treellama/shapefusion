@@ -17,9 +17,9 @@ WXLIBS = `$(WXCONFIG) --libs --unicode=no`
 SNDFILE_CFLAGS=`$(PKGCONFIG) --cflags sndfile`
 SNDFILE_LIBS=`$(PKGCONFIG) --libs sndfile`
 
-OBJECTS = GenericEndianBuffer.o BigEndianBuffer.o LittleEndianBuffer.o	\
-	ShapeFusionApp.o ShapeFusionMain.o ShapeFusionMenus.o		\
-	ShapeFusionResources.o
+OBJECTS = GenericEndianBuffer.o BigEndianBuffer.o			\
+	LittleEndianBuffer.o ShapeFusionApp.o ShapesFileDocManager.o	\
+	ShapeFusionMain.o ShapeFusionMenus.o ShapeFusionResources.o
 
 SHAPESOBJECTS = Shapes/BitmapBrowser.o Shapes/BitmapView.o		\
 	Shapes/CTBrowser.o Shapes/CTView.o Shapes/FrameBrowser.o	\
@@ -49,6 +49,9 @@ LittleEndianBuffer.o: LittleEndianBuffer.cpp LittleEndianBuffer.h GenericEndianB
 ShapeFusionApp.o: ShapeFusionApp.cpp ShapeFusionApp.h ShapeFusionMain.h ShapeFusionMenus.h \
 					ShapesDocument.h ShapesView.h SoundsDocument.h SoundsView.h
 	$(CC) -c $(CFLAGS) $(WXCFLAGS) -IShapes -ISounds $<
+
+ShapeFusionDocManager.o: ShapeFusionDocManager.cpp ShapeFusionDocManager.h
+	g++ -c $(CFLAGS) $(WXCFLAGS) -IShapes -ISounds $<
 
 ShapeFusionMain.o: ShapeFusionMain.cpp ShapeFusionMain.h ShapeFusionMenus.h
 	$(CC) -c $(CFLAGS) $(WXCFLAGS) -IShapes -ISounds $<

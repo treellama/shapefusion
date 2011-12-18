@@ -16,31 +16,19 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-#ifndef SHAPEFUSIONAPP_H
-#define SHAPEFUSIONAPP_H
+#ifndef SHAPEFUSIONDOCMANAGER_H
+#define SHAPEFUSIONDOCMANAGER_H
 
 #include "wx/wxprec.h"
 #ifndef WX_PRECOMP
-    #include "wx/wx.h"
+#include "wx/wx.h"
 #endif
 #include "wx/docview.h"
-#include "ShapeFusionDocManager.h"
-#include "ShapeFusionMain.h"
 
-class ShapeFusionApp: public wxApp {
+class ShapeFusionDocManager : public wxDocManager {
 public:
-	ShapeFusionApp(void);
-	bool OnInit(void);
-	int OnExit(void);
-	
-	wxFrame *CreateChildFrame(wxDocument *doc, wxView *view, const wxString title, wxPoint point, wxSize size, long style = wxDEFAULT_FRAME_STYLE);
-
-protected:
-	ShapeFusionDocManager*	m_docManager;
+	wxDocTemplate* SelectDocumentPath(wxDocTemplate** templates, int noTemplates, wxString& path, long flags, bool save);
+	wxDocTemplate* FindTemplateForPath(const wxString& path);
 };
-
-DECLARE_APP(ShapeFusionApp);
-
-ShapeFusionMain *GetMainFrame(void);
 
 #endif
