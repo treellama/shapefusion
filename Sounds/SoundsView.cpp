@@ -281,6 +281,7 @@ void SoundsView::Update(void)
 		// We cannot have a selection
 		mSoundPermutation = wxNOT_FOUND;
 		mSoundSource = wxNOT_FOUND;
+
 	} else {
 		// We have a sound class
 		
@@ -333,8 +334,11 @@ void SoundsView::Update(void)
 				// We deselect 8-bit list
 				sound_eight_bit_list->SetSelection(wxNOT_FOUND);
 			} else {
-				// There is neither 8-bit nor 16-bit sounds, we bail...
-				return;
+				// There is neither 8-bit nor 16-bit sounds, don't select anything
+				sound_eight_bit_list->SetSelection(wxNOT_FOUND);
+				sound_sixteen_bit_list->SetSelection(wxNOT_FOUND);
+				mSoundSource = wxNOT_FOUND;
+				mSoundPermutation = wxNOT_FOUND;
 			}
 		}
 		
@@ -387,6 +391,7 @@ void SoundsView::VolumeButtonChanged(wxCommandEvent &e)
 	
 	def = payload->Get16BitSoundDefinition(mSoundClass);
 	def->SetBehaviorIndex(sound_volume_radio_button->GetSelection());
+	GetDocument()->Modify(true);
 }
 
 void SoundsView::ChanceMenuChanged(wxCommandEvent &e)
@@ -396,6 +401,7 @@ void SoundsView::ChanceMenuChanged(wxCommandEvent &e)
 	
 	def = payload->Get16BitSoundDefinition(mSoundClass);
 	def->SetChance(sound_chance_menu->GetSelection());
+	GetDocument()->Modify(true);
 }
 
 void SoundsView::FlagsChanged(wxCommandEvent &e)
@@ -435,6 +441,7 @@ void SoundsView::FlagsChanged(wxCommandEvent &e)
 			wxLogDebug(wxT("Invalid control id in FlagsChanged"));
 			break;
 	}
+	GetDocument()->Modify(true);
 }
 
 void SoundsView::LowPitchValueChanged(wxScrollEvent &e)
@@ -448,6 +455,7 @@ void SoundsView::LowPitchValueChanged(wxScrollEvent &e)
 	
 	def = payload->Get16BitSoundDefinition(mSoundClass);
 	def->SetLowPitch(l);
+	GetDocument()->Modify(true);
 }
 
 void SoundsView::HighPitchValueChanged(wxScrollEvent &e)
@@ -461,6 +469,7 @@ void SoundsView::HighPitchValueChanged(wxScrollEvent &e)
 	
 	def = payload->Get16BitSoundDefinition(mSoundClass);
 	def->SetHighPitch(l);
+	GetDocument()->Modify(true);
 }
 
 void SoundsView::MenuDelete(wxCommandEvent &e)
@@ -481,6 +490,7 @@ void SoundsView::MenuDelete(wxCommandEvent &e)
 			SoundsDefinition* def = payload->GetSoundDefinition(mSoundSource, mSoundClass);
 			def->DeletePermutation(mSoundPermutation);
 			Update();
+			GetDocument()->Modify(true);
 			break;
 		}
 		default:
@@ -495,6 +505,8 @@ void SoundsView::MenuAddSoundClass(wxCommandEvent &e)
 	
 	// We add the new Sound class item by hand
 	sound_class_list->Append(wxString::Format(wxT("Sound %d"), sound_class_list->GetCount()));
+
+	GetDocument()->Modify(true);
 	
 	Update();
 }
@@ -527,6 +539,8 @@ void SoundsView::MenuImportSound(wxCommandEvent &e)
 			return;
 		}
 	}
+
+	GetDocument()->Modify(true);
 
 	Update();
 }
