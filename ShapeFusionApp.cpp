@@ -22,6 +22,8 @@
 #include "ShapesView.h"
 #include "SoundsDocument.h"
 #include "SoundsView.h"
+#include "PhysicsDocument.h"
+#include "PhysicsView.h"
 
 ShapeFusionMain *frame = (ShapeFusionMain *)NULL;
 
@@ -48,6 +50,8 @@ bool ShapeFusionApp::OnInit(void)
 		CLASSINFO(ShapesDocument), CLASSINFO(ShapesView));
 	(void) new wxDocTemplate(m_docManager, _T("Sounds"), _T("*"), _T(""), _T(""), _T("Sounds"), _T("Sounds"),
 		CLASSINFO(SoundsDocument), CLASSINFO(SoundsView));
+
+	(void) new wxDocTemplate(m_docManager, _T("Physics"), _T("*"), _T(""), _T(""), _T("Physics"), _T("Physics"), CLASSINFO(PhysicsDocument), CLASSINFO(PhysicsView));
 
 #ifdef __WXMAC__
 	//TODO: Put correct file extension values here

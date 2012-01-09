@@ -19,9 +19,8 @@
 #include <fstream>
 #include "ShapesView.h"
 #include "ShapesDocument.h"
+#include "../DefaultNames.h"
 #include "utilities.h"
-#include <wx/textfile.h>
-#include <wx/stdpaths.h>
 #include <wx/wfstream.h>
 
 #define INT_TO_WXSTRING(a)	wxString::Format(wxT("%d"), a)
@@ -393,45 +392,11 @@ void ShapesView::OnUpdate(wxView *WXUNUSED(sender), wxObject *WXUNUSED(hint))
 	if (collCount == 0)
 		return;
 	
-	// init the name array to dummy default values
-	std::vector<wxString>	collNames;
-
-	for (unsigned int i = 0; i < collCount; i++)
-		collNames.push_back(wxString::Format(wxT("Collection %u"), i));
-	
-	// look for a names file and use it in case
-	wxTextFile	namesFile(wxStandardPaths::Get().GetResourcesDir() + wxT("/DefaultNames.txt"));
-
-	if (namesFile.Exists()) {
-		// file exists
-		if (namesFile.Open()) {
-			// file opened successfully
-			for (wxString str = namesFile.GetFirstLine(); !namesFile.Eof();
-					str = namesFile.GetNextLine()) {
-				// trim leading and trailing blanks
-				str.Trim(true);
-				str.Trim(false);
-				wxString	args;
-				if (str.StartsWith(wxT("collection"), &args)) {
-					// ok, a line we are interested in
-					args.Trim(false);
-					size_t			firstBlank = args.find_first_of(wxT(" \t"));
-					unsigned long	collNum = 0;
-					if ((args.Left(firstBlank)).ToULong(&collNum) && collNum < collCount) {
-						// valid collection name, store
-						collNames[collNum] = (args.Mid(firstBlank)).Trim(false);
-					}
-				}
-			}
-			namesFile.Close();
-		}
-	}
-
 	// update all levels of the tree control
 	for (unsigned int i = 0; i < collCount; i++) {
 		// collection name nodes
 		ShapesTreeItemData	*itemdata = new ShapesTreeItemData(i, -1, TREESECTION_COLLECTION);
-		wxTreeItemId		coll = colltree->AppendItem(colltree->GetRootItem(), collNames[i],
+		wxTreeItemId		coll = colltree->AppendItem(colltree->GetRootItem(), GetName(wxT("collection"), i),
 															-1, -1, itemdata);
 
 		for (unsigned int j = 0; j < 2; j++) {

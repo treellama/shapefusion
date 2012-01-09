@@ -69,12 +69,12 @@ wxDocTemplate* ShapeFusionDocManager::FindTemplateForPath(const wxString& path)
 		}
 	}
 
+	stream.SeekI(0, wxFromEnd);
+	long filesize = stream.TellI();
+	stream.SeekI(0, wxFromStart);
+
 	// check for shapes file
 	{
-		stream.SeekI(0, wxFromEnd);
-		long filesize = stream.TellI();
-		stream.SeekI(0, wxFromStart);
-		
 		bool is_shapes = true;
 		for (int i = 0; i < 32; ++i) {
 			unsigned char header[32];
@@ -99,9 +99,31 @@ wxDocTemplate* ShapeFusionDocManager::FindTemplateForPath(const wxString& path)
 			return FindTemplate(GetTemplates(), _("Shapes"));
 		}
 	}
+
+	// check for physics
+	{
+		stream.SeekI(0, wxFromStart);
+		unsigned char header[128];
+		stream.Read(header, 128);
+		
+		BigEndianBuffer header_buffer(header, 128);
+		int version = header_buffer.ReadShort();
+		int data_version = header_buffer.ReadShort();
+		if ((version == 0 || version == 1 || version == 2 || version == 4) && (data_version == 0 || data_version == 1 || data_version == 2)) {
+			header_buffer.Position(72);
+			long directory_offset = header_buffer.ReadLong();
+			if (directory_offset >= filesize)
+				return 0;
+
+			unsigned char tag[4];
+			stream.Read(tag, 4);
+			if (strncmp(reinterpret_cast<const char*>(tag), "MNpx", 4) == 0) {
+				return FindTemplate(GetTemplates(), _("Physics"));
+			}
+		}
+	}
 	
-	return 0;
-	
+	return 0;	
 }
 
 wxDocTemplate* ShapeFusionDocManager::SelectDocumentPath(wxDocTemplate** templates, int noTemplates, wxString& path, long, bool)

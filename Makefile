@@ -7,19 +7,23 @@ CFLAGS = -g -Wall -O2
 WXCFLAGS = `wx-config --cxxflags`
 WXLIBS = `wx-config --libs`
 
-OBJECTS =		GenericEndianBuffer.o BigEndianBuffer.o LittleEndianBuffer.o ShapeFusionApp.o ShapeFusionDocManager.o \
+OBJECTS =	DefaultNames.o GenericEndianBuffer.o BigEndianBuffer.o LittleEndianBuffer.o ShapeFusionApp.o ShapeFusionDocManager.o \
 				ShapeFusionMain.o ShapeFusionMenus.o
 SHAPESOBJECTS = Shapes/BitmapBrowser.o Shapes/BitmapView.o Shapes/CTBrowser.o Shapes/CTView.o \
 				Shapes/FrameBrowser.o Shapes/FrameView.o Shapes/SequenceView.o \
 				Shapes/ShapesDocument.o Shapes/ShapesElements.o Shapes/ShapesView.o \
 				Shapes/ShapesTreeItemData.o Shapes/utilities.o
 SOUNDSOBJECTS = Sounds/SoundsDocument.o Sounds/SoundsView.o Sounds/SoundsElements.o
+PHYSICSOBJECTS = Physics/PhysicsDocument.o Physics/PhysicsElements.o Physics/PhysicsView.o Physics/PhysicsTreeItemData.o
 
-VPATH = Shapes:Sounds
+VPATH = Shapes:Sounds:Physics
 
 
-shapefusion: $(OBJECTS) $(SHAPESOBJECTS) $(SOUNDSOBJECTS)
-	g++ -o shapefusion $(OBJECTS) $(SHAPESOBJECTS) $(SOUNDSOBJECTS) $(WXLIBS) `pkg-config --libs sndfile`
+shapefusion: $(OBJECTS) $(SHAPESOBJECTS) $(SOUNDSOBJECTS) $(PHYSICSOBJECTS)
+	g++ -o shapefusion $(OBJECTS) $(SHAPESOBJECTS) $(SOUNDSOBJECTS) $(PHYSICSOBJECTS) $(WXLIBS) `pkg-config --libs sndfile`
+
+DefaultNames.o: DefaultNames.cpp DefaultNames.h
+	g++ -c $(CFLAGS) $(WXCFLAGS) $<
 
 GenericEndianBuffer.o: GenericEndianBuffer.cpp GenericEndianBuffer.h
 	g++ -c $(CFLAGS) $<
@@ -30,18 +34,30 @@ BigEndianBuffer.o: BigEndianBuffer.cpp BigEndianBuffer.h GenericEndianBuffer.h
 LittleEndianBuffer.o: LittleEndianBuffer.cpp LittleEndianBuffer.h GenericEndianBuffer.h
 	g++ -c $(CFLAGS) $<
 
+Physics/PhysicsDocument.o: PhysicsDocument.cpp PhysicsDocument.h PhysicsElements.h PhysicsView.h
+	g++ -c $(CFLAGS) $(WXCFLAGS) $< -o $@
+
+Physics/PhysicsElements.o: PhysicsElements.cpp PhysicsElements.h
+	g++ -c $(CFLAGS) $(WXCFLAGS) $< -o $@
+
+Physics/PhysicsTreeItemData.o: PhysicsTreeItemData.cpp PhysicsTreeItemData.h
+	g++ -c $(CFLAGS) $(WXCFLAGS) $< -o $@
+
+Physics/PhysicsView.o: PhysicsView.cpp PhysicsView.h
+	g++ -c $(CFLAGS) $(WXCFLAGS) $< -o $@
+
 ShapeFusionApp.o: ShapeFusionApp.cpp ShapeFusionApp.h ShapeFusionMain.h ShapeFusionMenus.h \
-					ShapesDocument.h ShapesView.h SoundsDocument.h SoundsView.h
-	g++ -c $(CFLAGS) $(WXCFLAGS) -IShapes -ISounds $<
+					ShapesDocument.h ShapesView.h SoundsDocument.h SoundsView.h PhysicsDocument.h PhysicsView.h
+	g++ -c $(CFLAGS) $(WXCFLAGS) -IShapes -ISounds -IPhysics $<
 
 ShapeFusionDocManager.o: ShapeFusionDocManager.cpp ShapeFusionDocManager.h
-	g++ -c $(CFLAGS) $(WXCFLAGS) -IShapes -ISounds $<
+	g++ -c $(CFLAGS) $(WXCFLAGS) -IShapes -ISounds -IPhysics $<
 
 ShapeFusionMain.o: ShapeFusionMain.cpp ShapeFusionMain.h ShapeFusionMenus.h
-	g++ -c $(CFLAGS) $(WXCFLAGS) -IShapes -ISounds $<
+	g++ -c $(CFLAGS) $(WXCFLAGS) -IShapes -ISounds -IPhysics $<
 
 ShapeFusionMenus.o: ShapeFusionMenus.cpp ShapeFusionMenus.h
-	g++ -c $(CFLAGS) $(WXCFLAGS) -IShapes -ISounds $<
+	g++ -c $(CFLAGS) $(WXCFLAGS) -IShapes -ISounds -IPhysics $<
 
 
 Shapes/BitmapBrowser.o: BitmapBrowser.cpp BitmapBrowser.h ShapesElements.h utilities.h
@@ -96,5 +112,6 @@ Sounds/SoundsView.o: SoundsView.cpp SoundsView.h SoundsDocument.h ShapeFusionApp
 clean:
 	rm -f Shapes/*.o
 	rm -f Sounds/*.o
+	rm -f Physics/*.o
 	rm -f *.o
 
