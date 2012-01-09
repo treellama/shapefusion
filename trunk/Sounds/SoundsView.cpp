@@ -28,11 +28,10 @@
 #endif
 
 #include "wx/wfstream.h"
-#include <wx/textfile.h>
-#include <wx/stdpaths.h>
 
 #include "../ShapeFusionApp.h"
 #include "../ShapeFusionMenus.h"
+#include "../DefaultNames.h"
 #include "SoundsView.h"
 
 BEGIN_EVENT_TABLE(SoundsView, wxView)
@@ -199,46 +198,11 @@ void SoundsView::OnDraw(wxDC *dc)
 
 void SoundsView::OnUpdate(wxView *WXUNUSED(sender), wxObject *WXUNUSED(hint))
 {
-	// init the name array to dummy default values
-	std::vector<wxString>   classNames;
-
-	for (unsigned int i = 0; i < payload->GetSoundCount(); i++)
-		classNames.push_back(wxString::Format(wxT("Sound %u"), i));
-	
-	// look for a names file and use it in case
-	// FIXME code duplication with ShapesView.cpp
-	wxTextFile	namesFile(wxStandardPaths::Get().GetResourcesDir() + wxT("/DefaultNames.txt"));
-
-	if (namesFile.Exists()) {
-		// file exists
-		if (namesFile.Open()) {
-			// file opened successfully
-			for (wxString str = namesFile.GetFirstLine(); !namesFile.Eof();
-				str = namesFile.GetNextLine()) {
-				// trim leading and trailing blanks
-				str.Trim(true);
-				str.Trim(false);
-				wxString    args;
-				if (str.StartsWith(wxT("sound"), &args)) {
-					// ok, a line we are interested in
-					args.Trim(false);
-					size_t          firstBlank = args.find_first_of(wxT(" \t"));
-					unsigned long   classNum = 0;
-					if ((args.Left(firstBlank)).ToULong(&classNum) && classNum < payload->GetSoundCount()) {
-						// valid class name, store
-						classNames[classNum] = (args.Mid(firstBlank)).Trim(false);
-					}
-				}
-			}
-			namesFile.Close();
-		}
-	}
-
 	bool	gequals = true;
 
 	sound_class_list->Clear();
 	for (unsigned int i = 0; i < payload->GetSoundCount(); i++) {
-		sound_class_list->Append(classNames[i]);
+		sound_class_list->Append(GetName(wxT("sound"), i));
 		// We check if there is a difference between 8-bit and 16-bit
 		// SoundsDefinitions
 		SoundsDefinition	*def8 = payload->Get8BitSoundDefinition(i),
