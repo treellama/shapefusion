@@ -26,6 +26,8 @@
 #include "wx/wx.h"
 #endif
 
+#include <cmath>
+
 #include "PhysicsElements.h"
 
 BigEndianBuffer& PhysicsConstants::LoadObject(BigEndianBuffer& buffer)
@@ -71,6 +73,47 @@ BigEndianBuffer& PhysicsConstants::LoadObject(BigEndianBuffer& buffer)
 	return buffer;
 }
 
+BigEndianBuffer& PhysicsConstants::SaveObject(BigEndianBuffer& buffer) const
+{
+	buffer.WriteFixed(mMaximumForwardVelocity);
+	buffer.WriteFixed(mMaximumBackwardVelocity);
+	buffer.WriteFixed(mMaximumPerpendicularVelocity);
+
+	buffer.WriteFixed(mAcceleration);
+	buffer.WriteFixed(mDeceleration);
+	buffer.WriteFixed(mAirborneDeceleration);
+	
+	buffer.WriteFixed(mGravitationalAcceleration);
+	buffer.WriteFixed(mClimbingAcceleration);
+	buffer.WriteFixed(mTerminalVelocity);
+
+	buffer.WriteFixed(mExternalDeceleration);
+
+	buffer.WriteFixed(mAngularAcceleration);
+	buffer.WriteFixed(mAngularDeceleration);
+	buffer.WriteFixed(mMaximumAngularVelocity);
+	buffer.WriteFixed(mAngularRecenteringVelocity);
+
+	buffer.WriteFixed(mFastAngularVelocity);
+	buffer.WriteFixed(mFastAngularMaximum);
+
+	buffer.WriteFixed(mMaximumElevation);
+	buffer.WriteFixed(mExternalAngularDeceleration);
+
+	buffer.WriteFixed(mStepDelta);
+	buffer.WriteFixed(mStepAmplitude);
+	
+	buffer.WriteFixed(mRadius);
+	buffer.WriteFixed(mHeight);
+	buffer.WriteFixed(mDeadHeight);
+	buffer.WriteFixed(mCameraHeight);
+	buffer.WriteFixed(mSplashHeight);
+
+	buffer.WriteFixed(mHalfCameraSeparation);
+
+	return buffer;
+}
+
 BigEndianBuffer& AttackDefinition::LoadObject(BigEndianBuffer& buffer)
 {
 	mType = buffer.ReadShort();
@@ -84,6 +127,21 @@ BigEndianBuffer& AttackDefinition::LoadObject(BigEndianBuffer& buffer)
 	mDz = buffer.ReadShort();
 
 	mGoodData = true;
+	return buffer;
+}
+
+BigEndianBuffer& AttackDefinition::SaveObject(BigEndianBuffer& buffer) const
+{
+	buffer.WriteShort(mType);
+	buffer.WriteShort(mRepetitions);
+	buffer.WriteShort(std::floor(mError * 512.0 / 360.0 + 0.5));
+	buffer.WriteShort(mRange);
+	buffer.WriteShort(mAttackShape);
+
+	buffer.WriteShort(mDx);
+	buffer.WriteShort(mDy);
+	buffer.WriteShort(mDz);
+	
 	return buffer;
 }
 
@@ -101,6 +159,28 @@ BigEndianBuffer& DamageDefinition::LoadObject(BigEndianBuffer& buffer)
 	return buffer;
 }
 
+BigEndianBuffer& DamageDefinition::SaveObject(BigEndianBuffer& buffer) const
+{
+	buffer.WriteShort(mType);
+	buffer.WriteShort(mFlags);
+
+	buffer.WriteShort(mBase);
+	buffer.WriteShort(mRandom);
+
+	buffer.WriteFixed(mScale);
+
+	return buffer;
+}
+
+static unsigned short BuildCollection(unsigned short collection, unsigned short colorTable)
+{
+	if (collection == 31 && colorTable == 7) {
+		return 0xffff;
+	} else {
+		return collection | (colorTable << 5);
+	}
+}
+
 BigEndianBuffer& EffectDefinition::LoadObject(BigEndianBuffer& buffer)
 {
 	mCollection = buffer.ReadUShort();
@@ -113,6 +193,18 @@ BigEndianBuffer& EffectDefinition::LoadObject(BigEndianBuffer& buffer)
 	mDelaySound = buffer.ReadShort();
 
 	mGoodData = true;
+	return buffer;
+}
+
+BigEndianBuffer& EffectDefinition::SaveObject(BigEndianBuffer& buffer) const
+{
+	buffer.WriteUShort(BuildCollection(mCollection, mColorTable));
+	buffer.WriteShort(mShape);
+	buffer.WriteFixed(mSoundPitch);
+	buffer.WriteUShort(mFlags);
+	buffer.WriteShort(mDelay);
+	buffer.WriteShort(mDelaySound);
+
 	return buffer;
 }
 
@@ -196,6 +288,73 @@ BigEndianBuffer& MonsterDefinition::LoadObject(BigEndianBuffer& buffer)
 	return buffer;
 }
 
+BigEndianBuffer& MonsterDefinition::SaveObject(BigEndianBuffer& buffer) const
+{
+	buffer.WriteUShort(BuildCollection(mCollection, mColorTable));
+
+	buffer.WriteShort(mVitality);
+	buffer.WriteULong(mImmunities);
+	buffer.WriteULong(mWeaknesses);
+	buffer.WriteULong(mFlags);
+
+	buffer.WriteLong(mClass);
+	buffer.WriteLong(mFriends);
+	buffer.WriteLong(mEnemies);
+
+	buffer.WriteFixed(mSoundPitch);
+
+	buffer.WriteShort(mActivationSound);
+	buffer.WriteShort(mFriendlyActivationSound);
+	buffer.WriteShort(mClearSound);
+	buffer.WriteShort(mKillSound);
+	buffer.WriteShort(mApologySound);
+	buffer.WriteShort(mFriendlyFireSound);
+	buffer.WriteShort(mFlamingSound);
+	buffer.WriteShort(mRandomSound);
+	buffer.WriteShort(mRandomSoundMask);
+
+	buffer.WriteShort(mCarryingItemType);
+	
+	buffer.WriteShort(mRadius);
+	buffer.WriteShort(mHeight);
+	buffer.WriteShort(mPreferredHoverHeight);
+	buffer.WriteShort(mMinimumLedgeDelta);
+	buffer.WriteShort(mMaximumLedgeDelta);
+	buffer.WriteFixed(mExternalVelocityScale);
+	buffer.WriteShort(mImpactEffect);
+	buffer.WriteShort(mMeleeImpactEffect);
+	buffer.WriteShort(mContrailEffect);
+
+	buffer.WriteShort(mHalfVisualArc);
+	buffer.WriteShort(mHalfVerticalVisualArc);
+	buffer.WriteShort(mVisualRange);
+	buffer.WriteShort(mDarkVisualRange);
+	buffer.WriteShort(mIntelligence);
+	buffer.WriteShort(mSpeed);
+	buffer.WriteShort(mGravity);
+	buffer.WriteShort(mTerminalVelocity);
+	buffer.WriteShort(mDoorRetryMask);
+	buffer.WriteShort(mShrapnelRadius);
+
+	mShrapnelDamage.SaveObject(buffer);
+	
+	buffer.WriteShort(mHitShapes);
+	buffer.WriteShort(mHardDyingShape);
+	buffer.WriteShort(mSoftDyingShape);
+	buffer.WriteShort(mHardDeadShapes);
+	buffer.WriteShort(mSoftDeadShapes);
+	buffer.WriteShort(mStationaryShape);
+	buffer.WriteShort(mMovingShape);
+	buffer.WriteShort(mTeleportInShape);
+	buffer.WriteShort(mTeleportOutShape);
+
+	buffer.WriteShort(mAttackFrequency);
+	mMeleeAttack.SaveObject(buffer);
+	mRangedAttack.SaveObject(buffer);
+
+	return buffer;
+}
+
 BigEndianBuffer& ProjectileDefinition::LoadObject(BigEndianBuffer& buffer)
 {
 	mCollection = buffer.ReadUShort();
@@ -230,6 +389,34 @@ BigEndianBuffer& ProjectileDefinition::LoadObject(BigEndianBuffer& buffer)
 	return buffer;
 }
 
+BigEndianBuffer& ProjectileDefinition::SaveObject(BigEndianBuffer& buffer) const
+{
+	buffer.WriteUShort(BuildCollection(mCollection, mColorTable));
+	buffer.WriteShort(mShape);
+
+	buffer.WriteShort(mDetonationEffect);
+	buffer.WriteShort(mMediaDetonationEffect);
+	buffer.WriteShort(mContrailEffect);
+	buffer.WriteShort(mTicksBetweenContrails);
+	buffer.WriteShort(mMaximumContrails);
+	buffer.WriteShort(mMediaProjectilePromotion);
+
+	buffer.WriteShort(mRadius);
+	buffer.WriteShort(mAreaOfEffect);
+	mDamage.SaveObject(buffer);
+	
+	buffer.WriteULong(mFlags);
+
+	buffer.WriteShort(mSpeed);
+	buffer.WriteShort(mMaximumRange);
+
+	buffer.WriteFixed(mSoundPitch);
+	buffer.WriteShort(mFlybySound);
+	buffer.WriteShort(mReboundSound);
+
+	return buffer;
+}
+
 BigEndianBuffer& TriggerDefinition::LoadObject(BigEndianBuffer& buffer)
 {
 	mRoundsPerMagazine = buffer.ReadShort();
@@ -254,6 +441,32 @@ BigEndianBuffer& TriggerDefinition::LoadObject(BigEndianBuffer& buffer)
 	mBurstCount = buffer.ReadShort();
 
 	mGoodData = true;
+	return buffer;
+}
+
+BigEndianBuffer& TriggerDefinition::SaveObject(BigEndianBuffer& buffer) const
+{
+	buffer.WriteShort(mRoundsPerMagazine);
+	buffer.WriteShort(mAmmunitionType);
+	buffer.WriteShort(mTicksPerRound);
+	buffer.WriteShort(mRecoveryTicks);
+	buffer.WriteShort(mChargingTicks);
+	buffer.WriteShort(mRecoilMagnitude);
+	
+	buffer.WriteShort(mFiringSound);
+	buffer.WriteShort(mClickSound);
+	buffer.WriteShort(mChargingSound);
+	buffer.WriteShort(mShellCasingSound);
+	buffer.WriteShort(mReloadingSound);
+	buffer.WriteShort(mChargedSound);
+	
+	buffer.WriteShort(mProjectileType);
+	buffer.WriteShort(mThetaError);
+	buffer.WriteShort(mDx);
+	buffer.WriteShort(mDz);
+	buffer.WriteShort(mShellCasingType);
+	buffer.WriteShort(mBurstCount);
+
 	return buffer;
 }
 
@@ -302,6 +515,44 @@ BigEndianBuffer& WeaponDefinition::LoadObject(BigEndianBuffer& buffer)
 	}
 
 	mGoodData = true;
+	return buffer;
+}
+
+BigEndianBuffer& WeaponDefinition::SaveObject(BigEndianBuffer& buffer) const
+{
+	buffer.WriteShort(mItemType);
+	buffer.WriteShort(mPowerupType);
+	buffer.WriteShort(mWeaponClass);
+	buffer.WriteShort(mFlags);
+	
+	buffer.WriteFixed(mFiringLightIntensity);
+	buffer.WriteShort(mFiringIntensityDecayTicks);
+
+	buffer.WriteFixed(mIdleHeight);
+	buffer.WriteFixed(mBobAmplitude);
+	buffer.WriteFixed(mKickHeight);
+	buffer.WriteFixed(mReloadHeight);
+	buffer.WriteFixed(mIdleWidth);
+	buffer.WriteFixed(mHorizontalAmplitude);
+
+	buffer.WriteUShort(BuildCollection(mCollection, mColorTable));
+
+	buffer.WriteShort(mIdleShape);
+	buffer.WriteShort(mFiringShape);
+	buffer.WriteShort(mReloadingShape);
+	buffer.WriteShort(-1); // unused
+	buffer.WriteShort(mChargingShape);
+	buffer.WriteShort(mChargedShape);
+
+	buffer.WriteShort(mReadyTicks);
+	buffer.WriteShort(mAwaitReloadTicks);
+	buffer.WriteShort(mLoadingTicks);
+	buffer.WriteShort(mFinishLoadingTicks);
+	buffer.WriteShort(mPowerupTicks);
+
+	mPrimaryTrigger.SaveObject(buffer);
+	mSecondaryTrigger.SaveObject(buffer);
+
 	return buffer;
 }
 

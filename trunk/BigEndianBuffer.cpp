@@ -15,6 +15,7 @@
  * along with ShapeFusion; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
+#include <cmath>
 #include <iostream>
 #include "BigEndianBuffer.h"
 
@@ -135,3 +136,7 @@ void BigEndianBuffer::WriteULong(unsigned long v)
 	}
 }
 
+void BigEndianBuffer::WriteFixed(double d)
+{
+	WriteLong(static_cast<long>(std::floor(d * 65536.0 + 0.5)));
+}

@@ -53,6 +53,8 @@ public:
 	// stuff access
 	unsigned char *Data(void) const;
 	unsigned int Size(void) const;
+
+	unsigned long CalculateCRC() const;
 };
 
 #endif

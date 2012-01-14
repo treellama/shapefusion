@@ -17,6 +17,7 @@
 */
 #include <iostream>
 #include <cstring>
+#include <vector>
 #include "GenericEndianBuffer.h"
 
 GenericEndianBuffer::GenericEndianBuffer(unsigned int _size):
@@ -150,3 +151,39 @@ unsigned int GenericEndianBuffer::Position(void) const
 	return mPosition - mData;
 }
 
+static const unsigned long CRC32_POLYNOMIAL = 0xEDB88320L;
+static std::vector<unsigned long> crc_table;
+
+static void BuildCRCTable()
+{
+	if (crc_table.empty()) {
+		crc_table.resize(256);
+
+		for (unsigned int i = 0; i < crc_table.size(); ++i) {
+			unsigned long crc = i;
+			for (int j = 0; j < 8; ++j) {
+				if (crc & 1) {
+					crc = (crc >> 1) ^ CRC32_POLYNOMIAL;
+				} else {
+					crc >>= 1;
+				}
+				crc_table[i] = crc;
+			}
+		}
+	}
+}
+
+unsigned long GenericEndianBuffer::CalculateCRC() const 
+{
+	BuildCRCTable();
+
+	unsigned long crc = 0xFFFFFFFFL;
+	
+	unsigned char* p = mData;
+	for (unsigned int i = 0; i < mSize; ++i) {
+		unsigned long a = (crc >> 8) & 0x00FFFFFFL;
+		unsigned long b = crc_table[((int) crc ^ *p++) & 0xff];
+		crc = a^b;
+	}
+	return crc ^ 0xFFFFFFFFL;
+}
