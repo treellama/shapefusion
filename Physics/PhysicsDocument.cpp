@@ -78,6 +78,8 @@ wxInputStream& PhysicsDocument::LoadObject(wxInputStream& stream)
 		return stream;
 	}
 
+	wad_header.ReadBlock(MAXIMUM_WADFILE_NAME_LENGTH, wadfile_name);
+
 	// skip to the directory offset and wad count
 	wad_header.Position(72);
 	
@@ -135,17 +137,6 @@ wxInputStream& PhysicsDocument::LoadObject(wxInputStream& stream)
 
 		switch (tag)
 		{
-		case FOUR_CHARS_TO_INT('P','X','p','x'): {
-			int count = tag_data.Size() / PhysicsConstants::kSize;
-			mConstants.resize(2);
-			for (int i = 0; i < count; ++i) {
-				mConstants[i].LoadObject(tag_data);
-				if (!mConstants[i].IsGood()) {
-					return stream;
-				}
-			}
-			break;
-		}
 		case FOUR_CHARS_TO_INT('M','N','p','x'): {
 			int count = tag_data.Size() / MonsterDefinition::kSize;
 			mMonsterDefinitions.resize(count);
@@ -179,6 +170,17 @@ wxInputStream& PhysicsDocument::LoadObject(wxInputStream& stream)
 			}
 			break;
 		}
+		case FOUR_CHARS_TO_INT('P','X','p','x'): {
+			int count = tag_data.Size() / PhysicsConstants::kSize;
+			mConstants.resize(2);
+			for (int i = 0; i < count; ++i) {
+				mConstants[i].LoadObject(tag_data);
+				if (!mConstants[i].IsGood()) {
+					return stream;
+				}
+			}
+			break;
+		}
 		case FOUR_CHARS_TO_INT('W','P','p','x'): {
 			int count = tag_data.Size() / WeaponDefinition::kSize;
 			mWeaponDefinitions.resize(count);
@@ -198,4 +200,93 @@ wxInputStream& PhysicsDocument::LoadObject(wxInputStream& stream)
 	}
 
 	return stream;
+}
+
+template<class T> 
+void PhysicsDocument::WriteTag(BigEndianBuffer& buffer, long& offset, unsigned long tag, const std::vector<T>& data, bool last)
+{
+	long entry_size = T::kSize * data.size();
+	offset += entry_size + kEntryHeaderSize;
+
+	buffer.WriteULong(tag);
+	buffer.WriteLong(last ? 0 : offset);
+	buffer.WriteLong(entry_size);
+	buffer.WriteLong(0);
+
+	for (typename std::vector<T>::const_iterator it = data.begin(); it != data.end(); ++it) {
+		it->SaveObject(buffer);
+	}
+
+}
+
+#if wxUSE_STD_IOSTREAM
+wxSTD ostream& PhysicsDocument::SaveObject(wxSTD ostream& stream)
+#else
+wxOutputStream& PhysicsDocument::SaveObject(wxOutputStream& stream)
+#endif
+{
+	unsigned long filesize = SizeInFile();
+	BigEndianBuffer buffer(filesize);
+
+	// header
+	buffer.WriteShort(2);		     // version
+	buffer.WriteShort(0);		     // data version
+	buffer.WriteBlock(MAXIMUM_WADFILE_NAME_LENGTH, wadfile_name);
+	buffer.WriteULong(0);		     // blank checksum
+	buffer.WriteLong(filesize - 10);     // directory offset
+	buffer.WriteShort(1);		     // wad count
+	buffer.WriteShort(0);		     // application specific data size
+	buffer.WriteShort(kEntryHeaderSize); // entry header size
+	buffer.WriteShort(10);		     // directory entry size
+	buffer.WriteLong(0);		     // parent checksum
+	buffer.WriteZeroes(40);		     // unused
+
+	// tags
+	long next_offset = 0;
+	WriteTag(buffer, next_offset, FOUR_CHARS_TO_INT('M','N','p','x'), mMonsterDefinitions);
+	WriteTag(buffer, next_offset, FOUR_CHARS_TO_INT('F','X','p','x'), mEffectDefinitions);
+	WriteTag(buffer, next_offset, FOUR_CHARS_TO_INT('P','R','p','x'), mProjectileDefinitions);
+	WriteTag(buffer, next_offset, FOUR_CHARS_TO_INT('P','X','p','x'), mConstants);
+	WriteTag(buffer, next_offset, FOUR_CHARS_TO_INT('W','P','p','x'), mWeaponDefinitions, true);
+
+	// directory
+	buffer.WriteLong(128);
+	buffer.WriteLong(filesize - 128 - 10);
+	buffer.WriteShort(0);
+
+	buffer.Position(68);
+	buffer.WriteULong(buffer.CalculateCRC());
+
+#if wxUSE_STD_IOSTREAM
+	stream.write(reinterpret_cast<char *>(buffer.Data()), buffer.Size());
+#else
+	stream.Write(reinterpret_cast<char *>(buffer.Data()), buffer.Size());
+#endif
+
+	return stream;
+}
+
+unsigned long PhysicsDocument::SizeInFile()
+{
+	unsigned long size = 0;
+	size += 128; // wad header
+
+	size += kEntryHeaderSize;
+	size += MonsterDefinition::kSize * mMonsterDefinitions.size();
+	
+	size += kEntryHeaderSize;
+	size += EffectDefinition::kSize * mEffectDefinitions.size();
+	
+	size += kEntryHeaderSize;
+	size += ProjectileDefinition::kSize * mProjectileDefinitions.size();
+	
+	size += kEntryHeaderSize;
+	size += PhysicsConstants::kSize * mConstants.size();
+
+	size += kEntryHeaderSize;
+	size += WeaponDefinition::kSize * mWeaponDefinitions.size();
+
+	size += 10; // directory entry
+
+	return size;
 }

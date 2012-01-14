@@ -39,11 +39,13 @@ public:
 	long ReadLong(void);
 	unsigned long ReadULong(void);
 	double ReadFixed(void) { return ReadLong() / 65536.0; }
+
 	// write big-endian values, advance position accordingly
 	void WriteShort(short v);
 	void WriteUShort(unsigned short v);
 	void WriteLong(long v);
 	void WriteULong(unsigned long v);
+	void WriteFixed(double d);
 };
 
 #endif

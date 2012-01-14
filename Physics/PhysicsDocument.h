@@ -33,11 +33,16 @@ class PhysicsDocument : public wxDocument, public PhysicsElement
 	DECLARE_DYNAMIC_CLASS(PhysicsDocument)
 
 private:
-	std::vector<PhysicsConstants> mConstants;
 	std::vector<MonsterDefinition> mMonsterDefinitions;
 	std::vector<EffectDefinition> mEffectDefinitions;
 	std::vector<ProjectileDefinition> mProjectileDefinitions;
+	std::vector<PhysicsConstants> mConstants;
 	std::vector<WeaponDefinition> mWeaponDefinitions;
+
+	static const int MAXIMUM_WADFILE_NAME_LENGTH = 64;
+	unsigned char wadfile_name[MAXIMUM_WADFILE_NAME_LENGTH];
+	
+	static const int kEntryHeaderSize = 16;
 
 public:
 	// counts
@@ -74,10 +79,15 @@ public:
 	bool DoOpenDocument(const wxString& file);
 
 #if wxUSE_STD_IOSTREAM
+	wxSTD ostream& SaveObject(wxSTD ostream& stream);
 	wxSTD istream& LoadObject(wxSTD istream& stream);
 #else
+	wxOutputStream& SaveObject(wxOutputStream& stream);
 	wxInputStream& LoadObject(wxInputStream& stream);
 #endif
+
+	unsigned long SizeInFile();
+	template<class T> void WriteTag(BigEndianBuffer& buffer, long& offset, unsigned long tag, const std::vector<T>& data, bool last = false);
 };
 
 #endif

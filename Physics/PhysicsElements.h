@@ -120,6 +120,7 @@ public:
 	PhysicsConstants(bool verbose = false) : PhysicsElement(verbose) { }
 	~PhysicsConstants() { }
 
+	BigEndianBuffer& SaveObject(BigEndianBuffer& buffer) const;
 	BigEndianBuffer& LoadObject(BigEndianBuffer& buffer);
 
 	static const int kSize = 104;
@@ -149,6 +150,7 @@ public:
 	AttackDefinition(bool verbose = false) : PhysicsElement(verbose) { }
 	~AttackDefinition() { }
 
+	BigEndianBuffer& SaveObject(BigEndianBuffer& buffer) const;
 	BigEndianBuffer& LoadObject(BigEndianBuffer& buffer);
 };
 
@@ -176,6 +178,7 @@ public:
 	DamageDefinition(bool verbose = false) : PhysicsElement(verbose) { }
 	~DamageDefinition() { }
 
+	BigEndianBuffer& SaveObject(BigEndianBuffer& buffer) const;
 	BigEndianBuffer& LoadObject(BigEndianBuffer& buffer);
 };
 
@@ -215,6 +218,7 @@ public:
 	EffectDefinition(bool verbose = false) : PhysicsElement(verbose) { }
 	~EffectDefinition() { }
 
+	BigEndianBuffer& SaveObject(BigEndianBuffer& buffer) const;
 	BigEndianBuffer& LoadObject(BigEndianBuffer& buffer);
 
 	static const int kSize = 14;
@@ -353,6 +357,7 @@ public:
 	MonsterDefinition(bool verbose = false) : PhysicsElement(verbose) { }
 	~MonsterDefinition() { }
 
+	BigEndianBuffer& SaveObject(BigEndianBuffer& buffer) const;
 	BigEndianBuffer& LoadObject(BigEndianBuffer& buffer);
 
 	static const int kSize = 156;
@@ -415,6 +420,7 @@ public:
 	ProjectileDefinition(bool verbose = false) : PhysicsElement(verbose) { }
 	~ProjectileDefinition() { }
 	
+	BigEndianBuffer& SaveObject(BigEndianBuffer& buffer) const;
 	BigEndianBuffer& LoadObject(BigEndianBuffer& buffer);
 	
 	static const int kSize = 48;
@@ -469,6 +475,7 @@ public:
 	TriggerDefinition(bool verbose = false) : PhysicsElement(verbose) { }
 	~TriggerDefinition() { }
 
+	BigEndianBuffer& SaveObject(BigEndianBuffer& buffer) const;
 	BigEndianBuffer& LoadObject(BigEndianBuffer& buffer);
 };
 
@@ -546,6 +553,7 @@ public:
 	WeaponDefinition(bool verbose = false) : PhysicsElement(verbose) { }
 	~WeaponDefinition() { }
 
+	BigEndianBuffer& SaveObject(BigEndianBuffer& buffer) const;
 	BigEndianBuffer& LoadObject(BigEndianBuffer& buffer);
 
 	static const int kSize = 134;
