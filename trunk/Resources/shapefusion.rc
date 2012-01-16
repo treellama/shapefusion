@@ -1,0 +1,23 @@
+1 VERSIONINFO
+FILEVERSION 0, 5, 0, 0
+PRODUCTVERSION 0, 5, 0, 0
+FILEFLAGSMASK 0
+FILEOS 0x40000
+FILETYPE 1
+{
+ BLOCK "StringFileInfo"
+ {
+  BLOCK "040904E4"
+  {
+   VALUE "AppName", "ShapeFusion"
+   VALUE "FileVersion", "0.5"
+   VALUE "FileDescription", "ShapeFusion for Win32"
+   VALUE "LegalCopyright", "GNU General Public License"
+   VALUE "License", "GNU General Public License (For details, see the file COPYING)"
+   VALUE "OriginalFilename", "ShapeFusion.exe"
+   VALUE "URL", "http://shapefusion.sourceforge.net"
+  }
+ }
+}
+
+AppIcon ICON "shapefusion.ico"
