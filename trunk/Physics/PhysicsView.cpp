@@ -23,32 +23,13 @@
 #include "wx/wx.h"
 #endif
 
-#include <cmath>
-
 #include "PhysicsView.h"
 #include "PhysicsTreeItemData.h"
 
 #include "../DefaultNames.h"
 
-BEGIN_EVENT_TABLE(PhysicsView, wxView)
-        EVT_TREE_SEL_CHANGED(-1, PhysicsView::OnTreeSelect)
-END_EVENT_TABLE()
-
-IMPLEMENT_DYNAMIC_CLASS(PhysicsView, wxView)
-
 const wxSize choiceSize(200, -1);
 
-static inline wxString Format(double f) { 
-	return wxString::Format(wxT("%0.4f"), f);
-}
-
-static inline wxString Format(unsigned short u) {
-	return wxString::Format(wxT("%hu"), u);
-}
-
-static inline wxString Format(short i) {
-	return wxString::Format(wxT("%hi"), i);
-}
 
 void PhysicsView::CreateAliens()
 {
@@ -61,11 +42,11 @@ void PhysicsView::CreateAliens()
 	appearance_grid_sizer->SetHGap(10);
 
 	appearance_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Graphic Collection:")), 0, wxALIGN_CENTER_VERTICAL);
-	alien_collection_field = new wxTextCtrl(mFrame, wxID_ANY);
+	alien_collection_field = new wxTextCtrl(mFrame, FIELD_ALIEN_COLLECTION);
 	appearance_grid_sizer->Add(alien_collection_field, 0, wxALIGN_CENTER_VERTICAL);
 
 	appearance_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Color Table:")), 0, wxALIGN_CENTER_VERTICAL);
-	alien_color_table_field = new wxTextCtrl(mFrame, wxID_ANY);
+	alien_color_table_field = new wxTextCtrl(mFrame, FIELD_ALIEN_COLOR_TABLE);
 	appearance_grid_sizer->Add(alien_color_table_field, 0, wxALIGN_CENTER_VERTICAL);
 
 	wxStaticText* sequence_label = new wxStaticText(mFrame, wxID_ANY, _("Sequence IDs:"));
@@ -76,47 +57,47 @@ void PhysicsView::CreateAliens()
 	appearance_grid_sizer->AddSpacer(30);
 	
 	appearance_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Hit:")), 0, wxALIGN_CENTER_VERTICAL);
-	alien_hit_field = new wxTextCtrl(mFrame, wxID_ANY);
+	alien_hit_field = new wxTextCtrl(mFrame, FIELD_ALIEN_HIT);
 	appearance_grid_sizer->Add(alien_hit_field, 0, wxALIGN_CENTER_VERTICAL);
 
 	appearance_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Hard Dying:")), 0, wxALIGN_CENTER_VERTICAL);
-	alien_hard_dying_field = new wxTextCtrl(mFrame, wxID_ANY);
+	alien_hard_dying_field = new wxTextCtrl(mFrame, FIELD_ALIEN_HARD_DYING);
 	appearance_grid_sizer->Add(alien_hard_dying_field, 0, wxALIGN_CENTER_VERTICAL);
 
 	appearance_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Soft Dying:")), 0, wxALIGN_CENTER_VERTICAL);
-	alien_soft_dying_field = new wxTextCtrl(mFrame, wxID_ANY);
+	alien_soft_dying_field = new wxTextCtrl(mFrame, FIELD_ALIEN_SOFT_DYING);
 	appearance_grid_sizer->Add(alien_soft_dying_field, 0, wxALIGN_CENTER_VERTICAL);
 	
 	appearance_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Hard Dead:")), 0, wxALIGN_CENTER_VERTICAL);
-	alien_hard_dead_field = new wxTextCtrl(mFrame, wxID_ANY);
+	alien_hard_dead_field = new wxTextCtrl(mFrame, FIELD_ALIEN_HARD_DEAD);
 	appearance_grid_sizer->Add(alien_hard_dead_field, 0, wxALIGN_CENTER_VERTICAL);
 
 	appearance_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Soft Dead:")), 0, wxALIGN_CENTER_VERTICAL);
-	alien_soft_dead_field = new wxTextCtrl(mFrame, wxID_ANY);
+	alien_soft_dead_field = new wxTextCtrl(mFrame, FIELD_ALIEN_SOFT_DEAD);
 	appearance_grid_sizer->Add(alien_soft_dead_field, 0, wxALIGN_CENTER_VERTICAL);
 
 	appearance_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Stationary:")), 0, wxALIGN_CENTER_VERTICAL);
-	alien_stationary_field = new wxTextCtrl(mFrame, wxID_ANY);
+	alien_stationary_field = new wxTextCtrl(mFrame, FIELD_ALIEN_STATIONARY);
 	appearance_grid_sizer->Add(alien_stationary_field, 0, wxALIGN_CENTER_VERTICAL);
 
 	appearance_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Moving:")), 0, wxALIGN_CENTER_VERTICAL);
-	alien_moving_field = new wxTextCtrl(mFrame, wxID_ANY);
+	alien_moving_field = new wxTextCtrl(mFrame, FIELD_ALIEN_MOVING);
 	appearance_grid_sizer->Add(alien_moving_field, 0, wxALIGN_CENTER_VERTICAL);
 
 	appearance_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Teleport In:")), 0, wxALIGN_CENTER_VERTICAL);
-	alien_teleport_in_field = new wxTextCtrl(mFrame, wxID_ANY);
+	alien_teleport_in_field = new wxTextCtrl(mFrame, FIELD_ALIEN_TELEPORT_IN);
 	appearance_grid_sizer->Add(alien_teleport_in_field, 0, wxALIGN_CENTER_VERTICAL);
 
 	appearance_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Teleport Out:")), 0, wxALIGN_CENTER_VERTICAL);
-	alien_teleport_out_field = new wxTextCtrl(mFrame, wxID_ANY);
+	alien_teleport_out_field = new wxTextCtrl(mFrame, FIELD_ALIEN_TELEPORT_OUT);
 	appearance_grid_sizer->Add(alien_teleport_out_field, 0, wxALIGN_CENTER_VERTICAL);
 
 	appearance_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Melee Attack:")), 0, wxALIGN_CENTER_VERTICAL);
-	alien_melee_attack_shape_field = new wxTextCtrl(mFrame, wxID_ANY);
+	alien_melee_attack_shape_field = new wxTextCtrl(mFrame, FIELD_ALIEN_MELEE_ATTACK_SHAPE);
 	appearance_grid_sizer->Add(alien_melee_attack_shape_field, 0, wxALIGN_CENTER_VERTICAL);
 
 	appearance_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Ranged Attack:")), 0, wxALIGN_CENTER_VERTICAL);
-	alien_ranged_attack_shape_field = new wxTextCtrl(mFrame, wxID_ANY);
+	alien_ranged_attack_shape_field = new wxTextCtrl(mFrame, FIELD_ALIEN_RANGED_ATTACK_SHAPE);
 	appearance_grid_sizer->Add(alien_ranged_attack_shape_field, 0, wxALIGN_CENTER_VERTICAL);
 
 	appearance_sizer->Add(appearance_grid_sizer);
@@ -134,46 +115,46 @@ void PhysicsView::CreateAliens()
 	sound_strings.insert(sound_strings.begin(), GetName(wxT("sound"), -1));
 
 	sounds_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Activation:")), 0, wxALIGN_CENTER_VERTICAL);
-	alien_activation_choice = new wxChoice(mFrame, wxID_ANY, wxDefaultPosition, choiceSize, sound_strings.size(), &sound_strings[0]);
+	alien_activation_choice = new wxChoice(mFrame, MENU_ALIEN_ACTIVATION, wxDefaultPosition, choiceSize, sound_strings.size(), &sound_strings[0]);
 	sounds_grid_sizer->Add(alien_activation_choice, 0, wxALIGN_CENTER_VERTICAL);
 
 	sounds_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Friendly Activation:")), 0, wxALIGN_CENTER_VERTICAL);
-	alien_friendly_activation_choice = new wxChoice(mFrame, wxID_ANY, wxDefaultPosition, choiceSize, sound_strings.size(), &sound_strings[0]);
+	alien_friendly_activation_choice = new wxChoice(mFrame, MENU_ALIEN_FRIENDLY_ACTIVATION, wxDefaultPosition, choiceSize, sound_strings.size(), &sound_strings[0]);
 	sounds_grid_sizer->Add(alien_friendly_activation_choice, 0, wxALIGN_CENTER_VERTICAL);
 
 	sounds_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Clear:")), 0, wxALIGN_CENTER_VERTICAL);
-	alien_clear_choice = new wxChoice(mFrame, wxID_ANY, wxDefaultPosition, choiceSize, sound_strings.size(), &sound_strings[0]);
+	alien_clear_choice = new wxChoice(mFrame, MENU_ALIEN_CLEAR, wxDefaultPosition, choiceSize, sound_strings.size(), &sound_strings[0]);
 	sounds_grid_sizer->Add(alien_clear_choice, 0, wxALIGN_CENTER_VERTICAL);
 
 	sounds_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Kill:")), 0, wxALIGN_CENTER_VERTICAL);
-	alien_kill_choice = new wxChoice(mFrame, wxID_ANY, wxDefaultPosition, choiceSize, sound_strings.size(), &sound_strings[0]);
+	alien_kill_choice = new wxChoice(mFrame, MENU_ALIEN_KILL, wxDefaultPosition, choiceSize, sound_strings.size(), &sound_strings[0]);
 	sounds_grid_sizer->Add(alien_kill_choice, 0, wxALIGN_CENTER_VERTICAL);
 
 	sounds_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Apology:")), 0, wxALIGN_CENTER_VERTICAL);
-	alien_apology_choice = new wxChoice(mFrame, wxID_ANY, wxDefaultPosition, choiceSize, sound_strings.size(), &sound_strings[0]);
+	alien_apology_choice = new wxChoice(mFrame, MENU_ALIEN_APOLOGY, wxDefaultPosition, choiceSize, sound_strings.size(), &sound_strings[0]);
 	sounds_grid_sizer->Add(alien_apology_choice, 0, wxALIGN_CENTER_VERTICAL);
 
 	sounds_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Friendly Fire:")), 0, wxALIGN_CENTER_VERTICAL);
-	alien_friendly_fire_choice = new wxChoice(mFrame, wxID_ANY, wxDefaultPosition, choiceSize, sound_strings.size(), &sound_strings[0]);
+	alien_friendly_fire_choice = new wxChoice(mFrame, MENU_ALIEN_FRIENDLY_FIRE, wxDefaultPosition, choiceSize, sound_strings.size(), &sound_strings[0]);
 	sounds_grid_sizer->Add(alien_friendly_fire_choice, 0, wxALIGN_CENTER_VERTICAL);
 
 	sounds_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Flaming:")), 0, wxALIGN_CENTER_VERTICAL);
-	alien_flaming_choice = new wxChoice(mFrame, wxID_ANY, wxDefaultPosition, choiceSize, sound_strings.size(), &sound_strings[0]);
+	alien_flaming_choice = new wxChoice(mFrame, MENU_ALIEN_FLAMING, wxDefaultPosition, choiceSize, sound_strings.size(), &sound_strings[0]);
 	sounds_grid_sizer->Add(alien_flaming_choice, 0, wxALIGN_CENTER_VERTICAL);
 
 	sounds_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Random:")), 0, wxALIGN_CENTER_VERTICAL);
-	alien_random_choice = new wxChoice(mFrame, wxID_ANY, wxDefaultPosition, choiceSize, sound_strings.size(), &sound_strings[0]);
+	alien_random_choice = new wxChoice(mFrame, MENU_ALIEN_RANDOM, wxDefaultPosition, choiceSize, sound_strings.size(), &sound_strings[0]);
 	sounds_grid_sizer->Add(alien_random_choice, 0, wxALIGN_CENTER_VERTICAL);
 
 	sounds_grid_sizer->AddSpacer(10);
 	sounds_grid_sizer->AddSpacer(10);
 
 	sounds_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Random Sound Mask:")), 0, wxALIGN_CENTER_VERTICAL);
-	alien_random_sound_mask_field = new wxTextCtrl(mFrame, wxID_ANY);
+	alien_random_sound_mask_field = new wxTextCtrl(mFrame, FIELD_ALIEN_RANDOM_SOUND_MASK);
 	sounds_grid_sizer->Add(alien_random_sound_mask_field, 0, wxALIGN_CENTER_VERTICAL);
 
 	sounds_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Sound Pitch:")), 0, wxALIGN_CENTER_VERTICAL);
-	alien_sound_pitch_field = new wxTextCtrl(mFrame, wxID_ANY);
+	alien_sound_pitch_field = new wxTextCtrl(mFrame, FIELD_ALIEN_SOUND_PITCH);
 	sounds_grid_sizer->Add(alien_sound_pitch_field, 0, wxALIGN_CENTER_VERTICAL);
 
 	sounds_sizer->Add(sounds_grid_sizer);
@@ -199,90 +180,52 @@ void PhysicsView::CreateAliens()
 	combat_grid_sizer->Add(attack_frequency_sizer);
 	combat_grid_sizer->AddSpacer(0);
 
-	wxStaticBoxSizer* melee_attack_sizer = new wxStaticBoxSizer(wxVERTICAL, mFrame, _("Melee Attack"));
-	wxFlexGridSizer* melee_attack_grid_sizer = new wxFlexGridSizer(2);
-	melee_attack_grid_sizer->AddGrowableCol(0);
-	melee_attack_grid_sizer->SetHGap(10);
-
 	std::vector<wxString> shot_strings = DefaultNames::Instance()->GetArray(wxT("shot"));
 	shot_strings.insert(shot_strings.begin(), GetName(wxT("shot"), -1));
 
-	melee_attack_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Type:")), 0, wxALIGN_CENTER_VERTICAL);
-	alien_melee_attack_type_choice = new wxChoice(mFrame, wxID_ANY, wxDefaultPosition, choiceSize, shot_strings.size(), &shot_strings[0]);
-	melee_attack_grid_sizer->Add(alien_melee_attack_type_choice, 0, wxALIGN_CENTER_VERTICAL);
+	for (int i = 0; i < 2; ++i) {
+		int id_offset = i * NUM_ALIEN_ATTACK_CONTROLS;
+		wxStaticBoxSizer* attack_sizer = new wxStaticBoxSizer(wxVERTICAL, mFrame, i == 0 ? _("Melee Attack") : _("Ranged Attack"));
+		wxFlexGridSizer* attack_grid_sizer = new wxFlexGridSizer(2);
+		attack_grid_sizer->AddGrowableCol(0);
+		attack_grid_sizer->SetHGap(10);
+		
+		attack_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Type:")), 0, wxALIGN_CENTER_VERTICAL);
+		alien_attack_type_choices[i] = new wxChoice(mFrame, MENU_ALIEN_ATTACK_TYPE + id_offset, wxDefaultPosition, choiceSize, shot_strings.size(), &shot_strings[0]);
+		attack_grid_sizer->Add(alien_attack_type_choices[i], 0, wxALIGN_CENTER_VERTICAL);
 
-	melee_attack_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Repetitions:")), 0, wxALIGN_CENTER_VERTICAL);
-	alien_melee_attack_repetitions_field = new wxTextCtrl(mFrame, wxID_ANY);
-	melee_attack_grid_sizer->Add(alien_melee_attack_repetitions_field, 0, wxALIGN_CENTER_VERTICAL);
+		attack_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Repetitions:")), 0, wxALIGN_CENTER_VERTICAL);
+		alien_attack_repetitions_fields[i] = new wxTextCtrl(mFrame, FIELD_ALIEN_ATTACK_REPETITIONS + id_offset);
+		attack_grid_sizer->Add(alien_attack_repetitions_fields[i], 0, wxALIGN_CENTER_VERTICAL);
 
-	melee_attack_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Error:")), 0, wxALIGN_CENTER_VERTICAL);
-	alien_melee_attack_error_field = new wxTextCtrl(mFrame, wxID_ANY);
-	melee_attack_grid_sizer->Add(alien_melee_attack_error_field, 0, wxALIGN_CENTER_VERTICAL);
+		attack_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Error:")), 0, wxALIGN_CENTER_VERTICAL);
+		alien_attack_error_fields[i] = new wxTextCtrl(mFrame, FIELD_ALIEN_ATTACK_ERROR + id_offset);
+		attack_grid_sizer->Add(alien_attack_error_fields[i], 0, wxALIGN_CENTER_VERTICAL);
 
-	melee_attack_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Range:")), 0, wxALIGN_CENTER_VERTICAL);
-	alien_melee_attack_range_field = new wxTextCtrl(mFrame, wxID_ANY);
-	melee_attack_grid_sizer->Add(alien_melee_attack_range_field, 0, wxALIGN_CENTER_VERTICAL);
+		attack_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Range:")), 0, wxALIGN_CENTER_VERTICAL);
+		alien_attack_range_fields[i] = new wxTextCtrl(mFrame, FIELD_ALIEN_ATTACK_RANGE + id_offset);
+		attack_grid_sizer->Add(alien_attack_range_fields[i], 0, wxALIGN_CENTER_VERTICAL);
 
-	melee_attack_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Sequence ID:")), 0, wxALIGN_CENTER_VERTICAL);
-	alien_melee_attack_sequence_field = new wxTextCtrl(mFrame, wxID_ANY);
-	melee_attack_grid_sizer->Add(alien_melee_attack_sequence_field, 0, wxALIGN_CENTER_VERTICAL);
+		attack_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Sequence ID:")), 0, wxALIGN_CENTER_VERTICAL);
+		alien_attack_sequence_fields[i] = new wxTextCtrl(mFrame, FIELD_ALIEN_ATTACK_SEQUENCE + id_offset);
+		attack_grid_sizer->Add(alien_attack_sequence_fields[i], 0, wxALIGN_CENTER_VERTICAL);
 
-	melee_attack_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("dx:")), 0, wxALIGN_CENTER_VERTICAL);
-	alien_melee_attack_dx_field = new wxTextCtrl(mFrame, wxID_ANY);
-	melee_attack_grid_sizer->Add(alien_melee_attack_dx_field, 0, wxALIGN_CENTER_VERTICAL);
+		attack_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("dx:")), 0, wxALIGN_CENTER_VERTICAL);
+		alien_attack_dx_fields[i] = new wxTextCtrl(mFrame, FIELD_ALIEN_ATTACK_DX + id_offset);
+		attack_grid_sizer->Add(alien_attack_dx_fields[i], 0, wxALIGN_CENTER_VERTICAL);
 
-	melee_attack_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("dy:")), 0, wxALIGN_CENTER_VERTICAL);
-	alien_melee_attack_dy_field = new wxTextCtrl(mFrame, wxID_ANY);
-	melee_attack_grid_sizer->Add(alien_melee_attack_dy_field, 0, wxALIGN_CENTER_VERTICAL);
+		attack_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("dy:")), 0, wxALIGN_CENTER_VERTICAL);
+		alien_attack_dy_fields[i] = new wxTextCtrl(mFrame, FIELD_ALIEN_ATTACK_DY + id_offset);
+		attack_grid_sizer->Add(alien_attack_dy_fields[i], 0, wxALIGN_CENTER_VERTICAL);
 
-	melee_attack_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("dz:")), 0, wxALIGN_CENTER_VERTICAL);
-	alien_melee_attack_dz_field = new wxTextCtrl(mFrame, wxID_ANY);
-	melee_attack_grid_sizer->Add(alien_melee_attack_dz_field, 0, wxALIGN_CENTER_VERTICAL);
+		attack_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("dz:")), 0, wxALIGN_CENTER_VERTICAL);
+		alien_attack_dz_fields[i] = new wxTextCtrl(mFrame, FIELD_ALIEN_ATTACK_DZ + id_offset);
+		attack_grid_sizer->Add(alien_attack_dz_fields[i], 0, wxALIGN_CENTER_VERTICAL);
 
-	melee_attack_sizer->Add(melee_attack_grid_sizer, 0, wxEXPAND);
+		attack_sizer->Add(attack_grid_sizer, 0, wxEXPAND);
 
-	combat_grid_sizer->Add(melee_attack_sizer, 0, wxEXPAND);
-
-	wxStaticBoxSizer* ranged_attack_sizer = new wxStaticBoxSizer(wxVERTICAL, mFrame, _("Ranged Attack"));
-	wxFlexGridSizer* ranged_attack_grid_sizer = new wxFlexGridSizer(2);
-	ranged_attack_grid_sizer->AddGrowableCol(0);
-	ranged_attack_grid_sizer->SetHGap(10);
-
-	ranged_attack_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Type:")), 0, wxALIGN_CENTER_VERTICAL);
-	alien_ranged_attack_type_choice = new wxChoice(mFrame, wxID_ANY, wxDefaultPosition, choiceSize, shot_strings.size(), &shot_strings[0]);
-	ranged_attack_grid_sizer->Add(alien_ranged_attack_type_choice, 0, wxALIGN_CENTER_VERTICAL);
-
-	ranged_attack_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Repetitions:")), 0, wxALIGN_CENTER_VERTICAL);
-	alien_ranged_attack_repetitions_field = new wxTextCtrl(mFrame, wxID_ANY);
-	ranged_attack_grid_sizer->Add(alien_ranged_attack_repetitions_field, 0, wxALIGN_CENTER_VERTICAL);
-
-	ranged_attack_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Error:")), 0, wxALIGN_CENTER_VERTICAL);
-	alien_ranged_attack_error_field = new wxTextCtrl(mFrame, wxID_ANY);
-	ranged_attack_grid_sizer->Add(alien_ranged_attack_error_field, 0, wxALIGN_CENTER_VERTICAL);
-
-	ranged_attack_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Range:")), 0, wxALIGN_CENTER_VERTICAL);
-	alien_ranged_attack_range_field = new wxTextCtrl(mFrame, wxID_ANY);
-	ranged_attack_grid_sizer->Add(alien_ranged_attack_range_field, 0, wxALIGN_CENTER_VERTICAL);
-
-	ranged_attack_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Sequence ID:")), 0, wxALIGN_CENTER_VERTICAL);
-	alien_ranged_attack_sequence_field = new wxTextCtrl(mFrame, wxID_ANY);
-	ranged_attack_grid_sizer->Add(alien_ranged_attack_sequence_field, 0, wxALIGN_CENTER_VERTICAL);
-
-	ranged_attack_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("dx:")), 0, wxALIGN_CENTER_VERTICAL);
-	alien_ranged_attack_dx_field = new wxTextCtrl(mFrame, wxID_ANY);
-	ranged_attack_grid_sizer->Add(alien_ranged_attack_dx_field, 0, wxALIGN_CENTER_VERTICAL);
-
-	ranged_attack_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("dy:")), 0, wxALIGN_CENTER_VERTICAL);
-	alien_ranged_attack_dy_field = new wxTextCtrl(mFrame, wxID_ANY);
-	ranged_attack_grid_sizer->Add(alien_ranged_attack_dy_field, 0, wxALIGN_CENTER_VERTICAL);
-
-	ranged_attack_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("dz:")), 0, wxALIGN_CENTER_VERTICAL);
-	alien_ranged_attack_dz_field = new wxTextCtrl(mFrame, wxID_ANY);
-	ranged_attack_grid_sizer->Add(alien_ranged_attack_dz_field, 0, wxALIGN_CENTER_VERTICAL);
-
-	ranged_attack_sizer->Add(ranged_attack_grid_sizer);
-
-	combat_grid_sizer->Add(ranged_attack_sizer);
+		combat_grid_sizer->Add(attack_sizer, 0, wxEXPAND);
+	}
 
 	wxStaticBoxSizer* shrapnel_sizer = new wxStaticBoxSizer(wxVERTICAL, mFrame, _("Shrapnel"));
 	wxFlexGridSizer* shrapnel_grid_sizer = new wxFlexGridSizer(2);
@@ -290,19 +233,19 @@ void PhysicsView::CreateAliens()
 	shrapnel_grid_sizer->SetHGap(10);
 
 	shrapnel_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Shrapnel Radius:")), 0, wxALIGN_CENTER_VERTICAL);
-	alien_shrapnel_radius_field = new wxTextCtrl(mFrame, wxID_ANY);
+	alien_shrapnel_radius_field = new wxTextCtrl(mFrame, FIELD_ALIEN_SHRAPNEL_RADIUS);
 	shrapnel_grid_sizer->Add(alien_shrapnel_radius_field, 0, wxALIGN_CENTER_VERTICAL);
 
 	std::vector<wxString> damage_strings = DefaultNames::Instance()->GetArray(wxT("damage"));
 	damage_strings.insert(damage_strings.begin(), _("None"));
 
 	shrapnel_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Damage Type:")), 0, wxALIGN_CENTER_VERTICAL);
-	alien_shrapnel_damage_type_choice = new wxChoice(mFrame, wxID_ANY, wxDefaultPosition, choiceSize, damage_strings.size(), &damage_strings[0]);
+	alien_shrapnel_damage_type_choice = new wxChoice(mFrame, MENU_ALIEN_SHRAPNEL_DAMAGE_TYPE, wxDefaultPosition, choiceSize, damage_strings.size(), &damage_strings[0]);
 	shrapnel_grid_sizer->Add(alien_shrapnel_damage_type_choice, 0, wxALIGN_CENTER_VERTICAL);
 
 	shrapnel_sizer->Add(shrapnel_grid_sizer, 0, wxEXPAND);
 	
-	alien_shrapnel_alien_damage_checkbox = new wxCheckBox(mFrame, wxID_ANY, _("Alien Damage (varies with level)"));
+	alien_shrapnel_alien_damage_checkbox = new wxCheckBox(mFrame, CB_ALIEN_SHRAPNEL_ALIEN_DAMAGE, _("Alien Damage (varies with level)"));
 	shrapnel_sizer->Add(alien_shrapnel_alien_damage_checkbox, 0, wxEXPAND);
 
 	wxFlexGridSizer* shrapnel_grid_sizer2 = new wxFlexGridSizer(2);
@@ -314,15 +257,15 @@ void PhysicsView::CreateAliens()
 	shrapnel_grid_sizer2->Add(choiceSize.GetWidth(), 0);
 
 	shrapnel_grid_sizer2->Add(new wxStaticText(mFrame, wxID_ANY, _("Base Damage:")), 0, wxALIGN_CENTER_VERTICAL);
-	alien_shrapnel_base_damage_field = new wxTextCtrl(mFrame, wxID_ANY);
+	alien_shrapnel_base_damage_field = new wxTextCtrl(mFrame, FIELD_ALIEN_SHRAPNEL_BASE_DAMAGE);
 	shrapnel_grid_sizer2->Add(alien_shrapnel_base_damage_field, 0, wxALIGN_CENTER_VERTICAL);
 
 	shrapnel_grid_sizer2->Add(new wxStaticText(mFrame, wxID_ANY, _("Random Damage:")), 0, wxALIGN_CENTER_VERTICAL);
-	alien_shrapnel_random_damage_field = new wxTextCtrl(mFrame, wxID_ANY);
+	alien_shrapnel_random_damage_field = new wxTextCtrl(mFrame, FIELD_ALIEN_SHRAPNEL_RANDOM_DAMAGE);
 	shrapnel_grid_sizer2->Add(alien_shrapnel_random_damage_field, 0, wxALIGN_CENTER_VERTICAL);
 
 	shrapnel_grid_sizer2->Add(new wxStaticText(mFrame, wxID_ANY, _("Scale:")), 0, wxALIGN_CENTER_VERTICAL);
-	alien_shrapnel_damage_scale_field = new wxTextCtrl(mFrame, wxID_ANY);
+	alien_shrapnel_damage_scale_field = new wxTextCtrl(mFrame, FIELD_ALIEN_SHRAPNEL_DAMAGE_SCALE);
 	shrapnel_grid_sizer2->Add(alien_shrapnel_damage_scale_field, 0, wxALIGN_CENTER_VERTICAL);
 
 	shrapnel_sizer->Add(shrapnel_grid_sizer2, 0, wxEXPAND);
@@ -338,11 +281,11 @@ void PhysicsView::CreateAliens()
 	effect_strings.insert(effect_strings.begin(), GetName(wxT("sound"), -1));
 
 	impact_effects_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Ranged:")), 0, wxALIGN_CENTER_VERTICAL);
-	alien_ranged_impact_effect_choice = new wxChoice(mFrame, wxID_ANY, wxDefaultPosition, choiceSize, effect_strings.size(), &effect_strings[0]);
+	alien_ranged_impact_effect_choice = new wxChoice(mFrame, MENU_ALIEN_RANGED_IMPACT_EFFECT, wxDefaultPosition, choiceSize, effect_strings.size(), &effect_strings[0]);
 	impact_effects_grid_sizer->Add(alien_ranged_impact_effect_choice, 0, wxALIGN_CENTER_VERTICAL);
 
 	impact_effects_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Melee:")), 0, wxALIGN_CENTER_VERTICAL);
-	alien_melee_impact_effect_choice = new wxChoice(mFrame, wxID_ANY, wxDefaultPosition, choiceSize, effect_strings.size(), &effect_strings[0]);
+	alien_melee_impact_effect_choice = new wxChoice(mFrame, MENU_ALIEN_MELEE_IMPACT_EFFECT, wxDefaultPosition, choiceSize, effect_strings.size(), &effect_strings[0]);
 	impact_effects_grid_sizer->Add(alien_melee_impact_effect_choice, 0, wxALIGN_CENTER_VERTICAL);
 
 	impact_effects_sizer->Add(impact_effects_grid_sizer, 0, wxEXPAND);
@@ -365,7 +308,7 @@ void PhysicsView::CreateAliens()
 	vitality_grid_sizer->SetHGap(10);
 
 	vitality_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Vitality:")), 0, wxALIGN_CENTER_VERTICAL);
-	alien_vitality_field = new wxTextCtrl(mFrame, wxID_ANY);
+	alien_vitality_field = new wxTextCtrl(mFrame, FIELD_ALIEN_VITALITY);
 	vitality_grid_sizer->Add(alien_vitality_field, 0, wxALIGN_CENTER_VERTICAL);
 
 	constants_grid_sizer->Add(vitality_grid_sizer, 0, wxEXPAND);
@@ -375,11 +318,11 @@ void PhysicsView::CreateAliens()
 	radius_height_sizer->SetHGap(10);
 
 	radius_height_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Radius:")), 0, wxALIGN_CENTER_VERTICAL);
-	alien_radius_field = new wxTextCtrl(mFrame, wxID_ANY);
+	alien_radius_field = new wxTextCtrl(mFrame, FIELD_ALIEN_RADIUS);
 	radius_height_sizer->Add(alien_radius_field, 0, wxALIGN_CENTER_VERTICAL);
 
 	radius_height_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Height:")), 0, wxALIGN_CENTER_VERTICAL);
-	alien_height_field = new wxTextCtrl(mFrame, wxID_ANY);
+	alien_height_field = new wxTextCtrl(mFrame, FIELD_ALIEN_HEIGHT);
 	radius_height_sizer->Add(alien_height_field, 0, wxALIGN_CENTER_VERTICAL);
 	
 	constants_grid_sizer->Add(radius_height_sizer, 0, wxEXPAND);
@@ -390,41 +333,41 @@ void PhysicsView::CreateAliens()
 	movement_grid_sizer->SetHGap(10);
 
 	movement_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Speed:")), 0, wxALIGN_CENTER_VERTICAL);
-	alien_speed_field = new wxTextCtrl(mFrame, wxID_ANY);
+	alien_speed_field = new wxTextCtrl(mFrame, FIELD_ALIEN_SPEED);
 	movement_grid_sizer->Add(alien_speed_field, 0, wxALIGN_CENTER_VERTICAL);
 
 	movement_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Terminal Velocity:")), 0, wxALIGN_CENTER_VERTICAL);
-	alien_terminal_velocity_field = new wxTextCtrl(mFrame, wxID_ANY);
+	alien_terminal_velocity_field = new wxTextCtrl(mFrame, FIELD_ALIEN_TERMINAL_VELOCITY);
 	movement_grid_sizer->Add(alien_terminal_velocity_field, 0, wxALIGN_CENTER_VERTICAL);
 
 	movement_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Gravity:")), 0, wxALIGN_CENTER_VERTICAL);
-	alien_gravity_field = new wxTextCtrl(mFrame, wxID_ANY);
+	alien_gravity_field = new wxTextCtrl(mFrame, FIELD_ALIEN_GRAVITY);
 	movement_grid_sizer->Add(alien_gravity_field, 0, wxALIGN_CENTER_VERTICAL);
 
 	movement_grid_sizer->AddSpacer(10);
 	movement_grid_sizer->AddSpacer(10);
 
 	movement_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Min. Ledge Jump:")), 0, wxALIGN_CENTER_VERTICAL);
-	alien_min_ledge_jump_field = new wxTextCtrl(mFrame, wxID_ANY);
+	alien_min_ledge_jump_field = new wxTextCtrl(mFrame, FIELD_ALIEN_MIN_LEDGE_JUMP);
 	movement_grid_sizer->Add(alien_min_ledge_jump_field, 0, wxALIGN_CENTER_VERTICAL);	
 
 	movement_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Max. Ledge Jump:")), 0, wxALIGN_CENTER_VERTICAL);
-	alien_max_ledge_jump_field = new wxTextCtrl(mFrame, wxID_ANY);
+	alien_max_ledge_jump_field = new wxTextCtrl(mFrame, FIELD_ALIEN_MAX_LEDGE_JUMP);
 	movement_grid_sizer->Add(alien_max_ledge_jump_field, 0, wxALIGN_CENTER_VERTICAL);	
 
 	movement_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("External Velocity Scale:")), 0, wxALIGN_CENTER_VERTICAL);
-	alien_ext_velocity_scale_field = new wxTextCtrl(mFrame, wxID_ANY);
+	alien_ext_velocity_scale_field = new wxTextCtrl(mFrame, FIELD_ALIEN_EXT_VELOCITY_SCALE);
 	movement_grid_sizer->Add(alien_ext_velocity_scale_field, 0, wxALIGN_CENTER_VERTICAL);
 
 	movement_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Hover Height:")), 0, wxALIGN_CENTER_VERTICAL);
-	alien_hover_height_field = new wxTextCtrl(mFrame, wxID_ANY);
+	alien_hover_height_field = new wxTextCtrl(mFrame, FIELD_ALIEN_HOVER_HEIGHT);
 	movement_grid_sizer->Add(alien_hover_height_field, 0, wxALIGN_CENTER_VERTICAL);
 
 	movement_grid_sizer->AddSpacer(10);
 	movement_grid_sizer->AddSpacer(10);
 
 	movement_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Door Retry Mask:")), 0, wxALIGN_CENTER_VERTICAL);
-	alien_door_retry_mask_field = new wxTextCtrl(mFrame, wxID_ANY);
+	alien_door_retry_mask_field = new wxTextCtrl(mFrame, FIELD_ALIEN_DOOR_RETRY_MASK);
 	movement_grid_sizer->Add(alien_door_retry_mask_field, 0, wxALIGN_CENTER_VERTICAL);	
 
 	movement_sizer->Add(movement_grid_sizer, 0, wxEXPAND);
@@ -437,15 +380,15 @@ void PhysicsView::CreateAliens()
 	perception_grid_sizer->SetHGap(10);
 
 	perception_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Visual Range:")), 0, wxALIGN_CENTER_VERTICAL);
-	alien_visual_range_field = new wxTextCtrl(mFrame, wxID_ANY);
+	alien_visual_range_field = new wxTextCtrl(mFrame, FIELD_ALIEN_VISUAL_RANGE);
 	perception_grid_sizer->Add(alien_visual_range_field, 0, wxALIGN_CENTER_VERTICAL);	
 
 	perception_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Dark Visual Range:")), 0, wxALIGN_CENTER_VERTICAL);
-	alien_dark_visual_range_field = new wxTextCtrl(mFrame, wxID_ANY);
+	alien_dark_visual_range_field = new wxTextCtrl(mFrame, FIELD_ALIEN_DARK_VISUAL_RANGE);
 	perception_grid_sizer->Add(alien_dark_visual_range_field, 0, wxALIGN_CENTER_VERTICAL);
 
 	perception_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Intelligence:")), 0, wxALIGN_CENTER_VERTICAL);
-	alien_intelligence_field = new wxTextCtrl(mFrame, wxID_ANY);
+	alien_intelligence_field = new wxTextCtrl(mFrame, FIELD_ALIEN_INTELLIGENCE);
 	perception_grid_sizer->Add(alien_intelligence_field, 0, wxALIGN_CENTER_VERTICAL);
 
 	perception_sizer->Add(perception_grid_sizer, 0, wxEXPAND);
@@ -463,11 +406,11 @@ void PhysicsView::CreateAliens()
 	item_strings.insert(item_strings.begin(), _("None"));
 
 	carrying_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Carrying Item Type:")), 0, wxALIGN_CENTER_VERTICAL);
-	alien_carrying_item_choice = new wxChoice(mFrame, wxID_ANY, wxDefaultPosition, choiceSize, item_strings.size(), &item_strings[0]);
+	alien_carrying_item_choice = new wxChoice(mFrame, MENU_ALIEN_CARRYING_ITEM, wxDefaultPosition, choiceSize, item_strings.size(), &item_strings[0]);
 	carrying_grid_sizer->Add(alien_carrying_item_choice, 0, wxALIGN_CENTER_VERTICAL);
 
 	carrying_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Contrail Effect:")), 0, wxALIGN_CENTER_VERTICAL);
-	alien_contrail_effect_choice = new wxChoice(mFrame, wxID_ANY, wxDefaultPosition, choiceSize, effect_strings.size(), &effect_strings[0]);
+	alien_contrail_effect_choice = new wxChoice(mFrame, MENU_ALIEN_CONTRAIL_EFFECT, wxDefaultPosition, choiceSize, effect_strings.size(), &effect_strings[0]);
 	carrying_grid_sizer->Add(alien_contrail_effect_choice, 0, wxALIGN_CENTER_VERTICAL);
 
 	aliens_constants_sizer->Add(carrying_grid_sizer);
@@ -482,7 +425,7 @@ void PhysicsView::CreateAliens()
 	std::vector<wxString> class_strings = DefaultNames::Instance()->GetArray(wxT("class"));
 
 	class_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Class:")), 0, wxALIGN_CENTER_VERTICAL);
-	alien_class_choice = new wxChoice(mFrame, wxID_ANY, wxDefaultPosition, choiceSize, class_strings.size(), &class_strings[0]);
+	alien_class_choice = new wxChoice(mFrame, MENU_ALIEN_CLASS, wxDefaultPosition, choiceSize, class_strings.size(), &class_strings[0]);
 	class_sizer->AddSpacer(10);
 	class_sizer->Add(alien_class_choice, 0, wxALIGN_CENTER_VERTICAL);
 
@@ -492,7 +435,7 @@ void PhysicsView::CreateAliens()
 	wxGridSizer* friends_grid_sizer = new wxGridSizer(4);
 
 	for (int i = 0; i < 16; ++i) {
-		alien_friends_checkboxes[i] = new wxCheckBox(mFrame, wxID_ANY, GetName(wxT("class"), i));
+		alien_friends_checkboxes[i] = new wxCheckBox(mFrame, CB_ALIEN_FRIENDS + i, GetName(wxT("class"), i));
 
 	}
 
@@ -511,7 +454,7 @@ void PhysicsView::CreateAliens()
 	wxGridSizer* enemies_grid_sizer = new wxGridSizer(4);
 
 	for (int i = 0; i < 16; ++i) {
-		alien_enemies_checkboxes[i] = new wxCheckBox(mFrame, wxID_ANY, GetName(wxT("class"), i));
+		alien_enemies_checkboxes[i] = new wxCheckBox(mFrame, CB_ALIEN_ENEMIES + i, GetName(wxT("class"), i));
 	}
 
 	for (int col = 0; col < 4; ++col) {
@@ -571,7 +514,7 @@ void PhysicsView::CreateAliens()
 	wxGridSizer* flags_grid_sizer = new wxGridSizer(3);
 	
 	for (int i = 0; i < 27; ++i) {
-		alien_flags_checkboxes[i] = new wxCheckBox(mFrame, wxID_ANY, flags_strings[i]);
+		alien_flags_checkboxes[i] = new wxCheckBox(mFrame, CB_ALIEN_FLAGS + i, flags_strings[i]);
 	}
 
 	for (int i = 0; i < 27; ++i) {
@@ -592,7 +535,7 @@ void PhysicsView::CreateAliens()
 	wxGridSizer* immunities_grid_sizer = new wxGridSizer(4);
 	
 	for (int i = 0; i < 24; ++i) {
-		alien_immunities_checkboxes[i] = new wxCheckBox(mFrame, wxID_ANY, GetName(wxT("damage"), i));
+		alien_immunities_checkboxes[i] = new wxCheckBox(mFrame, CB_ALIEN_IMMUNITIES + i, GetName(wxT("damage"), i));
 	}
 
 	for (int i = 0; i < 6; ++i) {
@@ -609,7 +552,7 @@ void PhysicsView::CreateAliens()
 	wxGridSizer* weaknesses_grid_sizer = new wxGridSizer(4);
 
 	for (int i = 0; i < 24; ++i) {
-		alien_weaknesses_checkboxes[i] = new wxCheckBox(mFrame, wxID_ANY, GetName(wxT("damage"), i));
+		alien_weaknesses_checkboxes[i] = new wxCheckBox(mFrame, CB_ALIEN_WEAKNESSES + i, GetName(wxT("damage"), i));
 	}
 
 	for (int i = 0; i < 6; ++i) {
@@ -1472,367 +1415,3 @@ bool PhysicsView::OnClose(bool deleteWindow)
 	return true;
 }
 
-void PhysicsView::OnSelectPhysicsConstants(int index)
-{
-	PhysicsConstants* constants = static_cast<PhysicsDocument*>(GetDocument())->GetPhysicsConstants(index);
-
-	max_forward_velocity_field->ChangeValue(Format(constants->GetMaximumForwardVelocity()));
-	max_backward_velocity_field->ChangeValue(Format(constants->GetMaximumBackwardVelocity()));
-	max_perpendicular_velocity_field->ChangeValue(Format(constants->GetMaximumPerpendicularVelocity()));
-
-	acceleration_field->ChangeValue(Format(constants->GetAcceleration()));
-	deceleration_field->ChangeValue(Format(constants->GetDeceleration()));
-	airborne_deceleration_field->ChangeValue(Format(constants->GetAirborneDeceleration()));
-	gravitational_acceleration_field->ChangeValue(Format(constants->GetGravitationalAcceleration()));
-	climbing_acceleration_field->ChangeValue(Format(constants->GetClimbingAcceleration()));
-	terminal_velocity_field->ChangeValue(Format(constants->GetTerminalVelocity()));
-	external_deceleration_field->ChangeValue(Format(constants->GetExternalDeceleration()));
-
-	step_delta_field->ChangeValue(Format(constants->GetStepDelta()));
-	step_amplitude_field->ChangeValue(Format(constants->GetStepAmplitude()));
-
-	radius_field->ChangeValue(Format(constants->GetRadius()));
-	height_field->ChangeValue(Format(constants->GetHeight()));
-
-	angular_acceleration_field->ChangeValue(Format(constants->GetAngularAcceleration()));
-	angular_deceleration_field->ChangeValue(Format(constants->GetAngularDeceleration()));
-	maximum_angular_velocity_field->ChangeValue(Format(constants->GetMaximumAngularVelocity()));
-	angular_recentering_velocity_field->ChangeValue(Format(constants->GetAngularRecenteringVelocity()));
-	head_angular_velocity_field->ChangeValue(Format(constants->GetFastAngularVelocity()));
-	head_angular_maximum_field->ChangeValue(Format(constants->GetFastAngularMaximum()));
-	maximum_elevation_field->ChangeValue(Format(constants->GetMaximumElevation()));
-	external_angular_deceleration_field->ChangeValue(Format(constants->GetExternalAngularDeceleration()));
-
-	dead_height_field->ChangeValue(Format(constants->GetDeadHeight()));
-	camera_height_field->ChangeValue(Format(constants->GetCameraHeight()));
-	splash_height_field->ChangeValue(Format(constants->GetSplashHeight()));
-	half_camera_separation_field->ChangeValue(Format(constants->GetHalfCameraSeparation()));
-	
-	mainbox->Show(physics_sizer, true);
-}
-
-void PhysicsView::OnSelectAlienAppearance(int index)
-{
-	MonsterDefinition* monster = static_cast<PhysicsDocument*>(GetDocument())->GetMonsterDefinition(index);
-
-	alien_collection_field->ChangeValue(Format(monster->GetCollection()));
-	alien_color_table_field->ChangeValue(Format(monster->GetColorTable()));
-	
-	alien_hit_field->ChangeValue(Format(monster->GetHitShapes()));
-	alien_hard_dying_field->ChangeValue(Format(monster->GetHardDyingShape()));
-	alien_soft_dying_field->ChangeValue(Format(monster->GetSoftDyingShape()));
-	alien_hard_dead_field->ChangeValue(Format(monster->GetHardDeadShapes()));
-	alien_soft_dead_field->ChangeValue(Format(monster->GetSoftDeadShapes()));
-	alien_stationary_field->ChangeValue(Format(monster->GetStationaryShape()));
-	alien_moving_field->ChangeValue(Format(monster->GetMovingShape()));
-	alien_teleport_in_field->ChangeValue(Format(monster->GetTeleportInShape()));
-	alien_teleport_out_field->ChangeValue(Format(monster->GetTeleportOutShape()));
-	alien_melee_attack_shape_field->ChangeValue(Format(monster->GetMeleeAttack()->GetShape()));
-	alien_ranged_attack_shape_field->ChangeValue(Format(monster->GetRangedAttack()->GetShape()));
-
-	alien_activation_choice->SetSelection(monster->GetActivationSound() + 1);
-	alien_friendly_activation_choice->SetSelection(monster->GetFriendlyActivationSound() + 1);
-	alien_clear_choice->SetSelection(monster->GetClearSound() + 1);
-	alien_kill_choice->SetSelection(monster->GetKillSound() + 1);
-	alien_apology_choice->SetSelection(monster->GetApologySound() + 1);
-	alien_friendly_fire_choice->SetSelection(monster->GetFriendlyFireSound() + 1);
-	alien_flaming_choice->SetSelection(monster->GetFlamingSound() + 1);
-	alien_random_choice->SetSelection(monster->GetRandomSound() + 1);
-
-	alien_random_sound_mask_field->ChangeValue(Format(monster->GetRandomSoundMask()));
-	alien_sound_pitch_field->ChangeValue(Format(monster->GetSoundPitch()));
-	
-	mainbox->Show(aliens_appearance_sizer, true);
-}
-
-void PhysicsView::OnSelectAlienCombat(int index)
-{
-	MonsterDefinition* monster = static_cast<PhysicsDocument*>(GetDocument())->GetMonsterDefinition(index);
-
-	alien_attack_frequency_field->ChangeValue(Format(monster->GetAttackFrequency()));
-	
-	AttackDefinition* melee = monster->GetMeleeAttack();
-	alien_melee_attack_type_choice->SetSelection(melee->GetType() + 1);
-	alien_melee_attack_repetitions_field->ChangeValue(Format(melee->GetRepetitions()));
-	// Anvil displays the raw angle units here...
-	alien_melee_attack_error_field->ChangeValue(Format(static_cast<short>(std::floor(melee->GetError() * 512.0 / 360.0 + 0.5))));
-	alien_melee_attack_range_field->ChangeValue(Format(melee->GetRange()));
-	alien_melee_attack_sequence_field->ChangeValue(Format(melee->GetShape()));
-	alien_melee_attack_dx_field->ChangeValue(Format(melee->GetDx()));
-	alien_melee_attack_dy_field->ChangeValue(Format(melee->GetDy()));
-	alien_melee_attack_dz_field->ChangeValue(Format(melee->GetDz()));
-
-	AttackDefinition* ranged = monster->GetRangedAttack();
-	alien_ranged_attack_type_choice->SetSelection(ranged->GetType() + 1);
-	alien_ranged_attack_repetitions_field->ChangeValue(Format(ranged->GetRepetitions()));
-	// Anvil displays the raw angle units here...
-	alien_ranged_attack_error_field->ChangeValue(Format(static_cast<short>(std::floor(ranged->GetError() * 512.0 / 360.09 + 0.5))));
-	alien_ranged_attack_range_field->ChangeValue(Format(ranged->GetRange()));
-	alien_ranged_attack_sequence_field->ChangeValue(Format(ranged->GetShape()));
-	alien_ranged_attack_dx_field->ChangeValue(Format(ranged->GetDx()));
-	alien_ranged_attack_dy_field->ChangeValue(Format(ranged->GetDy()));
-	alien_ranged_attack_dz_field->ChangeValue(Format(ranged->GetDz()));
-
-	alien_shrapnel_radius_field->ChangeValue(Format(monster->GetShrapnelRadius()));
-	
-	DamageDefinition* shrapnel = monster->GetShrapnelDamage();
-	alien_shrapnel_damage_type_choice->SetSelection(shrapnel->GetType() + 1);
-	alien_shrapnel_base_damage_field->ChangeValue(Format(shrapnel->GetBase()));
-	alien_shrapnel_random_damage_field->ChangeValue(Format(shrapnel->GetRandom()));
-	alien_shrapnel_damage_scale_field->ChangeValue(Format(shrapnel->GetScale()));
-	alien_shrapnel_alien_damage_checkbox->SetValue(shrapnel->GetAlien());
-
-	alien_ranged_impact_effect_choice->SetSelection(monster->GetImpactEffect() + 1);
-	alien_melee_impact_effect_choice->SetSelection(monster->GetMeleeImpactEffect() + 1);
-
-	mainbox->Show(aliens_combat_sizer, true);
-}
-
-void PhysicsView::OnSelectAlienConstants(int index)
-{
-	MonsterDefinition* monster = static_cast<PhysicsDocument*>(GetDocument())->GetMonsterDefinition(index);
-
-	alien_vitality_field->ChangeValue(Format(monster->GetVitality()));
-
-	alien_radius_field->ChangeValue(Format(monster->GetRadius()));
-	alien_height_field->ChangeValue(Format(monster->GetHeight()));
-
-	alien_speed_field->ChangeValue(Format(monster->GetSpeed()));
-
-	alien_terminal_velocity_field->ChangeValue(Format(monster->GetTerminalVelocity()));
-	alien_gravity_field->ChangeValue(Format(monster->GetGravity()));
-
-	alien_min_ledge_jump_field->ChangeValue(Format(monster->GetMinimumLedgeDelta()));
-	alien_max_ledge_jump_field->ChangeValue(Format(monster->GetMaximumLedgeDelta()));
-	alien_ext_velocity_scale_field->ChangeValue(Format(monster->GetExternalVelocityScale()));
-	alien_hover_height_field->ChangeValue(Format(monster->GetPreferredHoverHeight()));
-	
-	alien_door_retry_mask_field->ChangeValue(Format(monster->GetDoorRetryMask()));
-
-	alien_visual_range_field->ChangeValue(Format(monster->GetVisualRange()));
-	alien_dark_visual_range_field->ChangeValue(Format(monster->GetDarkVisualRange()));
-	alien_intelligence_field->ChangeValue(Format(monster->GetIntelligence()));
-
-	alien_carrying_item_choice->SetSelection(monster->GetCarryingItemType() + 1);
-	alien_contrail_effect_choice->SetSelection(monster->GetContrailEffect() + 1);
-
-	mainbox->Show(aliens_constants_sizer, true);
-}
-
-void PhysicsView::OnSelectAlienBehavior(int index)
-{
-	MonsterDefinition* monster = static_cast<PhysicsDocument*>(GetDocument())->GetMonsterDefinition(index);
-
-	alien_class_choice->SetSelection(monster->GetClass());
-
-	for (int i = 0; i < 16; ++i) {
-		alien_friends_checkboxes[i]->SetValue(monster->GetFriend(i));
-		alien_enemies_checkboxes[i]->SetValue(monster->GetEnemy(i));
-	}
-
-	for (int i = 0; i < 27; ++i) {
-		alien_flags_checkboxes[i]->SetValue(monster->GetFlag(i + 1));
-	}
-
-	mainbox->Show(aliens_behavior_sizer, true);
-}
-
-void PhysicsView::OnSelectAlienImmunities(int index)
-{
-	MonsterDefinition* monster = static_cast<PhysicsDocument*>(GetDocument())->GetMonsterDefinition(index);
-
-	for (int i = 0; i < 24; ++i) {
-		alien_immunities_checkboxes[i]->SetValue(monster->GetImmunity(i));
-		alien_weaknesses_checkboxes[i]->SetValue(monster->GetWeakness(i));
-	}
-
-	mainbox->Show(aliens_immunities_sizer, true);
-}
-
-void PhysicsView::OnSelectEffect(int index)
-{
-	EffectDefinition* effect = static_cast<PhysicsDocument*>(GetDocument())->GetEffectDefinition(index);
-	
-	eff_collection_field->ChangeValue(Format(effect->GetCollection()));
-	eff_color_table_field->ChangeValue(Format(effect->GetColorTable()));
-	eff_sequence_field->ChangeValue(Format(effect->GetShape()));
-	
-	eff_delay_field->ChangeValue(Format(effect->GetDelay()));
-	eff_pitch_field->ChangeValue(Format(effect->GetSoundPitch()));
-
-	eff_delay_sound_choice->SetSelection(effect->GetDelaySound() + 1);
-	
-	eff_end_when_animation_loops_checkbox->SetValue(effect->GetEndWhenAnimationLoops());
-	eff_end_when_transfer_animation_loops_checkbox->SetValue(effect->GetEndWhenTransferAnimationLoops());
-	eff_sound_only_checkbox->SetValue(effect->GetSoundOnly());
-	eff_media_effect_checkbox->SetValue(effect->GetMediaEffect());
-	
-	mainbox->Show(effects_sizer, true);
-}
-
-void PhysicsView::OnSelectShot(int index)
-{
-	ProjectileDefinition* projectile = static_cast<PhysicsDocument*>(GetDocument())->GetProjectileDefinition(index);
-	
-	shots_collection_field->ChangeValue(Format(projectile->GetCollection()));
-	shots_color_table_field->ChangeValue(Format(projectile->GetColorTable()));
-	shots_sequence_field->ChangeValue(Format(projectile->GetShape()));
-
-	DamageDefinition* damage = projectile->GetDamage();
-
-	shots_damage_type_choice->SetSelection(damage->GetType() + 1);
-	shots_damage_base_field->ChangeValue(Format(damage->GetBase()));
-	shots_damage_random_field->ChangeValue(Format(damage->GetRandom()));
-	shots_damage_scale_field->ChangeValue(Format(damage->GetScale()));
-	shots_alien_damage_checkbox->SetValue(damage->GetAlien());
-
-	shots_flyby_sound_choice->SetSelection(projectile->GetFlybySound() + 1);
-	shots_rebound_sound_choice->SetSelection(projectile->GetReboundSound() + 1);
-	shots_sound_pitch_field->ChangeValue(Format(projectile->GetSoundPitch()));
-	
-	shots_radius_field->ChangeValue(Format(projectile->GetRadius()));
-	shots_area_of_effect_field->ChangeValue(Format(projectile->GetAreaOfEffect()));
-	shots_speed_field->ChangeValue(Format(projectile->GetSpeed()));
-	shots_range_field->ChangeValue(Format(projectile->GetMaximumRange()));
-
-	shots_detonation_effect_choice->SetSelection(projectile->GetDetonationEffect() + 1);
-	shots_media_detonation_effect_choice->SetSelection(projectile->GetMediaDetonationEffect() + 1);
-	shots_contrail_choice->SetSelection(projectile->GetContrailEffect() + 1);
-	shots_contrail_ticks_field->ChangeValue(Format(projectile->GetTicksBetweenContrails()));
-	shots_maximum_contrails_field->ChangeValue(Format(projectile->GetMaximumContrails()));
-
-	for (int i = 0; i < 22; ++i) {
-		shots_flags_checkboxes[i]->SetValue(projectile->GetFlag(i));
-	}
-
-	shots_media_impact_choice->SetSelection(projectile->GetMediaProjectilePromotion() + 1);
-
-	mainbox->Show(shots_sizer, true);
-}
-
-void PhysicsView::OnSelectWeaponDefinition(int index)
-{
-	WeaponDefinition* weapon = static_cast<PhysicsDocument*>(GetDocument())->GetWeaponDefinition(index);
-
-	weapon_item_type_choice->SetSelection(weapon->GetItemType() + 1);
-
-	weapon_collection_field->ChangeValue(Format(weapon->GetCollection()));
-	weapon_color_table_field->ChangeValue(Format(weapon->GetColorTable()));
-	weapon_idle_field->ChangeValue(Format(weapon->GetIdleShape()));
-	weapon_firing_field->ChangeValue(Format(weapon->GetFiringShape()));
-	weapon_reloading_field->ChangeValue(Format(weapon->GetReloadingShape()));
-	weapon_charging_field->ChangeValue(Format(weapon->GetChargingShape()));
-	weapon_charged_field->ChangeValue(Format(weapon->GetChargedShape()));
-	weapon_flash_intensity_field->ChangeValue(Format(weapon->GetFiringLightIntensity()));
-
-	weapon_ready_field->ChangeValue(Format(weapon->GetReadyTicks()));
-	weapon_await_reload_field->ChangeValue(Format(weapon->GetAwaitReloadTicks()));
-	weapon_loading_field->ChangeValue(Format(weapon->GetLoadingTicks()));
-	weapon_finish_loading_field->ChangeValue(Format(weapon->GetFinishLoadingTicks()));
-	weapon_flash_decay_field->ChangeValue(Format(weapon->GetFiringIntensityDecayTicks()));
-
-	weapon_class_choice->SetSelection(weapon->GetWeaponClass() + 1);
-	
-	weapon_idle_height_field->ChangeValue(Format(weapon->GetIdleHeight()));
-	weapon_bob_amplitude_field->ChangeValue(Format(weapon->GetBobAmplitude()));
-	weapon_kick_height_field->ChangeValue(Format(weapon->GetKickHeight()));
-	weapon_reload_height_field->ChangeValue(Format(weapon->GetReloadHeight()));
-	weapon_idle_width_field->ChangeValue(Format(weapon->GetIdleWidth()));
-
-	for (int i = 0; i < 10; ++i) {
-		weapon_flags_checkboxes[i]->SetValue(weapon->GetFlag(i >= 5 ? i + 1 : i));
-	}
-
-	mainbox->Show(weapons_definitions_sizer, true);
-}
-
-void PhysicsView::OnSelectWeaponTriggers(int index)
-{
-	WeaponDefinition* weapon = static_cast<PhysicsDocument*>(GetDocument())->GetWeaponDefinition(index);
-
-	for (int i = 0; i < 2; ++i) {
-		TriggerDefinition* trigger = (i == 0) ? weapon->GetPrimaryTrigger() : weapon->GetSecondaryTrigger();
-
-		trigger_projectile_choices[i]->SetSelection(trigger->GetProjectileType() + 1);
-		trigger_rounds_fields[i]->ChangeValue(Format(trigger->GetRoundsPerMagazine()));
-		trigger_ammo_type_choices[i]->SetSelection(trigger->GetAmmunitionType() + 1);
-
-		trigger_firing_choices[i]->SetSelection(trigger->GetFiringSound() + 1);
-		trigger_click_choices[i]->SetSelection(trigger->GetClickSound() + 1);
-		trigger_charging_choices[i]->SetSelection(trigger->GetChargingSound() + 1);
-		trigger_shell_casing_choices[i]->SetSelection(trigger->GetShellCasingSound() + 1);
-		trigger_reloading_choices[i]->SetSelection(trigger->GetReloadingSound() + 1);
-		trigger_charged_choices[i]->SetSelection(trigger->GetChargedSound() + 1);
-
-		trigger_ticks_fields[i]->ChangeValue(Format(trigger->GetTicksPerRound()));
-		trigger_recovery_fields[i]->ChangeValue(Format(trigger->GetRecoveryTicks()));
-		trigger_charging_fields[i]->ChangeValue(Format(trigger->GetChargingTicks()));
-		trigger_recoil_fields[i]->ChangeValue(Format(trigger->GetRecoilMagnitude()));
-		trigger_theta_fields[i]->ChangeValue(Format(trigger->GetThetaError()));
-		trigger_dx_fields[i]->ChangeValue(Format(trigger->GetDx()));
-		trigger_dz_fields[i]->ChangeValue(Format(trigger->GetDz()));
-		trigger_burst_count_fields[i]->ChangeValue(Format(trigger->GetBurstCount()));
-
-		trigger_shell_casing_type_choices[i]->SetSelection(trigger->GetShellCasingType() + 1);
-
-	}
-
-	mainbox->Show(weapons_triggers_sizer, true);
-}
-
-void PhysicsView::OnTreeSelect(wxTreeEvent& e)
-{
-	PhysicsTreeItemData* data = dynamic_cast<PhysicsTreeItemData*>(tree->GetItemData(e.GetItem()));
-	if (data) {
-		mainbox->Show(aliens_appearance_sizer, false);
-		mainbox->Show(aliens_behavior_sizer, false);
-		mainbox->Show(aliens_combat_sizer, false);
-		mainbox->Show(aliens_constants_sizer, false);
-		mainbox->Show(aliens_immunities_sizer, false);
-		mainbox->Show(dummy_sizer, false);
-		mainbox->Show(effects_sizer, false);
-		mainbox->Show(shots_sizer, false);
-		mainbox->Show(physics_sizer, false);
-		mainbox->Show(weapons_definitions_sizer, false);
-		mainbox->Show(weapons_triggers_sizer, false);
-
-		int new_section = data->Section();
-		switch (new_section) {
-		case TREESECTION_PHYSICS:
-			OnSelectPhysicsConstants(data->ID());
-			break;
-		case TREESECTION_EFFECTS:
-			OnSelectEffect(data->ID());
-			break;
-		case TREESECTION_PROJECTILES:
-			OnSelectShot(data->ID());
-			break;
-		case TREESECTION_MONSTERS_APPEARANCE:
-			OnSelectAlienAppearance(data->ID());
-			break;
-		case TREESECTION_MONSTERS_COMBAT:
-			OnSelectAlienCombat(data->ID());
-			break;
-		case TREESECTION_MONSTERS_CONSTANTS:
-			OnSelectAlienConstants(data->ID());
-			break;
-		case TREESECTION_MONSTERS_BEHAVIOR:
-			OnSelectAlienBehavior(data->ID());
-			break;
-		case TREESECTION_MONSTERS_IMMUNITIES:
-			OnSelectAlienImmunities(data->ID());
-			break;
-		case TREESECTION_WEAPONS_SETTINGS:
-			OnSelectWeaponDefinition(data->ID());
-			break;
-		case TREESECTION_WEAPONS_TRIGGERS:
-			OnSelectWeaponTriggers(data->ID());
-			break;
-		default:
-			mainbox->Show(dummy_sizer, true);
-			break;
-		}
-
-		mainbox->Layout();
-	}
-}

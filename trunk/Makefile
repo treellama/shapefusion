@@ -14,7 +14,7 @@ SHAPESOBJECTS = Shapes/BitmapBrowser.o Shapes/BitmapView.o Shapes/CTBrowser.o Sh
 				Shapes/ShapesDocument.o Shapes/ShapesElements.o Shapes/ShapesView.o \
 				Shapes/ShapesTreeItemData.o Shapes/utilities.o
 SOUNDSOBJECTS = Sounds/SoundsDocument.o Sounds/SoundsView.o Sounds/SoundsElements.o
-PHYSICSOBJECTS = Physics/PhysicsDocument.o Physics/PhysicsElements.o Physics/PhysicsView.o Physics/PhysicsTreeItemData.o
+PHYSICSOBJECTS = Physics/PhysicsDocument.o Physics/PhysicsEditor.o Physics/PhysicsElements.o Physics/PhysicsView.o Physics/PhysicsTreeItemData.o
 
 VPATH = Shapes:Sounds:Physics
 
@@ -35,6 +35,9 @@ LittleEndianBuffer.o: LittleEndianBuffer.cpp LittleEndianBuffer.h GenericEndianB
 	g++ -c $(CFLAGS) $<
 
 Physics/PhysicsDocument.o: PhysicsDocument.cpp PhysicsDocument.h PhysicsElements.h PhysicsView.h
+	g++ -c $(CFLAGS) $(WXCFLAGS) $< -o $@
+
+Physics/PhysicsEditor.o: PhysicsEditor.cpp PhysicsView.h PhysicsElements.h PhysicsTreeItemData.h
 	g++ -c $(CFLAGS) $(WXCFLAGS) $< -o $@
 
 Physics/PhysicsElements.o: PhysicsElements.cpp PhysicsElements.h
