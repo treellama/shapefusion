@@ -230,7 +230,6 @@ static const wxString effectNames[] = {
 };
 
 static const wxString itemNames[] = {
-	_("None"),
 	_("Fist"),
 	_("Magnum Pistol"),
 	_("Magnum Magazine"),
