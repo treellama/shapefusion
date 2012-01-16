@@ -138,6 +138,7 @@ private:
 	short mDx, mDy, mDz;
 
 public:
+	// accessors
 	short GetType() { return mType; }
 	short GetRepetitions() { return mRepetitions; }
 	double GetError() { return mError; }
@@ -146,6 +147,16 @@ public:
 	short GetDx() { return mDx; }
 	short GetDy() { return mDy; }
 	short GetDz() { return mDz; }
+
+	// mutators
+	void SetType(short v) { mType = v; }
+	void SetRepetitions(short v) { mRepetitions = v; }
+	void SetError(double d) { mError = d; }
+	void SetRange(short v) { mRange = v; }
+	void SetShape(short v) { mAttackShape = v; }
+	void SetDx(short v) { mDx = v; }
+	void SetDy(short v) { mDy = v; }
+	void SetDz(short v) { mDz = v; }
 	
 	AttackDefinition(bool verbose = false) : PhysicsElement(verbose) { }
 	~AttackDefinition() { }
@@ -169,11 +180,23 @@ private:
 	};
 
 public:
+	// accessors
 	short GetType() { return mType; }
 	short GetBase() { return mBase; }
 	bool GetAlien() { return mFlags & kAlienDamage; }
 	short GetRandom() { return mRandom; }
 	double GetScale() { return mScale; }
+
+	// mutators
+	void SetType(short v) { mType = v; }
+	void SetAlien(bool b) { 
+		if (b) mFlags |= kAlienDamage;
+		else mFlags &= ~kAlienDamage; 
+	}
+
+	void SetBase(short v) { mBase = v; }
+	void SetRandom(short v) { mRandom = v; }
+	void SetScale(double d) { mScale = d; }
 
 	DamageDefinition(bool verbose = false) : PhysicsElement(verbose) { }
 	~DamageDefinition() { }
@@ -293,6 +316,7 @@ private:
 	AttackDefinition mRangedAttack;
 
 public:
+	// accessors
 	unsigned short GetCollection() { return mCollection; }
 	unsigned short GetColorTable() { return mColorTable; }
 
@@ -353,6 +377,84 @@ public:
 	short GetAttackFrequency() { return mAttackFrequency; }
 	AttackDefinition* GetMeleeAttack() { return &mMeleeAttack; }
 	AttackDefinition* GetRangedAttack() { return &mRangedAttack; }
+
+	// mutators
+	void SetCollection(unsigned short v) { mCollection = v; }
+	void SetColorTable(unsigned short v) { mColorTable = v; }
+
+	void SetVitality(short v) { mVitality = v; }
+	void SetImmunity(int index, bool b) { 
+		if (b) mImmunities |= (1 << index);
+		else mImmunities &= ~(1 << index);
+	}
+
+	void SetWeakness(int index, bool b) { 
+		if (b) mWeaknesses |= (1 << index);
+		else mWeaknesses &= ~(1 << index);
+	}
+
+	void SetFlag(int index, bool b) { 
+		if (b) mFlags |= (1 << index);
+		else mFlags &= ~(1 << index);
+	}
+
+	void SetClass(long v) { mClass = v; }
+
+	void SetFriend(int index, bool b) { 
+		if (b) mFriends |= (1 << index);
+		else mFriends &= ~(1 << index);
+	}
+
+	void SetEnemy(int index, bool b) { 
+		if (b) mEnemies |= (1 << index);
+		else mEnemies &= ~(1 << index);
+	}
+
+	void SetSoundPitch(double d) { mSoundPitch = d; }
+
+	void SetRadius(short v) { mRadius = v; }
+	void SetHeight(short v) { mHeight = v; }
+	void SetPreferredHoverHeight(short v) { mPreferredHoverHeight = v; }
+	void SetMinimumLedgeDelta(short v) { mMinimumLedgeDelta = v; }
+	void SetMaximumLedgeDelta(short v) { mMaximumLedgeDelta = v; }
+	void SetExternalVelocityScale(double d) { mExternalVelocityScale = d; }
+	void SetImpactEffect(short v) { mImpactEffect = v; }
+	void SetMeleeImpactEffect(short v) { mMeleeImpactEffect = v; }
+	void SetContrailEffect(short v) { mContrailEffect = v; }
+
+	void SetVisualRange(short v) { mVisualRange = v; }
+	void SetDarkVisualRange(short v) { mDarkVisualRange = v; }
+	void SetIntelligence(short v) { mIntelligence = v; }
+	void SetSpeed(short v) { mSpeed = v; }
+	void SetGravity(short v) { mGravity = v; }
+	void SetTerminalVelocity(short v) { mTerminalVelocity = v; }
+	void SetDoorRetryMask(short v) { mDoorRetryMask = v; }
+	void SetShrapnelRadius(short v) { mShrapnelRadius = v; }
+
+
+	void SetActivationSound(short v) { mActivationSound = v; }
+	void SetFriendlyActivationSound(short v) { mFriendlyActivationSound = v; }
+	void SetClearSound(short v) { mClearSound = v; }
+	void SetKillSound(short v) { mKillSound = v; }
+	void SetApologySound(short v) { mApologySound = v; }
+	void SetFriendlyFireSound(short v) { mFriendlyFireSound = v; }
+	void SetFlamingSound(short v) { mFlamingSound = v; }
+	void SetRandomSound(short v) { mRandomSound = v; }
+	void SetRandomSoundMask(short v) { mRandomSoundMask = v; }
+
+	void SetCarryingItemType(short v) { mCarryingItemType = v; }
+
+	void SetHitShapes(short v) { mHitShapes = v; }
+	void SetHardDyingShape(short v) { mHardDyingShape = v; }
+	void SetSoftDyingShape(short v) { mSoftDyingShape = v; }
+	void SetHardDeadShapes(short v) { mHardDeadShapes = v; }
+	void SetSoftDeadShapes(short v) { mSoftDeadShapes = v; }
+	void SetStationaryShape(short v) { mStationaryShape = v; }
+	void SetMovingShape(short v) { mMovingShape = v; }
+	void SetTeleportInShape(short v) { mTeleportInShape = v; }
+	void SetTeleportOutShape(short v) { mTeleportOutShape = v; }
+
+	void SetAttackFrequency(short v) { mAttackFrequency = v; }
 
 	MonsterDefinition(bool verbose = false) : PhysicsElement(verbose) { }
 	~MonsterDefinition() { }

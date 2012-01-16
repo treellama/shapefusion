@@ -29,6 +29,84 @@ class PhysicsView : public wxView
 	DECLARE_DYNAMIC_CLASS(PhysicsView)
 
 private:
+	enum {
+		FIELD_ALIEN_COLLECTION,
+		FIELD_ALIEN_COLOR_TABLE,
+		FIELD_ALIEN_HIT,
+		FIELD_ALIEN_HARD_DYING,
+		FIELD_ALIEN_SOFT_DYING,
+		FIELD_ALIEN_HARD_DEAD,
+		FIELD_ALIEN_SOFT_DEAD,
+		FIELD_ALIEN_STATIONARY,
+		FIELD_ALIEN_MOVING,
+		FIELD_ALIEN_TELEPORT_IN,
+		FIELD_ALIEN_TELEPORT_OUT,
+		FIELD_ALIEN_MELEE_ATTACK_SHAPE,
+		FIELD_ALIEN_RANGED_ATTACK_SHAPE,
+
+		MENU_ALIEN_ACTIVATION,
+		MENU_ALIEN_FRIENDLY_ACTIVATION,
+		MENU_ALIEN_CLEAR,
+		MENU_ALIEN_KILL,
+		MENU_ALIEN_APOLOGY,
+		MENU_ALIEN_FRIENDLY_FIRE,
+		MENU_ALIEN_FLAMING,
+		MENU_ALIEN_RANDOM,
+
+		FIELD_ALIEN_RANDOM_SOUND_MASK,
+		FIELD_ALIEN_SOUND_PITCH,
+
+		FIELD_ALIEN_ATTACK_FREQUENCY,
+
+		MENU_ALIEN_ATTACK_TYPE,
+		FIELD_ALIEN_ATTACK_REPETITIONS,
+		FIELD_ALIEN_ATTACK_ERROR,
+		FIELD_ALIEN_ATTACK_RANGE,
+		FIELD_ALIEN_ATTACK_SEQUENCE,
+		FIELD_ALIEN_ATTACK_DX,
+		FIELD_ALIEN_ATTACK_DY,
+		FIELD_ALIEN_ATTACK_DZ,
+		NUM_ALIEN_ATTACK_CONTROLS = 8,
+
+		FIELD_ALIEN_SHRAPNEL_RADIUS = MENU_ALIEN_ATTACK_TYPE + NUM_ALIEN_ATTACK_CONTROLS * 2,
+		MENU_ALIEN_SHRAPNEL_DAMAGE_TYPE,
+		FIELD_ALIEN_SHRAPNEL_BASE_DAMAGE,
+		FIELD_ALIEN_SHRAPNEL_RANDOM_DAMAGE,
+		FIELD_ALIEN_SHRAPNEL_DAMAGE_SCALE,
+		CB_ALIEN_SHRAPNEL_ALIEN_DAMAGE,
+
+		MENU_ALIEN_RANGED_IMPACT_EFFECT,
+		MENU_ALIEN_MELEE_IMPACT_EFFECT,
+
+		FIELD_ALIEN_VITALITY,
+		FIELD_ALIEN_RADIUS,
+		FIELD_ALIEN_HEIGHT,
+
+		FIELD_ALIEN_SPEED,
+		FIELD_ALIEN_TERMINAL_VELOCITY,
+		FIELD_ALIEN_GRAVITY,
+
+		FIELD_ALIEN_MIN_LEDGE_JUMP,
+		FIELD_ALIEN_MAX_LEDGE_JUMP,
+		FIELD_ALIEN_EXT_VELOCITY_SCALE,
+		FIELD_ALIEN_HOVER_HEIGHT,
+		FIELD_ALIEN_DOOR_RETRY_MASK,
+	
+		FIELD_ALIEN_VISUAL_RANGE,
+		FIELD_ALIEN_DARK_VISUAL_RANGE,
+		FIELD_ALIEN_INTELLIGENCE,
+		
+		MENU_ALIEN_CARRYING_ITEM,
+		MENU_ALIEN_CONTRAIL_EFFECT,
+
+		MENU_ALIEN_CLASS,
+		CB_ALIEN_FRIENDS,
+		CB_ALIEN_ENEMIES = CB_ALIEN_FRIENDS + 16,
+		CB_ALIEN_FLAGS = CB_ALIEN_ENEMIES + 16,
+		CB_ALIEN_IMMUNITIES = CB_ALIEN_FLAGS + 27,
+		CB_ALIEN_WEAKNESSES = CB_ALIEN_IMMUNITIES + 24
+	};
+
 	wxBoxSizer* mainbox;
 	wxTreeCtrl* tree;
 	wxBoxSizer* dummy_sizer;
@@ -65,23 +143,14 @@ private:
 
 	wxTextCtrl* alien_attack_frequency_field;
 
-	wxChoice* alien_melee_attack_type_choice;
-	wxTextCtrl* alien_melee_attack_repetitions_field;
-	wxTextCtrl* alien_melee_attack_error_field;
-	wxTextCtrl* alien_melee_attack_range_field;
-	wxTextCtrl* alien_melee_attack_sequence_field;
-	wxTextCtrl* alien_melee_attack_dx_field;
-	wxTextCtrl* alien_melee_attack_dy_field;
-	wxTextCtrl* alien_melee_attack_dz_field;
-
-	wxChoice* alien_ranged_attack_type_choice;
-	wxTextCtrl* alien_ranged_attack_repetitions_field;
-	wxTextCtrl* alien_ranged_attack_error_field;
-	wxTextCtrl* alien_ranged_attack_range_field;
-	wxTextCtrl* alien_ranged_attack_sequence_field;
-	wxTextCtrl* alien_ranged_attack_dx_field;
-	wxTextCtrl* alien_ranged_attack_dy_field;
-	wxTextCtrl* alien_ranged_attack_dz_field;
+	wxChoice* alien_attack_type_choices[2];
+	wxTextCtrl* alien_attack_repetitions_fields[2];
+	wxTextCtrl* alien_attack_error_fields[2];
+	wxTextCtrl* alien_attack_range_fields[2];
+	wxTextCtrl* alien_attack_sequence_fields[2];
+	wxTextCtrl* alien_attack_dx_fields[2];
+	wxTextCtrl* alien_attack_dy_fields[2];
+	wxTextCtrl* alien_attack_dz_fields[2];
 
 	wxTextCtrl* alien_shrapnel_radius_field;
 	wxChoice* alien_shrapnel_damage_type_choice;
@@ -293,6 +362,13 @@ private:
 	void OnSelectShot(int index);
 	void OnSelectWeaponDefinition(int index);
 	void OnSelectWeaponTriggers(int index);
+
+	short GetSelection(); // index of current tree selection
+
+	void EditAlienCheckboxes(wxCommandEvent& e);
+	void EditAlienDoubles(wxCommandEvent& e);
+	void EditAlienFields(wxCommandEvent& e);
+	void EditAlienMenus(wxCommandEvent& e);
 
 	wxFrame* mFrame;
 };
