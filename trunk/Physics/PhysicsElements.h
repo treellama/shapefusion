@@ -226,6 +226,7 @@ private:
 	};
 
 public:
+	// accessors
 	unsigned short GetCollection() { return mCollection; }
 	unsigned short GetColorTable() { return mColorTable; }
 	short GetShape() { return mShape; }
@@ -237,7 +238,35 @@ public:
 	bool GetEndWhenTransferAnimationLoops() { return mFlags & kEndWhenTransferAnimationLoops; }
 	bool GetSoundOnly() { return mFlags & kSoundOnly; }
 	bool GetMediaEffect() { return mFlags & kMediaEffect; }
+
+	// mutators
+	void SetCollection(unsigned short v) { mCollection = v; }
+	void SetColorTable(unsigned short v) { mColorTable = v; }
+	void SetShape(short v) { mShape = v; }
+	void SetSoundPitch(double v) { mSoundPitch = v; }
+	void SetDelay(short v) { mDelay = v; }
+	void SetDelaySound(short v) { mDelaySound = v; }
+
+	void SetEndWhenAnimationLoops(bool v) { 
+		if (v) mFlags |= kEndWhenAnimationLoops;
+		else mFlags &= ~kEndWhenAnimationLoops;
+	}
+
+	void SetEndWhenTransferAnimationLoops(bool v) { 
+		if (v) mFlags |= kEndWhenTransferAnimationLoops;
+		else mFlags &= ~kEndWhenTransferAnimationLoops;
+	}
 	
+	void SetSoundOnly(bool v) { 
+		if (v) mFlags |= kSoundOnly;
+		else mFlags &= ~kSoundOnly;
+	}
+
+	void SetMediaEffect(bool v) { 
+		if (v) mFlags |= kMediaEffect;
+		else mFlags &= ~kMediaEffect;
+	}
+
 	EffectDefinition(bool verbose = false) : PhysicsElement(verbose) { }
 	~EffectDefinition() { }
 

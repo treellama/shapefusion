@@ -49,7 +49,13 @@ BEGIN_EVENT_TABLE(PhysicsView, wxView)
 	EVT_TEXT(FIELD_ALIEN_EXT_VELOCITY_SCALE, PhysicsView::EditAlienDoubles)
 	EVT_COMMAND_RANGE(FIELD_ALIEN_HOVER_HEIGHT, FIELD_ALIEN_INTELLIGENCE, wxEVT_COMMAND_TEXT_UPDATED, PhysicsView::EditAlienFields)
 	EVT_COMMAND_RANGE(MENU_ALIEN_CARRYING_ITEM, MENU_ALIEN_CLASS, wxEVT_COMMAND_CHOICE_SELECTED, PhysicsView::EditAlienMenus)
-	EVT_COMMAND_RANGE(CB_ALIEN_FRIENDS, CB_ALIEN_WEAKNESSES + 24, wxEVT_COMMAND_CHECKBOX_CLICKED, PhysicsView::EditAlienCheckboxes)
+	EVT_COMMAND_RANGE(CB_ALIEN_FRIENDS, CB_ALIEN_WEAKNESSES + 23, wxEVT_COMMAND_CHECKBOX_CLICKED, PhysicsView::EditAlienCheckboxes)
+
+	EVT_COMMAND_RANGE(FIELD_EFFECT_COLLECTION, FIELD_EFFECT_SEQUENCE, wxEVT_COMMAND_TEXT_UPDATED, PhysicsView::EditEffectFields)
+	EVT_TEXT(FIELD_EFFECT_PITCH, PhysicsView::EditEffectDoubles)
+	EVT_CHOICE(MENU_EFFECT_DELAY_SOUND, PhysicsView::EditEffectMenus)
+	EVT_COMMAND_RANGE(CB_EFFECT_END_WHEN_ANIMATION_LOOPS, CB_EFFECT_MEDIA_EFFECT, wxEVT_COMMAND_CHECKBOX_CLICKED, PhysicsView::EditEffectCheckboxes)
+
 END_EVENT_TABLE()
 
 IMPLEMENT_DYNAMIC_CLASS(PhysicsView, wxView)
@@ -675,6 +681,93 @@ void PhysicsView::EditAlienMenus(wxCommandEvent& e)
 		break;
 	case MENU_ALIEN_CLASS:
 		monster->SetClass(1 << e.GetSelection());
+		break;
+	}
+
+	static_cast<PhysicsDocument*>(GetDocument())->Modify(true);
+}
+
+void PhysicsView::EditEffectCheckboxes(wxCommandEvent& e)
+{
+	EffectDefinition* effect = static_cast<PhysicsDocument*>(GetDocument())->GetEffectDefinition(GetSelection());
+	
+	switch (e.GetId()) {
+	case CB_EFFECT_END_WHEN_ANIMATION_LOOPS:
+		effect->SetEndWhenAnimationLoops(e.IsChecked());
+		break;
+	case CB_EFFECT_END_WHEN_TRANSFER_ANIMATION_LOOPS:
+		effect->SetEndWhenTransferAnimationLoops(e.IsChecked());
+		break;
+	case CB_EFFECT_SOUND_ONLY:
+		effect->SetSoundOnly(e.IsChecked());
+		break;
+	case CB_EFFECT_MEDIA_EFFECT:
+		effect->SetMediaEffect(e.IsChecked());
+		break;
+	}
+
+	static_cast<PhysicsDocument*>(GetDocument())->Modify(true);	
+}
+
+void PhysicsView::EditEffectDoubles(wxCommandEvent& e)
+{
+	EffectDefinition* effect = static_cast<PhysicsDocument*>(GetDocument())->GetEffectDefinition(GetSelection());
+
+	double d = 0.0;
+	if (e.GetString().ToDouble(&d)) {
+		switch (e.GetId()) {
+		case FIELD_EFFECT_PITCH:
+			effect->SetSoundPitch(d);
+			break;
+		}
+	}
+
+	static_cast<PhysicsDocument*>(GetDocument())->Modify(true);	
+}
+
+void PhysicsView::EditEffectFields(wxCommandEvent& e)
+{
+	EffectDefinition* effect = static_cast<PhysicsDocument*>(GetDocument())->GetEffectDefinition(GetSelection());
+
+	long v = 0;
+	if (e.GetString().ToLong(&v)) {
+		switch (e.GetId()) {
+		case FIELD_EFFECT_COLLECTION:
+			if (v == -1) {
+				effect->SetCollection(31);
+				effect->SetColorTable(7);
+				eff_collection_field->ChangeValue(wxT("31"));
+				eff_color_table_field->ChangeValue(wxT("7"));
+			} else {
+				effect->SetCollection(v);
+			}
+			break;
+		case FIELD_EFFECT_COLOR_TABLE:
+			if (v == -1) {
+				effect->SetCollection(31);
+				effect->SetColorTable(7);
+				eff_collection_field->ChangeValue(wxT("31"));
+				eff_color_table_field->ChangeValue(wxT("7"));
+			} else {
+				effect->SetColorTable(v);
+			}
+			break;
+		case FIELD_EFFECT_SEQUENCE:
+			effect->SetShape(v);
+			break;
+		}
+	}
+
+	static_cast<PhysicsDocument*>(GetDocument())->Modify(true);
+}
+
+void PhysicsView::EditEffectMenus(wxCommandEvent& e)
+{
+	EffectDefinition* effect = static_cast<PhysicsDocument*>(GetDocument())->GetEffectDefinition(GetSelection());
+
+	switch (e.GetId()) {
+	case MENU_EFFECT_DELAY_SOUND:
+		effect->SetDelaySound(e.GetSelection() - 1);
 		break;
 	}
 

@@ -581,22 +581,22 @@ void PhysicsView::CreateEffects()
 	effects_grid_sizer->SetHGap(10);
 	
 	effects_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Graphic collection:")), 0, wxALIGN_CENTER_VERTICAL);
-	eff_collection_field = new wxTextCtrl(mFrame, wxID_ANY);
+	eff_collection_field = new wxTextCtrl(mFrame, FIELD_EFFECT_COLLECTION);
 	effects_grid_sizer->Add(eff_collection_field, 0, wxALIGN_CENTER_VERTICAL);
 
 	effects_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Color table:")), 0, wxALIGN_CENTER_VERTICAL);
-	eff_color_table_field = new wxTextCtrl(mFrame, wxID_ANY);
+	eff_color_table_field = new wxTextCtrl(mFrame, FIELD_EFFECT_COLOR_TABLE);
 	effects_grid_sizer->Add(eff_color_table_field, 0, wxALIGN_CENTER_VERTICAL);
 
 	effects_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Sequence:")), 0, wxALIGN_CENTER_VERTICAL);
-	eff_sequence_field = new wxTextCtrl(mFrame, wxID_ANY);
+	eff_sequence_field = new wxTextCtrl(mFrame, FIELD_EFFECT_SEQUENCE);
 	effects_grid_sizer->Add(eff_sequence_field, 0, wxALIGN_CENTER_VERTICAL);
 
 	effects_grid_sizer->AddSpacer(10);
 	effects_grid_sizer->AddSpacer(10);
 
 	effects_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Sound pitch:")), 0, wxALIGN_CENTER_VERTICAL);
-	eff_pitch_field = new wxTextCtrl(mFrame, wxID_ANY);
+	eff_pitch_field = new wxTextCtrl(mFrame, FIELD_EFFECT_PITCH);
 	effects_grid_sizer->Add(eff_pitch_field, 0, wxALIGN_CENTER_VERTICAL);
 
 	effects_grid_sizer->AddSpacer(10);
@@ -611,23 +611,23 @@ void PhysicsView::CreateEffects()
 	delay_sound_choices.insert(delay_sound_choices.begin(), GetName(wxT("sound"), -1));
 
 	effects_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Delay sound:")), 0, wxALIGN_CENTER_VERTICAL);
-	eff_delay_sound_choice = new wxChoice(mFrame, wxID_ANY, wxDefaultPosition, choiceSize, delay_sound_choices.size(), &delay_sound_choices[0]);
+	eff_delay_sound_choice = new wxChoice(mFrame, MENU_EFFECT_DELAY_SOUND, wxDefaultPosition, choiceSize, delay_sound_choices.size(), &delay_sound_choices[0]);
 	effects_grid_sizer->Add(eff_delay_sound_choice, 0, wxALIGN_CENTER_VERTICAL);
 
 	effects_static_sizer->Add(effects_grid_sizer);
 	
 	effects_static_sizer->AddSpacer(10);
 
-	eff_end_when_animation_loops_checkbox = new wxCheckBox(mFrame, wxID_ANY, _("End when animation loops"));
+	eff_end_when_animation_loops_checkbox = new wxCheckBox(mFrame, CB_EFFECT_END_WHEN_ANIMATION_LOOPS, _("End when animation loops"));
 	effects_static_sizer->Add(eff_end_when_animation_loops_checkbox);
 
-	eff_end_when_transfer_animation_loops_checkbox = new wxCheckBox(mFrame, wxID_ANY, _("End when transfer animation loops"));
+	eff_end_when_transfer_animation_loops_checkbox = new wxCheckBox(mFrame, CB_EFFECT_END_WHEN_TRANSFER_ANIMATION_LOOPS, _("End when transfer animation loops"));
 	effects_static_sizer->Add(eff_end_when_transfer_animation_loops_checkbox);
 
-	eff_sound_only_checkbox = new wxCheckBox(mFrame, wxID_ANY, _("Sound only"));
+	eff_sound_only_checkbox = new wxCheckBox(mFrame, CB_EFFECT_SOUND_ONLY, _("Sound only"));
 	effects_static_sizer->Add(eff_sound_only_checkbox);
 
-	eff_media_effect_checkbox = new wxCheckBox(mFrame, wxID_ANY, _("Media effect"));
+	eff_media_effect_checkbox = new wxCheckBox(mFrame, CB_EFFECT_MEDIA_EFFECT, _("Media effect"));
 	effects_static_sizer->Add(eff_media_effect_checkbox);
 	
 	effects_sizer->Add(effects_static_sizer);
