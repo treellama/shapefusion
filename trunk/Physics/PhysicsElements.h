@@ -20,6 +20,7 @@
 #define PHYSICSELEMENTS_H
 
 #include "../BigEndianBuffer.h"
+#include <iostream>
 
 class PhysicsElement
 {
