@@ -104,7 +104,17 @@ private:
 		CB_ALIEN_ENEMIES = CB_ALIEN_FRIENDS + 16,
 		CB_ALIEN_FLAGS = CB_ALIEN_ENEMIES + 16,
 		CB_ALIEN_IMMUNITIES = CB_ALIEN_FLAGS + 27,
-		CB_ALIEN_WEAKNESSES = CB_ALIEN_IMMUNITIES + 24
+		CB_ALIEN_WEAKNESSES = CB_ALIEN_IMMUNITIES + 24,
+
+		FIELD_EFFECT_COLLECTION = CB_ALIEN_WEAKNESSES + 24,
+		FIELD_EFFECT_COLOR_TABLE,
+		FIELD_EFFECT_SEQUENCE,
+		FIELD_EFFECT_PITCH,
+		MENU_EFFECT_DELAY_SOUND,
+		CB_EFFECT_END_WHEN_ANIMATION_LOOPS,
+		CB_EFFECT_END_WHEN_TRANSFER_ANIMATION_LOOPS,
+		CB_EFFECT_SOUND_ONLY,
+		CB_EFFECT_MEDIA_EFFECT,
 	};
 
 	wxBoxSizer* mainbox;
@@ -369,6 +379,11 @@ private:
 	void EditAlienDoubles(wxCommandEvent& e);
 	void EditAlienFields(wxCommandEvent& e);
 	void EditAlienMenus(wxCommandEvent& e);
+
+	void EditEffectCheckboxes(wxCommandEvent& e);
+	void EditEffectFields(wxCommandEvent& e);
+	void EditEffectDoubles(wxCommandEvent& e);
+	void EditEffectMenus(wxCommandEvent& e);
 
 	wxFrame* mFrame;
 };
