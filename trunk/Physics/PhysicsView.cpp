@@ -816,15 +816,15 @@ void PhysicsView::CreateShots()
 	shape_sizer->SetHGap(10);
 
 	shape_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Graphic Collection:")), 0, wxALIGN_CENTER_VERTICAL);
-	shots_collection_field = new wxTextCtrl(mFrame, wxID_ANY);
+	shots_collection_field = new wxTextCtrl(mFrame, FIELD_SHOT_COLLECTION);
 	shape_sizer->Add(shots_collection_field, 0, wxALIGN_CENTER_VERTICAL);
 
 	shape_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Color Table:")), 0, wxALIGN_CENTER_VERTICAL);
-	shots_color_table_field = new wxTextCtrl(mFrame, wxID_ANY);
+	shots_color_table_field = new wxTextCtrl(mFrame, FIELD_SHOT_COLOR_TABLE);
 	shape_sizer->Add(shots_color_table_field, 0, wxALIGN_CENTER_VERTICAL);
 
 	shape_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Sequence:")), 0, wxALIGN_CENTER_VERTICAL);
-	shots_sequence_field = new wxTextCtrl(mFrame, wxID_ANY);
+	shots_sequence_field = new wxTextCtrl(mFrame, FIELD_SHOT_SEQUENCE);
 	shape_sizer->Add(shots_sequence_field, 0, wxALIGN_CENTER_VERTICAL);
 
 	column_1_sizer->Add(shape_sizer, 0, wxEXPAND);
@@ -840,24 +840,24 @@ void PhysicsView::CreateShots()
 	std::vector<wxString> damage_strings = DefaultNames::Instance()->GetArray(wxT("damage"));
 	damage_strings.insert(damage_strings.begin(), _("None"));
 
-	shots_damage_type_choice = new wxChoice(mFrame, wxID_ANY, wxDefaultPosition, choiceSize, damage_strings.size(), &damage_strings[0]);
+	shots_damage_type_choice = new wxChoice(mFrame, MENU_SHOT_DAMAGE_TYPE, wxDefaultPosition, choiceSize, damage_strings.size(), &damage_strings[0]);
 	damage_grid_sizer->Add(shots_damage_type_choice, 0, wxALIGN_CENTER_VERTICAL);
 
 	damage_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Damage Base:")), 0, wxALIGN_CENTER_VERTICAL);
-	shots_damage_base_field = new wxTextCtrl(mFrame, wxID_ANY);
+	shots_damage_base_field = new wxTextCtrl(mFrame, FIELD_SHOT_DAMAGE_BASE);
 	damage_grid_sizer->Add(shots_damage_base_field, 0, wxALIGN_CENTER_VERTICAL);
 
 	damage_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Damage Random:")), 0, wxALIGN_CENTER_VERTICAL);
-	shots_damage_random_field = new wxTextCtrl(mFrame, wxID_ANY);
+	shots_damage_random_field = new wxTextCtrl(mFrame, FIELD_SHOT_DAMAGE_RANDOM);
 	damage_grid_sizer->Add(shots_damage_random_field, 0, wxALIGN_CENTER_VERTICAL);
 
 	damage_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Damage Scale:")), 0, wxALIGN_CENTER_VERTICAL);
-	shots_damage_scale_field = new wxTextCtrl(mFrame, wxID_ANY);
+	shots_damage_scale_field = new wxTextCtrl(mFrame, FIELD_SHOT_DAMAGE_SCALE);
 	damage_grid_sizer->Add(shots_damage_scale_field, 0, wxALIGN_CENTER_VERTICAL);
 	
 	damage_sizer->Add(damage_grid_sizer, 0, wxEXPAND);
 	
-	shots_alien_damage_checkbox = new wxCheckBox(mFrame, wxID_ANY, _("Alien Damage (varies with level)"));
+	shots_alien_damage_checkbox = new wxCheckBox(mFrame, CB_SHOT_ALIEN_DAMAGE, _("Alien Damage (varies with level)"));
 	damage_sizer->Add(shots_alien_damage_checkbox);
 
 	column_1_sizer->Add(damage_sizer, 0, wxEXPAND | wxALL, 10);
@@ -870,34 +870,34 @@ void PhysicsView::CreateShots()
 	sound_strings.insert(sound_strings.begin(), GetName(wxT("sound"), -1));
 
 	shots_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Flyby Sound:")), 0, wxALIGN_CENTER_VERTICAL);
-	shots_flyby_sound_choice = new wxChoice(mFrame, wxID_ANY, wxDefaultPosition, choiceSize, sound_strings.size(), &sound_strings[0]);
+	shots_flyby_sound_choice = new wxChoice(mFrame, MENU_SHOT_FLYBY_SOUND, wxDefaultPosition, choiceSize, sound_strings.size(), &sound_strings[0]);
 	shots_grid_sizer->Add(shots_flyby_sound_choice, 0, wxALIGN_CENTER_VERTICAL);
 
 	shots_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Rebound Sound:")), 0, wxALIGN_CENTER_VERTICAL);
-	shots_rebound_sound_choice = new wxChoice(mFrame, wxID_ANY, wxDefaultPosition, choiceSize, sound_strings.size(), &sound_strings[0]);
+	shots_rebound_sound_choice = new wxChoice(mFrame, MENU_SHOT_REBOUND_SOUND, wxDefaultPosition, choiceSize, sound_strings.size(), &sound_strings[0]);
 	shots_grid_sizer->Add(shots_rebound_sound_choice, 0, wxALIGN_CENTER_VERTICAL);
 
 	shots_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Sound Pitch:")), 0, wxALIGN_CENTER_VERTICAL);
-	shots_sound_pitch_field = new wxTextCtrl(mFrame, wxID_ANY);
+	shots_sound_pitch_field = new wxTextCtrl(mFrame, FIELD_SHOT_SOUND_PITCH);
 	shots_grid_sizer->Add(shots_sound_pitch_field, 0, wxALIGN_CENTER_VERTICAL);
 
 	shots_grid_sizer->AddSpacer(10);
 	shots_grid_sizer->AddSpacer(10);
 
 	shots_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Radius:")), 0, wxALIGN_CENTER_VERTICAL);
-	shots_radius_field = new wxTextCtrl(mFrame, wxID_ANY);
+	shots_radius_field = new wxTextCtrl(mFrame, FIELD_SHOT_RADIUS);
 	shots_grid_sizer->Add(shots_radius_field, 0, wxALIGN_CENTER_VERTICAL);
 
 	shots_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Area of Effect:")), 0, wxALIGN_CENTER_VERTICAL);
-	shots_area_of_effect_field = new wxTextCtrl(mFrame, wxID_ANY);
+	shots_area_of_effect_field = new wxTextCtrl(mFrame, FIELD_SHOT_AREA_OF_EFFECT);
 	shots_grid_sizer->Add(shots_area_of_effect_field, 0, wxALIGN_CENTER_VERTICAL);
 
 	shots_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Speed:")), 0, wxALIGN_CENTER_VERTICAL);
-	shots_speed_field = new wxTextCtrl(mFrame, wxID_ANY);
+	shots_speed_field = new wxTextCtrl(mFrame, FIELD_SHOT_SPEED);
 	shots_grid_sizer->Add(shots_speed_field, 0, wxALIGN_CENTER_VERTICAL);
 
 	shots_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Maximum Range:")), 0, wxALIGN_CENTER_VERTICAL);
-	shots_range_field = new wxTextCtrl(mFrame, wxID_ANY);
+	shots_range_field = new wxTextCtrl(mFrame, FIELD_SHOT_RANGE);
 	shots_grid_sizer->Add(shots_range_field, 0, wxALIGN_CENTER_VERTICAL);
 
 	shots_grid_sizer->AddSpacer(10);
@@ -907,7 +907,7 @@ void PhysicsView::CreateShots()
 	effect_strings.insert(effect_strings.begin(), GetName(wxT("sound"), -1));
 	
 	shots_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Detonation Effect:")), 0, wxALIGN_CENTER_VERTICAL);
-	shots_detonation_effect_choice = new wxChoice(mFrame, wxID_ANY, wxDefaultPosition, choiceSize, effect_strings.size(), &effect_strings[0]);
+	shots_detonation_effect_choice = new wxChoice(mFrame, MENU_SHOT_DETONATION_EFFECT, wxDefaultPosition, choiceSize, effect_strings.size(), &effect_strings[0]);
 	shots_grid_sizer->Add(shots_detonation_effect_choice, 0, wxALIGN_CENTER_VERTICAL);
 
 	static const wxString media_effect_strings[] = {
@@ -917,22 +917,22 @@ void PhysicsView::CreateShots()
 	};
 
 	shots_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Media Detonation Effect:")), 0, wxALIGN_CENTER_VERTICAL);
-	shots_media_detonation_effect_choice = new wxChoice(mFrame, wxID_ANY, wxDefaultPosition, choiceSize, 3, media_effect_strings);
+	shots_media_detonation_effect_choice = new wxChoice(mFrame, MENU_SHOT_MEDIA_DETONATION_EFFECT, wxDefaultPosition, choiceSize, 3, media_effect_strings);
 	shots_grid_sizer->Add(shots_media_detonation_effect_choice, 0, wxALIGN_CENTER_VERTICAL);
 
 	shots_grid_sizer->AddSpacer(10);
 	shots_grid_sizer->AddSpacer(10);
 
 	shots_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Contrail:")), 0, wxALIGN_CENTER_VERTICAL);
-	shots_contrail_choice = new wxChoice(mFrame, wxID_ANY, wxDefaultPosition, choiceSize, effect_strings.size(), &effect_strings[0]);
+	shots_contrail_choice = new wxChoice(mFrame, MENU_SHOT_CONTRAIL, wxDefaultPosition, choiceSize, effect_strings.size(), &effect_strings[0]);
 	shots_grid_sizer->Add(shots_contrail_choice, 0, wxALIGN_CENTER_VERTICAL);
 
 	shots_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Ticks between contrails:")), 0, wxALIGN_CENTER_VERTICAL);
-	shots_contrail_ticks_field = new wxTextCtrl(mFrame, wxID_ANY);
+	shots_contrail_ticks_field = new wxTextCtrl(mFrame, FIELD_SHOT_CONTRAIL_TICKS);
 	shots_grid_sizer->Add(shots_contrail_ticks_field, 0, wxALIGN_CENTER_VERTICAL);
 
 	shots_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Maximum contrails:")), 0, wxALIGN_CENTER_VERTICAL);
-	shots_maximum_contrails_field = new wxTextCtrl(mFrame, wxID_ANY);
+	shots_maximum_contrails_field = new wxTextCtrl(mFrame, FIELD_SHOT_MAXIMUM_CONTRAILS);
 	shots_grid_sizer->Add(shots_maximum_contrails_field, 0, wxALIGN_CENTER_VERTICAL);
 
 	column_1_sizer->Add(shots_grid_sizer);
@@ -971,7 +971,7 @@ void PhysicsView::CreateShots()
 
 
 	for (int i = 0; i < 22; ++i) {
-		shots_flags_checkboxes[i] = new wxCheckBox(mFrame, wxID_ANY, flags_strings[i]);
+		shots_flags_checkboxes[i] = new wxCheckBox(mFrame, CB_SHOT_FLAGS + i, flags_strings[i]);
 		flags_sizer->Add(shots_flags_checkboxes[i]);
 	}
 
@@ -985,7 +985,7 @@ void PhysicsView::CreateShots()
 	std::vector<wxString> shot_strings = DefaultNames::Instance()->GetArray(wxT("shot"));
 	shot_strings.insert(shot_strings.begin(), GetName(wxT("shot"), -1));
 
-	shots_media_impact_choice = new wxChoice(mFrame, wxID_ANY, wxDefaultPosition, choiceSize, shot_strings.size(), &shot_strings[0]);
+	shots_media_impact_choice = new wxChoice(mFrame, MENU_SHOT_MEDIA_IMPACT, wxDefaultPosition, choiceSize, shot_strings.size(), &shot_strings[0]);
 	media_impact_sizer->Add(shots_media_impact_choice, 0, wxALIGN_CENTER_VERTICAL);
 	
 	column_2_sizer->Add(media_impact_sizer);
