@@ -115,6 +115,33 @@ private:
 		CB_EFFECT_END_WHEN_TRANSFER_ANIMATION_LOOPS,
 		CB_EFFECT_SOUND_ONLY,
 		CB_EFFECT_MEDIA_EFFECT,
+
+		CB_SHOT_FLAGS,
+		CB_SHOT_ALIEN_DAMAGE = CB_SHOT_FLAGS + 22,
+
+		FIELD_SHOT_COLLECTION,
+		FIELD_SHOT_COLOR_TABLE,
+		FIELD_SHOT_SEQUENCE,
+		FIELD_SHOT_DAMAGE_BASE,
+		FIELD_SHOT_DAMAGE_RANDOM,
+		FIELD_SHOT_RADIUS,
+		FIELD_SHOT_AREA_OF_EFFECT,
+		FIELD_SHOT_SPEED,
+		FIELD_SHOT_RANGE,
+		FIELD_SHOT_CONTRAIL_TICKS,
+		FIELD_SHOT_MAXIMUM_CONTRAILS,
+		
+		FIELD_SHOT_DAMAGE_SCALE,
+		FIELD_SHOT_SOUND_PITCH,
+
+		MENU_SHOT_DAMAGE_TYPE,
+		MENU_SHOT_FLYBY_SOUND,
+		MENU_SHOT_REBOUND_SOUND,
+		MENU_SHOT_DETONATION_EFFECT,
+		MENU_SHOT_MEDIA_DETONATION_EFFECT,
+		MENU_SHOT_CONTRAIL,
+		MENU_SHOT_MEDIA_IMPACT,
+
 	};
 
 	wxBoxSizer* mainbox;
@@ -384,6 +411,11 @@ private:
 	void EditEffectFields(wxCommandEvent& e);
 	void EditEffectDoubles(wxCommandEvent& e);
 	void EditEffectMenus(wxCommandEvent& e);
+
+	void EditShotCheckboxes(wxCommandEvent& e);
+	void EditShotFields(wxCommandEvent& e);
+	void EditShotDoubles(wxCommandEvent& e);
+	void EditShotMenus(wxCommandEvent& e);
 
 	wxFrame* mFrame;
 };

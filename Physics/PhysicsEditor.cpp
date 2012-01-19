@@ -56,6 +56,10 @@ BEGIN_EVENT_TABLE(PhysicsView, wxView)
 	EVT_CHOICE(MENU_EFFECT_DELAY_SOUND, PhysicsView::EditEffectMenus)
 	EVT_COMMAND_RANGE(CB_EFFECT_END_WHEN_ANIMATION_LOOPS, CB_EFFECT_MEDIA_EFFECT, wxEVT_COMMAND_CHECKBOX_CLICKED, PhysicsView::EditEffectCheckboxes)
 
+	EVT_COMMAND_RANGE(CB_SHOT_FLAGS, CB_SHOT_ALIEN_DAMAGE, wxEVT_COMMAND_CHECKBOX_CLICKED, PhysicsView::EditShotCheckboxes)
+	EVT_COMMAND_RANGE(FIELD_SHOT_COLLECTION, FIELD_SHOT_MAXIMUM_CONTRAILS, wxEVT_COMMAND_TEXT_UPDATED, PhysicsView::EditShotFields)
+	EVT_COMMAND_RANGE(FIELD_SHOT_DAMAGE_SCALE, FIELD_SHOT_SOUND_PITCH, wxEVT_COMMAND_TEXT_UPDATED, PhysicsView::EditShotDoubles)
+	EVT_COMMAND_RANGE(MENU_SHOT_DAMAGE_TYPE, MENU_SHOT_MEDIA_IMPACT, wxEVT_COMMAND_CHOICE_SELECTED, PhysicsView::EditShotMenus)
 END_EVENT_TABLE()
 
 IMPLEMENT_DYNAMIC_CLASS(PhysicsView, wxView)
@@ -772,4 +776,127 @@ void PhysicsView::EditEffectMenus(wxCommandEvent& e)
 	}
 
 	static_cast<PhysicsDocument*>(GetDocument())->Modify(true);
+}
+
+void PhysicsView::EditShotCheckboxes(wxCommandEvent& e)
+{
+	ProjectileDefinition* projectile = static_cast<PhysicsDocument*>(GetDocument())->GetProjectileDefinition(GetSelection());
+	
+	if (e.GetId() == CB_SHOT_ALIEN_DAMAGE) {
+		projectile->GetDamage()->SetAlien(e.IsChecked());
+	} else if (e.GetId() >= CB_SHOT_FLAGS && e.GetId() < CB_SHOT_FLAGS + 22) {
+		projectile->SetFlag(e.GetId() - CB_SHOT_FLAGS, e.IsChecked());
+	}
+	
+	static_cast<PhysicsDocument*>(GetDocument())->Modify(true);
+}
+
+void PhysicsView::EditShotFields(wxCommandEvent& e)
+{
+	ProjectileDefinition* projectile = static_cast<PhysicsDocument*>(GetDocument())->GetProjectileDefinition(GetSelection());
+
+	long v = 0;
+	if (e.GetString().ToLong(&v)) {
+		switch (e.GetId()) {
+		case FIELD_SHOT_COLLECTION:
+			if (v == -1) {
+				projectile->SetCollection(31);
+				projectile->SetColorTable(7);
+				shots_collection_field->ChangeValue(wxT("31"));
+				shots_color_table_field->ChangeValue(wxT("7"));
+			} else {
+				projectile->SetCollection(v);
+			}
+			break;
+		case FIELD_SHOT_COLOR_TABLE:
+			if (v == -1) {
+				projectile->SetCollection(31);
+				projectile->SetColorTable(7);
+				shots_collection_field->ChangeValue(wxT("31"));
+				shots_color_table_field->ChangeValue(wxT("7"));
+			} else {
+				projectile->SetColorTable(v);
+			}
+			break;
+		case FIELD_SHOT_SEQUENCE:
+			projectile->SetShape(v);
+			break;
+		case FIELD_SHOT_DAMAGE_BASE:
+			projectile->GetDamage()->SetBase(v);
+			break;
+		case FIELD_SHOT_DAMAGE_RANDOM:
+			projectile->GetDamage()->SetRandom(v);
+			break;
+		case FIELD_SHOT_RADIUS:
+			projectile->SetRadius(v);
+			break;
+		case FIELD_SHOT_AREA_OF_EFFECT:
+			projectile->SetAreaOfEffect(v);
+			break;
+		case FIELD_SHOT_SPEED:
+			projectile->SetSpeed(v);
+			break;
+		case FIELD_SHOT_RANGE:
+			projectile->SetMaximumRange(v);
+			break;
+		case FIELD_SHOT_CONTRAIL_TICKS:
+			projectile->SetTicksBetweenContrails(v);
+			break;
+		case FIELD_SHOT_MAXIMUM_CONTRAILS:
+			projectile->SetMaximumContrails(v);
+			break;
+		}
+	}
+	static_cast<PhysicsDocument*>(GetDocument())->Modify(true);
+}
+
+void PhysicsView::EditShotDoubles(wxCommandEvent& e)
+{
+	ProjectileDefinition* projectile = static_cast<PhysicsDocument*>(GetDocument())->GetProjectileDefinition(GetSelection());
+	
+	double d = 0.0;
+
+	if (e.GetString().ToDouble(&d)) {
+		switch (e.GetId()) {
+		case FIELD_SHOT_DAMAGE_SCALE:
+			projectile->GetDamage()->SetScale(d);
+			break;
+		case FIELD_SHOT_SOUND_PITCH:
+			projectile->SetSoundPitch(d);
+			break;
+		}
+	}
+
+	static_cast<PhysicsDocument*>(GetDocument())->Modify(true);
+}
+
+void PhysicsView::EditShotMenus(wxCommandEvent& e)
+{
+	ProjectileDefinition* projectile = static_cast<PhysicsDocument*>(GetDocument())->GetProjectileDefinition(GetSelection());
+
+	switch (e.GetId()) {
+	case MENU_SHOT_DAMAGE_TYPE:
+		projectile->GetDamage()->SetType(e.GetSelection() - 1);
+		break;
+	case MENU_SHOT_FLYBY_SOUND:
+		projectile->SetFlybySound(e.GetSelection() - 1);
+		break;
+	case MENU_SHOT_REBOUND_SOUND:
+		projectile->SetReboundSound(e.GetSelection() - 1);
+		break;
+	case MENU_SHOT_DETONATION_EFFECT:
+		projectile->SetDetonationEffect(e.GetSelection() - 1);
+		break;
+	case MENU_SHOT_MEDIA_DETONATION_EFFECT:
+		projectile->SetMediaDetonationEffect(e.GetSelection() - 1);
+		break;
+	case MENU_SHOT_CONTRAIL:
+		projectile->SetContrailEffect(e.GetSelection() - 1);
+		break;
+	case MENU_SHOT_MEDIA_IMPACT:
+		projectile->SetMediaProjectilePromotion(e.GetSelection() - 1);
+		break;
+	}
+
+	static_cast<PhysicsDocument*>(GetDocument())->Modify(true);	
 }

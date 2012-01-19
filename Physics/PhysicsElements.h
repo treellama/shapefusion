@@ -524,6 +524,7 @@ private:
 	short mReboundSound;
 
 public:
+	// accessors
 	unsigned short GetCollection() { return mCollection; }
 	unsigned short GetColorTable() { return mColorTable; }
 	short GetShape() { return mShape; }
@@ -548,6 +549,33 @@ public:
 	double GetSoundPitch() { return mSoundPitch; }
 	short GetFlybySound() { return mFlybySound; }
 	short GetReboundSound() { return mReboundSound; }
+
+	// mutators
+	void SetCollection(unsigned short v) { mCollection = v; }
+	void SetColorTable(unsigned short v) { mColorTable = v; }
+	void SetShape(short v) { mShape = v; }
+	
+	void SetDetonationEffect(short v) { mDetonationEffect = v; }
+	void SetMediaDetonationEffect(short v) { mMediaDetonationEffect = v; }
+	void SetContrailEffect(short v) { mContrailEffect = v; }
+	void SetTicksBetweenContrails(short v) { mTicksBetweenContrails = v; }
+	void SetMaximumContrails(short v) { mMaximumContrails = v; }
+	void SetMediaProjectilePromotion(short v) { mMediaProjectilePromotion = v; }
+
+	void SetRadius(short v) { mRadius = v; }
+	void SetAreaOfEffect(short v) { mAreaOfEffect = v; }
+
+	void SetFlag(int flag_index, bool f) {
+		if (f) mFlags |= (1 << flag_index);
+		else mFlags &= ~(1 << flag_index);
+	}
+
+	void SetSpeed(short v) { mSpeed = v; }
+	void SetMaximumRange(short v) { mMaximumRange = v; }
+
+	void SetSoundPitch(double v) { mSoundPitch = v; }
+	void SetFlybySound(short v) { mFlybySound = v; }
+	void SetReboundSound(short v) { mReboundSound = v; }
 
 	ProjectileDefinition(bool verbose = false) : PhysicsElement(verbose) { }
 	~ProjectileDefinition() { }
