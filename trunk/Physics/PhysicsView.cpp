@@ -1010,7 +1010,7 @@ void PhysicsView::CreateWeapons()
 	item_strings.insert(item_strings.begin(), _("None"));
 
 	item_type_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Item Type:")), 0, wxALIGN_CENTER_VERTICAL);
-	weapon_item_type_choice = new wxChoice(mFrame, wxID_ANY, wxDefaultPosition, choiceSize, item_strings.size(), &item_strings[0]);
+	weapon_item_type_choice = new wxChoice(mFrame, MENU_WEAPON_ITEM_TYPE, wxDefaultPosition, choiceSize, item_strings.size(), &item_strings[0]);
 	item_type_sizer->AddSpacer(10);
 	item_type_sizer->Add(weapon_item_type_choice, 0, wxALIGN_CENTER_VERTICAL);
 
@@ -1022,38 +1022,38 @@ void PhysicsView::CreateWeapons()
 	appearance_grid_sizer->SetHGap(0);
 
 	appearance_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Graphic Collection:")), 0, wxALIGN_CENTER_VERTICAL);
-	weapon_collection_field = new wxTextCtrl(mFrame, wxID_ANY);
+	weapon_collection_field = new wxTextCtrl(mFrame, FIELD_WEAPON_COLLECTION);
 	appearance_grid_sizer->Add(weapon_collection_field, 0, wxALIGN_CENTER_VERTICAL);
 
 	appearance_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Color Table:")), 0, wxALIGN_CENTER_VERTICAL);
-	weapon_color_table_field = new wxTextCtrl(mFrame, wxID_ANY);
+	weapon_color_table_field = new wxTextCtrl(mFrame, FIELD_WEAPON_COLOR_TABLE);
 	appearance_grid_sizer->Add(weapon_color_table_field, 0, wxALIGN_CENTER_VERTICAL);
 
 	appearance_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Idle:")), 0, wxALIGN_CENTER_VERTICAL);
-	weapon_idle_field = new wxTextCtrl(mFrame, wxID_ANY);
+	weapon_idle_field = new wxTextCtrl(mFrame, FIELD_WEAPON_IDLE);
 	appearance_grid_sizer->Add(weapon_idle_field, 0, wxALIGN_CENTER_VERTICAL);
 
 	appearance_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Firing:")), 0, wxALIGN_CENTER_VERTICAL);
-	weapon_firing_field = new wxTextCtrl(mFrame, wxID_ANY);
+	weapon_firing_field = new wxTextCtrl(mFrame, FIELD_WEAPON_FIRING);
 	appearance_grid_sizer->Add(weapon_firing_field, 0, wxALIGN_CENTER_VERTICAL);
 
 	appearance_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Reloading:")), 0, wxALIGN_CENTER_VERTICAL);
-	weapon_reloading_field = new wxTextCtrl(mFrame, wxID_ANY);
+	weapon_reloading_field = new wxTextCtrl(mFrame, FIELD_WEAPON_RELOADING);
 	appearance_grid_sizer->Add(weapon_reloading_field, 0, wxALIGN_CENTER_VERTICAL);
 
 	appearance_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Charging:")), 0, wxALIGN_CENTER_VERTICAL);
-	weapon_charging_field = new wxTextCtrl(mFrame, wxID_ANY);
+	weapon_charging_field = new wxTextCtrl(mFrame, FIELD_WEAPON_CHARGING);
 	appearance_grid_sizer->Add(weapon_charging_field, 0, wxALIGN_CENTER_VERTICAL);
 
 	appearance_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Charged:")), 0, wxALIGN_CENTER_VERTICAL);
-	weapon_charged_field = new wxTextCtrl(mFrame, wxID_ANY);
+	weapon_charged_field = new wxTextCtrl(mFrame, FIELD_WEAPON_CHARGED);
 	appearance_grid_sizer->Add(weapon_charged_field, 0, wxALIGN_CENTER_VERTICAL);
 
 	appearance_grid_sizer->AddSpacer(10);
 	appearance_grid_sizer->AddSpacer(10);
 
 	appearance_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Flash Intensity:")), 0, wxALIGN_CENTER_VERTICAL);
-	weapon_flash_intensity_field = new wxTextCtrl(mFrame, wxID_ANY);
+	weapon_flash_intensity_field = new wxTextCtrl(mFrame, FIELD_WEAPON_FLASH_INTENSITY);
 	appearance_grid_sizer->Add(weapon_flash_intensity_field, 0, wxALIGN_CENTER_VERTICAL);
 
 	appearance_sizer->Add(appearance_grid_sizer, 0, wxEXPAND);
@@ -1067,26 +1067,26 @@ void PhysicsView::CreateWeapons()
 	timing_grid_sizer->SetHGap(10);
 
 	timing_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Ready:")), 0, wxALIGN_CENTER_VERTICAL);
-	weapon_ready_field = new wxTextCtrl(mFrame, wxID_ANY);
+	weapon_ready_field = new wxTextCtrl(mFrame, FIELD_WEAPON_READY);
 	timing_grid_sizer->Add(weapon_ready_field, 0, wxALIGN_CENTER_VERTICAL);	
 
 	timing_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Await Reload:")), 0, wxALIGN_CENTER_VERTICAL);
-	weapon_await_reload_field = new wxTextCtrl(mFrame, wxID_ANY);
+	weapon_await_reload_field = new wxTextCtrl(mFrame, FIELD_WEAPON_AWAIT_RELOAD);
 	timing_grid_sizer->Add(weapon_await_reload_field, 0, wxALIGN_CENTER_VERTICAL);	
 
 	timing_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Loading:")), 0, wxALIGN_CENTER_VERTICAL);
-	weapon_loading_field = new wxTextCtrl(mFrame, wxID_ANY);
+	weapon_loading_field = new wxTextCtrl(mFrame, FIELD_WEAPON_LOADING);
 	timing_grid_sizer->Add(weapon_loading_field, 0, wxALIGN_CENTER_VERTICAL);	
 
 	timing_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Finish Loading:")), 0, wxALIGN_CENTER_VERTICAL);
-	weapon_finish_loading_field = new wxTextCtrl(mFrame, wxID_ANY);
+	weapon_finish_loading_field = new wxTextCtrl(mFrame, FIELD_WEAPON_FINISH_LOADING);
 	timing_grid_sizer->Add(weapon_finish_loading_field, 0, wxALIGN_CENTER_VERTICAL);
 
 	timing_grid_sizer->AddSpacer(10);
 	timing_grid_sizer->AddSpacer(10);
 
 	timing_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Flash Decay:")), 0, wxALIGN_CENTER_VERTICAL);
-	weapon_flash_decay_field = new wxTextCtrl(mFrame, wxID_ANY);
+	weapon_flash_decay_field = new wxTextCtrl(mFrame, FIELD_WEAPON_FLASH_DECAY);
 	timing_grid_sizer->Add(weapon_flash_decay_field, 0, wxALIGN_CENTER_VERTICAL);
 
 	timing_sizer->Add(timing_grid_sizer, 0, wxEXPAND);
@@ -1110,7 +1110,7 @@ void PhysicsView::CreateWeapons()
 	};
 
 	weapon_class_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Weapon Class:")), 0, wxALIGN_CENTER_VERTICAL);
-	weapon_class_choice = new wxChoice(mFrame, wxID_ANY, wxDefaultPosition, choiceSize, 6, weapon_class_names);
+	weapon_class_choice = new wxChoice(mFrame, MENU_WEAPON_CLASS, wxDefaultPosition, choiceSize, 6, weapon_class_names);
 	weapon_class_sizer->AddSpacer(10);
 	weapon_class_sizer->Add(weapon_class_choice, 0, wxALIGN_CENTER_VERTICAL);
 
@@ -1122,23 +1122,23 @@ void PhysicsView::CreateWeapons()
 	height_grid_sizer->SetHGap(10);
 
 	height_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Idle Height:")), 0, wxALIGN_CENTER_VERTICAL);
-	weapon_idle_height_field = new wxTextCtrl(mFrame, wxID_ANY);
+	weapon_idle_height_field = new wxTextCtrl(mFrame, FIELD_WEAPON_IDLE_HEIGHT);
 	height_grid_sizer->Add(weapon_idle_height_field, 0, wxALIGN_CENTER_VERTICAL);	
 
 	height_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Bob Amplitude:")), 0, wxALIGN_CENTER_VERTICAL);
-	weapon_bob_amplitude_field = new wxTextCtrl(mFrame, wxID_ANY);
+	weapon_bob_amplitude_field = new wxTextCtrl(mFrame, FIELD_WEAPON_BOB_AMPLITUDE);
 	height_grid_sizer->Add(weapon_bob_amplitude_field, 0, wxALIGN_CENTER_VERTICAL);	
 
 	height_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Kick Height:")), 0, wxALIGN_CENTER_VERTICAL);
-	weapon_kick_height_field = new wxTextCtrl(mFrame, wxID_ANY);
+	weapon_kick_height_field = new wxTextCtrl(mFrame, FIELD_WEAPON_KICK_HEIGHT);
 	height_grid_sizer->Add(weapon_kick_height_field, 0, wxALIGN_CENTER_VERTICAL);	
 
 	height_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Reload Height:")), 0, wxALIGN_CENTER_VERTICAL);
-	weapon_reload_height_field = new wxTextCtrl(mFrame, wxID_ANY);
+	weapon_reload_height_field = new wxTextCtrl(mFrame, FIELD_WEAPON_RELOAD_HEIGHT);
 	height_grid_sizer->Add(weapon_reload_height_field, 0, wxALIGN_CENTER_VERTICAL);
 
 	height_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Idle Width:")), 0, wxALIGN_CENTER_VERTICAL);
-	weapon_idle_width_field = new wxTextCtrl(mFrame, wxID_ANY);
+	weapon_idle_width_field = new wxTextCtrl(mFrame, FIELD_WEAPON_IDLE_WIDTH);
 	height_grid_sizer->Add(weapon_idle_width_field, 0, wxALIGN_CENTER_VERTICAL);
 
 	height_sizer->Add(height_grid_sizer, 0, wxEXPAND);
@@ -1161,7 +1161,7 @@ void PhysicsView::CreateWeapons()
 	};
 
 	for (int i = 0; i < 10; ++i) {
-		weapon_flags_checkboxes[i] = new wxCheckBox(mFrame, wxID_ANY, flags_strings[i]);
+		weapon_flags_checkboxes[i] = new wxCheckBox(mFrame, CB_WEAPON_FLAGS + i, flags_strings[i]);
 		flags_sizer->Add(weapon_flags_checkboxes[i], 0, wxALIGN_CENTER_VERTICAL);
 	}
 
@@ -1188,6 +1188,7 @@ void PhysicsView::CreateWeapons()
 	sound_strings.insert(sound_strings.begin(), _("None"));
 
 	for (int i = 0; i < 2; ++i) {
+		int id_offset = i * NUM_TRIGGER_IDS;
 		wxStaticBoxSizer* static_box_sizer = new wxStaticBoxSizer(wxHORIZONTAL, mFrame, trigger_names[i]);
 		wxBoxSizer* column_1_sizer = new wxBoxSizer(wxVERTICAL);
 
@@ -1196,14 +1197,14 @@ void PhysicsView::CreateWeapons()
 		left_grid_sizer->SetHGap(10);
 
 		left_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Projectile:")), 0, wxALIGN_CENTER_VERTICAL);
-		trigger_projectile_choices[i] = new wxChoice(mFrame, wxID_ANY, wxDefaultPosition, choiceSize, shot_strings.size(), &shot_strings[0]);
+		trigger_projectile_choices[i] = new wxChoice(mFrame, MENU_TRIGGER_PROJECTILE + id_offset, wxDefaultPosition, choiceSize, shot_strings.size(), &shot_strings[0]);
 		left_grid_sizer->Add(trigger_projectile_choices[i]);
 
 		left_grid_sizer->AddSpacer(10);
 		left_grid_sizer->AddSpacer(10);
 
 		left_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Rounds/magazine:")), 0, wxALIGN_CENTER_VERTICAL);
-		trigger_rounds_fields[i] = new wxTextCtrl(mFrame, wxID_ANY);
+		trigger_rounds_fields[i] = new wxTextCtrl(mFrame, FIELD_TRIGGER_ROUNDS + id_offset);
 		left_grid_sizer->Add(trigger_rounds_fields[i], 0, wxALIGN_CENTER_VERTICAL);
 
 		column_1_sizer->Add(left_grid_sizer, 0, wxEXPAND);
@@ -1214,27 +1215,27 @@ void PhysicsView::CreateWeapons()
 		sounds_grid_sizer->SetHGap(10);
 
 		sounds_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Firing:")), 0, wxALIGN_CENTER_VERTICAL);
-		trigger_firing_choices[i] = new wxChoice(mFrame, wxID_ANY, wxDefaultPosition, choiceSize, sound_strings.size(), &sound_strings[0]);
+		trigger_firing_choices[i] = new wxChoice(mFrame, MENU_TRIGGER_FIRING + id_offset, wxDefaultPosition, choiceSize, sound_strings.size(), &sound_strings[0]);
 		sounds_grid_sizer->Add(trigger_firing_choices[i]);
 
 		sounds_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Click:")), 0, wxALIGN_CENTER_VERTICAL);
-		trigger_click_choices[i] = new wxChoice(mFrame, wxID_ANY, wxDefaultPosition, choiceSize, sound_strings.size(), &sound_strings[0]);
+		trigger_click_choices[i] = new wxChoice(mFrame, MENU_TRIGGER_CLICK + id_offset, wxDefaultPosition, choiceSize, sound_strings.size(), &sound_strings[0]);
 		sounds_grid_sizer->Add(trigger_click_choices[i]);
 
 		sounds_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Charging:")), 0, wxALIGN_CENTER_VERTICAL);
-		trigger_charging_choices[i] = new wxChoice(mFrame, wxID_ANY, wxDefaultPosition, choiceSize, sound_strings.size(), &sound_strings[0]);
+		trigger_charging_choices[i] = new wxChoice(mFrame, MENU_TRIGGER_CHARGING + id_offset, wxDefaultPosition, choiceSize, sound_strings.size(), &sound_strings[0]);
 		sounds_grid_sizer->Add(trigger_charging_choices[i]);
 
 		sounds_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Shell Casing:")), 0, wxALIGN_CENTER_VERTICAL);
-		trigger_shell_casing_choices[i] = new wxChoice(mFrame, wxID_ANY, wxDefaultPosition, choiceSize, sound_strings.size(), &sound_strings[0]);
+		trigger_shell_casing_choices[i] = new wxChoice(mFrame, MENU_TRIGGER_SHELL_CASING + id_offset, wxDefaultPosition, choiceSize, sound_strings.size(), &sound_strings[0]);
 		sounds_grid_sizer->Add(trigger_shell_casing_choices[i]);
 
 		sounds_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Reloading:")), 0, wxALIGN_CENTER_VERTICAL);
-		trigger_reloading_choices[i] = new wxChoice(mFrame, wxID_ANY, wxDefaultPosition, choiceSize, sound_strings.size(), &sound_strings[0]);
+		trigger_reloading_choices[i] = new wxChoice(mFrame, MENU_TRIGGER_RELOADING + id_offset, wxDefaultPosition, choiceSize, sound_strings.size(), &sound_strings[0]);
 		sounds_grid_sizer->Add(trigger_reloading_choices[i]);
 
 		sounds_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Charged:")), 0, wxALIGN_CENTER_VERTICAL);
-		trigger_charged_choices[i] = new wxChoice(mFrame, wxID_ANY, wxDefaultPosition, choiceSize, sound_strings.size(), &sound_strings[0]);
+		trigger_charged_choices[i] = new wxChoice(mFrame, MENU_TRIGGER_CHARGED + id_offset, wxDefaultPosition, choiceSize, sound_strings.size(), &sound_strings[0]);
 		sounds_grid_sizer->Add(trigger_charged_choices[i]);
 
 		sounds_sizer->Add(sounds_grid_sizer);
@@ -1248,42 +1249,42 @@ void PhysicsView::CreateWeapons()
 		right_grid_sizer->SetHGap(10);
 
 		right_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Ammo Type:")), 0, wxALIGN_CENTER_VERTICAL);
-		trigger_ammo_type_choices[i] = new wxChoice(mFrame, wxID_ANY, wxDefaultPosition, choiceSize, item_strings.size(), &item_strings[0]);
+		trigger_ammo_type_choices[i] = new wxChoice(mFrame, MENU_TRIGGER_AMMO_TYPE + id_offset, wxDefaultPosition, choiceSize, item_strings.size(), &item_strings[0]);
 		right_grid_sizer->Add(trigger_ammo_type_choices[i]);
 
 		right_grid_sizer->AddSpacer(10);
 		right_grid_sizer->AddSpacer(10);
 
 		right_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Ticks/round:")), 0, wxALIGN_CENTER_VERTICAL);
-		trigger_ticks_fields[i] = new wxTextCtrl(mFrame, wxID_ANY);
+		trigger_ticks_fields[i] = new wxTextCtrl(mFrame, FIELD_TRIGGER_TICKS + id_offset);
 		right_grid_sizer->Add(trigger_ticks_fields[i], 0, wxALIGN_CENTER_VERTICAL);		
 
 		right_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Recovery Ticks:")), 0, wxALIGN_CENTER_VERTICAL);
-		trigger_recovery_fields[i] = new wxTextCtrl(mFrame, wxID_ANY);
+		trigger_recovery_fields[i] = new wxTextCtrl(mFrame, FIELD_TRIGGER_RECOVERY + id_offset);
 		right_grid_sizer->Add(trigger_recovery_fields[i], 0, wxALIGN_CENTER_VERTICAL);		
 
 		right_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Charging Ticks:")), 0, wxALIGN_CENTER_VERTICAL);
-		trigger_charging_fields[i] = new wxTextCtrl(mFrame, wxID_ANY);
+		trigger_charging_fields[i] = new wxTextCtrl(mFrame, FIELD_TRIGGER_CHARGING + id_offset);
 		right_grid_sizer->Add(trigger_charging_fields[i], 0, wxALIGN_CENTER_VERTICAL);		
 
 		right_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Recoil Magnitude:")), 0, wxALIGN_CENTER_VERTICAL);
-		trigger_recoil_fields[i] = new wxTextCtrl(mFrame, wxID_ANY);
+		trigger_recoil_fields[i] = new wxTextCtrl(mFrame, FIELD_TRIGGER_RECOVERY + id_offset);
 		right_grid_sizer->Add(trigger_recoil_fields[i], 0, wxALIGN_CENTER_VERTICAL);		
 
 		right_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Theta Error:")), 0, wxALIGN_CENTER_VERTICAL);
-		trigger_theta_fields[i] = new wxTextCtrl(mFrame, wxID_ANY);
+		trigger_theta_fields[i] = new wxTextCtrl(mFrame, FIELD_TRIGGER_THETA + id_offset);
 		right_grid_sizer->Add(trigger_theta_fields[i], 0, wxALIGN_CENTER_VERTICAL);		
 
 		right_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("dx:")), 0, wxALIGN_CENTER_VERTICAL);
-		trigger_dx_fields[i] = new wxTextCtrl(mFrame, wxID_ANY);
+		trigger_dx_fields[i] = new wxTextCtrl(mFrame, FIELD_TRIGGER_DX + id_offset);
 		right_grid_sizer->Add(trigger_dx_fields[i], 0, wxALIGN_CENTER_VERTICAL);		
 
 		right_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("dz:")), 0, wxALIGN_CENTER_VERTICAL);
-		trigger_dz_fields[i] = new wxTextCtrl(mFrame, wxID_ANY);
+		trigger_dz_fields[i] = new wxTextCtrl(mFrame, FIELD_TRIGGER_DZ + id_offset);
 		right_grid_sizer->Add(trigger_dz_fields[i], 0, wxALIGN_CENTER_VERTICAL);
 
 		right_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Burst Count:")), 0, wxALIGN_CENTER_VERTICAL);
-		trigger_burst_count_fields[i] = new wxTextCtrl(mFrame, wxID_ANY);
+		trigger_burst_count_fields[i] = new wxTextCtrl(mFrame, FIELD_TRIGGER_BURST_COUNT + id_offset);
 		right_grid_sizer->Add(trigger_burst_count_fields[i], 0, wxALIGN_CENTER_VERTICAL);
 
 		right_grid_sizer->AddSpacer(10);
@@ -1299,7 +1300,7 @@ void PhysicsView::CreateWeapons()
 		};
 
 		right_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Shell casing type:")), 0, wxALIGN_CENTER_VERTICAL);
-		trigger_shell_casing_type_choices[i] = new wxChoice(mFrame, wxID_ANY, wxDefaultPosition, choiceSize, 6, shell_casing_type_strings);
+		trigger_shell_casing_type_choices[i] = new wxChoice(mFrame, MENU_TRIGGER_SHELL_CASING_TYPE + id_offset, wxDefaultPosition, choiceSize, 6, shell_casing_type_strings);
 		right_grid_sizer->Add(trigger_shell_casing_type_choices[i]);		
 
 		static_box_sizer->AddSpacer(10);

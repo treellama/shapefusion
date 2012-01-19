@@ -648,6 +648,7 @@ private:
 	short mShellCasingType;
 	short mBurstCount;
 public:
+	// accessors
 	short GetRoundsPerMagazine() { return mRoundsPerMagazine; }
 	short GetAmmunitionType() { return mAmmunitionType; }
 	short GetTicksPerRound() { return mTicksPerRound; }
@@ -668,6 +669,28 @@ public:
 	short GetDz() { return mDz; }
 	short GetShellCasingType() { return mShellCasingType; }
 	short GetBurstCount() { return mBurstCount; }
+
+	// mutators
+	void SetRoundsPerMagazine(short v) { mRoundsPerMagazine = v; }
+	void SetAmmunitionType(short v) { mAmmunitionType = v; }
+	void SetTicksPerRound(short v) { mTicksPerRound = v; }
+	void SetRecoveryTicks(short v) { mRecoveryTicks = v; }
+	void SetChargingTicks(short v) { mChargingTicks = v; }
+	void SetRecoilMagnitude(short v) { mRecoilMagnitude = v; }
+	
+	void SetFiringSound(short v) { mFiringSound = v; }
+	void SetClickSound(short v) { mClickSound = v; }
+	void SetChargingSound(short v) { mChargingSound = v; }
+	void SetShellCasingSound(short v) { mShellCasingSound = v; }
+	void SetReloadingSound(short v) { mReloadingSound = v; }
+	void SetChargedSound(short v) { mChargedSound = v; }
+	
+	void SetProjectileType(short v) { mProjectileType = v; }
+	void SetThetaError(short v) { mThetaError = v; }
+	void SetDx(short v) { mDx = v; }
+	void SetDz(short v) { mDz = v; }
+	void SetShellCasingType(short v) { mShellCasingType = v; }
+	void SetBurstCount(short v) { mBurstCount = v; }
 
 	TriggerDefinition(bool verbose = false) : PhysicsElement(verbose) { }
 	~TriggerDefinition() { }
@@ -714,6 +737,7 @@ private:
 	TriggerDefinition mPrimaryTrigger;
 	TriggerDefinition mSecondaryTrigger;
 public:
+	// accessors
 	short GetItemType() { return mItemType; }
 	short GetPowerupType() { return mPowerupType; }
 	short GetWeaponClass() { return mWeaponClass; }
@@ -742,10 +766,43 @@ public:
 	short GetAwaitReloadTicks() { return mAwaitReloadTicks; }
 	short GetLoadingTicks() { return mLoadingTicks; }
 	short GetFinishLoadingTicks() { return mFinishLoadingTicks; }
-	short GetPowerupTicks() { return mPowerupTicks; }
 
 	TriggerDefinition* GetPrimaryTrigger() { return &mPrimaryTrigger; }
 	TriggerDefinition* GetSecondaryTrigger() { return &mSecondaryTrigger; }
+
+	// mutators
+	void SetItemType(short v) { mItemType = v; }
+	void SetPowerupType(short v) { mPowerupType = v; }
+	void SetWeaponClass(short v) { mWeaponClass = v; }
+	void SetFlag(int index, bool v) {
+		if (v) mFlags |= (1 << index);
+		else mFlags &= ~(1 << index);
+	}
+
+	void SetFiringLightIntensity(double v) { mFiringLightIntensity = v; }
+	void SetFiringIntensityDecayTicks(short v) { mFiringIntensityDecayTicks = v; }
+
+	void SetIdleHeight(double v) { mIdleHeight = v; }
+	void SetBobAmplitude(double v) { mBobAmplitude = v; }
+	void SetKickHeight(double v) { mKickHeight = v; }
+	void SetReloadHeight(double v) { mReloadHeight = v; }
+	void SetIdleWidth(double v) { mIdleWidth = v; }
+	void SetHorizontalAmplitude(double v) { mHorizontalAmplitude = v; }
+
+	void SetCollection(unsigned short v) { mCollection = v; }
+	void SetColorTable(unsigned short v) { mColorTable = v; }
+	
+	void SetIdleShape(short v) { mIdleShape = v; }
+	void SetFiringShape(short v) { mFiringShape = v; }
+	void SetReloadingShape(short v) { mReloadingShape = v; }
+	void SetChargingShape(short v) { mChargingShape = v; }
+	void SetChargedShape(short v) { mChargedShape = v; }
+
+	void SetReadyTicks(short v) { mReadyTicks = v; }
+	void SetAwaitReloadTicks(short v) { mAwaitReloadTicks = v; }
+	void SetLoadingTicks(short v) { mLoadingTicks = v; }
+	void SetFinishLoadingTicks(short v) { mFinishLoadingTicks = v; }
+
 
 	WeaponDefinition(bool verbose = false) : PhysicsElement(verbose) { }
 	~WeaponDefinition() { }
