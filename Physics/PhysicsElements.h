@@ -117,6 +117,43 @@ public:
 
 	double GetHalfCameraSeparation() const { return mHalfCameraSeparation; }
 
+	// mutators
+	void SetMaximumForwardVelocity(double v) { mMaximumForwardVelocity = v; }
+	void SetMaximumBackwardVelocity(double v) { mMaximumBackwardVelocity = v; }
+	void SetMaximumPerpendicularVelocity(double v) { mMaximumPerpendicularVelocity = v; }
+
+	void SetAcceleration(double v) { mAcceleration = v; }
+	void SetDeceleration(double v) { mDeceleration = v; }
+	void SetAirborneDeceleration(double v) { mAirborneDeceleration = v; }
+	
+	void SetGravitationalAcceleration(double v) { mGravitationalAcceleration = v; }
+	void SetClimbingAcceleration(double v) { mClimbingAcceleration = v; }
+	void SetTerminalVelocity(double v) { mTerminalVelocity = v; }
+
+	void SetExternalDeceleration(double v) { mExternalDeceleration = v; }
+
+	void SetAngularAcceleration(double v) { mAngularAcceleration = v; }
+	void SetAngularDeceleration(double v) { mAngularDeceleration = v; }
+	void SetMaximumAngularVelocity(double v) { mMaximumAngularVelocity = v; }
+	void SetAngularRecenteringVelocity(double v) { mAngularRecenteringVelocity = v; }
+
+	void SetFastAngularVelocity(double v) { mFastAngularVelocity = v; }
+	void SetFastAngularMaximum(double v) { mFastAngularMaximum = v; }
+
+	void SetMaximumElevation(double v) { mMaximumElevation = v; }
+	void SetExternalAngularDeceleration(double v) { mExternalAngularDeceleration = v; }
+
+	void SetStepDelta(double v) { mStepDelta = v; }
+	void SetStepAmplitude(double v) { mStepAmplitude = v; }
+	
+	void SetRadius(double v) { mRadius = v; }
+	void SetHeight(double v) { mHeight = v; }
+	void SetDeadHeight(double v) { mDeadHeight = v; }
+	void SetCameraHeight(double v) { mCameraHeight = v; }
+	void SetSplashHeight(double v) { mSplashHeight = v; }
+
+	void SetHalfCameraSeparation(double v) { mHalfCameraSeparation = v; }
+
 
 	PhysicsConstants(bool verbose = false) : PhysicsElement(verbose) { }
 	~PhysicsConstants() { }

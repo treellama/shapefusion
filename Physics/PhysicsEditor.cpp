@@ -60,6 +60,8 @@ BEGIN_EVENT_TABLE(PhysicsView, wxView)
 	EVT_COMMAND_RANGE(FIELD_SHOT_COLLECTION, FIELD_SHOT_MAXIMUM_CONTRAILS, wxEVT_COMMAND_TEXT_UPDATED, PhysicsView::EditShotFields)
 	EVT_COMMAND_RANGE(FIELD_SHOT_DAMAGE_SCALE, FIELD_SHOT_SOUND_PITCH, wxEVT_COMMAND_TEXT_UPDATED, PhysicsView::EditShotDoubles)
 	EVT_COMMAND_RANGE(MENU_SHOT_DAMAGE_TYPE, MENU_SHOT_MEDIA_IMPACT, wxEVT_COMMAND_CHOICE_SELECTED, PhysicsView::EditShotMenus)
+
+	EVT_COMMAND_RANGE(FIELD_MAX_FORWARD_VELOCITY, FIELD_HALF_CAMERA_SEPARATION, wxEVT_COMMAND_TEXT_UPDATED, PhysicsView::EditPhysicsConstants)
 END_EVENT_TABLE()
 
 IMPLEMENT_DYNAMIC_CLASS(PhysicsView, wxView)
@@ -899,4 +901,101 @@ void PhysicsView::EditShotMenus(wxCommandEvent& e)
 	}
 
 	static_cast<PhysicsDocument*>(GetDocument())->Modify(true);	
+}
+
+void PhysicsView::EditPhysicsConstants(wxCommandEvent& e)
+{
+	PhysicsConstants* constants = static_cast<PhysicsDocument*>(GetDocument())->GetPhysicsConstants(GetSelection());
+
+	double d = 0.0;
+	if (e.GetString().ToDouble(&d)) {
+		switch (e.GetId()) {
+		case FIELD_MAX_FORWARD_VELOCITY:
+			constants->SetMaximumForwardVelocity(d);
+			break;
+		case FIELD_MAX_BACKWARD_VELOCITY:
+			constants->SetMaximumBackwardVelocity(d);
+			break;
+		case FIELD_MAX_PERPENDICULAR_VELOCITY:
+			constants->SetMaximumPerpendicularVelocity(d);
+			break;
+
+		case FIELD_ACCELERATION:
+			constants->SetAcceleration(d);
+			break;
+		case FIELD_DECELERATION:
+			constants->SetDeceleration(d);
+			break;
+		case FIELD_AIRBORNE_DECELERATION:
+			constants->SetAirborneDeceleration(d);
+			break;
+		case FIELD_GRAVITATIONAL_ACCELERATION:
+			constants->SetGravitationalAcceleration(d);
+			break;
+		case FIELD_CLIMBING_ACCELERATION:
+			constants->SetClimbingAcceleration(d);
+			break;
+		case FIELD_TERMINAL_VELOCITY:
+			constants->SetTerminalVelocity(d);
+			break;
+		case FIELD_EXTERNAL_DECELERATION:
+			constants->SetExternalDeceleration(d);
+			break;
+
+		case FIELD_STEP_DELTA:
+			constants->SetStepDelta(d);
+			break;
+		case FIELD_STEP_AMPLITUDE:
+			constants->SetStepAmplitude(d);
+			break;
+
+		case FIELD_RADIUS:
+			constants->SetRadius(d);
+			break;
+		case FIELD_HEIGHT:
+			constants->SetHeight(d);
+			break;
+
+		case FIELD_ANGULAR_ACCELERATION:
+			constants->SetAngularAcceleration(d);
+			break;
+		case FIELD_ANGULAR_DECELERATION:
+			constants->SetAngularDeceleration(d);
+			break;
+		case FIELD_MAXIMUM_ANGULAR_VELOCITY:
+			constants->SetMaximumAngularVelocity(d);
+			break;
+		case FIELD_ANGULAR_RECENTERING_VELOCITY:
+			constants->SetAngularRecenteringVelocity(d);
+			break;
+		case FIELD_HEAD_ANGULAR_VELOCITY:
+			constants->SetFastAngularVelocity(d);
+			break;
+		case FIELD_HEAD_ANGULAR_MAXIMUM:
+			constants->SetFastAngularMaximum(d);
+			break;
+		case FIELD_MAXIMUM_ELEVATION:
+			constants->SetMaximumElevation(d);
+			break;
+		case FIELD_EXTERNAL_ANGULAR_DECELERATION:
+			constants->SetExternalAngularDeceleration(d);
+			break;
+
+		case FIELD_DEAD_HEIGHT:
+			constants->SetDeadHeight(d);
+			break;
+		case FIELD_CAMERA_HEIGHT:
+			constants->SetCameraHeight(d);
+			break;
+		case FIELD_SPLASH_HEIGHT:
+			constants->SetSplashHeight(d);
+			break;
+		case FIELD_HALF_CAMERA_SEPARATION:
+			constants->SetHalfCameraSeparation(d);
+			break;
+		}
+	}
+	
+	static_cast<PhysicsDocument*>(GetDocument())->Modify(true);	
+	
 }

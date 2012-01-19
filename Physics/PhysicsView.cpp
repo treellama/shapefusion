@@ -650,46 +650,46 @@ void PhysicsView::CreatePhysicsConstants()
 	movement_grid_sizer->SetHGap(10);
 
 	movement_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Max. forward velocity:")), 0, wxALIGN_CENTER_VERTICAL);
-	max_forward_velocity_field = new wxTextCtrl(mFrame, wxID_ANY);
+	max_forward_velocity_field = new wxTextCtrl(mFrame, FIELD_MAX_FORWARD_VELOCITY);
 	movement_grid_sizer->Add(max_forward_velocity_field, 0, wxALIGN_CENTER_VERTICAL);
 
 	movement_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Max. backward velocity:")), 0, wxALIGN_CENTER_VERTICAL);
-	max_backward_velocity_field = new wxTextCtrl(mFrame, wxID_ANY);
+	max_backward_velocity_field = new wxTextCtrl(mFrame, FIELD_MAX_BACKWARD_VELOCITY);
 	movement_grid_sizer->Add(max_backward_velocity_field, 0, wxALIGN_CENTER_VERTICAL);
 
 	movement_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Max. perpendicular velocity:")), 0, wxALIGN_CENTER_VERTICAL);
-	max_perpendicular_velocity_field = new wxTextCtrl(mFrame, wxID_ANY);
+	max_perpendicular_velocity_field = new wxTextCtrl(mFrame, FIELD_MAX_PERPENDICULAR_VELOCITY);
 	movement_grid_sizer->Add(max_perpendicular_velocity_field, 0, wxALIGN_CENTER_VERTICAL);
 
 	movement_grid_sizer->AddSpacer(0);
 	movement_grid_sizer->AddSpacer(0);
 
 	movement_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Acceleration:")), 0, wxALIGN_CENTER_VERTICAL);
-	acceleration_field = new wxTextCtrl(mFrame, wxID_ANY);
+	acceleration_field = new wxTextCtrl(mFrame, FIELD_ACCELERATION);
 	movement_grid_sizer->Add(acceleration_field, 0, wxALIGN_CENTER_VERTICAL);
 
 	movement_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Deceleration:")), 0, wxALIGN_CENTER_VERTICAL);
-	deceleration_field = new wxTextCtrl(mFrame, wxID_ANY);
+	deceleration_field = new wxTextCtrl(mFrame, FIELD_DECELERATION);
 	movement_grid_sizer->Add(deceleration_field, 0, wxALIGN_CENTER_VERTICAL);
 
 	movement_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Airborne deceleration:")), 0, wxALIGN_CENTER_VERTICAL);
-	airborne_deceleration_field = new wxTextCtrl(mFrame, wxID_ANY);
+	airborne_deceleration_field = new wxTextCtrl(mFrame, FIELD_AIRBORNE_DECELERATION);
 	movement_grid_sizer->Add(airborne_deceleration_field, 0, wxALIGN_CENTER_VERTICAL);
 
 	movement_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Gravitational acceleration:")), 0, wxALIGN_CENTER_VERTICAL);
-	gravitational_acceleration_field = new wxTextCtrl(mFrame, wxID_ANY);
+	gravitational_acceleration_field = new wxTextCtrl(mFrame, FIELD_GRAVITATIONAL_ACCELERATION);
 	movement_grid_sizer->Add(gravitational_acceleration_field, 0, wxALIGN_CENTER_VERTICAL);
 
 	movement_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Climbing acceleration:")), 0, wxALIGN_CENTER_VERTICAL);
-	climbing_acceleration_field = new wxTextCtrl(mFrame, wxID_ANY);
+	climbing_acceleration_field = new wxTextCtrl(mFrame, FIELD_CLIMBING_ACCELERATION);
 	movement_grid_sizer->Add(climbing_acceleration_field, 0, wxALIGN_CENTER_VERTICAL);
 
 	movement_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Terminal velocity:")), 0, wxALIGN_CENTER_VERTICAL);
-	terminal_velocity_field = new wxTextCtrl(mFrame, wxID_ANY);
+	terminal_velocity_field = new wxTextCtrl(mFrame, FIELD_TERMINAL_VELOCITY);
 	movement_grid_sizer->Add(terminal_velocity_field, 0, wxALIGN_CENTER_VERTICAL);	
 
 	movement_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("External deceleration:")), 0, wxALIGN_CENTER_VERTICAL);
-	external_deceleration_field = new wxTextCtrl(mFrame, wxID_ANY);
+	external_deceleration_field = new wxTextCtrl(mFrame, FIELD_EXTERNAL_DECELERATION);
 	movement_grid_sizer->Add(external_deceleration_field, 0, wxALIGN_CENTER_VERTICAL);
 
 	movement_sizer->Add(movement_grid_sizer, 0, wxEXPAND);
@@ -702,11 +702,11 @@ void PhysicsView::CreatePhysicsConstants()
 	steps_grid_sizer->SetHGap(10);
 
 	steps_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Step delta:")), 0, wxALIGN_CENTER_VERTICAL);
-	step_delta_field = new wxTextCtrl(mFrame, wxID_ANY);
+	step_delta_field = new wxTextCtrl(mFrame, FIELD_STEP_DELTA);
 	steps_grid_sizer->Add(step_delta_field, 0, wxALIGN_CENTER_VERTICAL);
 
 	steps_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Step amplitude:")), 0, wxALIGN_CENTER_VERTICAL);
-	step_amplitude_field = new wxTextCtrl(mFrame, wxID_ANY);
+	step_amplitude_field = new wxTextCtrl(mFrame, FIELD_STEP_AMPLITUDE);
 	steps_grid_sizer->Add(step_amplitude_field, 0, wxALIGN_CENTER_VERTICAL);
 	
 	steps_sizer->Add(steps_grid_sizer, 0, wxEXPAND);
@@ -720,11 +720,11 @@ void PhysicsView::CreatePhysicsConstants()
 	size_grid_sizer->SetHGap(10);
 
 	size_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Radius:")), 0, wxALIGN_CENTER_VERTICAL);
-	radius_field = new wxTextCtrl(mFrame, wxID_ANY);
+	radius_field = new wxTextCtrl(mFrame, FIELD_RADIUS);
 	size_grid_sizer->Add(radius_field, 0, wxALIGN_CENTER_VERTICAL);
 
 	size_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Height:")), 0, wxALIGN_CENTER_VERTICAL);
-	height_field = new wxTextCtrl(mFrame, wxID_ANY);
+	height_field = new wxTextCtrl(mFrame, FIELD_HEIGHT);
 	size_grid_sizer->Add(height_field, 0, wxALIGN_CENTER_VERTICAL);
 
 	size_sizer->Add(size_grid_sizer, 0, wxEXPAND);
@@ -740,35 +740,35 @@ void PhysicsView::CreatePhysicsConstants()
 	turning_grid_sizer->SetHGap(10);
 	
 	turning_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Angular acceleration:")), 0, wxALIGN_CENTER_VERTICAL);
-	angular_acceleration_field = new wxTextCtrl(mFrame, wxID_ANY);
+	angular_acceleration_field = new wxTextCtrl(mFrame, FIELD_ANGULAR_ACCELERATION);
 	turning_grid_sizer->Add(angular_acceleration_field, 0, wxALIGN_CENTER_VERTICAL);
 
 	turning_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Angular deceleration:")), 0, wxALIGN_CENTER_VERTICAL);
-	angular_deceleration_field = new wxTextCtrl(mFrame, wxID_ANY);
+	angular_deceleration_field = new wxTextCtrl(mFrame, FIELD_ANGULAR_DECELERATION);
 	turning_grid_sizer->Add(angular_deceleration_field, 0, wxALIGN_CENTER_VERTICAL);
 
 	turning_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Maximum angular velocity:")), 0, wxALIGN_CENTER_VERTICAL);
-	maximum_angular_velocity_field = new wxTextCtrl(mFrame, wxID_ANY);
+	maximum_angular_velocity_field = new wxTextCtrl(mFrame, FIELD_MAXIMUM_ANGULAR_VELOCITY);
 	turning_grid_sizer->Add(maximum_angular_velocity_field, 0, wxALIGN_CENTER_VERTICAL);
 
 	turning_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Angular recentering velocity:")), 0, wxALIGN_CENTER_VERTICAL);
-	angular_recentering_velocity_field = new wxTextCtrl(mFrame, wxID_ANY);
+	angular_recentering_velocity_field = new wxTextCtrl(mFrame, FIELD_ANGULAR_RECENTERING_VELOCITY);
 	turning_grid_sizer->Add(angular_recentering_velocity_field, 0, wxALIGN_CENTER_VERTICAL);
 
 	turning_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Head angular velocity:")), 0, wxALIGN_CENTER_VERTICAL);
-	head_angular_velocity_field = new wxTextCtrl(mFrame, wxID_ANY);
+	head_angular_velocity_field = new wxTextCtrl(mFrame, FIELD_HEAD_ANGULAR_VELOCITY);
 	turning_grid_sizer->Add(head_angular_velocity_field, 0, wxALIGN_CENTER_VERTICAL);
 
 	turning_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Head angular maximum:")), 0, wxALIGN_CENTER_VERTICAL);
-	head_angular_maximum_field = new wxTextCtrl(mFrame, wxID_ANY);
+	head_angular_maximum_field = new wxTextCtrl(mFrame, FIELD_HEAD_ANGULAR_MAXIMUM);
 	turning_grid_sizer->Add(head_angular_maximum_field, 0, wxALIGN_CENTER_VERTICAL);
 
 	turning_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Maximum elevation:")), 0, wxALIGN_CENTER_VERTICAL);
-	maximum_elevation_field = new wxTextCtrl(mFrame, wxID_ANY);
+	maximum_elevation_field = new wxTextCtrl(mFrame, FIELD_MAXIMUM_ELEVATION);
 	turning_grid_sizer->Add(maximum_elevation_field, 0, wxALIGN_CENTER_VERTICAL);
 
 	turning_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("External angular deceleration:")), 0, wxALIGN_CENTER_VERTICAL);
-	external_angular_deceleration_field = new wxTextCtrl(mFrame, wxID_ANY);
+	external_angular_deceleration_field = new wxTextCtrl(mFrame, FIELD_EXTERNAL_ANGULAR_DECELERATION);
 	turning_grid_sizer->Add(external_angular_deceleration_field, 0, wxALIGN_CENTER_VERTICAL);
 
 	turning_sizer->Add(turning_grid_sizer, 0, wxEXPAND);
@@ -780,19 +780,19 @@ void PhysicsView::CreatePhysicsConstants()
 	camera_grid_sizer->SetHGap(10);
 
 	camera_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Dead height:")), 0, wxALIGN_CENTER_VERTICAL);
-	dead_height_field = new wxTextCtrl(mFrame, wxID_ANY);
+	dead_height_field = new wxTextCtrl(mFrame, FIELD_DEAD_HEIGHT);
 	camera_grid_sizer->Add(dead_height_field, 0, wxALIGN_CENTER_VERTICAL);
 
 	camera_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Camera height:")), 0, wxALIGN_CENTER_VERTICAL);
-	camera_height_field = new wxTextCtrl(mFrame, wxID_ANY);
+	camera_height_field = new wxTextCtrl(mFrame, FIELD_CAMERA_HEIGHT);
 	camera_grid_sizer->Add(camera_height_field, 0, wxALIGN_CENTER_VERTICAL);
 
 	camera_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Splash height:")), 0, wxALIGN_CENTER_VERTICAL);
-	splash_height_field = new wxTextCtrl(mFrame, wxID_ANY);
+	splash_height_field = new wxTextCtrl(mFrame, FIELD_SPLASH_HEIGHT);
 	camera_grid_sizer->Add(splash_height_field, 0, wxALIGN_CENTER_VERTICAL);
 
 	camera_grid_sizer->Add(new wxStaticText(mFrame, wxID_ANY, _("Half camera separation:")), 0, wxALIGN_CENTER_VERTICAL);
-	half_camera_separation_field = new wxTextCtrl(mFrame, wxID_ANY);
+	half_camera_separation_field = new wxTextCtrl(mFrame, FIELD_HALF_CAMERA_SEPARATION);
 	camera_grid_sizer->Add(half_camera_separation_field, 0, wxALIGN_CENTER_VERTICAL);
 
 	camera_sizer->Add(camera_grid_sizer, 0, wxEXPAND);
