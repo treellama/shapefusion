@@ -62,6 +62,15 @@ BEGIN_EVENT_TABLE(PhysicsView, wxView)
 	EVT_COMMAND_RANGE(MENU_SHOT_DAMAGE_TYPE, MENU_SHOT_MEDIA_IMPACT, wxEVT_COMMAND_CHOICE_SELECTED, PhysicsView::EditShotMenus)
 
 	EVT_COMMAND_RANGE(FIELD_MAX_FORWARD_VELOCITY, FIELD_HALF_CAMERA_SEPARATION, wxEVT_COMMAND_TEXT_UPDATED, PhysicsView::EditPhysicsConstants)
+
+	EVT_COMMAND_RANGE(CB_WEAPON_FLAGS, CB_WEAPON_FLAGS + 9, wxEVT_COMMAND_CHECKBOX_CLICKED, PhysicsView::EditWeaponCheckboxes)
+	EVT_COMMAND_RANGE(FIELD_WEAPON_COLLECTION, FIELD_WEAPON_FLASH_DECAY, wxEVT_COMMAND_TEXT_UPDATED, PhysicsView::EditWeaponFields)
+	EVT_COMMAND_RANGE(FIELD_WEAPON_FLASH_INTENSITY, FIELD_WEAPON_IDLE_WIDTH, wxEVT_COMMAND_TEXT_UPDATED, PhysicsView::EditWeaponDoubles)
+	EVT_COMMAND_RANGE(MENU_WEAPON_ITEM_TYPE, MENU_WEAPON_CLASS, wxEVT_COMMAND_CHOICE_SELECTED, PhysicsView::EditWeaponMenus)
+	EVT_COMMAND_RANGE(FIELD_TRIGGER_ROUNDS, FIELD_TRIGGER_BURST_COUNT, wxEVT_COMMAND_TEXT_UPDATED, PhysicsView::EditTriggerFields)
+	EVT_COMMAND_RANGE(FIELD_TRIGGER_ROUNDS + NUM_TRIGGER_IDS, FIELD_TRIGGER_BURST_COUNT + NUM_TRIGGER_IDS, wxEVT_COMMAND_TEXT_UPDATED, PhysicsView::EditTriggerFields)
+	EVT_COMMAND_RANGE(MENU_TRIGGER_PROJECTILE, MENU_TRIGGER_SHELL_CASING_TYPE, wxEVT_COMMAND_CHOICE_SELECTED, PhysicsView::EditTriggerMenus)
+	EVT_COMMAND_RANGE(MENU_TRIGGER_PROJECTILE + NUM_TRIGGER_IDS, MENU_TRIGGER_SHELL_CASING_TYPE + NUM_TRIGGER_IDS, wxEVT_COMMAND_CHOICE_SELECTED, PhysicsView::EditTriggerMenus)
 END_EVENT_TABLE()
 
 IMPLEMENT_DYNAMIC_CLASS(PhysicsView, wxView)
@@ -997,5 +1006,219 @@ void PhysicsView::EditPhysicsConstants(wxCommandEvent& e)
 	}
 	
 	static_cast<PhysicsDocument*>(GetDocument())->Modify(true);	
+}
+
+void PhysicsView::EditWeaponCheckboxes(wxCommandEvent& e)
+{
+	WeaponDefinition* weapon = static_cast<PhysicsDocument*>(GetDocument())->GetWeaponDefinition(GetSelection());
+
+	int flag = e.GetId() - CB_WEAPON_FLAGS;
 	
+	weapon->SetFlag(flag >= 5 ? flag + 1: flag, e.IsChecked());
+
+	static_cast<PhysicsDocument*>(GetDocument())->Modify(true);	
+}
+
+void PhysicsView::EditWeaponFields(wxCommandEvent& e)
+{
+	WeaponDefinition* weapon = static_cast<PhysicsDocument*>(GetDocument())->GetWeaponDefinition(GetSelection());
+
+	long v = 0;
+	if (e.GetString().ToLong(&v)) {
+		switch (e.GetId()) {
+		case FIELD_WEAPON_COLLECTION:
+			if (v == -1) {
+				weapon->SetCollection(31);
+				weapon->SetColorTable(7);
+				weapon_collection_field->ChangeValue(wxT("31"));
+				weapon_color_table_field->ChangeValue(wxT("7"));
+			} else {
+				weapon->SetCollection(v);
+			}
+			break;
+		case FIELD_WEAPON_COLOR_TABLE:
+			if (v == -1) {
+				weapon->SetCollection(31);
+				weapon->SetColorTable(7);
+				weapon_collection_field->ChangeValue(wxT("31"));
+				weapon_color_table_field->ChangeValue(wxT("7"));
+			} else {
+				weapon->SetColorTable(v);
+			}
+			break;
+		case FIELD_WEAPON_IDLE:
+			weapon->SetIdleShape(v);
+			break;
+		case FIELD_WEAPON_FIRING:
+			weapon->SetFiringShape(v);
+			break;
+		case FIELD_WEAPON_RELOADING:
+			weapon->SetReloadingShape(v);
+			break;
+		case FIELD_WEAPON_CHARGING:
+			weapon->SetChargingShape(v);
+			break;
+		case FIELD_WEAPON_CHARGED:
+			weapon->SetChargedShape(v);
+			break;
+		case FIELD_WEAPON_READY:
+			weapon->SetReadyTicks(v);
+			break;
+		case FIELD_WEAPON_AWAIT_RELOAD:
+			weapon->SetAwaitReloadTicks(v);
+			break;
+		case FIELD_WEAPON_LOADING:
+			weapon->SetLoadingTicks(v);
+			break;
+		case FIELD_WEAPON_FINISH_LOADING:
+			weapon->SetFinishLoadingTicks(v);
+			break;
+		case FIELD_WEAPON_FLASH_DECAY:
+			weapon->SetFiringIntensityDecayTicks(v);
+			break;
+		}
+	}
+
+	static_cast<PhysicsDocument*>(GetDocument())->Modify(true);	
+
+}
+
+void PhysicsView::EditWeaponDoubles(wxCommandEvent& e)
+{
+	WeaponDefinition* weapon = static_cast<PhysicsDocument*>(GetDocument())->GetWeaponDefinition(GetSelection());
+
+	double d = 0.0;
+	if (e.GetString().ToDouble(&d)) {
+		switch (e.GetId()) {
+		case FIELD_WEAPON_FLASH_INTENSITY:
+			weapon->SetFiringLightIntensity(d);
+			break;
+		case FIELD_WEAPON_IDLE_HEIGHT:
+			weapon->SetIdleHeight(d);
+			break;
+		case FIELD_WEAPON_BOB_AMPLITUDE:
+			weapon->SetBobAmplitude(d);
+			break;
+		case FIELD_WEAPON_KICK_HEIGHT:
+			weapon->SetKickHeight(d);
+			break;
+		case FIELD_WEAPON_RELOAD_HEIGHT:
+			weapon->SetReloadHeight(d);
+			break;
+		case FIELD_WEAPON_IDLE_WIDTH:
+			weapon->SetIdleWidth(d);
+			break;
+		}
+	}
+
+	static_cast<PhysicsDocument*>(GetDocument())->Modify(true);	
+}
+
+void PhysicsView::EditWeaponMenus(wxCommandEvent& e)
+{
+	WeaponDefinition* weapon = static_cast<PhysicsDocument*>(GetDocument())->GetWeaponDefinition(GetSelection());
+
+	switch (e.GetId()) {
+	case MENU_WEAPON_ITEM_TYPE:
+		weapon->SetItemType(e.GetSelection() - 1);
+		break;
+	case MENU_WEAPON_CLASS:
+		weapon->SetWeaponClass(e.GetSelection() - 1);
+		break;
+	}
+
+	static_cast<PhysicsDocument*>(GetDocument())->Modify(true);	
+}
+
+void PhysicsView::EditTriggerFields(wxCommandEvent& e)
+{
+	WeaponDefinition* weapon = static_cast<PhysicsDocument*>(GetDocument())->GetWeaponDefinition(GetSelection());
+
+	long v = 0;
+	if (e.GetString().ToLong(&v)) {
+		int id = e.GetId();
+		TriggerDefinition* trigger = weapon->GetPrimaryTrigger();
+
+		if (id >= FIELD_TRIGGER_ROUNDS + NUM_TRIGGER_IDS) {
+			id -= NUM_TRIGGER_IDS;
+			trigger = weapon->GetSecondaryTrigger();
+		}
+
+		switch (id) {
+		case FIELD_TRIGGER_ROUNDS:
+			trigger->SetRoundsPerMagazine(v);
+			break;
+		case FIELD_TRIGGER_TICKS:
+			trigger->SetTicksPerRound(v);
+			break;
+		case FIELD_TRIGGER_RECOVERY:
+			trigger->SetRecoveryTicks(v);
+			break;
+		case FIELD_TRIGGER_CHARGING:
+			trigger->SetChargingTicks(v);
+			break;
+		case FIELD_TRIGGER_RECOIL:
+			trigger->SetRecoilMagnitude(v);
+			break;
+		case FIELD_TRIGGER_THETA:
+			trigger->SetThetaError(v);
+			break;
+		case FIELD_TRIGGER_DX:
+			trigger->SetDx(v);
+			break;
+		case FIELD_TRIGGER_DZ:
+			trigger->SetDz(v);
+			break;
+		case FIELD_TRIGGER_BURST_COUNT:
+			trigger->SetBurstCount(v);
+			break;
+		}
+	}
+
+	static_cast<PhysicsDocument*>(GetDocument())->Modify(true);
+}
+
+void PhysicsView::EditTriggerMenus(wxCommandEvent& e)
+{
+	WeaponDefinition* weapon = static_cast<PhysicsDocument*>(GetDocument())->GetWeaponDefinition(GetSelection());
+
+	int id = e.GetId();
+	TriggerDefinition* trigger = weapon->GetPrimaryTrigger();
+	
+	if (id >= FIELD_TRIGGER_ROUNDS + NUM_TRIGGER_IDS) {
+		id -= NUM_TRIGGER_IDS;
+		trigger = weapon->GetSecondaryTrigger();
+	}
+
+	switch (id) {
+	case MENU_TRIGGER_PROJECTILE:
+		trigger->SetProjectileType(e.GetSelection() - 1);
+		break;
+	case MENU_TRIGGER_AMMO_TYPE:
+		trigger->SetAmmunitionType(e.GetSelection() - 1);
+		break;
+	case MENU_TRIGGER_FIRING:
+		trigger->SetFiringSound(e.GetSelection() - 1);
+		break;
+	case MENU_TRIGGER_CLICK:
+		trigger->SetClickSound(e.GetSelection() - 1);
+		break;
+	case MENU_TRIGGER_CHARGING:
+		trigger->SetChargingSound(e.GetSelection() - 1);
+		break;
+	case MENU_TRIGGER_SHELL_CASING:
+		trigger->SetShellCasingSound(e.GetSelection() - 1);
+		break;
+	case MENU_TRIGGER_RELOADING:
+		trigger->SetReloadingSound(e.GetSelection() - 1);
+		break;
+	case MENU_TRIGGER_CHARGED:
+		trigger->SetChargedSound(e.GetSelection() - 1);
+		break;
+	case MENU_TRIGGER_SHELL_CASING_TYPE:
+		trigger->SetShellCasingType(e.GetSelection() - 1);
+		break;
+	}
+
+	static_cast<PhysicsDocument*>(GetDocument())->Modify(true);
 }
