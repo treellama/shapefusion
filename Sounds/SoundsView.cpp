@@ -85,46 +85,49 @@ bool SoundsView::OnCreate(wxDocument *doc, long WXUNUSED(flags))
 	wxString volume_labels[] = { wxT("Soft"), wxT("Medium"), wxT("Loud") };
 	wxString chances_labels[] = { wxT("100%"), wxT("90%"), wxT("80%"), wxT("70%"), wxT("60%"), wxT("50%"), wxT("40%"), wxT("30%"), wxT("20%"), wxT("10%") };
 
-	sound_class_text = new wxStaticText(frame, wxID_ANY, wxT("Sound classes: "));
-	sound_class_id_text = new wxStaticText(frame, wxID_ANY, wxT("Class ID: "));
-	sound_class_id_field = new wxTextCtrl(frame, SOUND_CLASS_ID_FIELD, wxT(""));
+	main_panel = new wxPanel(frame);
+	main_panel->Show();
 	
-	sound_class_number_text = new wxStaticText(frame, wxID_ANY, wxT("Class number: "));
-	sound_class_number_field = new wxStaticText(frame, SOUND_CLASS_NUMBER_FIELD, wxT(""));
+	sound_class_text = new wxStaticText(main_panel, wxID_ANY, wxT("Sound classes: "));
+	sound_class_id_text = new wxStaticText(main_panel, wxID_ANY, wxT("Class ID: "));
+	sound_class_id_field = new wxTextCtrl(main_panel, SOUND_CLASS_ID_FIELD, wxT(""));
 	
-	sound_class_list = new wxListBox(frame, (wxWindowID)SOUND_CLASS_LIST);
+	sound_class_number_text = new wxStaticText(main_panel, wxID_ANY, wxT("Class number: "));
+	sound_class_number_field = new wxStaticText(main_panel, SOUND_CLASS_NUMBER_FIELD, wxT(""));
 	
-	sound_flag_restart_checkbox = new wxCheckBox(frame, SOUND_FLAGS_RESTART, wxT("Cannot be restarted"));
-	sound_flag_abort_checkbox = new wxCheckBox(frame, SOUND_FLAGS_ABORT, wxT("Does not self-abort"));
-	sound_flag_resist_checkbox = new wxCheckBox(frame, SOUND_FLAGS_RESIST, wxT("Resists pitch changes"));
-	sound_flag_change_checkbox = new wxCheckBox(frame, SOUND_FLAGS_CHANGE, wxT("Can't change pitch"));
-	sound_flag_obstructed_checkbox = new wxCheckBox(frame, SOUND_FLAGS_OBSTRUCTED, wxT("Can't be obstructed"));
-	sound_flag_mobstructed_checkbox = new wxCheckBox(frame, SOUND_FLAGS_MOBSTRUCTED, wxT("Can't be media obstructed"));
-	sound_flag_ambient_checkbox = new wxCheckBox(frame, SOUND_FLAGS_AMBIENT, wxT("Is ambient"));
+	sound_class_list = new wxListBox(main_panel, (wxWindowID)SOUND_CLASS_LIST);
 	
-	sound_volume_radio_button = new wxRadioBox(frame, SOUND_VOLUME_RADIO_BUTTON, wxT("Volume"), wxDefaultPosition, wxDefaultSize, 3, volume_labels, 3, wxRA_SPECIFY_COLS);
+	sound_flag_restart_checkbox = new wxCheckBox(main_panel, SOUND_FLAGS_RESTART, wxT("Cannot be restarted"));
+	sound_flag_abort_checkbox = new wxCheckBox(main_panel, SOUND_FLAGS_ABORT, wxT("Does not self-abort"));
+	sound_flag_resist_checkbox = new wxCheckBox(main_panel, SOUND_FLAGS_RESIST, wxT("Resists pitch changes"));
+	sound_flag_change_checkbox = new wxCheckBox(main_panel, SOUND_FLAGS_CHANGE, wxT("Can't change pitch"));
+	sound_flag_obstructed_checkbox = new wxCheckBox(main_panel, SOUND_FLAGS_OBSTRUCTED, wxT("Can't be obstructed"));
+	sound_flag_mobstructed_checkbox = new wxCheckBox(main_panel, SOUND_FLAGS_MOBSTRUCTED, wxT("Can't be media obstructed"));
+	sound_flag_ambient_checkbox = new wxCheckBox(main_panel, SOUND_FLAGS_AMBIENT, wxT("Is ambient"));
 	
-	sound_chance_text = new wxStaticText(frame, wxID_ANY, wxT("Chance: "));
-	sound_chance_menu = new wxChoice(frame, SOUND_CHANCE_MENU, wxDefaultPosition, wxDefaultSize, 10, chances_labels);
+	sound_volume_radio_button = new wxRadioBox(main_panel, SOUND_VOLUME_RADIO_BUTTON, wxT("Volume"), wxDefaultPosition, wxDefaultSize, 3, volume_labels, 3, wxRA_SPECIFY_COLS);
 	
-	sound_low_pitch_text = new wxStaticText(frame, wxID_ANY, wxT("Low pitch: "));
-	sound_low_pitch_field = new wxTextCtrl(frame, SOUND_LOW_PITCH_FIELD);
-	sound_high_pitch_text = new wxStaticText(frame, wxID_ANY, wxT("High pitch: "));
-	sound_high_pitch_field = new wxTextCtrl(frame, SOUND_HIGH_PITCH_FIELD);
+	sound_chance_text = new wxStaticText(main_panel, wxID_ANY, wxT("Chance: "));
+	sound_chance_menu = new wxChoice(main_panel, SOUND_CHANCE_MENU, wxDefaultPosition, wxDefaultSize, 10, chances_labels);
 	
-	sound_eight_bit_text = new wxStaticText(frame, wxID_ANY, wxT("8-bit sounds:"));
-	sound_eight_bit_list = new wxListBox(frame, (wxWindowID)SOUND_EIGHT_BIT_PERMUTATIONS_LIST);
+	sound_low_pitch_text = new wxStaticText(main_panel, wxID_ANY, wxT("Low pitch: "));
+	sound_low_pitch_field = new wxTextCtrl(main_panel, SOUND_LOW_PITCH_FIELD);
+	sound_high_pitch_text = new wxStaticText(main_panel, wxID_ANY, wxT("High pitch: "));
+	sound_high_pitch_field = new wxTextCtrl(main_panel, SOUND_HIGH_PITCH_FIELD);
 	
-	sound_sixteen_bit_text = new wxStaticText(frame, wxID_ANY, wxT("16-bit sounds: "));
-	sound_sixteen_bit_list = new wxListBox(frame, (wxWindowID)SOUND_SIXTEEN_BIT_PERMUTATIONS_LIST);
+	sound_eight_bit_text = new wxStaticText(main_panel, wxID_ANY, wxT("8-bit sounds:"));
+	sound_eight_bit_list = new wxListBox(main_panel, (wxWindowID)SOUND_EIGHT_BIT_PERMUTATIONS_LIST);
 	
-	sound_remap_check_box = new wxCheckBox(frame, SOUND_REMAP_CHECK_BOX, wxT("Remap 8-bit"));
+	sound_sixteen_bit_text = new wxStaticText(main_panel, wxID_ANY, wxT("16-bit sounds: "));
+	sound_sixteen_bit_list = new wxListBox(main_panel, (wxWindowID)SOUND_SIXTEEN_BIT_PERMUTATIONS_LIST);
+	
+	sound_remap_check_box = new wxCheckBox(main_panel, SOUND_REMAP_CHECK_BOX, wxT("Remap 8-bit"));
 	
 	frame_sizer = new wxBoxSizer(wxHORIZONTAL);
 	sound_class_sizer = new wxBoxSizer(wxVERTICAL);
 	sound_class_header_sizer = new wxFlexGridSizer(2, 2);
 	sound_editor_sizer = new wxBoxSizer(wxVERTICAL);
-	sound_flags_sizer = new wxStaticBoxSizer(wxVERTICAL, frame, wxT("Flags"));
+	sound_flags_sizer = new wxStaticBoxSizer(wxVERTICAL, main_panel, wxT("Flags"));
 	sound_menus_sizer = new wxFlexGridSizer(2, 3);
 	sound_permutation_sizer = new wxBoxSizer(wxHORIZONTAL);
 	sound_eight_bit_sizer = new wxBoxSizer(wxVERTICAL);
@@ -175,7 +178,7 @@ bool SoundsView::OnCreate(wxDocument *doc, long WXUNUSED(flags))
 	frame_sizer->AddSpacer(5);
 	frame_sizer->Add(sound_editor_sizer, 0, wxEXPAND | wxALL, 5);
 	
-	frame->SetSizer(frame_sizer);
+	main_panel->SetSizer(frame_sizer);
 	frame_sizer->Layout();
 	frame_sizer->SetSizeHints(frame);
 	

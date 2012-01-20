@@ -222,6 +222,7 @@ private:
 	};
 
 	wxBoxSizer* mainbox;
+	wxPanel* main_panel;
 	wxTreeCtrl* tree;
 	wxBoxSizer* dummy_sizer;
 
