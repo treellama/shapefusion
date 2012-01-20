@@ -48,6 +48,7 @@ private:
 	};
 
 	wxBoxSizer		*frame_sizer;
+	wxPanel				*main_panel;
 	wxSizer				*sound_class_sizer;
 	wxSizer					*sound_class_header_sizer;
 	wxStaticText				*sound_class_text;

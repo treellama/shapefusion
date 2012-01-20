@@ -77,6 +77,7 @@ private:
 	};
 
 	wxBoxSizer			*mainbox;
+	wxPanel				*main_panel;
 	wxMenuBar			*menubar;
 	wxTreeCtrl			*colltree;
 	wxBoxSizer			*dummy_sizer;
@@ -177,7 +178,7 @@ private:
 	wxTextCtrl					*s_lf_field;
 	wxStaticText				*s_kf_label;
 	wxTextCtrl					*s_kf_field;
-	wxStaticLine			*s_separator;
+	wxPanel		*s_separator;
 	wxFlexGridSizer			*s_grid_box2;
 	wxStaticText				*s_xfermode_label;
 	wxChoice					*s_xfermode_menu;
