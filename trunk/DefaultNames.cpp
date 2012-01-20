@@ -110,7 +110,7 @@ static const wxString collectionNames[] = {
 static const wxString classNames[] = {
 	_("Marine"),
 	_("Bob"),
-	_("Marathon Defense Drone"),
+	_("Marathon Drone"),
 	_("Possessed Drone"),
 	_("S'pht'Kr"),
 	_("Pfhor Fighter"),
