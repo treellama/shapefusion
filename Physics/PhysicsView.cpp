@@ -40,6 +40,7 @@ void PhysicsView::CreateAliens()
 	wxFlexGridSizer* appearance_grid_sizer = new wxFlexGridSizer(2);
 	appearance_grid_sizer->AddGrowableCol(0);
 	appearance_grid_sizer->SetHGap(10);
+	appearance_grid_sizer->SetVGap(4);
 
 	appearance_grid_sizer->Add(new wxStaticText(main_panel, wxID_ANY, _("Graphic Collection:")), 0, wxALIGN_CENTER_VERTICAL);
 	alien_collection_field = new wxTextCtrl(main_panel, FIELD_ALIEN_COLLECTION);
@@ -110,6 +111,7 @@ void PhysicsView::CreateAliens()
 	wxFlexGridSizer* sounds_grid_sizer = new wxFlexGridSizer(2);
 	sounds_grid_sizer->AddGrowableCol(0);
 	sounds_grid_sizer->SetHGap(10);
+	sounds_grid_sizer->SetVGap(4);
 
 	std::vector<wxString> sound_strings = DefaultNames::Instance()->GetArray(wxT("sound"));
 	sound_strings.insert(sound_strings.begin(), GetName(wxT("sound"), -1));
@@ -189,6 +191,7 @@ void PhysicsView::CreateAliens()
 		wxFlexGridSizer* attack_grid_sizer = new wxFlexGridSizer(2);
 		attack_grid_sizer->AddGrowableCol(0);
 		attack_grid_sizer->SetHGap(10);
+		attack_grid_sizer->SetVGap(4);
 		
 		attack_grid_sizer->Add(new wxStaticText(main_panel, wxID_ANY, _("Type:")), 0, wxALIGN_CENTER_VERTICAL);
 		alien_attack_type_choices[i] = new wxChoice(main_panel, MENU_ALIEN_ATTACK_TYPE + id_offset, wxDefaultPosition, choiceSize, shot_strings.size(), &shot_strings[0]);
@@ -231,6 +234,7 @@ void PhysicsView::CreateAliens()
 	wxFlexGridSizer* shrapnel_grid_sizer = new wxFlexGridSizer(2);
 	shrapnel_grid_sizer->AddGrowableCol(0);
 	shrapnel_grid_sizer->SetHGap(10);
+	shrapnel_grid_sizer->SetVGap(4);
 
 	shrapnel_grid_sizer->Add(new wxStaticText(main_panel, wxID_ANY, _("Shrapnel Radius:")), 0, wxALIGN_CENTER_VERTICAL);
 	alien_shrapnel_radius_field = new wxTextCtrl(main_panel, FIELD_ALIEN_SHRAPNEL_RADIUS);
@@ -246,11 +250,12 @@ void PhysicsView::CreateAliens()
 	shrapnel_sizer->Add(shrapnel_grid_sizer, 0, wxEXPAND);
 	
 	alien_shrapnel_alien_damage_checkbox = new wxCheckBox(main_panel, CB_ALIEN_SHRAPNEL_ALIEN_DAMAGE, _("Alien Damage (varies with level)"));
-	shrapnel_sizer->Add(alien_shrapnel_alien_damage_checkbox, 0, wxEXPAND);
+	shrapnel_sizer->Add(alien_shrapnel_alien_damage_checkbox, 0, wxEXPAND | wxTOP, 5);
 
 	wxFlexGridSizer* shrapnel_grid_sizer2 = new wxFlexGridSizer(2);
 	shrapnel_grid_sizer2->AddGrowableCol(0);
 	shrapnel_grid_sizer2->SetHGap(10);
+	shrapnel_grid_sizer2->SetVGap(4);
 
 	// make the fields line up with the grid above
 	shrapnel_grid_sizer2->AddSpacer(0);
@@ -276,6 +281,7 @@ void PhysicsView::CreateAliens()
 	wxFlexGridSizer* impact_effects_grid_sizer = new wxFlexGridSizer(2);
 	impact_effects_grid_sizer->AddGrowableCol(0);
 	impact_effects_grid_sizer->SetHGap(10);
+	impact_effects_grid_sizer->SetVGap(4);
 
 	std::vector<wxString> effect_strings = DefaultNames::Instance()->GetArray(wxT("effect"));
 	effect_strings.insert(effect_strings.begin(), GetName(wxT("sound"), -1));
@@ -316,6 +322,7 @@ void PhysicsView::CreateAliens()
 	wxFlexGridSizer* radius_height_sizer = new wxFlexGridSizer(2);
 	radius_height_sizer->AddGrowableCol(0);
 	radius_height_sizer->SetHGap(10);
+	radius_height_sizer->SetVGap(4);
 
 	radius_height_sizer->Add(new wxStaticText(main_panel, wxID_ANY, _("Radius:")), 0, wxALIGN_CENTER_VERTICAL);
 	alien_radius_field = new wxTextCtrl(main_panel, FIELD_ALIEN_RADIUS);
@@ -331,6 +338,7 @@ void PhysicsView::CreateAliens()
 	wxFlexGridSizer* movement_grid_sizer = new wxFlexGridSizer(2);
 	movement_grid_sizer->AddGrowableCol(0);
 	movement_grid_sizer->SetHGap(10);
+	movement_grid_sizer->SetVGap(4);
 
 	movement_grid_sizer->Add(new wxStaticText(main_panel, wxID_ANY, _("Speed:")), 0, wxALIGN_CENTER_VERTICAL);
 	alien_speed_field = new wxTextCtrl(main_panel, FIELD_ALIEN_SPEED);
@@ -378,6 +386,7 @@ void PhysicsView::CreateAliens()
 	wxFlexGridSizer* perception_grid_sizer = new wxFlexGridSizer(2);
 	perception_grid_sizer->AddGrowableCol(0);
 	perception_grid_sizer->SetHGap(10);
+	perception_grid_sizer->SetVGap(4);
 
 	perception_grid_sizer->Add(new wxStaticText(main_panel, wxID_ANY, _("Visual Range:")), 0, wxALIGN_CENTER_VERTICAL);
 	alien_visual_range_field = new wxTextCtrl(main_panel, FIELD_ALIEN_VISUAL_RANGE);
@@ -401,6 +410,7 @@ void PhysicsView::CreateAliens()
 	wxFlexGridSizer* carrying_grid_sizer = new wxFlexGridSizer(2);
 	carrying_grid_sizer->AddGrowableCol(0);
 	carrying_grid_sizer->SetHGap(10);
+	carrying_grid_sizer->SetVGap(4);
 
 	std::vector<wxString> item_strings = DefaultNames::Instance()->GetArray(wxT("item"));
 	item_strings.insert(item_strings.begin(), _("None"));
@@ -433,6 +443,7 @@ void PhysicsView::CreateAliens()
 
 	wxStaticBoxSizer* friends_sizer = new wxStaticBoxSizer(wxVERTICAL, main_panel, _("Friends"));
 	wxGridSizer* friends_grid_sizer = new wxGridSizer(4);
+	friends_grid_sizer->SetVGap(2);
 
 	for (int i = 0; i < 16; ++i) {
 		alien_friends_checkboxes[i] = new wxCheckBox(main_panel, CB_ALIEN_FRIENDS + i, GetName(wxT("class"), i));
@@ -452,6 +463,7 @@ void PhysicsView::CreateAliens()
 
 	wxStaticBoxSizer* enemies_sizer = new wxStaticBoxSizer(wxVERTICAL, main_panel, _("Enemies"));
 	wxGridSizer* enemies_grid_sizer = new wxGridSizer(4);
+	enemies_grid_sizer->SetVGap(2);
 
 	for (int i = 0; i < 16; ++i) {
 		alien_enemies_checkboxes[i] = new wxCheckBox(main_panel, CB_ALIEN_ENEMIES + i, GetName(wxT("class"), i));
@@ -512,6 +524,7 @@ void PhysicsView::CreateAliens()
 
 	wxStaticBoxSizer* flags_sizer = new wxStaticBoxSizer(wxVERTICAL, main_panel, _("Flags"));
 	wxGridSizer* flags_grid_sizer = new wxGridSizer(3);
+	flags_grid_sizer->SetVGap(2);
 	
 	for (int i = 0; i < 27; ++i) {
 		alien_flags_checkboxes[i] = new wxCheckBox(main_panel, CB_ALIEN_FLAGS + i, flags_strings[i]);
@@ -533,6 +546,7 @@ void PhysicsView::CreateAliens()
 
 	wxStaticBoxSizer* immunities_sizer = new wxStaticBoxSizer(wxVERTICAL, main_panel, _("Immunities"));
 	wxGridSizer* immunities_grid_sizer = new wxGridSizer(4);
+	immunities_grid_sizer->SetVGap(2);
 	
 	for (int i = 0; i < 24; ++i) {
 		alien_immunities_checkboxes[i] = new wxCheckBox(main_panel, CB_ALIEN_IMMUNITIES + i, GetName(wxT("damage"), i));
@@ -550,6 +564,7 @@ void PhysicsView::CreateAliens()
 
 	wxStaticBoxSizer* weaknesses_sizer = new wxStaticBoxSizer(wxVERTICAL, main_panel, _("Weaknesses"));
 	wxGridSizer* weaknesses_grid_sizer = new wxGridSizer(4);
+	weaknesses_grid_sizer->SetVGap(2);
 
 	for (int i = 0; i < 24; ++i) {
 		alien_weaknesses_checkboxes[i] = new wxCheckBox(main_panel, CB_ALIEN_WEAKNESSES + i, GetName(wxT("damage"), i));
@@ -579,6 +594,7 @@ void PhysicsView::CreateEffects()
 	wxFlexGridSizer* effects_grid_sizer = new wxFlexGridSizer(2);
 	effects_grid_sizer->AddGrowableCol(0);
 	effects_grid_sizer->SetHGap(10);
+	effects_grid_sizer->SetVGap(4);
 	
 	effects_grid_sizer->Add(new wxStaticText(main_panel, wxID_ANY, _("Graphic collection:")), 0, wxALIGN_CENTER_VERTICAL);
 	eff_collection_field = new wxTextCtrl(main_panel, FIELD_EFFECT_COLLECTION);
@@ -622,12 +638,15 @@ void PhysicsView::CreateEffects()
 	effects_static_sizer->Add(eff_end_when_animation_loops_checkbox);
 
 	eff_end_when_transfer_animation_loops_checkbox = new wxCheckBox(main_panel, CB_EFFECT_END_WHEN_TRANSFER_ANIMATION_LOOPS, _("End when transfer animation loops"));
+	effects_static_sizer->AddSpacer(2);
 	effects_static_sizer->Add(eff_end_when_transfer_animation_loops_checkbox);
 
 	eff_sound_only_checkbox = new wxCheckBox(main_panel, CB_EFFECT_SOUND_ONLY, _("Sound only"));
+	effects_static_sizer->AddSpacer(2);
 	effects_static_sizer->Add(eff_sound_only_checkbox);
 
 	eff_media_effect_checkbox = new wxCheckBox(main_panel, CB_EFFECT_MEDIA_EFFECT, _("Media effect"));
+	effects_static_sizer->AddSpacer(2);
 	effects_static_sizer->Add(eff_media_effect_checkbox);
 	
 	effects_sizer->Add(effects_static_sizer);
@@ -648,6 +667,7 @@ void PhysicsView::CreatePhysicsConstants()
 
 	movement_grid_sizer->AddGrowableCol(0);
 	movement_grid_sizer->SetHGap(10);
+	movement_grid_sizer->SetVGap(4);
 
 	movement_grid_sizer->Add(new wxStaticText(main_panel, wxID_ANY, _("Max. forward velocity:")), 0, wxALIGN_CENTER_VERTICAL);
 	max_forward_velocity_field = new wxTextCtrl(main_panel, FIELD_MAX_FORWARD_VELOCITY);
@@ -661,8 +681,8 @@ void PhysicsView::CreatePhysicsConstants()
 	max_perpendicular_velocity_field = new wxTextCtrl(main_panel, FIELD_MAX_PERPENDICULAR_VELOCITY);
 	movement_grid_sizer->Add(max_perpendicular_velocity_field, 0, wxALIGN_CENTER_VERTICAL);
 
-	movement_grid_sizer->AddSpacer(0);
-	movement_grid_sizer->AddSpacer(0);
+	movement_grid_sizer->AddSpacer(10);
+	movement_grid_sizer->AddSpacer(10);
 
 	movement_grid_sizer->Add(new wxStaticText(main_panel, wxID_ANY, _("Acceleration:")), 0, wxALIGN_CENTER_VERTICAL);
 	acceleration_field = new wxTextCtrl(main_panel, FIELD_ACCELERATION);
@@ -700,6 +720,7 @@ void PhysicsView::CreatePhysicsConstants()
 	wxFlexGridSizer* steps_grid_sizer = new wxFlexGridSizer(2);
 	steps_grid_sizer->AddGrowableCol(0);
 	steps_grid_sizer->SetHGap(10);
+	steps_grid_sizer->SetVGap(4);
 
 	steps_grid_sizer->Add(new wxStaticText(main_panel, wxID_ANY, _("Step delta:")), 0, wxALIGN_CENTER_VERTICAL);
 	step_delta_field = new wxTextCtrl(main_panel, FIELD_STEP_DELTA);
@@ -718,6 +739,7 @@ void PhysicsView::CreatePhysicsConstants()
 	wxFlexGridSizer* size_grid_sizer = new wxFlexGridSizer(2);
 	size_grid_sizer->AddGrowableCol(0);
 	size_grid_sizer->SetHGap(10);
+	size_grid_sizer->SetVGap(4);
 
 	size_grid_sizer->Add(new wxStaticText(main_panel, wxID_ANY, _("Radius:")), 0, wxALIGN_CENTER_VERTICAL);
 	radius_field = new wxTextCtrl(main_panel, FIELD_RADIUS);
@@ -738,6 +760,7 @@ void PhysicsView::CreatePhysicsConstants()
 	wxFlexGridSizer* turning_grid_sizer = new wxFlexGridSizer(2);
 	turning_grid_sizer->AddGrowableCol(0);
 	turning_grid_sizer->SetHGap(10);
+	turning_grid_sizer->SetVGap(4);
 	
 	turning_grid_sizer->Add(new wxStaticText(main_panel, wxID_ANY, _("Angular acceleration:")), 0, wxALIGN_CENTER_VERTICAL);
 	angular_acceleration_field = new wxTextCtrl(main_panel, FIELD_ANGULAR_ACCELERATION);
@@ -778,6 +801,7 @@ void PhysicsView::CreatePhysicsConstants()
 	wxFlexGridSizer* camera_grid_sizer = new wxFlexGridSizer(2);
 	camera_grid_sizer->AddGrowableCol(0);
 	camera_grid_sizer->SetHGap(10);
+	camera_grid_sizer->SetVGap(4);
 
 	camera_grid_sizer->Add(new wxStaticText(main_panel, wxID_ANY, _("Dead height:")), 0, wxALIGN_CENTER_VERTICAL);
 	dead_height_field = new wxTextCtrl(main_panel, FIELD_DEAD_HEIGHT);
@@ -814,6 +838,7 @@ void PhysicsView::CreateShots()
 	wxFlexGridSizer* shape_sizer = new wxFlexGridSizer(2);
 	shape_sizer->AddGrowableCol(1);
 	shape_sizer->SetHGap(10);
+	shape_sizer->SetVGap(4);
 
 	shape_sizer->Add(new wxStaticText(main_panel, wxID_ANY, _("Graphic Collection:")), 0, wxALIGN_CENTER_VERTICAL);
 	shots_collection_field = new wxTextCtrl(main_panel, FIELD_SHOT_COLLECTION);
@@ -834,6 +859,7 @@ void PhysicsView::CreateShots()
 	wxFlexGridSizer* damage_grid_sizer = new wxFlexGridSizer(2);
 	damage_grid_sizer->AddGrowableCol(0);
 	damage_grid_sizer->SetHGap(10);
+	damage_grid_sizer->SetVGap(5);
 
 	damage_grid_sizer->Add(new wxStaticText(main_panel, wxID_ANY, _("Damage Type:")), 0, wxALIGN_CENTER_VERTICAL);
 	
@@ -858,13 +884,14 @@ void PhysicsView::CreateShots()
 	damage_sizer->Add(damage_grid_sizer, 0, wxEXPAND);
 	
 	shots_alien_damage_checkbox = new wxCheckBox(main_panel, CB_SHOT_ALIEN_DAMAGE, _("Alien Damage (varies with level)"));
-	damage_sizer->Add(shots_alien_damage_checkbox);
+	damage_sizer->Add(shots_alien_damage_checkbox, 0, wxTOP, 5);
 
 	column_1_sizer->Add(damage_sizer, 0, wxEXPAND | wxALL, 10);
 
 	wxFlexGridSizer* shots_grid_sizer = new wxFlexGridSizer(2);
 	shots_grid_sizer->AddGrowableCol(0);
 	shots_grid_sizer->SetHGap(10);
+	shots_grid_sizer->SetVGap(4);
 	
 	std::vector<wxString> sound_strings = DefaultNames::Instance()->GetArray(wxT("sound"));
 	sound_strings.insert(sound_strings.begin(), GetName(wxT("sound"), -1));
@@ -881,8 +908,8 @@ void PhysicsView::CreateShots()
 	shots_sound_pitch_field = new wxTextCtrl(main_panel, FIELD_SHOT_SOUND_PITCH);
 	shots_grid_sizer->Add(shots_sound_pitch_field, 0, wxALIGN_CENTER_VERTICAL);
 
-	shots_grid_sizer->AddSpacer(10);
-	shots_grid_sizer->AddSpacer(10);
+	shots_grid_sizer->AddSpacer(5);
+	shots_grid_sizer->AddSpacer(5);
 
 	shots_grid_sizer->Add(new wxStaticText(main_panel, wxID_ANY, _("Radius:")), 0, wxALIGN_CENTER_VERTICAL);
 	shots_radius_field = new wxTextCtrl(main_panel, FIELD_SHOT_RADIUS);
@@ -900,8 +927,8 @@ void PhysicsView::CreateShots()
 	shots_range_field = new wxTextCtrl(main_panel, FIELD_SHOT_RANGE);
 	shots_grid_sizer->Add(shots_range_field, 0, wxALIGN_CENTER_VERTICAL);
 
-	shots_grid_sizer->AddSpacer(10);
-	shots_grid_sizer->AddSpacer(10);
+	shots_grid_sizer->AddSpacer(5);
+	shots_grid_sizer->AddSpacer(5);
 
 	std::vector<wxString> effect_strings = DefaultNames::Instance()->GetArray(wxT("effect"));
 	effect_strings.insert(effect_strings.begin(), GetName(wxT("sound"), -1));
@@ -920,8 +947,8 @@ void PhysicsView::CreateShots()
 	shots_media_detonation_effect_choice = new wxChoice(main_panel, MENU_SHOT_MEDIA_DETONATION_EFFECT, wxDefaultPosition, choiceSize, 3, media_effect_strings);
 	shots_grid_sizer->Add(shots_media_detonation_effect_choice, 0, wxALIGN_CENTER_VERTICAL);
 
-	shots_grid_sizer->AddSpacer(10);
-	shots_grid_sizer->AddSpacer(10);
+	shots_grid_sizer->AddSpacer(5);
+	shots_grid_sizer->AddSpacer(5);
 
 	shots_grid_sizer->Add(new wxStaticText(main_panel, wxID_ANY, _("Contrail:")), 0, wxALIGN_CENTER_VERTICAL);
 	shots_contrail_choice = new wxChoice(main_panel, MENU_SHOT_CONTRAIL, wxDefaultPosition, choiceSize, effect_strings.size(), &effect_strings[0]);
@@ -972,7 +999,11 @@ void PhysicsView::CreateShots()
 
 	for (int i = 0; i < 22; ++i) {
 		shots_flags_checkboxes[i] = new wxCheckBox(main_panel, CB_SHOT_FLAGS + i, flags_strings[i]);
-		flags_sizer->Add(shots_flags_checkboxes[i]);
+		if (i > 0) {
+			flags_sizer->Add(shots_flags_checkboxes[i], 0, wxTOP, 2);
+		} else {
+			flags_sizer->Add(shots_flags_checkboxes[i]);
+		}
 	}
 
 	column_2_sizer->Add(flags_sizer, 0, wxEXPAND | wxTOP | wxRIGHT | wxBOTTOM, 10);
@@ -1019,7 +1050,8 @@ void PhysicsView::CreateWeapons()
 	wxStaticBoxSizer* appearance_sizer = new wxStaticBoxSizer(wxVERTICAL, main_panel, _("Appearance"));
 	wxFlexGridSizer* appearance_grid_sizer = new wxFlexGridSizer(2);
 	appearance_grid_sizer->AddGrowableCol(0);
-	appearance_grid_sizer->SetHGap(0);
+	appearance_grid_sizer->SetHGap(10);
+	appearance_grid_sizer->SetVGap(4);
 
 	appearance_grid_sizer->Add(new wxStaticText(main_panel, wxID_ANY, _("Graphic Collection:")), 0, wxALIGN_CENTER_VERTICAL);
 	weapon_collection_field = new wxTextCtrl(main_panel, FIELD_WEAPON_COLLECTION);
@@ -1065,6 +1097,7 @@ void PhysicsView::CreateWeapons()
 	wxFlexGridSizer* timing_grid_sizer = new wxFlexGridSizer(2);
 	timing_grid_sizer->AddGrowableCol(0);
 	timing_grid_sizer->SetHGap(10);
+	timing_grid_sizer->SetVGap(4);
 
 	timing_grid_sizer->Add(new wxStaticText(main_panel, wxID_ANY, _("Ready:")), 0, wxALIGN_CENTER_VERTICAL);
 	weapon_ready_field = new wxTextCtrl(main_panel, FIELD_WEAPON_READY);
@@ -1120,6 +1153,7 @@ void PhysicsView::CreateWeapons()
 	wxFlexGridSizer* height_grid_sizer = new wxFlexGridSizer(2);
 	height_grid_sizer->AddGrowableCol(0);
 	height_grid_sizer->SetHGap(10);
+	height_grid_sizer->SetVGap(4);
 
 	height_grid_sizer->Add(new wxStaticText(main_panel, wxID_ANY, _("Idle Height:")), 0, wxALIGN_CENTER_VERTICAL);
 	weapon_idle_height_field = new wxTextCtrl(main_panel, FIELD_WEAPON_IDLE_HEIGHT);
@@ -1162,7 +1196,11 @@ void PhysicsView::CreateWeapons()
 
 	for (int i = 0; i < 10; ++i) {
 		weapon_flags_checkboxes[i] = new wxCheckBox(main_panel, CB_WEAPON_FLAGS + i, flags_strings[i]);
-		flags_sizer->Add(weapon_flags_checkboxes[i], 0, wxALIGN_CENTER_VERTICAL);
+		if (i > 0) {
+			flags_sizer->Add(weapon_flags_checkboxes[i], 0, wxALIGN_CENTER_VERTICAL | wxTOP, 2);
+		} else {
+			flags_sizer->Add(weapon_flags_checkboxes[i], 0, wxALIGN_CENTER_VERTICAL);
+		}
 	}
 
 	column_2_sizer->AddSpacer(10);
@@ -1195,6 +1233,7 @@ void PhysicsView::CreateWeapons()
 		wxFlexGridSizer* left_grid_sizer = new wxFlexGridSizer(2);
 		left_grid_sizer->AddGrowableCol(0);
 		left_grid_sizer->SetHGap(10);
+		left_grid_sizer->SetVGap(4);
 
 		left_grid_sizer->Add(new wxStaticText(main_panel, wxID_ANY, _("Projectile:")), 0, wxALIGN_CENTER_VERTICAL);
 		trigger_projectile_choices[i] = new wxChoice(main_panel, MENU_TRIGGER_PROJECTILE + id_offset, wxDefaultPosition, choiceSize, shot_strings.size(), &shot_strings[0]);
@@ -1213,6 +1252,7 @@ void PhysicsView::CreateWeapons()
 		wxFlexGridSizer* sounds_grid_sizer = new wxFlexGridSizer(2);
 		sounds_grid_sizer->AddGrowableCol(0);
 		sounds_grid_sizer->SetHGap(10);
+		sounds_grid_sizer->SetVGap(4);
 
 		sounds_grid_sizer->Add(new wxStaticText(main_panel, wxID_ANY, _("Firing:")), 0, wxALIGN_CENTER_VERTICAL);
 		trigger_firing_choices[i] = new wxChoice(main_panel, MENU_TRIGGER_FIRING + id_offset, wxDefaultPosition, choiceSize, sound_strings.size(), &sound_strings[0]);
@@ -1247,6 +1287,7 @@ void PhysicsView::CreateWeapons()
 		wxFlexGridSizer* right_grid_sizer = new wxFlexGridSizer(2);
 		right_grid_sizer->AddGrowableCol(0);
 		right_grid_sizer->SetHGap(10);
+		right_grid_sizer->SetVGap(4);
 
 		right_grid_sizer->Add(new wxStaticText(main_panel, wxID_ANY, _("Ammo Type:")), 0, wxALIGN_CENTER_VERTICAL);
 		trigger_ammo_type_choices[i] = new wxChoice(main_panel, MENU_TRIGGER_AMMO_TYPE + id_offset, wxDefaultPosition, choiceSize, item_strings.size(), &item_strings[0]);
@@ -1303,7 +1344,7 @@ void PhysicsView::CreateWeapons()
 		trigger_shell_casing_type_choices[i] = new wxChoice(main_panel, MENU_TRIGGER_SHELL_CASING_TYPE + id_offset, wxDefaultPosition, choiceSize, 6, shell_casing_type_strings);
 		right_grid_sizer->Add(trigger_shell_casing_type_choices[i]);		
 
-		static_box_sizer->AddSpacer(10);
+		static_box_sizer->AddSpacer(20);
 		static_box_sizer->Add(right_grid_sizer, 0, wxEXPAND);
 		
 		if (i == 1) {
@@ -1345,7 +1386,7 @@ bool PhysicsView::OnCreate(wxDocument* doc, long flags)
 	CreateWeapons();
 
 	mainbox->Show(dummy_sizer, false);
-	mainbox->Show(shots_sizer, true);
+	mainbox->Show(weapons_triggers_sizer, true);
 
 	mainbox->Layout();
 	main_panel->SetSizer(mainbox);
@@ -1353,7 +1394,7 @@ bool PhysicsView::OnCreate(wxDocument* doc, long flags)
 	mainbox->Fit(mFrame);
 
 	mainbox->Show(dummy_sizer, true);
-	mainbox->Show(shots_sizer, false);
+	mainbox->Show(weapons_triggers_sizer, false);
 
 	// because we changed size
 	mFrame->Centre(wxBOTH);
