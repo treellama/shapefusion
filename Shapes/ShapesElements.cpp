@@ -893,13 +893,13 @@ unsigned int ShapesSequence::SizeInFile() const
 
 BigEndianBuffer& ShapesSequence::SaveObject(BigEndianBuffer& buffer)
 {
-	wxCSConv	seqnameconv(wxT("macintosh"));
+	wxCSConv	seqnameconv(wxFONTENCODING_MACROMAN);
 	char		name[33] = "";
 
 	buffer.WriteShort(mType);
 	buffer.WriteUShort(mFlags);
 	buffer.WriteChar(mName.Length());
-	strncpy(name, mName.mb_str(seqnameconv), 33);
+	strncpy(name, seqnameconv.cWC2MB(mName.wc_str(*wxConvCurrent)), 33);
 	buffer.WriteBlock(33, (unsigned char *)name);
 	buffer.WriteShort(mNumberOfViews);
 	buffer.WriteShort(mFramesPerView);
@@ -943,11 +943,11 @@ BigEndianBuffer& ShapesSequence::LoadObject(BigEndianBuffer& buffer, long offset
 	}
 
 	char		name[33];
-	wxCSConv	seqnameconv(wxT("macintosh"));
+	wxCSConv	seqnameconv(wxFONTENCODING_MACROMAN);
 
 	buffer.ReadBlock(33, (unsigned char *)name);
 	name[namelen] = 0;
-	mName = wxString(name, seqnameconv, namelen);
+	mName = wxString(seqnameconv.cMB2WC(name), *wxConvCurrent, namelen);
 
 	mNumberOfViews = buffer.ReadShort();
 	mFramesPerView = buffer.ReadShort();
