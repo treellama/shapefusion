@@ -41,8 +41,13 @@ You'll need wxWidgets (at least version 2.8.x) to compile ShapeFusion.
 On Linux systems you can test the presence of wxWidgets by running the command
 'wx-config --version'. If that command is available and gives you the right
 version, everything should work; otherwise install wxWidgets following your
-Linux distribution rules. To compile ShapeFusion, just do a 'make' inside the
-source directory. When compilation is complete, simply run the 'shapefusion'
+Linux distribution rules. To compile ShapeFusion, just run the following inside
+the source directory:
+
+  ./configure
+  make
+
+When compilation is complete, simply run the 'shapefusion'
 executable (you can put it anywhere in your PATH). I finally suggest you place
 the attached DefaultNames.txt file in the /usr/local/share/shapefusion
 directory, so that collections and sounds will get Infinity-like names.
