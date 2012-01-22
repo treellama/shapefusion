@@ -506,6 +506,9 @@ void ShapesView::MenuEditCopy(wxCommandEvent& e)
 			case TREESECTION_BITMAPS:
 				DoCopyBitmap(bb->GetSelection());
 				break;
+			case TREESECTION_VERSION:
+				DoCopyChunk(selected_item_data->CollID(), selected_item_data->Version());
+				break;
 			default:
 				break;
 		}
@@ -543,6 +546,9 @@ void ShapesView::MenuEditPaste(wxCommandEvent& e)
 		switch (selected_item_data->Section()) {
 			case TREESECTION_BITMAPS:
 				DoPasteBitmap(bb->GetSelection());
+				break;
+			case TREESECTION_VERSION:
+				DoPasteChunk(selected_item_data->CollID(), selected_item_data->Version());
 				break;
 			default:
 				break;
@@ -967,10 +973,6 @@ void ShapesView::OnTreeSelect(wxTreeEvent &e)
 			f_view->SetFrame(NULL);
 			f_view->SetBitmap(NULL);
 			s_fb->Clear();
-			menubar->SetLabel(EDIT_MENU_DELETE, wxT("Delete"));
-			menubar->Enable(EDIT_MENU_COPY, false);
-			menubar->Enable(EDIT_MENU_DELETE, false);
-			menubar->Enable(EDIT_MENU_PASTE, false);
 			for (unsigned int i = 0; i < ctmenucount; i++)
 				menubar->Enable(VIEW_MENU_COLORTABLE_0 + i, false);
 			menubar->Enable(SHAPES_MENU_SAVECOLORTABLE, false);
@@ -1128,12 +1130,13 @@ void ShapesView::OnTreeSelect(wxTreeEvent &e)
 				s_fb->AddFrame(((ShapesDocument*)GetDocument())->GetFrame(mSelectedColl, mSelectedVers, i));
 			s_fb->SetSeqParameters(seq->NumberOfViews(), seq->FramesPerView(), &seq->mFrameIndexes);
 			s_fb->Thaw();
-			menubar->SetLabel(EDIT_MENU_DELETE, wxT("Delete sequence"));
-			menubar->Enable(EDIT_MENU_COPY, false);
-			menubar->Enable(EDIT_MENU_DELETE, true);
-			menubar->Enable(EDIT_MENU_PASTE, false);
 			wxEndBusyCursor();
 		}
+
+		menubar->SetLabel(EDIT_MENU_DELETE, _("Delete"));
+		menubar->Enable(EDIT_MENU_COPY, false);
+		menubar->Enable(EDIT_MENU_DELETE, false);
+		menubar->Enable(EDIT_MENU_PASTE, false);
 		
 		// handle section selection: show/hide editing panels
 		mainbox->Show(dummy_sizer, false);
@@ -1151,6 +1154,9 @@ void ShapesView::OnTreeSelect(wxTreeEvent &e)
 				mainbox->Show(chunk_sizer, true);
 				chunk_inner_box->Show(chunk_undef_label, !((ShapesDocument*)GetDocument())->CollectionDefined(mSelectedColl, mSelectedVers));
 				chunk_inner_box->Show(chunk_grid, ((ShapesDocument*)GetDocument())->CollectionDefined(mSelectedColl, mSelectedVers));
+
+				menubar->Enable(EDIT_MENU_COPY, true);
+				menubar->Enable(EDIT_MENU_PASTE, true);
 				break;
 			case TREESECTION_BITMAPS:
 				mainbox->Show(b_outer_sizer, true);
@@ -1168,10 +1174,13 @@ void ShapesView::OnTreeSelect(wxTreeEvent &e)
 				f_outer_sizer->Show(f_count_label, fb->GetSelection() == -1);
 				break;
 			case TREESECTION_SEQUENCES:
-				if (mSelectedSequence > -1)
+				menubar->SetLabel(EDIT_MENU_DELETE, _("Delete sequence"));
+				if (mSelectedSequence > -1) {
 					mainbox->Show(s_outer_sizer, true);
-				else
+					menubar->Enable(EDIT_MENU_DELETE, true);
+				} else {
 					mainbox->Show(dummy_sizer, true);
+				}
 				break;
 		}
 		mainbox->Layout();
@@ -1395,6 +1404,26 @@ void ShapesView::DoPasteBitmap(int which)
 	wxEndBusyCursor();
 }
 
+void ShapesView::DoCopyChunk(unsigned int coll, unsigned int chunk)
+{
+	ShapesChunk* c = ((ShapesDocument*)GetDocument())->GetChunk(coll, chunk);
+	if (c) {
+		c->ClipboardCopy();
+	}
+}
+
+void ShapesView::DoPasteChunk(unsigned int coll, unsigned int chunk)
+{
+	ShapesChunk* c = ((ShapesDocument*)GetDocument())->GetChunk(coll, chunk);
+	if (c) {
+		c->ClipboardPaste();
+		((ShapesDocument*)GetDocument())->Modify(true);
+		mSelectedColl = -1;
+		mSelectedVers = -1;
+		mSelectedSequence = -1;
+	}
+}
+	
 void ShapesView::ToggleBitmapCheckboxes(wxCommandEvent &e)
 {
 	ShapesBitmap	*sel_bitmap = b_view->GetBitmap();

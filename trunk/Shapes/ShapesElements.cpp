@@ -1042,6 +1042,11 @@ ShapesChunk::ShapesChunk(bool verbose): ShapesElement(verbose)
 
 ShapesChunk::~ShapesChunk(void)
 {
+	Clear();
+}
+
+void ShapesChunk::Clear(void)
+{
 	unsigned int i;
 
 	for (i = 0; i < mColorTables.size(); i++)
@@ -1052,6 +1057,13 @@ ShapesChunk::~ShapesChunk(void)
 		delete mFrames[i];
 	for (i = 0; i < mBitmaps.size(); i++)
 		delete mBitmaps[i];
+
+	mColorTables.clear();
+	mSequences.clear();
+	mFrames.clear();
+	mBitmaps.clear();
+
+	mGoodData = false;
 }
 
 static bool compareColorTablePtrs(ShapesColorTable* lhs, ShapesColorTable* rhs) {
@@ -1187,6 +1199,40 @@ void ShapesChunk::DeleteSequence(unsigned int s)
 {
 	if (s < mSequences.size())
 		mSequences.erase(mSequences.begin() + s);
+}
+
+void ShapesChunk::ClipboardCopy()
+{
+	if (wxTheClipboard->Open()) {
+		size_t size = SizeInFile();
+		unsigned char* data = new unsigned char[size];
+		BigEndianBuffer buffer(data, size);
+		
+		SaveObject(buffer);
+		
+		wxCustomDataObject* dataObject = new wxCustomDataObject(wxDataFormat(wxT("application/vnd.shapefusion.shapeschunk")));
+		dataObject->TakeData(size, data);
+		
+		wxTheClipboard->SetData(dataObject);
+
+		wxTheClipboard->Close();
+	}
+}
+
+void ShapesChunk::ClipboardPaste()
+{
+	if (wxTheClipboard->Open()) {
+		wxCustomDataObject dataObject(wxDataFormat(wxT("application/vnd.shapefusion.shapeschunk")));
+		if (wxTheClipboard->GetData(dataObject)) {
+			BigEndianBuffer buffer(reinterpret_cast<unsigned char *>(dataObject.GetData()), dataObject.GetSize());
+
+			Clear();
+
+			LoadObject(buffer);
+		}
+
+		wxTheClipboard->Close();
+	}
 }
 
 unsigned int ShapesChunk::SizeInFile(void) const
@@ -1663,6 +1709,11 @@ ShapesFrame* ShapesCollection::GetFrame(unsigned int chunk, unsigned int index) 
 ShapesSequence* ShapesCollection::GetSequence(unsigned int chunk, unsigned int index) const
 {
 	return (Defined(chunk) ? mChunks[chunk]->GetSequence(index) : NULL);
+}
+
+ShapesChunk* ShapesCollection::GetChunk(unsigned int chunk) const
+{
+	return (Defined(chunk) ? mChunks[chunk] : NULL);
 }
 
 void ShapesCollection::InsertColorTable(ShapesColorTable *ct, unsigned int chunk)

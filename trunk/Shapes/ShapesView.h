@@ -256,6 +256,9 @@ public:
 	void DoCopyBitmap(int which);
 	void DoPasteBitmap(int which);
 
+	void DoCopyChunk(unsigned int coll, unsigned int chunk);
+	void DoPasteChunk(unsigned int coll, unsigned int chunk);
+
 	void DoDeleteColorTable(int which);
 	void DoDeleteBitmap(int which);
 	void DoDeleteFrame(int which);
