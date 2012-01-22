@@ -223,6 +223,7 @@ private:
 
 	wxBoxSizer* mainbox;
 	wxPanel* main_panel;
+	wxMenuBar* menubar;
 	wxTreeCtrl* tree;
 	wxBoxSizer* dummy_sizer;
 
@@ -479,6 +480,9 @@ private:
 	void OnSelectWeaponTriggers(int index);
 
 	short GetSelection(); // index of current tree selection
+
+	void MenuEditCopy(wxCommandEvent&);
+	void MenuEditPaste(wxCommandEvent&);
 
 	void EditAlienCheckboxes(wxCommandEvent& e);
 	void EditAlienDoubles(wxCommandEvent& e);

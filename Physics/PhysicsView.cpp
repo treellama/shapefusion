@@ -1393,6 +1393,8 @@ bool PhysicsView::OnCreate(wxDocument* doc, long flags)
 	mainbox->SetSizeHints(mFrame);
 	mainbox->Fit(mFrame);
 
+	menubar = mFrame->GetMenuBar();
+
 	mainbox->Show(dummy_sizer, true);
 	mainbox->Show(weapons_triggers_sizer, false);
 

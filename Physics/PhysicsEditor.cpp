@@ -22,12 +22,17 @@
 #include "wx/wx.h"
 #endif
 
+#include "wx/clipbrd.h"
+
 #include <cmath>
 
 #include "PhysicsView.h"
 #include "PhysicsTreeItemData.h"
+#include "../ShapeFusionMenus.h"
 
 BEGIN_EVENT_TABLE(PhysicsView, wxView)
+	EVT_MENU(EDIT_MENU_COPY, PhysicsView::MenuEditCopy)
+	EVT_MENU(EDIT_MENU_PASTE, PhysicsView::MenuEditPaste)
         EVT_TREE_SEL_CHANGED(-1, PhysicsView::OnTreeSelect)
 	EVT_COMMAND_RANGE(FIELD_ALIEN_COLLECTION, FIELD_ALIEN_RANGED_ATTACK_SHAPE, wxEVT_COMMAND_TEXT_UPDATED, PhysicsView::EditAlienFields)
 	EVT_TEXT(FIELD_ALIEN_RANDOM_SOUND_MASK, PhysicsView::EditAlienFields)
@@ -445,12 +450,140 @@ void PhysicsView::OnTreeSelect(wxTreeEvent& e)
 			break;
 		}
 
+		switch (new_section) {
+		case TREESECTION_MONSTERS:
+		case TREESECTION_EFFECTS:
+		case TREESECTION_PROJECTILES:
+		case TREESECTION_PHYSICS:
+		case TREESECTION_WEAPONS:
+			menubar->Enable(EDIT_MENU_COPY, true);
+			menubar->Enable(EDIT_MENU_PASTE, true);
+			break;
+		default:
+			menubar->Enable(EDIT_MENU_COPY, false);
+			menubar->Enable(EDIT_MENU_PASTE, false);
+			break;
+		}
+
 		mainbox->Layout();
 	}
 }
 
 short PhysicsView::GetSelection() {
 	return static_cast<PhysicsTreeItemData*>(tree->GetItemData(tree->GetSelection()))->ID();
+}
+
+template<class T>
+inline unsigned char* Serialize(T* element, size_t& size)
+{
+	size = T::kSize;
+	unsigned char* data = new unsigned char[size];
+	BigEndianBuffer buffer(data, size);
+	element->SaveObject(buffer);
+	return data;
+}
+
+void PhysicsView::MenuEditCopy(wxCommandEvent&) {
+	if (wxTheClipboard->Open()) {
+
+		PhysicsTreeItemData* data = static_cast<PhysicsTreeItemData*>(tree->GetItemData(tree->GetSelection()));
+		PhysicsDocument* document = static_cast<PhysicsDocument*>(GetDocument());
+
+		if (data) {
+			size_t size = 0;
+			unsigned char* buf = 0;
+			wxDataFormat format;
+
+			switch (data->Section()) {
+			case TREESECTION_MONSTERS:
+				buf = Serialize(document->GetMonsterDefinition(data->ID()), size);
+				format.SetId(wxT("application/vnd.shapefusion.monster"));
+				break;
+			case TREESECTION_EFFECTS:
+				buf = Serialize(document->GetEffectDefinition(data->ID()), size);
+				format.SetId(wxT("application/vnd.shapefusion.effect"));
+				break;
+			case TREESECTION_PROJECTILES:
+				buf = Serialize(document->GetProjectileDefinition(data->ID()), size);
+				format.SetId(wxT("application/vnd.shapefusion.projectile"));
+				break;
+			case TREESECTION_PHYSICS:
+				buf = Serialize(document->GetPhysicsConstants(data->ID()), size);
+				format.SetId(wxT("application/vnd.shapefusion.physics"));
+				break;
+			case TREESECTION_WEAPONS:
+				buf = Serialize(document->GetWeaponDefinition(data->ID()), size);
+				format.SetId(wxT("application/vnd.shapefusion.weapon"));
+				break;
+			}
+
+			wxCustomDataObject* dataObject = new wxCustomDataObject(format);
+			dataObject->TakeData(size, buf);
+			wxTheClipboard->SetData(dataObject);
+				
+			wxTheClipboard->Close();
+		}
+	}
+}
+
+void PhysicsView::MenuEditPaste(wxCommandEvent&) {
+	if (wxTheClipboard->Open()) {
+		PhysicsTreeItemData* data = static_cast<PhysicsTreeItemData*>(tree->GetItemData(tree->GetSelection()));
+		PhysicsDocument* document = static_cast<PhysicsDocument*>(GetDocument());
+		
+		if (data) {
+			wxDataFormat format;
+
+			switch (data->Section()) {
+			case TREESECTION_MONSTERS:
+				format.SetId(wxT("application/vnd.shapefusion.monster"));
+				break;
+			case TREESECTION_EFFECTS:
+				format.SetId(wxT("application/vnd.shapefusion.effect"));
+				break;
+			case TREESECTION_PROJECTILES:
+				format.SetId(wxT("application/vnd.shapefusion.projectile"));
+				break;
+			case TREESECTION_PHYSICS:
+				format.SetId(wxT("application/vnd.shapefusion.physics"));
+				break;
+			case TREESECTION_WEAPONS:
+				format.SetId(wxT("application/vnd.shapefusion.weapon"));
+				break;
+
+			}
+
+			wxCustomDataObject dataObject(format);
+			if (wxTheClipboard->GetData(dataObject)) {
+				BigEndianBuffer buffer(reinterpret_cast<unsigned char *>(dataObject.GetData()), dataObject.GetSize());
+				
+				switch (data->Section()) {
+				case TREESECTION_MONSTERS:
+					document->GetMonsterDefinition(data->ID())->LoadObject(buffer);
+					break;
+				case TREESECTION_EFFECTS:
+					document->GetEffectDefinition(data->ID())->LoadObject(buffer);
+					OnSelectEffect(data->ID());
+					break;
+				case TREESECTION_PROJECTILES:
+					document->GetProjectileDefinition(data->ID())->LoadObject(buffer);
+					OnSelectShot(data->ID());
+					break;
+				case TREESECTION_PHYSICS:
+					document->GetPhysicsConstants(data->ID())->LoadObject(buffer);
+					OnSelectPhysicsConstants(data->ID());
+					break;
+				case TREESECTION_WEAPONS:
+					document->GetWeaponDefinition(data->ID())->LoadObject(buffer);
+					break;
+				}
+
+				document->Modify(true);
+			}
+		}
+
+		wxTheClipboard->Close();
+	}
 }
 
 void PhysicsView::EditAlienCheckboxes(wxCommandEvent& e)
