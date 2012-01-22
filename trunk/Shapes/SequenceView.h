@@ -60,6 +60,8 @@ private:
 	wxBitmap CreateThumbnail(ShapesFrame *fp);
 	void UpdateVirtualSize(void);
 
+	void PopupFrameIndexDialog(int index);
+
 protected:
 	DECLARE_EVENT_TABLE();
 
@@ -72,6 +74,7 @@ public:
 	void OnMouseMove(wxMouseEvent &e);
 	void OnMouseUp(wxMouseEvent& e);
 	void OnKeyDown(wxKeyEvent& e);
+	void OnMouseDoubleClick(wxMouseEvent& e);
 	// access methods
 	int GetSelection(void) const;
 	void SetThumbnailSize(int size);
