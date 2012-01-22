@@ -1128,7 +1128,7 @@ void ShapesView::OnTreeSelect(wxTreeEvent &e)
 				s_fb->AddBitmap(((ShapesDocument*)GetDocument())->GetBitmap(mSelectedColl, mSelectedVers, i));
 			for (unsigned int i = 0; i < ((ShapesDocument*)GetDocument())->CollectionFrameCount(mSelectedColl, mSelectedVers); i++)
 				s_fb->AddFrame(((ShapesDocument*)GetDocument())->GetFrame(mSelectedColl, mSelectedVers, i));
-			s_fb->SetSeqParameters(seq->NumberOfViews(), seq->FramesPerView(), &seq->mFrameIndexes);
+			s_fb->SetSeqParameters(seq->NumberOfViews(), seq->FramesPerView(), &seq->mFrameIndexes, this);
 			s_fb->Thaw();
 			wxEndBusyCursor();
 		}
@@ -1845,7 +1845,7 @@ void ShapesView::EditSequenceType(wxCommandEvent &e)
 		} else {
 			// Hmm, number of views unchanged, don't bother...
 		}
-		s_fb->SetSeqParameters(sel_seq->NumberOfViews(), sel_seq->FramesPerView(), &sel_seq->mFrameIndexes);
+		s_fb->SetSeqParameters(sel_seq->NumberOfViews(), sel_seq->FramesPerView(), &sel_seq->mFrameIndexes, this);
 		((ShapesDocument*)GetDocument())->Modify(true);
 	}
 }
@@ -1919,7 +1919,7 @@ void ShapesView::EditSequenceFields(wxCommandEvent &e)
 											sel_seq->mFrameIndexes.push_back(-1);
 									}
 								}
-								s_fb->SetSeqParameters(sel_seq->NumberOfViews(), v, &sel_seq->mFrameIndexes);
+								s_fb->SetSeqParameters(sel_seq->NumberOfViews(), v, &sel_seq->mFrameIndexes, this);
 							}
 							break;
 						case FIELD_SEQ_TICKS_PER_FRAME:
