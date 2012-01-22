@@ -360,6 +360,7 @@ public:
 	// constructor/destructor
 	ShapesChunk(bool verbose = false);
 	~ShapesChunk(void);
+	void Clear(void);
 	bool operator==(const ShapesChunk& other) const;
 	bool operator!=(const ShapesChunk& other) const { return !(*this == other); }
 	// chunk data access
@@ -385,6 +386,9 @@ public:
 	void InsertSequence(ShapesSequence *s);
 	void DeleteSequence(unsigned int s);
 	// utilities
+
+	void ClipboardCopy();
+	void ClipboardPaste();
 	unsigned int SizeInFile() const;
 	unsigned int SizeInPatch(const ShapesChunk* other) const;
 	BigEndianBuffer& SaveObject(BigEndianBuffer& stream);
@@ -420,6 +424,7 @@ public:
 	ShapesBitmap* GetBitmap(unsigned int chunk, unsigned int index) const;
 	ShapesFrame* GetFrame(unsigned int chunk, unsigned int index) const;
 	ShapesSequence* GetSequence(unsigned int chunk, unsigned int index) const;
+	ShapesChunk* GetChunk(unsigned int chunk) const;
 	// collection alteration
 	void InsertColorTable(ShapesColorTable *ct, unsigned int chunk);
 	void DeleteColorTable(unsigned int chunk, unsigned int ct);

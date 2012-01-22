@@ -59,6 +59,7 @@ public:
 	ShapesBitmap *GetBitmap(unsigned int coll, unsigned int chunk, unsigned int bitmap) const;
 	ShapesFrame *GetFrame(unsigned int coll, unsigned int chunk, unsigned int frame) const;
 	ShapesSequence *GetSequence(unsigned int coll, unsigned int chunk, unsigned int seq) const;
+	ShapesChunk* GetChunk(unsigned int coll, unsigned int chunk) const;
 	// collection alteration
 	void InsertColorTable(ShapesColorTable *ct, unsigned int coll, unsigned int chunk);
 	void DeleteColorTable(unsigned int coll, unsigned int chunk, unsigned int ct);

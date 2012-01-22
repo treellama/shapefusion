@@ -118,6 +118,11 @@ ShapesSequence *ShapesDocument::GetSequence(unsigned int coll, unsigned int chun
 	return mCollections[coll]->GetSequence(chunk, seq);
 }
 
+ShapesChunk* ShapesDocument::GetChunk(unsigned int coll, unsigned int chunk) const
+{
+	return mCollections[coll]->GetChunk(chunk);
+}
+
 // collection alteration
 void ShapesDocument::InsertColorTable(ShapesColorTable *ct, unsigned int coll, unsigned int chunk)
 {
