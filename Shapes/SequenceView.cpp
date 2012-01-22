@@ -25,6 +25,7 @@ BEGIN_EVENT_TABLE(SequenceView, wxScrolledWindow)
 	EVT_PAINT(SequenceView::OnPaint)
 	EVT_SIZE(SequenceView::OnSize)
 	EVT_LEFT_DOWN(SequenceView::OnMouseDown)
+	EVT_LEFT_DCLICK(SequenceView::OnMouseDoubleClick)
 	EVT_RIGHT_DOWN(SequenceView::OnMouseDown)
 	EVT_LEFT_UP(SequenceView::OnMouseUp)
 	EVT_KEY_DOWN(SequenceView::OnKeyDown)
@@ -281,6 +282,10 @@ void SequenceView::OnKeyDown(wxKeyEvent &e)
 					if (mSelection / mFramesPerView < (mNumberOfViews-1))
 						new_selection += mFramesPerView;
 					break;
+				case WXK_RETURN:
+				case WXK_NUMPAD_ENTER:
+					PopupFrameIndexDialog(mSelection);
+					break;
 				default:
 					e.Skip();
 			}
@@ -299,6 +304,30 @@ void SequenceView::OnKeyDown(wxKeyEvent &e)
 			event.SetInt(mSelection);
 			GetEventHandler()->ProcessEvent(event);
 		}
+	}
+}
+
+void SequenceView::OnMouseDoubleClick(wxMouseEvent& e)
+{
+	wxClientDC dc(this);
+	wxPoint mouse = e.GetLogicalPosition(dc);
+	switch (e.GetButton()) {
+	case wxMOUSE_BTN_LEFT: 
+	{
+		int selection = -1;
+		for (unsigned int i = 0; i < mThumbnailPositions.size(); ++i) {
+			wxRect test(mThumbnailPositions[i].x, mThumbnailPositions[i].y, mThumbnailSize, mThumbnailSize);
+			if (test.Contains(mouse)) {
+				selection = i;
+				break;
+			}
+		}
+		
+		if (selection != -1) {
+			PopupFrameIndexDialog(selection);
+		}
+	}
+	break;
 	}
 }
 
@@ -518,3 +547,25 @@ void SequenceView::RebuildThumbnails(void)
 	}
 }
 
+void SequenceView::PopupFrameIndexDialog(int selection)
+{
+	wxDialog dialog(GetParent(), -1, wxString(_("Change Frame")));
+	wxBoxSizer* vbox = new wxBoxSizer(wxVERTICAL);
+	wxTextCtrl* text = new wxTextCtrl(&dialog, wxID_ANY);
+	text->ChangeValue(wxString::Format(wxT("%i"), (*mFrameIndexes)[selection]));
+	vbox->Add(text, 0, wxEXPAND | wxALL, 10);
+	vbox->Add(dialog.CreateButtonSizer(wxOK | wxCANCEL), 0, wxEXPAND | wxRIGHT | wxTOP | wxBOTTOM, 10);
+	dialog.SetSizerAndFit(vbox);
+	text->SetSelection(-1, -1);
+	dialog.Centre();
+	if (dialog.ShowModal() == wxID_OK) {
+		long v = 0;
+		if (text->GetValue().ToLong(&v)) {
+			if (v >= -1 && v <= static_cast<int>(mFrames.size()) - 1) {
+				(*mFrameIndexes)[selection] = v;
+				RebuildThumbnail(selection);
+				Refresh();
+			}
+		}
+	}	
+}
