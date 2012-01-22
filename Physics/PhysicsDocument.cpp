@@ -73,7 +73,7 @@ wxInputStream& PhysicsDocument::LoadObject(wxInputStream& stream)
 	int version = wad_header.ReadShort();
 	int data_version = wad_header.ReadShort();
 
-	if (!(version == 1 || version == 2) || data_version != 0) {
+	if (!(version == 1 || version == 2) || !(data_version == 0 || data_version == 1)) {
 		wxLogError(wxT("[PhysicsDocument] Error loading: Incorrect version/data version (%i/%i)"), version, data_version);
 		return stream;
 	}
