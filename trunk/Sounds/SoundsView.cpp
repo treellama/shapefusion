@@ -36,6 +36,7 @@
 
 BEGIN_EVENT_TABLE(SoundsView, wxView)
 	EVT_LISTBOX(SOUND_CLASS_LIST, SoundsView::SoundClassChanged)
+	EVT_TEXT(SOUND_CLASS_ID_FIELD, SoundsView::SoundClassIdChanged)
 	EVT_RADIOBOX(SOUND_VOLUME_RADIO_BUTTON, SoundsView::VolumeButtonChanged)
 	EVT_CHOICE(SOUND_CHANCE_MENU, SoundsView::ChanceMenuChanged)
 	EVT_CHECKBOX(SOUND_FLAGS_RESTART, SoundsView::FlagsChanged)
@@ -349,6 +350,20 @@ bool SoundsView::OnClose(bool deleteWindow)
 void SoundsView::SoundClassChanged(wxCommandEvent &e)
 {
 	Update();
+}
+
+void SoundsView::SoundClassIdChanged(wxCommandEvent& e)
+{
+	long v;
+	if (e.GetString().ToLong(&v))
+	{
+		SoundsDefinition* def = payload->Get8BitSoundDefinition(mSoundClass);
+		def->SetSoundCode(v);
+		
+		def = payload->Get16BitSoundDefinition(mSoundClass);
+		def->SetSoundCode(v);
+	}
+	GetDocument()->Modify(true);
 }
 
 void SoundsView::VolumeButtonChanged(wxCommandEvent &e)

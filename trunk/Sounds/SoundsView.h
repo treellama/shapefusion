@@ -102,6 +102,7 @@ public:
 	void Update(void);
 
 	void SoundClassChanged(wxCommandEvent &e);
+	void SoundClassIdChanged(wxCommandEvent& e);
 	void AddSound(wxCommandEvent &e);
 	void RemoveSound(wxCommandEvent &e);
 	void SourceRadioButtonChanged(wxCommandEvent &e);
