@@ -17,6 +17,7 @@
 */ 
 #include "wx/image.h"
 #include "SequenceView.h"
+#include "ShapesDocument.h"
 #include "utilities.h"
 
 DEFINE_EVENT_TYPE(wxEVT_SEQUENCEVIEW)
@@ -38,7 +39,7 @@ const char	arrow_left_bits[] = { 0x08, 0x0c, 0x0e, 0x0f, 0x0e, 0x0c, 0x08 },
 SequenceView::SequenceView(wxWindow *parent, wxWindowID id):
 	wxScrolledWindow(parent, id, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER | wxFULL_REPAINT_ON_RESIZE),
 	mColorTable(NULL), mThumbnailSize(64), mMargin(7), mPrevBtnIcon(arrow_left_bits, 4, 7),
-	mNextBtnIcon(arrow_right_bits, 4, 7), mAutoSize(false), mSelection(-1), mFrameIndexes(NULL)
+	mNextBtnIcon(arrow_right_bits, 4, 7), mAutoSize(false), mSelection(-1), mFrameIndexes(NULL), mView(0)
 {
 	SetBackgroundColour(wxColour(255, 255, 255));
 	mThumbnailPen.SetColour(200, 200, 200);
@@ -244,6 +245,9 @@ void SequenceView::OnKeyDown(wxKeyEvent &e)
 						(*mFrameIndexes)[mSelection]--;
 						RebuildThumbnail(mSelection);
 						Refresh();
+						if (mView) {
+							static_cast<ShapesDocument*>(mView->GetDocument())->Modify(true);
+						}
 					}
 				}
 				break;
@@ -253,6 +257,9 @@ void SequenceView::OnKeyDown(wxKeyEvent &e)
 						(*mFrameIndexes)[mSelection]++;
 						RebuildThumbnail(mSelection);
 						Refresh();
+						if (mView) {
+							static_cast<ShapesDocument*>(mView->GetDocument())->Modify(true);
+						}
 					}
 				}
 				break;
@@ -378,12 +385,13 @@ void SequenceView::AddBitmap(ShapesBitmap *bp)
 // set sequence parameters: frames per view, animation type and frame index array.
 // Guess number of views from animation type. Also create thumbnails (add frames,
 // bitmaps and set color table before!)
-void SequenceView::SetSeqParameters(int animtype, int fpv, vector<short> *indexes)
+void SequenceView::SetSeqParameters(int animtype, int fpv, vector<short> *indexes, wxView* view)
 {
 	mAnimationType = animtype;
 	mNumberOfViews = ActualNumberOfViews(animtype);
 	mFramesPerView = fpv;
 	mFrameIndexes = indexes;
+	mView = view;
 	RebuildThumbnails();
 	UpdateVirtualSize();
 	Refresh();
@@ -565,6 +573,9 @@ void SequenceView::PopupFrameIndexDialog(int selection)
 				(*mFrameIndexes)[selection] = v;
 				RebuildThumbnail(selection);
 				Refresh();
+				if (mView) {
+					static_cast<ShapesDocument*>(mView->GetDocument())->Modify(true);
+				}
 			}
 		}
 	}	

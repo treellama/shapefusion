@@ -29,6 +29,7 @@
 #ifndef WX_PRECOMP
     #include "wx/wx.h"
 #endif
+#include "wx/docview.h"
 #include "ShapesElements.h"
 
 DECLARE_EVENT_TYPE(wxEVT_SEQUENCEVIEW, -1)
@@ -61,6 +62,7 @@ private:
 	void UpdateVirtualSize(void);
 
 	void PopupFrameIndexDialog(int index);
+	wxView* mView;
 
 protected:
 	DECLARE_EVENT_TABLE();
@@ -82,7 +84,7 @@ public:
 	void AddFrame(ShapesFrame *fp);
 	void AddBitmap(ShapesBitmap *bp);
 	void SetColorTable(ShapesColorTable *ct);
-	void SetSeqParameters(int animtype, int fpv, vector<short> *indexes);
+	void SetSeqParameters(int animtype, int fpv, vector<short> *indexes, wxView* view);
 	void Clear(void);
 	// utilities
 	void RebuildThumbnail(unsigned int i);
