@@ -557,26 +557,15 @@ void SequenceView::RebuildThumbnails(void)
 
 void SequenceView::PopupFrameIndexDialog(int selection)
 {
-	wxDialog dialog(GetParent(), -1, wxString(_("Change Frame")));
-	wxBoxSizer* vbox = new wxBoxSizer(wxVERTICAL);
-	wxTextCtrl* text = new wxTextCtrl(&dialog, wxID_ANY);
-	text->ChangeValue(wxString::Format(wxT("%i"), (*mFrameIndexes)[selection]));
-	vbox->Add(text, 0, wxEXPAND | wxALL, 10);
-	vbox->Add(dialog.CreateButtonSizer(wxOK | wxCANCEL), 0, wxEXPAND | wxRIGHT | wxTOP | wxBOTTOM, 10);
-	dialog.SetSizerAndFit(vbox);
-	text->SetSelection(-1, -1);
-	dialog.Centre();
-	if (dialog.ShowModal() == wxID_OK) {
-		long v = 0;
-		if (text->GetValue().ToLong(&v)) {
-			if (v >= -1 && v <= static_cast<int>(mFrames.size()) - 1) {
-				(*mFrameIndexes)[selection] = v;
-				RebuildThumbnail(selection);
-				Refresh();
-				if (mView) {
-					static_cast<ShapesDocument*>(mView->GetDocument())->Modify(true);
-				}
+	long v = 0;
+	if (wxGetTextFromUser(_("Change frame:"), _("Chage frame"), wxString::Format(wxT("%i"), (*mFrameIndexes)[selection]), GetParent()).ToLong(&v)) {
+		if (v >= -1 && v <= static_cast<int>(mFrames.size()) - 1) {
+			(*mFrameIndexes)[selection] = v;
+			RebuildThumbnail(selection);
+			Refresh();
+			if (mView) {
+				static_cast<ShapesDocument*>(mView->GetDocument())->Modify(true);
 			}
 		}
-	}	
+	}
 }
