@@ -322,9 +322,9 @@ bool ShapesDocument::LoadPatch(wxInputStream& stream)
 	BigEndianBuffer buffer(filesize);
 	
 #if wxUSE_STD_IOSTREAM
-	stream.read(buffer.Data(), buffer.Size());
+	stream.read((char *) buffer.Data(), buffer.Size());
 #else
-	stream.Read(buffer.Data(), buffer.Size());
+	stream.Read((char *) buffer.Data(), buffer.Size());
 #endif
 
 	while (buffer.Position() < buffer.Size()) {
