@@ -303,3 +303,42 @@ wxInputStream& ShapesDocument::LoadObject(wxInputStream& stream)
 
 	return stream;
 }
+
+#if wxUSE_STD_IOSTREAM
+bool ShapesDocument::LoadPatch(wxSTD istream& stream)
+#else
+bool ShapesDocument::LoadPatch(wxInputStream& stream)
+#endif
+{
+#if wxUSE_STD_IOSTREAM
+	stream.seekg(0, std::ios::end);
+	wxInt32 filesize = stream.tellg();
+	stream.seekg(0, std::ios::beg);
+#else
+	wxInt32 filesize = stream.GetSize();
+#endif
+
+	// memory is cheap, read the whole thing in
+	BigEndianBuffer buffer(filesize);
+	
+#if wxUSE_STD_IOSTREAM
+	stream.read(buffer.Data(), buffer.Size());
+#else
+	stream.Read(buffer.Data(), buffer.Size());
+#endif
+
+	while (buffer.Position() < buffer.Size()) {
+		long collection = buffer.ReadLong();
+		if (collection < mCollections.size()) {
+			mCollections[collection]->LoadPatch(buffer);
+			if (!mCollections[collection]->IsGood()) {
+				return false;
+			}
+		} else {
+			wxLogError(wxT("Shapes patches cannot add entire collections"));
+			return false;
+		}
+	}
+
+	return true;
+}

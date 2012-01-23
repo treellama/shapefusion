@@ -44,6 +44,7 @@ EVT_MENU(SHAPES_MENU_EXPORTMASKS, ShapesView::MenuShapesExportBitmapMasks)
 EVT_MENU(SHAPES_MENU_ADDFRAME, ShapesView::MenuShapesNewFrame)
 EVT_MENU(SHAPES_MENU_ADDSEQUENCE, ShapesView::MenuShapesNewSequence)
 EVT_MENU(SHAPES_MENU_GENERATEPATCH, ShapesView::MenuShapesGeneratePatch)
+EVT_MENU(SHAPES_MENU_IMPORTPATCH, ShapesView::MenuShapesImportPatch)
 EVT_TREE_SEL_CHANGED(-1, ShapesView::OnTreeSelect)
 // bitmaps
 EVT_COMMAND(BITMAP_BROWSER, wxEVT_BITMAPBROWSER, ShapesView::OnBitmapSelect)
@@ -942,6 +943,49 @@ void ShapesView::MenuShapesGeneratePatch(wxCommandEvent&)
 	}
 #endif
 	document->SavePatch(stream, base);
+}
+
+void ShapesView::MenuShapesImportPatch(wxCommandEvent&)
+{
+	ShapesDocument* document = (ShapesDocument*) GetDocument();
+
+	if (document == NULL) {
+		return;
+	}
+
+	// prompt the user for a patch
+	wxString  path = wxFileSelector(wxT("Choose a patch file"), wxT(""), wxT(""), wxT(""), wxT("Patch files (*.ShPa)|*.ShPa|All files (*.*)|*.*"), wxOPEN);
+
+	if (path.empty()) {
+		return;
+	}
+
+#if wxUSE_STD_IOSTREAM
+	wxSTD ifstream stream(path.mb_str(), wxSTD ios_base::in | wxSTD ios_base::binary);
+#else
+	wxFileInputStream stream(path);
+	if (!stream.IsOk()) {
+		return;
+	}
+#endif
+
+	if (!document->LoadPatch(stream)) {
+		wxMessageBox(wxT("Error loading shapes patch; the patch may be partially applied!"), wxT("Error loading shapes patch"), wxOK | wxICON_ERROR, mFrame);
+	}
+
+	colltree->Unselect();
+	colltree->CollapseAll();
+	mSelectedColl = -1;
+	mSelectedVers = -1;
+	mSelectedSequence = -1;
+	mViewColorTable = -1;
+	mainbox->Show(dummy_sizer, true);
+	mainbox->Show(coll_sizer, false);
+	mainbox->Show(chunk_sizer, false);
+	mainbox->Show(b_outer_sizer, false);
+	mainbox->Show(ct_outer_sizer, false);
+	mainbox->Show(f_outer_sizer, false);
+	mainbox->Show(s_outer_sizer, false);
 }
 
 // user selected a tree entry

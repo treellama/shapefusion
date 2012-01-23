@@ -394,6 +394,7 @@ public:
 	BigEndianBuffer& SaveObject(BigEndianBuffer& stream);
 	BigEndianBuffer& SavePatch(BigEndianBuffer& stream, const ShapesChunk* other);
 	BigEndianBuffer& LoadObject(BigEndianBuffer& stream);
+	BigEndianBuffer& LoadPatch(BigEndianBuffer& buffer);
 };
 
 // a Shapes collection
@@ -446,6 +447,7 @@ public:
 	wxOutputStream& SavePatch(wxOutputStream& stream, const ShapesCollection& other, int index, int depth);
 	wxInputStream& LoadObject(wxInputStream& stream);
 #endif
+	BigEndianBuffer& LoadPatch(BigEndianBuffer& buffer);
 };
 
 #endif

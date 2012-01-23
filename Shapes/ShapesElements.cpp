@@ -1630,6 +1630,130 @@ BigEndianBuffer& ShapesChunk::LoadObject(BigEndianBuffer& buffer)
 	return buffer;
 }
 
+BigEndianBuffer& ShapesChunk::LoadPatch(BigEndianBuffer& buffer)
+{
+	mGoodData = true;
+
+	long tag = buffer.ReadLong();
+	short color_count = 0;
+
+	while (tag != FOUR_CHARS_TO_INT('e','n','d','c')) {
+		switch (tag) {
+		case FOUR_CHARS_TO_INT('c','l','d','f'): {
+			mVersion = buffer.ReadShort();
+			if (mVersion != COLLECTION_VERSION) {
+				wxLogError(wxT("[ShapesChunk] Unknown 'cldf' version %d in patch"), mVersion);
+				mGoodData = false;
+				return buffer;
+			}
+
+			mType = buffer.ReadShort();
+			mFlags = buffer.ReadUShort();
+			color_count = buffer.ReadShort();
+			mColorTables.resize(buffer.ReadShort());
+			buffer.ReadLong(); // color table offset
+			mSequences.resize(buffer.ReadShort());
+			buffer.ReadLong(); // high level shape offset
+			mFrames.resize(buffer.ReadShort());
+			buffer.ReadLong(); // low level shape offset
+			mBitmaps.resize(buffer.ReadShort());
+			buffer.ReadLong(); // bitmap offsets
+			mPixelsToWorld = buffer.ReadShort();
+			buffer.ReadLong(); // size
+			buffer.Position(buffer.Position() + 506);
+			break;
+		}
+		case FOUR_CHARS_TO_INT('c','t','a','b'): {
+			long index = buffer.ReadLong();
+			if (index < mColorTables.size()) {
+				ShapesColorTable* c = new ShapesColorTable(IsVerbose());
+				c->LoadObject(buffer, buffer.Position(), color_count);
+				if (c->IsGood()) {
+					delete mColorTables[index];
+					mColorTables[index] = c;
+				} else {
+					mGoodData = false;
+					return buffer;
+				}
+			} else {
+				wxLogError(wxT("[ShapesChunk] Invliad 'ctab' index"));
+				mGoodData = false;
+				return buffer;
+			}
+			break;
+		}
+		case FOUR_CHARS_TO_INT('h','l','s','h'): {
+			long index = buffer.ReadLong();
+			long chunk_size = buffer.ReadLong();
+			long position = buffer.Position();
+			if (index < mSequences.size()) {
+				ShapesSequence* ss = new ShapesSequence(IsVerbose());
+				ss->LoadObject(buffer, position);
+				buffer.Position(position + chunk_size);
+				if (ss->IsGood()) {
+					delete mSequences[index];
+					mSequences[index] = ss;
+				} else {
+					mGoodData = false;
+					return buffer;
+				}
+			} else {
+				wxLogError(wxT("[ShapesChunk] Invalid 'hlsh' index"));
+				mGoodData = false;
+				return buffer;
+			}
+			break;
+		}
+		case FOUR_CHARS_TO_INT('l','l','s','h'): {
+			long index = buffer.ReadLong();
+			if (index < mFrames.size()) {
+				ShapesFrame* sf = new ShapesFrame(IsVerbose());
+				sf->LoadObject(buffer, buffer.Position());
+				if (sf->IsGood()) {
+					delete mFrames[index];
+					mFrames[index] = sf;
+				} else {
+					mGoodData = false;
+					return buffer;
+				}
+			} else {
+				wxLogError(wxT("[ShapesChunk] Invalid 'llsh' index"));
+				mGoodData = false;
+				return buffer;
+			}
+			break;
+		}
+		case FOUR_CHARS_TO_INT('b','m','a','p'): {
+			long index = buffer.ReadLong();
+			long size = buffer.ReadLong();
+			long position = buffer.Position();
+
+			if (index < mBitmaps.size()) {
+				ShapesBitmap* b = new ShapesBitmap(IsVerbose());
+				b->LoadObject(buffer, position);
+				buffer.Position(position + size);
+				if (b->IsGood()) {
+					delete mBitmaps[index];
+					mBitmaps[index] = b;
+				} else {
+					mGoodData = false;
+					return buffer;
+				}
+			} else {
+				wxLogError(wxT("[ShapesChunk] Invalid 'bmap' index"));
+				mGoodData = false;
+				return buffer;
+			}
+			break;
+		}
+		}
+
+		tag = buffer.ReadLong();
+	}
+
+	return buffer;
+}
+
 ShapesCollection::ShapesCollection(bool verbose): ShapesElement(verbose)
 {
 	mChunks[0] = NULL;
@@ -1924,3 +2048,29 @@ wxInputStream& ShapesCollection::LoadObject(wxInputStream& stream)
 	return stream;
 }
 
+BigEndianBuffer& ShapesCollection::LoadPatch(BigEndianBuffer& buffer)
+{
+	int depth = buffer.ReadLong();
+	ShapesChunk* chunk = 0;
+	if (depth == 8) {
+		if (!mChunks[0]) {
+			mChunks[0] = new ShapesChunk(IsVerbose());
+		}
+		chunk = mChunks[0];
+	} else if (depth == 16) {
+		if (!mChunks[1]) {
+			mChunks[1] = new ShapesChunk(IsVerbose());
+		}
+		chunk = mChunks[1];
+	} else {
+		wxLogError(wxT("[ShapesCollection] Error loading patch chunk; invalid depth"));
+		mGoodData = false;
+		return buffer;
+	}
+
+	chunk->LoadPatch(buffer);
+	if (!chunk->IsGood()) {
+		mGoodData = false;
+	}
+	return buffer;
+}
