@@ -76,10 +76,12 @@ public:
 	wxSTD ostream& SaveObject(wxSTD ostream& stream);
 	wxSTD istream& LoadObject(wxSTD istream& stream);
 	wxSTD ostream& SavePatch(wxSTD ostream& stream, const ShapesDocument& other);
+	bool LoadPatch(wxSTD istream& stream);
 #else
 	wxOutputStream& SaveObject(wxOutputStream& stream);
 	wxInputStream& LoadObject(wxInputStream& stream);
 	wxOutputStream& SavePatch(wxOutputStream& stream, const ShapesDocument& other);
+	bool LoadPatch(wxInputStream& stream);
 #endif
 
     ShapesDocument(void);
