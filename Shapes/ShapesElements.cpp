@@ -20,6 +20,7 @@
 #include "utilities.h"
 #include "../LittleEndianBuffer.h"
 #include <algorithm>
+#include <memory>
 
 // on-file struct sizes
 #define SIZEOF_collection_definition		544
@@ -943,7 +944,11 @@ BigEndianBuffer& ShapesSequence::LoadObject(BigEndianBuffer& buffer, long offset
 	}
 
 	char		name[33];
+#ifdef __WIN32__
 	wxCSConv	seqnameconv(wxFONTENCODING_MACROMAN);
+#else
+	wxCSConv seqnameconv(wxT("macintosh"));
+#endif
 
 	buffer.ReadBlock(33, (unsigned char *)name);
 	name[namelen] = 0;
