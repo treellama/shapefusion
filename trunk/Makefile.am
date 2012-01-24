@@ -2,11 +2,12 @@
 
 SUBDIRS = Physics Shapes Sounds
 
-AUTOMAKE_OPTIONS = 1.5 foreign dist-bzip2 no-dist-gzip
+AUTOMAKE_OPTIONS = 1.5 foreign
 
-EXTRA_DIST = ShapeFusion.xcodeproj/project.pbxproj \
-  COPYING.txt DefaultNames.txt README.txt \
-	ShapeFusion-Info.plist
+EXTRA_DIST = ShapeFusion.xcodeproj/project.pbxproj COPYING.txt	\
+	DefaultNames.txt README.txt ShapeFusion-Info.plist	\
+	Resources/shapefusion.icns Resources/shapefusion.ico	\
+	Resources/shapefusion.rc Resources/shapefusion.svg
 
 if MAKE_WINDOWS
 bin_PROGRAMS = ShapeFusion
@@ -14,8 +15,13 @@ else
 bin_PROGRAMS = shapefusion
 endif
 
-shapefusion_SOURCES = DefaultNames.cpp GenericEndianBuffer.cpp BigEndianBuffer.cpp LittleEndianBuffer.cpp ShapeFusionApp.cpp ShapeFusionDocManager.cpp \
-				ShapeFusionMain.cpp ShapeFusionMenus.cpp
+shapefusion_SOURCES = BigEndianBuffer.h DefaultNames.h			\
+	GenericEndianBuffer.h LittleEndianBuffer.h ShapeFusionApp.h	\
+	ShapeFusionDocManager.h ShapeFusionMain.h ShapeFusionMenus.h	\
+	BigEndianBuffer.cpp DefaultNames.cpp GenericEndianBuffer.cpp	\
+	LittleEndianBuffer.cpp ShapeFusionApp.cpp			\
+	ShapeFusionDocManager.cpp ShapeFusionMain.cpp			\
+	ShapeFusionMenus.cpp
 
 shapefusion_LDADD = \
   Physics/libphysics.a Shapes/libshapes.a Sounds/libsounds.a
