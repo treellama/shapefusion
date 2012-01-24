@@ -894,8 +894,20 @@ unsigned int ShapesSequence::SizeInFile() const
 
 BigEndianBuffer& ShapesSequence::SaveObject(BigEndianBuffer& buffer)
 {
-	wxCSConv	seqnameconv(wxFONTENCODING_MACROMAN);
 	char		name[33] = "";
+
+	// Ugh--wxGTK doesn't recognize wxFONTENCODING_MACROMAN, and
+	// if you try to create a new wsCSConv with it, successive
+	// attempts to create wxT("macintosh") fail. Windows, on the
+	// other hand, doesn't recognize wxT("macintosh"), although if
+	// you ask it if seqnameconv.IsOk() it returns true and only
+	// fails when you try to convert something. So, #ifdef to
+	// success
+#ifdef __WIN32__
+	wxCSConv seqnameconv(wxFONTENCODING_MACROMAN);
+#else
+	wxCSConv seqnameconv(wxT("macintosh"));
+#endif
 
 	buffer.WriteShort(mType);
 	buffer.WriteUShort(mFlags);
@@ -945,7 +957,7 @@ BigEndianBuffer& ShapesSequence::LoadObject(BigEndianBuffer& buffer, long offset
 
 	char		name[33];
 #ifdef __WIN32__
-	wxCSConv	seqnameconv(wxFONTENCODING_MACROMAN);
+	wxCSConv seqnameconv(wxFONTENCODING_MACROMAN);
 #else
 	wxCSConv seqnameconv(wxT("macintosh"));
 #endif
