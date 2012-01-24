@@ -36,6 +36,9 @@ END_EVENT_TABLE()
 const char	arrow_left_bits[] = { 0x08, 0x0c, 0x0e, 0x0f, 0x0e, 0x0c, 0x08 },
 	  		arrow_right_bits[] = { 0x01, 0x03, 0x07, 0x0f, 0x07, 0x03, 0x01 };
 
+const int THUMB_ARROW_MARGIN = 2;
+const int THUMB_ARROW_BUTTON_MARGIN = 2;
+
 SequenceView::SequenceView(wxWindow *parent, wxWindowID id):
 	wxScrolledWindow(parent, id, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER | wxFULL_REPAINT_ON_RESIZE),
 	mColorTable(NULL), mThumbnailSize(64), mMargin(7), mPrevBtnIcon(arrow_left_bits, 4, 7),
@@ -201,21 +204,13 @@ void SequenceView::OnMouseUp(wxMouseEvent& e)
 				}
 				if (touched_thumbnail > -1) {
 					// find wether an arrow was touched
-					int     x = mThumbnailPositions[touched_thumbnail].x,
-							y = mThumbnailPositions[touched_thumbnail].y;
-					wxRect  prev_rect(x + 2, y + mThumbnailSize - mPrevBtnIcon.GetHeight() - 2,
-								mPrevBtnIcon.GetWidth(), mPrevBtnIcon.GetHeight()),
-							next_rect(x + mThumbnailSize - mNextBtnIcon.GetWidth() - 2,
-								y + mThumbnailSize - mNextBtnIcon.GetHeight() - 2,
-								mPrevBtnIcon.GetWidth(), mPrevBtnIcon.GetHeight());
-					
-					if (prev_rect.Contains(mouse)) {
+					if (GetPrevArrowButtonRect(touched_thumbnail).Contains(mouse)) {
 						if ((*mFrameIndexes)[touched_thumbnail] > -1) {
 							(*mFrameIndexes)[touched_thumbnail]--;
 							RebuildThumbnail(touched_thumbnail);
 							Refresh();
 						}
-					} else if (next_rect.Contains(mouse)) {
+					} else if (GetNextArrowButtonRect(touched_thumbnail).Contains(mouse)) {
 						if ((*mFrameIndexes)[touched_thumbnail] < ((int)mFrames.size()-1)) {
 							(*mFrameIndexes)[touched_thumbnail]++;
 							RebuildThumbnail(touched_thumbnail);
@@ -331,7 +326,10 @@ void SequenceView::OnMouseDoubleClick(wxMouseEvent& e)
 		}
 		
 		if (selection != -1) {
-			PopupFrameIndexDialog(selection);
+			if (!GetPrevArrowButtonRect(selection).Contains(mouse) &&
+			    !GetNextArrowButtonRect(selection).Contains(mouse)) {	
+				PopupFrameIndexDialog(selection);
+			}
 		}
 	}
 	break;
@@ -568,4 +566,36 @@ void SequenceView::PopupFrameIndexDialog(int selection)
 			}
 		}
 	}
+}
+
+wxRect SequenceView::GetNextArrowButtonRect(int thumbnail_index) const
+{
+	int thumb_x = mThumbnailPositions[thumbnail_index].x;
+	int thumb_y = mThumbnailPositions[thumbnail_index].y;
+
+	int x = thumb_x + mThumbnailSize - mNextBtnIcon.GetWidth() - THUMB_ARROW_MARGIN;
+	int y = thumb_y + mThumbnailSize - mNextBtnIcon.GetHeight() - THUMB_ARROW_MARGIN;
+	int w = mPrevBtnIcon.GetWidth();
+	int h = mPrevBtnIcon.GetHeight();
+
+	return wxRect(x - THUMB_ARROW_BUTTON_MARGIN,
+		      y - THUMB_ARROW_BUTTON_MARGIN,
+		      w + 2 * THUMB_ARROW_BUTTON_MARGIN,
+		      h + 2 * THUMB_ARROW_BUTTON_MARGIN);
+}
+
+wxRect SequenceView::GetPrevArrowButtonRect(int thumbnail_index) const
+{
+	int thumb_x = mThumbnailPositions[thumbnail_index].x;
+	int thumb_y = mThumbnailPositions[thumbnail_index].y;
+
+	int x = thumb_x + THUMB_ARROW_MARGIN;
+	int y = thumb_y + mThumbnailSize - mNextBtnIcon.GetHeight() - THUMB_ARROW_MARGIN;
+	int w = mPrevBtnIcon.GetWidth();
+	int h = mPrevBtnIcon.GetHeight();
+
+	return wxRect(x - THUMB_ARROW_BUTTON_MARGIN, 
+		      y - THUMB_ARROW_BUTTON_MARGIN,
+		      w + 2 * THUMB_ARROW_BUTTON_MARGIN,
+		      h + 2 * THUMB_ARROW_BUTTON_MARGIN);
 }

@@ -64,6 +64,9 @@ private:
 	void PopupFrameIndexDialog(int index);
 	wxView* mView;
 
+	wxRect GetNextArrowButtonRect(int thumbnail_index) const;
+	wxRect GetPrevArrowButtonRect(int thumbnail_index) const;
+
 protected:
 	DECLARE_EVENT_TABLE();
 
