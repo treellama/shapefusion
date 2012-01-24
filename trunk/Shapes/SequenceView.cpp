@@ -209,12 +209,18 @@ void SequenceView::OnMouseUp(wxMouseEvent& e)
 							(*mFrameIndexes)[touched_thumbnail]--;
 							RebuildThumbnail(touched_thumbnail);
 							Refresh();
+							if (mView) {
+								static_cast<ShapesDocument*>(mView->GetDocument())->Modify(true);
+							}
 						}
 					} else if (GetNextArrowButtonRect(touched_thumbnail).Contains(mouse)) {
 						if ((*mFrameIndexes)[touched_thumbnail] < ((int)mFrames.size()-1)) {
 							(*mFrameIndexes)[touched_thumbnail]++;
 							RebuildThumbnail(touched_thumbnail);
 							Refresh();
+							if (mView) {
+								static_cast<ShapesDocument*>(mView->GetDocument())->Modify(true);
+							}
 						}
 					}
 				}
