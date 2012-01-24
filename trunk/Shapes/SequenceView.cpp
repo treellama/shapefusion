@@ -16,6 +16,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */ 
 #include "wx/image.h"
+#include "wx/dcbuffer.h"
 #include "SequenceView.h"
 #include "ShapesDocument.h"
 #include "utilities.h"
@@ -44,6 +45,7 @@ SequenceView::SequenceView(wxWindow *parent, wxWindowID id):
 	mColorTable(NULL), mThumbnailSize(64), mMargin(7), mPrevBtnIcon(arrow_left_bits, 4, 7),
 	mNextBtnIcon(arrow_right_bits, 4, 7), mAutoSize(false), mSelection(-1), mFrameIndexes(NULL), mView(0)
 {
+	SetBackgroundStyle(wxBG_STYLE_CUSTOM);
 	SetBackgroundColour(wxColour(255, 255, 255));
 	mThumbnailPen.SetColour(200, 200, 200);
 	mSelectionPen.SetColour(0, 0, 0);
@@ -59,7 +61,7 @@ SequenceView::SequenceView(wxWindow *parent, wxWindowID id):
 
 void SequenceView::OnPaint(wxPaintEvent& e)
 {
-	wxPaintDC   tempdc(this);
+	wxAutoBufferedPaintDC   tempdc(this);
 	wxPoint		mouse;
 	int			cw, ch, rx, ry;
 
@@ -67,6 +69,7 @@ void SequenceView::OnPaint(wxPaintEvent& e)
 		return;
 
 	DoPrepareDC(tempdc);
+	tempdc.Clear();
 	GetClientSize(&cw, &ch);
 	CalcUnscrolledPosition(0, 0, &rx, &ry);
 	// get mouse position in scrolled coords
