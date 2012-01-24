@@ -321,7 +321,10 @@ void SequenceView::OnKeyDown(wxKeyEvent &e)
 void SequenceView::OnMouseDoubleClick(wxMouseEvent& e)
 {
 	wxClientDC dc(this);
-	wxPoint mouse = e.GetLogicalPosition(dc);
+	wxPoint mouse;
+
+	DoPrepareDC(dc);
+	mouse = e.GetLogicalPosition(dc);
 	switch (e.GetButton()) {
 	case wxMOUSE_BTN_LEFT: 
 	{
