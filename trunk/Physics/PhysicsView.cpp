@@ -1309,7 +1309,7 @@ void PhysicsView::CreateWeapons()
 		right_grid_sizer->Add(trigger_charging_fields[i], 0, wxALIGN_CENTER_VERTICAL);		
 
 		right_grid_sizer->Add(new wxStaticText(main_panel, wxID_ANY, _("Recoil Magnitude:")), 0, wxALIGN_CENTER_VERTICAL);
-		trigger_recoil_fields[i] = new wxTextCtrl(main_panel, FIELD_TRIGGER_RECOVERY + id_offset);
+		trigger_recoil_fields[i] = new wxTextCtrl(main_panel, FIELD_TRIGGER_RECOIL + id_offset);
 		right_grid_sizer->Add(trigger_recoil_fields[i], 0, wxALIGN_CENTER_VERTICAL);		
 
 		right_grid_sizer->Add(new wxStaticText(main_panel, wxID_ANY, _("Theta Error:")), 0, wxALIGN_CENTER_VERTICAL);
