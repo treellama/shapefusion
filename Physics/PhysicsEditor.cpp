@@ -710,7 +710,7 @@ void PhysicsView::EditAlienFields(wxCommandEvent& e)
 				attack->SetRepetitions(v);
 				break;
 			case FIELD_ALIEN_ATTACK_ERROR:
-				attack->SetError(v * 512.0 / 360.0);
+				attack->SetError(v / 512.0 * 360.0);
 				break;
 			case FIELD_ALIEN_ATTACK_RANGE:
 				attack->SetRange(v);
