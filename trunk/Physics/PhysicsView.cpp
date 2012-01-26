@@ -176,7 +176,7 @@ void PhysicsView::CreateAliens()
 
 	attack_frequency_sizer->Add(new wxStaticText(main_panel, wxID_ANY, _("Attack Frequency:")), 1, wxALIGN_CENTER_VERTICAL);
 	attack_frequency_sizer->AddSpacer(10);
-	alien_attack_frequency_field = new wxTextCtrl(main_panel, wxID_ANY);
+	alien_attack_frequency_field = new wxTextCtrl(main_panel, FIELD_ALIEN_ATTACK_FREQUENCY);
 	attack_frequency_sizer->Add(alien_attack_frequency_field, 0, wxALIGN_CENTER_VERTICAL);
 
 	combat_grid_sizer->Add(attack_frequency_sizer);
