@@ -598,6 +598,8 @@ void PhysicsView::EditAlienCheckboxes(wxCommandEvent& e)
 		monster->SetFriend(id - CB_ALIEN_FRIENDS, e.IsChecked());
 	} else if (id >= CB_ALIEN_ENEMIES && id < CB_ALIEN_FLAGS) {
 		monster->SetEnemy(id - CB_ALIEN_ENEMIES, e.IsChecked());
+	} else if (id >= CB_ALIEN_FLAGS && id < CB_ALIEN_IMMUNITIES) {
+		monster->SetFlag(id - CB_ALIEN_FLAGS + 1, e.IsChecked());
 	} else if (id >= CB_ALIEN_IMMUNITIES && id < CB_ALIEN_WEAKNESSES) {
 		monster->SetImmunity(id - CB_ALIEN_IMMUNITIES, e.IsChecked());
 	} else if (id >= CB_ALIEN_WEAKNESSES && id <= CB_ALIEN_WEAKNESSES + 24) {
