@@ -488,7 +488,7 @@ BigEndianBuffer& WeaponDefinition::LoadObject(BigEndianBuffer& buffer)
 	mHorizontalAmplitude = buffer.ReadFixed();
 
 	mCollection = buffer.ReadUShort();
-	mColorTable = (mColorTable >> 5) & 0x7;
+	mColorTable = (mCollection >> 5) & 0x7;
 	mCollection &= 0x1f;
 	
 	mIdleShape = buffer.ReadShort();
