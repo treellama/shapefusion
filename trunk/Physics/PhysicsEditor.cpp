@@ -777,6 +777,8 @@ void PhysicsView::EditAlienFields(wxCommandEvent& e)
 				break;		
 		}
 	}
+
+	static_cast<PhysicsDocument*>(GetDocument())->Modify(true);
 }
 
 void PhysicsView::EditAlienMenus(wxCommandEvent& e)
