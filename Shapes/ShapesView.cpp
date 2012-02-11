@@ -1465,6 +1465,9 @@ void ShapesView::DoPasteChunk(unsigned int coll, unsigned int chunk)
 		mSelectedColl = -1;
 		mSelectedVers = -1;
 		mSelectedSequence = -1;
+
+		colltree->DeleteAllItems();
+		OnUpdate(0, 0);
 	}
 }
 	
