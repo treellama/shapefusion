@@ -466,6 +466,9 @@ void PhysicsView::OnTreeSelect(wxTreeEvent& e)
 		}
 
 		mainbox->Layout();
+
+		// without this, Mac OS X leaves artifacts in the window
+		m_viewFrame->Refresh();
 	}
 }
 
