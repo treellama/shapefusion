@@ -1239,8 +1239,8 @@ void PhysicsView::CreateWeapons()
 		trigger_projectile_choices[i] = new wxChoice(main_panel, MENU_TRIGGER_PROJECTILE + id_offset, wxDefaultPosition, choiceSize, shot_strings.size(), &shot_strings[0]);
 		left_grid_sizer->Add(trigger_projectile_choices[i]);
 
-		left_grid_sizer->AddSpacer(10);
-		left_grid_sizer->AddSpacer(10);
+		left_grid_sizer->AddSpacer(5);
+		left_grid_sizer->AddSpacer(5);
 
 		left_grid_sizer->Add(new wxStaticText(main_panel, wxID_ANY, _("Rounds/magazine:")), 0, wxALIGN_CENTER_VERTICAL);
 		trigger_rounds_fields[i] = new wxTextCtrl(main_panel, FIELD_TRIGGER_ROUNDS + id_offset);
@@ -1293,8 +1293,8 @@ void PhysicsView::CreateWeapons()
 		trigger_ammo_type_choices[i] = new wxChoice(main_panel, MENU_TRIGGER_AMMO_TYPE + id_offset, wxDefaultPosition, choiceSize, item_strings.size(), &item_strings[0]);
 		right_grid_sizer->Add(trigger_ammo_type_choices[i]);
 
-		right_grid_sizer->AddSpacer(10);
-		right_grid_sizer->AddSpacer(10);
+		right_grid_sizer->AddSpacer(5);
+		right_grid_sizer->AddSpacer(5);
 
 		right_grid_sizer->Add(new wxStaticText(main_panel, wxID_ANY, _("Ticks/round:")), 0, wxALIGN_CENTER_VERTICAL);
 		trigger_ticks_fields[i] = new wxTextCtrl(main_panel, FIELD_TRIGGER_TICKS + id_offset);
@@ -1368,16 +1368,16 @@ bool PhysicsView::OnCreate(wxDocument* doc, long flags)
 	mainbox = new wxBoxSizer(wxHORIZONTAL);
 	main_panel = new wxPanel(mFrame);
 	main_panel->Show();
-	tree = new wxTreeCtrl(main_panel, -1, wxDefaultPosition, wxDefaultSize, wxTR_DEFAULT_STYLE | wxTR_HIDE_ROOT);
+	tree = new wxTreeCtrl(main_panel, -1, wxDefaultPosition, wxSize(300,-1), wxTR_DEFAULT_STYLE | wxTR_HIDE_ROOT);
 	tree->DeleteAllItems();
 	wxTreeItemId treeroot = tree->AddRoot(doc->GetFilename());
-	mainbox->Add(tree, 2, wxEXPAND);
+	mainbox->Add(tree, 0, wxEXPAND);
 
 	// empty space
 	dummy_sizer = new wxBoxSizer(wxVERTICAL);
 	wxPanel* dummy_panel = new wxPanel(main_panel);
 	dummy_sizer->Add(dummy_panel, 1, wxEXPAND);
-	mainbox->Add(dummy_sizer, 5);
+	mainbox->Add(dummy_sizer, 5, 0);
 
 	CreateAliens();
 	CreateEffects();
@@ -1385,18 +1385,46 @@ bool PhysicsView::OnCreate(wxDocument* doc, long flags)
 	CreateShots();
 	CreateWeapons();
 
-	mainbox->Show(dummy_sizer, false);
-	mainbox->Show(weapons_triggers_sizer, true);
+	int w = 0;
+	int h = 0;
+	wxSizer* sizers[] = { aliens_appearance_sizer,
+			      aliens_behavior_sizer,
+			      aliens_combat_sizer,
+			      aliens_constants_sizer,
+			      aliens_immunities_sizer,
+			      dummy_sizer,
+			      effects_sizer,
+			      shots_sizer,
+			      physics_sizer,
+			      weapons_definitions_sizer,
+			      weapons_triggers_sizer
+	};
 
-	mainbox->Layout();
-	main_panel->SetSizer(mainbox);
-	mainbox->SetSizeHints(mFrame);
-	mainbox->Fit(mFrame);
+	for (int i = 0; i < 11; ++i)
+	{
+		mainbox->Show(sizers[i], false);
+	}
+	
+	for (int i = 0; i < 11; ++i)
+	{
+		mainbox->Show(sizers[i], true);
+		mainbox->Layout();
+		wxSize size = mainbox->GetMinSize();
 
-	menubar = mFrame->GetMenuBar();
+		if (size.GetWidth() > w) w = size.GetWidth();
+		if (size.GetHeight() > h) h = size.GetHeight();
+
+		mainbox->Show(sizers[i], false);
+	}
+
+	mainbox->SetMinSize(w, h);
 
 	mainbox->Show(dummy_sizer, true);
-	mainbox->Show(weapons_triggers_sizer, false);
+
+	main_panel->SetSizer(mainbox);
+	mainbox->SetSizeHints(mFrame);
+
+	menubar = mFrame->GetMenuBar();
 
 	// because we changed size
 	mFrame->Centre(wxBOTH);
