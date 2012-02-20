@@ -10,7 +10,7 @@ FILETYPE 1
   BLOCK "040904E4"
   {
    VALUE "AppName", "ShapeFusion"
-   VALUE "FileVersion", "0.5"
+   VALUE "FileVersion", "0.6b1"
    VALUE "FileDescription", "ShapeFusion for Win32"
    VALUE "LegalCopyright", "GNU General Public License"
    VALUE "License", "GNU General Public License (For details, see the file COPYING)"
