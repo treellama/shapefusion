@@ -163,7 +163,7 @@ void PhysicsView::CreateAliens()
 
 	aliens_appearance_sizer->Add(sounds_sizer);
 	
-	mainbox->Add(aliens_appearance_sizer, 5, wxALL, 10);
+	mainbox->Add(aliens_appearance_sizer, 1, wxALL, 10);
 	mainbox->Show(aliens_appearance_sizer, false);
 
 	aliens_combat_sizer = new wxBoxSizer(wxHORIZONTAL);
@@ -300,7 +300,7 @@ void PhysicsView::CreateAliens()
 
 	aliens_combat_sizer->Add(combat_grid_sizer);
 
-	mainbox->Add(aliens_combat_sizer, 5, wxALL, 10);
+	mainbox->Add(aliens_combat_sizer, 1, wxALL, 10);
 	mainbox->Show(aliens_combat_sizer, false);
 
 	aliens_constants_sizer = new wxBoxSizer(wxVERTICAL);
@@ -425,7 +425,7 @@ void PhysicsView::CreateAliens()
 
 	aliens_constants_sizer->Add(carrying_grid_sizer);
 	
-	mainbox->Add(aliens_constants_sizer, 5, wxALL, 10);
+	mainbox->Add(aliens_constants_sizer, 1, wxALL, 10);
 	mainbox->Show(aliens_constants_sizer, false);
 
 	aliens_behavior_sizer = new wxBoxSizer(wxVERTICAL);
@@ -539,7 +539,7 @@ void PhysicsView::CreateAliens()
 	aliens_behavior_sizer->AddSpacer(10);
 	aliens_behavior_sizer->Add(flags_sizer, 0, wxEXPAND);
 	
-	mainbox->Add(aliens_behavior_sizer, 5, wxALL, 10);
+	mainbox->Add(aliens_behavior_sizer, 1, wxALL, 10);
 	mainbox->Show(aliens_behavior_sizer, false);
 
 	aliens_immunities_sizer = new wxBoxSizer(wxVERTICAL);
@@ -581,7 +581,7 @@ void PhysicsView::CreateAliens()
 	aliens_immunities_sizer->AddSpacer(10);
 	aliens_immunities_sizer->Add(weaknesses_sizer, 0, wxEXPAND);
 
-	mainbox->Add(aliens_immunities_sizer, 5, wxALL, 10);
+	mainbox->Add(aliens_immunities_sizer, 1, wxALL, 10);
 	mainbox->Show(aliens_immunities_sizer, false);
 }
 
@@ -651,7 +651,7 @@ void PhysicsView::CreateEffects()
 	
 	effects_sizer->Add(effects_static_sizer);
 	
-	mainbox->Add(effects_sizer, 5, wxALL, 10);
+	mainbox->Add(effects_sizer, 1, wxALL, 10);
 	mainbox->Show(effects_sizer, false);
 }
 
@@ -823,7 +823,7 @@ void PhysicsView::CreatePhysicsConstants()
 	camera_sizer->AddStretchSpacer();
 	physics_sizer->Add(camera_sizer, 0);	
 
-	mainbox->Add(physics_sizer, 5, wxALL, 10);
+	mainbox->Add(physics_sizer, 1, wxALL, 10);
 	mainbox->Show(physics_sizer, false);
 }
 
@@ -1025,7 +1025,7 @@ void PhysicsView::CreateShots()
 
 	shots_sizer->Add(shots_static_sizer);
 
-	mainbox->Add(shots_sizer, 5, wxALL, 10);
+	mainbox->Add(shots_sizer, 1, wxALL, 10);
 	mainbox->Show(shots_sizer, false);
 }
 
@@ -1209,7 +1209,7 @@ void PhysicsView::CreateWeapons()
 	weapons_definitions_sizer->AddSpacer(10);
 	weapons_definitions_sizer->Add(column_2_sizer);
 
-	mainbox->Add(weapons_definitions_sizer, 5, wxALL, 10);
+	mainbox->Add(weapons_definitions_sizer, 1, wxALL, 10);
 	mainbox->Show(weapons_definitions_sizer, false);
 
 	weapons_triggers_sizer = new wxBoxSizer(wxVERTICAL);
@@ -1354,7 +1354,7 @@ void PhysicsView::CreateWeapons()
 		weapons_triggers_sizer->Add(static_box_sizer);
 	}
 
-	mainbox->Add(weapons_triggers_sizer, 5, wxALL, 10);
+	mainbox->Add(weapons_triggers_sizer, 1, wxALL, 10);
 	mainbox->Show(weapons_triggers_sizer, false);
 }
 
@@ -1377,7 +1377,7 @@ bool PhysicsView::OnCreate(wxDocument* doc, long flags)
 	dummy_sizer = new wxBoxSizer(wxVERTICAL);
 	wxPanel* dummy_panel = new wxPanel(main_panel);
 	dummy_sizer->Add(dummy_panel, 1, wxEXPAND);
-	mainbox->Add(dummy_sizer, 5, 0);
+	mainbox->Add(dummy_sizer, 1, 0);
 
 	CreateAliens();
 	CreateEffects();
