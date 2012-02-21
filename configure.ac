@@ -1,7 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
 dnl Written in 2000 by Christian Bauer <Christian.Bauer@uni-mainz.de>
 
-AC_INIT([ShapeFusion], [0.5], [http://sourceforge.net/bugs/?group_id=1997], [ShapeFusion])
+AC_INIT([ShapeFusion], [0.6], [http://sourceforge.net/bugs/?group_id=1997], [shapefusion])
 AC_PREREQ(2.52)
 
 dnl Detect the canonical host and target build environment.

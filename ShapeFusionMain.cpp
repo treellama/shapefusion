@@ -38,8 +38,8 @@ wxDocParentFrame(manager, frame, id, title, pos, size, type)
 void ShapeFusionMain::OnAbout(wxCommandEvent& WXUNUSED(event))
 {
 	 wxMessageDialog *dlg = new wxMessageDialog(this,
-								wxT("ShapeFusion 0.5\nhttp://shapefusion.sourceforge.net\n\nCopyright 2000-2008, Tito Dal Canton\n\n"
-									"An editor for Marathon II, Marathon Infinity and AlephOne shapes and sounds files. "
+								wxT("ShapeFusion 0.6\nhttp://shapefusion.sourceforge.net\n\nCopyright 2000-2012, Tito Dal Canton\n\n"
+									"An editor for Marathon 2, Marathon Infinity and Aleph One shapes and sounds files. "
 									"Released under the terms of the GNU General Public License: for more information "
 									"see the COPYING file that comes with ShapeFusion."),
 								wxT("About ShapeFusion"), wxOK | wxICON_INFORMATION);

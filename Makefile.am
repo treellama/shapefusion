@@ -7,7 +7,7 @@ AUTOMAKE_OPTIONS = 1.5 foreign
 EXTRA_DIST = ShapeFusion.xcodeproj/project.pbxproj COPYING.txt	\
 	DefaultNames.txt README.txt ShapeFusion-Info.plist	\
 	Resources/shapefusion.icns Resources/shapefusion.ico	\
-	Resources/shapefusion.rc Resources/shapefusion.svg
+	Resources/shapefusion.rc Resources/shapefusion.png
 
 if MAKE_WINDOWS
 bin_PROGRAMS = ShapeFusion
