@@ -202,13 +202,40 @@ public:
 	void SetSoundCode(short s) {mSoundCode = s;}
 	void SetBehaviorIndex(int i) {mBehaviorIndex = i;}
 	
-	void SetNotRestartable(bool f) {mFlags |= _sound_cannot_be_restarted;}
-	void SetNotSelfAbortable(bool f) {mFlags |= _sound_does_not_self_abort;}
-	void SetPitchChangeResistant(bool b) {mFlags |= _sound_resists_pitch_changes;}
-	void SetNotPitchChangeable(bool b) {mFlags |= _sound_cannot_change_pitch;}
-	void SetNotObstructed(bool b) {mFlags |= _sound_cannot_be_obstructed;}
-	void SetNotMediaObstructed(bool b) {mFlags |= _sound_cannot_be_media_obstructed;}
-	void SetAmbient(bool b) {mFlags |= _sound_is_ambient;}
+	void SetNotRestartable(bool f) {
+		if (f) mFlags |= _sound_cannot_be_restarted;
+		else mFlags &= ~_sound_cannot_be_restarted;
+	}
+
+	void SetNotSelfAbortable(bool f) {
+		if (f) mFlags |= _sound_does_not_self_abort;
+		else mFlags &= ~_sound_does_not_self_abort;
+	}
+
+	void SetPitchChangeResistant(bool b) {
+		if (b) mFlags |= _sound_resists_pitch_changes;
+		else mFlags &= ~_sound_resists_pitch_changes;
+	}
+
+	void SetNotPitchChangeable(bool b) {
+		if (b) mFlags |= _sound_cannot_change_pitch;
+		else mFlags &= ~_sound_cannot_change_pitch;
+	}
+
+	void SetNotObstructed(bool b) {
+		if (b) mFlags |= _sound_cannot_be_obstructed;
+		else mFlags &= ~_sound_cannot_be_obstructed;
+	}
+
+	void SetNotMediaObstructed(bool b) {
+		if (b) mFlags |= _sound_cannot_be_media_obstructed;
+		else mFlags &= ~_sound_cannot_be_media_obstructed;
+	}
+
+	void SetAmbient(bool b) {
+		if (b) mFlags |= _sound_is_ambient;
+		else mFlags &= ~_sound_is_ambient;
+	}
 	
 	void SetChance(short i);
 	
