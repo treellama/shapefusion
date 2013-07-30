@@ -327,6 +327,8 @@ bool ShapesDocument::LoadPatch(wxInputStream& stream)
 	stream.Read((char *) buffer.Data(), buffer.Size());
 #endif
 
+	Modify(true);
+
 	while (buffer.Position() < buffer.Size()) {
 		long collection = buffer.ReadLong();
 		if (collection < mCollections.size()) {
