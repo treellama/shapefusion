@@ -2069,15 +2069,10 @@ BigEndianBuffer& ShapesCollection::LoadPatch(BigEndianBuffer& buffer)
 {
 	int depth = buffer.ReadLong();
 	ShapesChunk* chunk = 0;
+
 	if (depth == 8) {
-		if (!mChunks[0]) {
-			mChunks[0] = new ShapesChunk(IsVerbose());
-		}
 		chunk = mChunks[0];
 	} else if (depth == 16) {
-		if (!mChunks[1]) {
-			mChunks[1] = new ShapesChunk(IsVerbose());
-		}
 		chunk = mChunks[1];
 	} else {
 		wxLogError(wxT("[ShapesCollection] Error loading patch chunk; invalid depth"));
@@ -2085,9 +2080,27 @@ BigEndianBuffer& ShapesCollection::LoadPatch(BigEndianBuffer& buffer)
 		return buffer;
 	}
 
+	std::auto_ptr<ShapesChunk> temp;
+	if (!chunk) {
+		temp.reset(new ShapesChunk(IsVerbose()));
+		chunk = temp.get();
+	}
+
+	unsigned int position = buffer.Position();
 	chunk->LoadPatch(buffer);
-	if (!chunk->IsGood()) {
+	if (chunk->IsGood()) {
+		if (buffer.Position() > position + 4) { // 'endc'
+			if (depth == 8) {
+				mChunks[0] = chunk;
+				temp.release();
+			} else {
+				mChunks[1] = chunk;
+				temp.release();
+			}
+		}
+	} else {
 		mGoodData = false;
 	}
+
 	return buffer;
 }
