@@ -681,7 +681,7 @@ void ShapesBitmap::FromImage(wxImage image, ShapesColorTable* colortable)
 {
 	mWidth = image.GetWidth();
 	mHeight = image.GetHeight();
-	mBytesPerRow = image.GetWidth();
+	mBytesPerRow = image.GetHeight();
 	mBitDepth = 8;
 	mColumnOrder = true;
 	mTransparent = false;
