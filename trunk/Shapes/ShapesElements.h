@@ -120,7 +120,7 @@ class ShapesBitmap: public ShapesElement
 {
 private:
 	short			mWidth, mHeight,
-					mBytesPerRow,	// width for uncompressed bitmaps, -1 for compressed ones
+					mBytesPerRow,	// width or height for uncompressed bitmaps, -1 for compressed ones
 					mBitDepth;		// 8
 	bool			mColumnOrder,	// store in column-order format
 					mTransparent;
@@ -151,7 +151,7 @@ public:
 	void SetHeight(short h) { mHeight = h; }
 	void SetBytesPerRow(short b) { mBytesPerRow = b; }
 	void SetBitDepth(short b) { mBitDepth = b; }
-	void SetColumnOrdered(bool b) { mColumnOrder = b; }
+	void SetColumnOrdered(bool b) { mColumnOrder = b; if (mBytesPerRow > -1) mBytesPerRow = b ? mHeight : mWidth; }
 	void SetTransparent(bool n) { mTransparent = n; }
 	// utilities
 	void ClipboardCopy(ShapesColorTable* colorTable) const;
