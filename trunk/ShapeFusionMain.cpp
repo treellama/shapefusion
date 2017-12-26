@@ -47,7 +47,7 @@ void ShapeFusionMain::OnAbout(wxCommandEvent& WXUNUSED(event))
 	 dlg->Destroy();
 }
 
-void ShapeFusionMain::OnMenuHistory(wxCommandEvent& event)
+void ShapeFusionMain::OnMRUFile(wxCommandEvent& event)
 {
 	wxString f(m_docManager->GetHistoryFile(event.GetId() - FILE_HISTORY_FILE1));
 	if (!f.empty())
