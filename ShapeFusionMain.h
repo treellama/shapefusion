@@ -30,7 +30,7 @@ public:
 	ShapeFusionMain(wxDocManager *manager, wxFrame *frame, wxWindowID id, const wxString& title,
 					const wxPoint& pos, const wxSize& size, const long type);
 	void OnAbout(wxCommandEvent& event);
-	void OnMenuHistory(wxCommandEvent& event);
+	void OnMRUFile(wxCommandEvent& event);
 	
 	DECLARE_EVENT_TABLE()
 };
