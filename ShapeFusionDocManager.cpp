@@ -42,9 +42,9 @@ wxDocTemplate* ShapeFusionDocManager::FindTemplateForPath(const wxString& path)
 	wxString ext = filename.GetExt();
 	
 	if (ext == _("sndA") || ext == _("snd2")) {
-		return FindTemplate(GetTemplates(), _("Sounds"));
+		return ::FindTemplate(GetTemplates(), _("Sounds"));
 	} else if (ext == _("shpA") || ext == _("shp2")) {
-		return FindTemplate(GetTemplates(), _("Shapes"));
+		return ::FindTemplate(GetTemplates(), _("Shapes"));
 	}
 
 	wxFileInputStream stream(path);
@@ -65,7 +65,7 @@ wxDocTemplate* ShapeFusionDocManager::FindTemplateForPath(const wxString& path)
 		unsigned long version = buffer.ReadULong();
 		if ((version == 0 || version == 1) 
 		    && strncmp(reinterpret_cast<const char*>(&header[4]), "snd2", 4) == 0) {
-			return FindTemplate(GetTemplates(), _("Sounds"));
+			return ::FindTemplate(GetTemplates(), _("Sounds"));
 		}
 	}
 
@@ -96,7 +96,7 @@ wxDocTemplate* ShapeFusionDocManager::FindTemplateForPath(const wxString& path)
 		}
 
 		if (is_shapes) {
-			return FindTemplate(GetTemplates(), _("Shapes"));
+			return ::FindTemplate(GetTemplates(), _("Shapes"));
 		}
 	}
 
@@ -118,7 +118,7 @@ wxDocTemplate* ShapeFusionDocManager::FindTemplateForPath(const wxString& path)
 			unsigned char tag[4];
 			stream.Read(tag, 4);
 			if (strncmp(reinterpret_cast<const char*>(tag), "MNpx", 4) == 0) {
-				return FindTemplate(GetTemplates(), _("Physics"));
+				return ::FindTemplate(GetTemplates(), _("Physics"));
 			}
 		}
 	}

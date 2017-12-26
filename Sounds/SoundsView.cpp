@@ -126,10 +126,10 @@ bool SoundsView::OnCreate(wxDocument *doc, long WXUNUSED(flags))
 	
 	frame_sizer = new wxBoxSizer(wxHORIZONTAL);
 	sound_class_sizer = new wxBoxSizer(wxVERTICAL);
-	sound_class_header_sizer = new wxFlexGridSizer(2, 2);
+	sound_class_header_sizer = new wxFlexGridSizer(2, 2, 0, 0);
 	sound_editor_sizer = new wxBoxSizer(wxVERTICAL);
 	sound_flags_sizer = new wxStaticBoxSizer(wxVERTICAL, main_panel, wxT("Flags"));
-	sound_menus_sizer = new wxFlexGridSizer(2, 3);
+	sound_menus_sizer = new wxFlexGridSizer(2, 3, 0, 0);
 	sound_permutation_sizer = new wxBoxSizer(wxHORIZONTAL);
 	sound_eight_bit_sizer = new wxBoxSizer(wxVERTICAL);
 	sound_sixteen_bit_sizer = new wxBoxSizer(wxVERTICAL);
@@ -513,7 +513,7 @@ void SoundsView::MenuImportSound(wxCommandEvent &e)
 		return;
 	}
 	
-	wxFileDialog dlg(frame, wxT("Choose a sound file to add"), wxT(""), wxT(""), wxT("Common sound files (AIFF, WAV)|*.aif;*.wav"), wxOPEN);
+	wxFileDialog dlg(frame, wxT("Choose a sound file to add"), wxT(""), wxT(""), wxT("Common sound files (AIFF, WAV)|*.aif;*.wav"), wxFD_OPEN);
 	if (dlg.ShowModal() == wxID_OK) {
 		if (definition->NewPermutation(dlg.GetPath()) == NULL) {
 			wxMessageDialog msg(frame, wxT("Error importing sound"), wxT("Error"), wxOK | wxICON_EXCLAMATION);
@@ -535,7 +535,7 @@ void SoundsView::MenuExportSound(wxCommandEvent &e)
 		return;
 	}
 	
-	wxFileDialog dlg(frame, wxT("Choose a file name :"), wxT(""), wxString::Format(wxT("Sound %d-%d.wav"), mSoundClass, mSoundPermutation), wxT("WAV files (*.wav)|*.wav|AIFF files (*.aif)|*.aif"), wxSAVE | wxOVERWRITE_PROMPT);
+	wxFileDialog dlg(frame, wxT("Choose a file name :"), wxT(""), wxString::Format(wxT("Sound %d-%d.wav"), mSoundClass, mSoundPermutation), wxT("WAV files (*.wav)|*.wav|AIFF files (*.aif)|*.aif"), wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 
 	if (dlg.ShowModal() == wxID_OK) {
 		SoundsDefinition	*def = payload->GetSoundDefinition(mSoundSource, mSoundClass);
