@@ -140,7 +140,7 @@ bool ShapesView::OnCreate(wxDocument *doc, long WXUNUSED(flags))
 	chunk_inner_box = new wxStaticBoxSizer(chunk_static_box, wxVERTICAL);
 	chunk_undef_label = new wxStaticText(main_panel, -1, wxT("Not defined"));
 	chunk_inner_box->Add(chunk_undef_label, 0, wxCENTER | wxALL, 5);
-	chunk_grid = new wxFlexGridSizer(2, 4);
+	chunk_grid = new wxFlexGridSizer(2, 4, 0, 0);
 	chunk_inner_box->Add(chunk_grid, 0, wxCENTER | wxALL, 5);
 	chunk_version_label = new wxStaticText(main_panel, -1, wxT("Version:"));
 	chunk_type_label = new wxStaticText(main_panel, -1, wxT("Collection type:"));
@@ -621,7 +621,7 @@ void ShapesView::MenuViewTNSize(wxCommandEvent &e)
 void ShapesView::MenuShapesAddColorTable(wxCommandEvent &e)
 {
 	wxFileDialog	*dlg = new wxFileDialog(mFrame, wxT("Import a color table"), wxT(""), wxT(""),
-											wxT("Photoshop color table|*.act|Gimp palette|*.gpl"), wxOPEN);
+											wxT("Photoshop color table|*.act|Gimp palette|*.gpl"), wxFD_OPEN);
 	
 	if (dlg->ShowModal() == wxID_OK) {
 		wxString		filename = dlg->GetPath();
@@ -703,12 +703,12 @@ void ShapesView::MenuShapesSaveColorTable(wxCommandEvent &e)
 				name = wxString::Format(wxT("ColorTable%d.act"), selection);
 				ctpath = wxFileSelector(prompt, wxT(""), name, wxT(""),
 										wxT("PhotoShop color table|*.act"),
-										wxSAVE | wxOVERWRITE_PROMPT);
+										wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 			} else {
 				name = wxString::Format(wxT("ColorTable%d.gpl"), selection);
 				ctpath = wxFileSelector(prompt, wxT(""), name, wxT(""),
 										wxT("Gimp color table|*.gpl"),
-										wxSAVE | wxOVERWRITE_PROMPT);
+										wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 			}
 			
 			if (!ctpath.empty()) {
@@ -736,7 +736,7 @@ void ShapesView::MenuShapesAddBitmap(wxCommandEvent &e)
 	if (((ShapesDocument*)GetDocument()) != NULL && mSelectedColl != -1 && mSelectedVers != -1) {
 		wxFileDialog	*dlg = new wxFileDialog(mFrame, wxT("Choose a bitmap to add"), wxT(""), wxT(""),
 												wxT("Common bitmap files (BMP, JPEG, PNG, GIF, TIFF)|*.bmp;*.jpg;*.jpeg;*.tif;*.tiff;*.png;*.gif"),
-												wxOPEN);
+												wxFD_OPEN);
 		
 		if (dlg->ShowModal() == wxID_OK) {
 			wxString	filename = dlg->GetPath();
@@ -792,7 +792,7 @@ void ShapesView::MenuShapesExportBitmap(wxCommandEvent &e)
 		if (selection >= 0) {
 			wxString	prompt = wxString::Format(wxT("Export bitmap %d"), selection),
 			name = wxString::Format(wxT("bitmap%.3d.bmp"), selection),
-			path = wxFileSelector(prompt, wxT(""), name, wxT(""), wxT("BMP image|*.bmp"), wxSAVE | wxOVERWRITE_PROMPT);
+			path = wxFileSelector(prompt, wxT(""), name, wxT(""), wxT("BMP image|*.bmp"), wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 			
 			if (!path.empty()) {
 				ShapesBitmap		*bitmap = ((ShapesDocument*)GetDocument())->GetBitmap(mSelectedColl, mSelectedVers, selection);
@@ -812,7 +812,7 @@ void ShapesView::MenuShapesExportBitmapMask(wxCommandEvent &e)
 		if (selection >= 0) {
 			wxString	prompt = wxString::Format(wxT("Export bitmap %d mask"), selection),
 			name = wxString::Format(wxT("bitmap%.3dmask.bmp"), selection),
-			path = wxFileSelector(prompt, wxT(""), name, wxT(""), wxT("BMP image|*.bmp"), wxSAVE | wxOVERWRITE_PROMPT);
+			path = wxFileSelector(prompt, wxT(""), name, wxT(""), wxT("BMP image|*.bmp"), wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 			
 			if (!path.empty()) {
 				ShapesBitmap	*bitmap = ((ShapesDocument*)GetDocument())->GetBitmap(mSelectedColl, mSelectedVers, selection);
@@ -917,7 +917,7 @@ void ShapesView::MenuShapesGeneratePatch(wxCommandEvent&)
 	}
 	
 	// prompt the user for a base for the patch
-	wxFileDialog dlg(mFrame, wxT("Choose a base file (e.g. standard Infinity shapes)"), wxT(""), wxT(""), wxT("Shapes files (*.shpA)|*.shpA|All files (*.*)|*.*"), wxOPEN);
+	wxFileDialog dlg(mFrame, wxT("Choose a base file (e.g. standard Infinity shapes)"), wxT(""), wxT(""), wxT("Shapes files (*.shpA)|*.shpA|All files (*.*)|*.*"), wxFD_OPEN);
 	if (dlg.ShowModal() != wxID_OK) {
 		return;
 	}
@@ -928,7 +928,7 @@ void ShapesView::MenuShapesGeneratePatch(wxCommandEvent&)
 	}
 	
 	// prompt the user for a patch location
-	wxString path = wxFileSelector(wxT("Export patch file"), wxT(""), wxT("Shapes Patch.ShPa"), wxT(""), wxT("Shapes patch|*.ShPa"), wxSAVE | wxOVERWRITE_PROMPT);
+	wxString path = wxFileSelector(wxT("Export patch file"), wxT(""), wxT("Shapes Patch.ShPa"), wxT(""), wxT("Shapes patch|*.ShPa"), wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 	
 	if (path.empty()) {
 		return;
@@ -954,7 +954,7 @@ void ShapesView::MenuShapesImportPatch(wxCommandEvent&)
 	}
 
 	// prompt the user for a patch
-	wxString  path = wxFileSelector(wxT("Choose a patch file"), wxT(""), wxT(""), wxT(""), wxT("Patch files (*.ShPa)|*.ShPa|All files (*.*)|*.*"), wxOPEN);
+	wxString  path = wxFileSelector(wxT("Choose a patch file"), wxT(""), wxT(""), wxT(""), wxT("Patch files (*.ShPa)|*.ShPa|All files (*.*)|*.*"), wxFD_OPEN);
 
 	if (path.empty()) {
 		return;
