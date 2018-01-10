@@ -33,3 +33,5 @@ INCLUDES = -I$(top_srcdir)/Physics -I$(top_srcdir)/Shapes -I$(top_srcdir)/Sounds
 
 shapefusion-resources.o: $(top_srcdir)/Resources/shapefusion.rc
 	@WINDRES@ -I$(top_srcdir)/Resources -o shapefusion-resources.o $(top_srcdir)/Resources/shapefusion.rc
+
+DefaultNames.o: CXXFLAGS += -fno-var-tracking

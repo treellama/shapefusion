@@ -29,7 +29,7 @@ BEGIN_EVENT_TABLE(CTView, wxPanel)
 END_EVENT_TABLE()
 
 // icon for the self-luminescent flag
-static char *self_luminescent_icon_xpm[] = {
+static const char *self_luminescent_icon_xpm[] = {
 "8 8 2 1",
 "   c None",
 ".  c #000000",
