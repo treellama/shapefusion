@@ -2080,7 +2080,7 @@ BigEndianBuffer& ShapesCollection::LoadPatch(BigEndianBuffer& buffer)
 		return buffer;
 	}
 
-	std::auto_ptr<ShapesChunk> temp;
+	std::unique_ptr<ShapesChunk> temp;
 	if (!chunk) {
 		temp.reset(new ShapesChunk(IsVerbose()));
 		chunk = temp.get();

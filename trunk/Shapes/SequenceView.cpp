@@ -118,7 +118,7 @@ void SequenceView::OnPaint(wxPaintEvent& e)
 	}
 	if (mThumbnails.size() > 0 && mAnimationType != UNANIMATED && mAnimationType != ANIMATED_1) {
 		// draw angle labels
-		char		*deg = "°";
+		const char	*deg = "°";
 		wxString	deg2(deg, wxConvISO8859_1);	// FIXME does not work on OS X (draws infinity char)
 
 		tempdc.SetFont(*wxSMALL_FONT);
