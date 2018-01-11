@@ -20,6 +20,8 @@ AC_PROG_CXXCPP
 AC_PROG_INSTALL
 AC_PROG_RANLIB
 
+AX_CXX_COMPILE_STDCXX_11([noext])
+
 dnl some platform specific stuff
 case $target in
 *-*-mingw32*)
@@ -54,7 +56,7 @@ if test "$wxWidgets" != 1; then
 		wxWidgets version is $reqwx or above.
 		])
 fi
- 
+
 CPPFLAGS="$CPPFLAGS $WX_CPPFLAGS"
 CXXFLAGS="$CXXFLAGS $WX_CXXFLAGS_ONLY"
 CFLAGS="$CFLAGS $WX_CFLAGS_ONLY"
