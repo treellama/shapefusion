@@ -23,6 +23,8 @@
 #include "wx/wx.h"
 #endif
 
+#include "wx/statline.h"
+
 #include "PhysicsView.h"
 #include "PhysicsTreeItemData.h"
 
@@ -508,6 +510,10 @@ void PhysicsView::CreateAliens()
 		_("Not Afraid of Goo"),
 		_("Can Teleport Under Liquid"),
 		_("Chooses Weapon Randomly"),
+                _("(M1) Weaknesses Cause Soft Death"),
+                _("(M1) Screams When Crushed"),
+                _("(M1) Makes Sound When Activated"),
+                _("(M1) Can Grenade Climb (Player Only)")
 	};
 
 	const int flags_layout[] = {
@@ -519,14 +525,16 @@ void PhysicsView::CreateAliens()
 		5, 13, 22,
 		6, 14, 23,
 		7, 15, 24,
-		26, 16, 25
+		26, 16, 25,
+                27, 28, 29,
+                30
 	};
 
 	wxStaticBoxSizer* flags_sizer = new wxStaticBoxSizer(wxVERTICAL, main_panel, _("Flags"));
 	wxGridSizer* flags_grid_sizer = new wxGridSizer(3);
 	flags_grid_sizer->SetVGap(2);
 	
-	for (int i = 0; i < 27; ++i) {
+	for (int i = 0; i < 31; ++i) {
 		alien_flags_checkboxes[i] = new wxCheckBox(main_panel, CB_ALIEN_FLAGS + i, flags_strings[i]);
 	}
 
@@ -534,8 +542,18 @@ void PhysicsView::CreateAliens()
 		flags_grid_sizer->Add(alien_flags_checkboxes[flags_layout[i]], 0, wxALIGN_CENTER_VERTICAL);
 	}
 
+
 	flags_sizer->Add(flags_grid_sizer, 0, wxEXPAND);
-	
+
+        wxGridSizer* flags_m1_grid_sizer = new wxGridSizer(2);
+        flags_m1_grid_sizer->SetVGap(2);
+        for (int i = 27; i < 31; ++i) {
+            flags_m1_grid_sizer->Add(alien_flags_checkboxes[i], 0, wxALIGN_CENTER_VERTICAL);
+        }
+
+        flags_sizer->AddSpacer(2);
+        flags_sizer->Add(flags_m1_grid_sizer, 0, wxEXPAND);
+
 	aliens_behavior_sizer->AddSpacer(10);
 	aliens_behavior_sizer->Add(flags_sizer, 0, wxEXPAND);
 	
