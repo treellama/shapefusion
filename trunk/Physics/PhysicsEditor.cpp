@@ -247,7 +247,7 @@ void PhysicsView::OnSelectAlienBehavior(int index)
 		alien_enemies_checkboxes[i]->SetValue(monster->GetEnemy(i));
 	}
 
-	for (int i = 0; i < 27; ++i) {
+	for (int i = 0; i < 31; ++i) {
 		alien_flags_checkboxes[i]->SetValue(monster->GetFlag(i + 1));
 	}
 

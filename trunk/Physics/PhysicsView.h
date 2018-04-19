@@ -103,7 +103,7 @@ private:
 		CB_ALIEN_FRIENDS,
 		CB_ALIEN_ENEMIES = CB_ALIEN_FRIENDS + 16,
 		CB_ALIEN_FLAGS = CB_ALIEN_ENEMIES + 16,
-		CB_ALIEN_IMMUNITIES = CB_ALIEN_FLAGS + 27,
+		CB_ALIEN_IMMUNITIES = CB_ALIEN_FLAGS + 31,
 		CB_ALIEN_WEAKNESSES = CB_ALIEN_IMMUNITIES + 24,
 
 		FIELD_EFFECT_COLLECTION = CB_ALIEN_WEAKNESSES + 24,
@@ -307,7 +307,7 @@ private:
 
 	wxCheckBox* alien_friends_checkboxes[16];
 	wxCheckBox* alien_enemies_checkboxes[16];
-	wxCheckBox* alien_flags_checkboxes[27];
+	wxCheckBox* alien_flags_checkboxes[31];
 
 	wxBoxSizer* aliens_immunities_sizer;
 
