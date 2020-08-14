@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 42;
+	objectVersion = 45;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -32,7 +32,6 @@
 		4DE10B4A0CC39BF200BAEC76 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F08B4C760AB0B7E300896399 /* IOKit.framework */; };
 		4DE10B4B0CC39BF400BAEC76 /* System.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F08B4C370AB0B09A00896399 /* System.framework */; };
 		4DE10B4E0CC39C2E00BAEC76 /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DE10B4D0CC39C2E00BAEC76 /* libiconv.dylib */; };
-		4DE10B500CC39C4200BAEC76 /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DE10B4F0CC39C4200BAEC76 /* QuickTime.framework */; };
 		4DE10B530CC39C8E00BAEC76 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DE10B520CC39C8E00BAEC76 /* Cocoa.framework */; };
 		4DE10B570CC39CAB00BAEC76 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DE10B560CC39CAB00BAEC76 /* libz.dylib */; };
 		AE0270E314C51B4F0093B508 /* PhysicsDocument.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AE0270DE14C51B4F0093B508 /* PhysicsDocument.cpp */; };
@@ -40,10 +39,8 @@
 		AE0270E514C51B4F0093B508 /* PhysicsElements.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AE0270E014C51B4F0093B508 /* PhysicsElements.cpp */; };
 		AE0270E614C51B4F0093B508 /* PhysicsTreeItemData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AE0270E114C51B4F0093B508 /* PhysicsTreeItemData.cpp */; };
 		AE0270E714C51B4F0093B508 /* PhysicsView.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AE0270E214C51B4F0093B508 /* PhysicsView.cpp */; };
-		AE0270F214C51BA00093B508 /* sndfile.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AE0270F114C51BA00093B508 /* sndfile.framework */; };
 		AE02710C14C51C220093B508 /* DefaultNames.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AE02710A14C51C220093B508 /* DefaultNames.cpp */; };
 		AE02711214C51C510093B508 /* ShapeFusionDocManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AE02711014C51C510093B508 /* ShapeFusionDocManager.cpp */; };
-		AE02712714C5201C0093B508 /* sndfile.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = AE0270F114C51BA00093B508 /* sndfile.framework */; };
 		AE33904A1290D7A2000DE273 /* shapefusion.icns in Resources */ = {isa = PBXBuildFile; fileRef = AE3390491290D7A2000DE273 /* shapefusion.icns */; };
 		F03A573C0D0381F00057BB53 /* GenericEndianBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F03A573B0D0381F00057BB53 /* GenericEndianBuffer.cpp */; };
 		F08B4C5A0AB0B31E00896399 /* ShapeFusionApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F08B4B780AB0AE4B00896399 /* ShapeFusionApp.cpp */; };
@@ -54,6 +51,8 @@
 			isa = PBXBuildRule;
 			compilerSpec = com.apple.compilers.gcc;
 			fileType = sourcecode.cpp;
+			inputFiles = (
+			);
 			isEditable = 1;
 			outputFiles = (
 			);
@@ -67,7 +66,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				AE02712714C5201C0093B508 /* sndfile.framework in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -101,7 +99,6 @@
 		1FEDD4610B9C3F9D00D69B62 /* utilities.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = utilities.cpp; sourceTree = "<group>"; };
 		1FEDD4620B9C3F9D00D69B62 /* utilities.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = utilities.h; sourceTree = "<group>"; };
 		4DE10B4D0CC39C2E00BAEC76 /* libiconv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.dylib; path = /usr/lib/libiconv.dylib; sourceTree = "<absolute>"; };
-		4DE10B4F0CC39C4200BAEC76 /* QuickTime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickTime.framework; path = /System/Library/Frameworks/QuickTime.framework; sourceTree = "<absolute>"; };
 		4DE10B520CC39C8E00BAEC76 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		4DE10B560CC39CAB00BAEC76 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = /usr/lib/libz.dylib; sourceTree = "<absolute>"; };
 		AE0270DE14C51B4F0093B508 /* PhysicsDocument.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PhysicsDocument.cpp; path = Physics/PhysicsDocument.cpp; sourceTree = "<group>"; };
@@ -113,7 +110,6 @@
 		AE0270E914C51B680093B508 /* PhysicsElements.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PhysicsElements.h; path = Physics/PhysicsElements.h; sourceTree = "<group>"; };
 		AE0270EA14C51B680093B508 /* PhysicsTreeItemData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PhysicsTreeItemData.h; path = Physics/PhysicsTreeItemData.h; sourceTree = "<group>"; };
 		AE0270EB14C51B680093B508 /* PhysicsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PhysicsView.h; path = Physics/PhysicsView.h; sourceTree = "<group>"; };
-		AE0270F114C51BA00093B508 /* sndfile.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = sndfile.framework; path = /Library/Frameworks/sndfile.framework; sourceTree = "<absolute>"; };
 		AE02710A14C51C220093B508 /* DefaultNames.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DefaultNames.cpp; sourceTree = "<group>"; };
 		AE02710B14C51C220093B508 /* DefaultNames.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DefaultNames.h; sourceTree = "<group>"; };
 		AE02711014C51C510093B508 /* ShapeFusionDocManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ShapeFusionDocManager.cpp; sourceTree = "<group>"; };
@@ -153,11 +149,9 @@
 				4DE10B410CC3992D00BAEC76 /* Carbon.framework in Frameworks */,
 				4DE10B4A0CC39BF200BAEC76 /* IOKit.framework in Frameworks */,
 				4DE10B4B0CC39BF400BAEC76 /* System.framework in Frameworks */,
-				4DE10B500CC39C4200BAEC76 /* QuickTime.framework in Frameworks */,
 				4DE10B530CC39C8E00BAEC76 /* Cocoa.framework in Frameworks */,
 				4DE10B4E0CC39C2E00BAEC76 /* libiconv.dylib in Frameworks */,
 				4DE10B570CC39CAB00BAEC76 /* libz.dylib in Frameworks */,
-				AE0270F214C51BA00093B508 /* sndfile.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -276,13 +270,11 @@
 			children = (
 				4DE10B560CC39CAB00BAEC76 /* libz.dylib */,
 				4DE10B520CC39C8E00BAEC76 /* Cocoa.framework */,
-				4DE10B4F0CC39C4200BAEC76 /* QuickTime.framework */,
 				4DE10B4D0CC39C2E00BAEC76 /* libiconv.dylib */,
 				F08B4C360AB0B06D00896399 /* Carbon.framework */,
 				F08B4C370AB0B09A00896399 /* System.framework */,
 				F08B4C760AB0B7E300896399 /* IOKit.framework */,
 				F08B4CB30AB0C0E700896399 /* OpenGL.framework */,
-				AE0270F114C51BA00093B508 /* sndfile.framework */,
 			);
 			name = "External things";
 			sourceTree = "<group>";
@@ -322,6 +314,9 @@
 /* Begin PBXProject section */
 		F08B4B5A0AB0ADBA00896399 /* Project object */ = {
 			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 1160;
+			};
 			buildConfigurationList = F08B4B5B0AB0ADBA00896399 /* Build configuration list for PBXProject "ShapeFusion" */;
 			compatibilityVersion = "Xcode 2.4";
 			developmentRegion = English;
@@ -397,66 +392,44 @@
 		F08B4B5C0AB0ADBA00896399 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					ppc,
-					i386,
-				);
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				HEADER_SEARCH_PATHS = (
-					"$(WX_SRC_ROOT)/include/",
-					"$(WX_SRC_ROOT)/src/build/include",
-				);
-				LIBRARY_SEARCH_PATHS = "";
-				MACOSX_DEPLOYMENT_TARGET = 10.4;
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
-				USER_HEADER_SEARCH_PATHS = "";
-				WARNING_CFLAGS = "-Wall";
-				WX_SRC_ROOT = "/Applications/wxMac-2.8.6";
-			};
-			name = Debug;
-		};
-		F08B4B5D0AB0ADBA00896399 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = (
-					ppc,
-					i386,
-				);
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_OPTIMIZATION_LEVEL = 2;
-				HEADER_SEARCH_PATHS = (
-					"$(WX_SRC_ROOT)/include/",
-					"$(WX_SRC_ROOT)/src/build/include",
-				);
-				LIBRARY_SEARCH_PATHS = "";
-				MACOSX_DEPLOYMENT_TARGET = 10.4;
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
-				USER_HEADER_SEARCH_PATHS = "";
-				WX_SRC_ROOT = "/Applications/wxMac-2.8.6";
-			};
-			name = Release;
-		};
-		F08B4C490AB0B10000896399 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"_FILE_OFFSET_BITS=64",
-					_LARGE_FILES,
-					__WXMAC__,
-				);
-				GCC_VERSION = 4.0;
-				HEADER_SEARCH_PATHS = (
-					"/usr/local/lib/wx/include/mac-unicode-release-static-2.8",
-					"/usr/local/include/wx-2.8",
-					/Library/Frameworks/sndfile.framework/Headers,
-				);
-				INFOPLIST_FILE = "ShapeFusion-Info.plist";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(WX_LIB_ROOT)",
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				OTHER_CFLAGS = (
+					"-I/opt/static/lib/wx/include/osx_cocoa-unicode-static-3.1",
+					"-I/opt/static/include/wx-3.1",
+					"-D_FILE_OFFSET_BITS=64",
+					"-D__WXMAC__",
+					"-D__WXOSX__",
+					"-D__WXOSX_COCOA__",
+					"-I/opt/static/include",
 				);
 				OTHER_LDFLAGS = (
+					"-L/opt/static/lib",
 					"-framework",
 					IOKit,
 					"-framework",
@@ -464,38 +437,135 @@
 					"-framework",
 					Cocoa,
 					"-framework",
+					AudioToolbox,
+					"-framework",
 					System,
 					"-framework",
-					QuickTime,
-					"-framework",
 					OpenGL,
-					"-framework",
-					AGL,
-					"/usr/local/lib/libwx_macu_richtext-2.8.a",
-					"/usr/local/lib/libwx_macu_aui-2.8.a",
-					"/usr/local/lib/libwx_macu_xrc-2.8.a",
-					"/usr/local/lib/libwx_macu_qa-2.8.a",
-					"/usr/local/lib/libwx_macu_html-2.8.a",
-					"/usr/local/lib/libwx_macu_adv-2.8.a",
-					"/usr/local/lib/libwx_macu_core-2.8.a",
-					"/usr/local/lib/libwx_base_carbonu_xml-2.8.a",
-					"/usr/local/lib/libwx_base_carbonu_net-2.8.a",
-					"/usr/local/lib/libwx_base_carbonu-2.8.a",
+					"/opt/static/lib/libwx_osx_cocoau_xrc-3.1.a",
+					"/opt/static/lib/libwx_osx_cocoau_qa-3.1.a",
+					"/opt/static/lib/libwx_baseu_net-3.1.a",
+					"/opt/static/lib/libwx_osx_cocoau_html-3.1.a",
+					"/opt/static/lib/libwx_osx_cocoau_core-3.1.a",
+					"/opt/static/lib/libwx_baseu_xml-3.1.a",
+					"/opt/static/lib/libwx_baseu-3.1.a",
 					"-framework",
 					WebKit,
-					"-lwxregexu-2.8",
-					"-lwxexpat-2.8",
-					"-lwxtiff-2.8",
-					"-lwxjpeg-2.8",
-					"-lwxpng-2.8",
+					"-lwxtiff-3.1",
+					"-lwxjpeg-3.1",
+					"-lwxpng-3.1",
+					"-lwxregexu-3.1",
+					"-lwxscintilla-3.1",
+					"-lexpat",
 					"-lz",
+					"-framework",
+					Security,
 					"-lpthread",
 					"-liconv",
+					"-lsndfile",
 				);
+				WARNING_CFLAGS = "-Wall";
+			};
+			name = Debug;
+		};
+		F08B4B5D0AB0ADBA00896399 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 2;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				OTHER_CFLAGS = (
+					"-I/opt/static/lib/wx/include/osx_cocoa-unicode-static-3.1",
+					"-I/opt/static/include/wx-3.1",
+					"-D_FILE_OFFSET_BITS=64",
+					"-D__WXMAC__",
+					"-D__WXOSX__",
+					"-D__WXOSX_COCOA__",
+					"-I/opt/static/include",
+				);
+				OTHER_LDFLAGS = (
+					"-L/opt/static/lib",
+					"-framework",
+					IOKit,
+					"-framework",
+					Carbon,
+					"-framework",
+					Cocoa,
+					"-framework",
+					AudioToolbox,
+					"-framework",
+					System,
+					"-framework",
+					OpenGL,
+					"/opt/static/lib/libwx_osx_cocoau_xrc-3.1.a",
+					"/opt/static/lib/libwx_osx_cocoau_qa-3.1.a",
+					"/opt/static/lib/libwx_baseu_net-3.1.a",
+					"/opt/static/lib/libwx_osx_cocoau_html-3.1.a",
+					"/opt/static/lib/libwx_osx_cocoau_core-3.1.a",
+					"/opt/static/lib/libwx_baseu_xml-3.1.a",
+					"/opt/static/lib/libwx_baseu-3.1.a",
+					"-framework",
+					WebKit,
+					"-lwxtiff-3.1",
+					"-lwxjpeg-3.1",
+					"-lwxpng-3.1",
+					"-lwxregexu-3.1",
+					"-lwxscintilla-3.1",
+					"-lexpat",
+					"-lz",
+					"-framework",
+					Security,
+					"-lpthread",
+					"-liconv",
+					"-lsndfile",
+				);
+			};
+			name = Release;
+		};
+		F08B4C490AB0B10000896399 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_IDENTITY = "-";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"_FILE_OFFSET_BITS=64",
+					_LARGE_FILES,
+					__WXMAC__,
+				);
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				INFOPLIST_FILE = "ShapeFusion-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(WX_LIB_ROOT)",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.titodalcanton.shapefusion;
 				PRODUCT_NAME = ShapeFusion;
 				WRAPPER_EXTENSION = app;
-				WX_LIB_ROOT = /usr/local/lib;
-				WX_SRC_ROOT = /usr/local/lib/wx;
 				_FILE_OFFSET_BITS = "64 _LARGE_FILES __WXMAC__";
 			};
 			name = Debug;
@@ -503,64 +573,24 @@
 		F08B4C4A0AB0B10000896399 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_IDENTITY = "-";
 				DEAD_CODE_STRIPPING = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"_FILE_OFFSET_BITS=64",
 					_LARGE_FILES,
 					__WXMAC__,
 				);
-				GCC_VERSION = 4.0;
-				HEADER_SEARCH_PATHS = (
-					"/usr/local/lib/wx/include/mac-unicode-release-static-2.8",
-					"/usr/local/include/wx-2.8",
-					/Library/Frameworks/sndfile.framework/Headers,
-				);
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				INFOPLIST_FILE = "ShapeFusion-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(WX_LIB_ROOT)",
 				);
-				OTHER_LDFLAGS = (
-					"-framework",
-					IOKit,
-					"-framework",
-					Carbon,
-					"-framework",
-					Cocoa,
-					"-framework",
-					System,
-					"-framework",
-					QuickTime,
-					"-framework",
-					OpenGL,
-					"-framework",
-					AGL,
-					"/usr/local/lib/libwx_macu_richtext-2.8.a",
-					"/usr/local/lib/libwx_macu_aui-2.8.a",
-					"/usr/local/lib/libwx_macu_xrc-2.8.a",
-					"/usr/local/lib/libwx_macu_qa-2.8.a",
-					"/usr/local/lib/libwx_macu_html-2.8.a",
-					"/usr/local/lib/libwx_macu_adv-2.8.a",
-					"/usr/local/lib/libwx_macu_core-2.8.a",
-					"/usr/local/lib/libwx_base_carbonu_xml-2.8.a",
-					"/usr/local/lib/libwx_base_carbonu_net-2.8.a",
-					"/usr/local/lib/libwx_base_carbonu-2.8.a",
-					"-framework",
-					WebKit,
-					"-lwxregexu-2.8",
-					"-lwxexpat-2.8",
-					"-lwxtiff-2.8",
-					"-lwxjpeg-2.8",
-					"-lwxpng-2.8",
-					"-lz",
-					"-lpthread",
-					"-liconv",
-				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.titodalcanton.shapefusion;
 				PRODUCT_NAME = ShapeFusion;
 				STRIP_INSTALLED_PRODUCT = YES;
 				WRAPPER_EXTENSION = app;
-				WX_LIB_ROOT = /usr/local/lib;
-				WX_SRC_ROOT = /usr/local/lib/wx;
 				_FILE_OFFSET_BITS = "64 _LARGE_FILES __WXMAC__";
 			};
 			name = Release;
