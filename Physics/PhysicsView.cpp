@@ -1215,9 +1215,9 @@ void PhysicsView::CreateWeapons()
 	for (int i = 0; i < 10; ++i) {
 		weapon_flags_checkboxes[i] = new wxCheckBox(main_panel, CB_WEAPON_FLAGS + i, flags_strings[i]);
 		if (i > 0) {
-			flags_sizer->Add(weapon_flags_checkboxes[i], 0, wxALIGN_CENTER_VERTICAL | wxTOP, 2);
+			flags_sizer->Add(weapon_flags_checkboxes[i], 0, wxTOP, 2);
 		} else {
-			flags_sizer->Add(weapon_flags_checkboxes[i], 0, wxALIGN_CENTER_VERTICAL);
+			flags_sizer->Add(weapon_flags_checkboxes[i], 0, 0);
 		}
 	}
 
