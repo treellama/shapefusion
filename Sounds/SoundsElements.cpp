@@ -278,7 +278,7 @@ private:
 bool AppleSoundHeader::LoadFromFile(wxString path)
 {
 	SF_INFO inputInfo;
-	SNDFILE_ptr infile(sf_open(path.fn_str(), SFM_READ, &inputInfo));
+	SNDFILE_ptr infile(sf_open(path.mb_str(), SFM_READ, &inputInfo));
 	if (!infile.get()) {
 		wxLogError(wxT("[AppleSoundHeader] libsndfile could not open file."));
 		return false;
@@ -364,7 +364,7 @@ bool AppleSoundHeader::SaveToWaveOrAiff(wxString path, bool aiff)
 		outputInfo.format = SF_FORMAT_WAV | outputFormat;
 	}
 	
-	SNDFILE* outfile = sf_open(path.fn_str(), SFM_WRITE, &outputInfo);
+	SNDFILE* outfile = sf_open(path.mb_str(), SFM_WRITE, &outputInfo);
 
 	SF_VIRTUAL_IO virtual_io = {
 		&sf_adapter::get_filelen,

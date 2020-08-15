@@ -36,10 +36,10 @@ esac
 
 dnl wxWidgets
 AM_OPTIONS_WXCONFIG
-reqwx=2.8.0
+reqwx=3.0.0
 case $target in
 *-*-mingw32*)
-  AM_PATH_WXCONFIG($reqwx, wxWidgets=1, , , [--unicode=no])
+  AM_PATH_WXCONFIG($reqwx, wxWidgets=1, , ,)
 	;;
 *)
 	AM_PATH_WXCONFIG($reqwx, wxWidgets=1)
