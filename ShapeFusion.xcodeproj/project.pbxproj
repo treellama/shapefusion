@@ -115,6 +115,7 @@
 		AE02711014C51C510093B508 /* ShapeFusionDocManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ShapeFusionDocManager.cpp; sourceTree = "<group>"; };
 		AE02711114C51C510093B508 /* ShapeFusionDocManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShapeFusionDocManager.h; sourceTree = "<group>"; };
 		AE3390491290D7A2000DE273 /* shapefusion.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = shapefusion.icns; path = Resources/shapefusion.icns; sourceTree = "<group>"; };
+		AEEC4EC224EA10D7006C0530 /* ShapeFusion.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ShapeFusion.entitlements; sourceTree = "<group>"; };
 		F03A573B0D0381F00057BB53 /* GenericEndianBuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.cpp.cpp; path = GenericEndianBuffer.cpp; sourceTree = "<group>"; };
 		F03A573D0D0381F80057BB53 /* GenericEndianBuffer.h */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.c.h; path = GenericEndianBuffer.h; sourceTree = "<group>"; };
 		F08B4B780AB0AE4B00896399 /* ShapeFusionApp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ShapeFusionApp.cpp; sourceTree = "<group>"; };
@@ -221,6 +222,7 @@
 		F08B4B580AB0ADBA00896399 = {
 			isa = PBXGroup;
 			children = (
+				AEEC4EC224EA10D7006C0530 /* ShapeFusion.entitlements */,
 				F08B4B720AB0AE0B00896399 /* Sources */,
 				F08B4B750AB0AE1200896399 /* Resources */,
 				F08B4B9E0AB0B02A00896399 /* External things */,
@@ -551,7 +553,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_ENTITLEMENTS = ShapeFusion.entitlements;
 				CODE_SIGN_IDENTITY = "-";
+				CURRENT_PROJECT_VERSION = 0.7;
+				ENABLE_HARDENED_RUNTIME = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"_FILE_OFFSET_BITS=64",
 					_LARGE_FILES,
@@ -563,6 +568,7 @@
 					"$(inherited)",
 					"$(WX_LIB_ROOT)",
 				);
+				MARKETING_VERSION = 0.7;
 				PRODUCT_BUNDLE_IDENTIFIER = com.titodalcanton.shapefusion;
 				PRODUCT_NAME = ShapeFusion;
 				WRAPPER_EXTENSION = app;
@@ -574,8 +580,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_ENTITLEMENTS = ShapeFusion.entitlements;
 				CODE_SIGN_IDENTITY = "-";
+				CURRENT_PROJECT_VERSION = 0.7;
 				DEAD_CODE_STRIPPING = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"_FILE_OFFSET_BITS=64",
 					_LARGE_FILES,
@@ -587,6 +596,7 @@
 					"$(inherited)",
 					"$(WX_LIB_ROOT)",
 				);
+				MARKETING_VERSION = 0.7;
 				PRODUCT_BUNDLE_IDENTIFIER = com.titodalcanton.shapefusion;
 				PRODUCT_NAME = ShapeFusion;
 				STRIP_INSTALLED_PRODUCT = YES;
