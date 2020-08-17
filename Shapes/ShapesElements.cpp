@@ -57,10 +57,15 @@ ShapesColor::ShapesColor(bool verbose): ShapesElement(verbose)
 
 }
 
-ShapesColor::ShapesColor(unsigned int r, unsigned int g, unsigned int b, unsigned int value, bool luminescent, bool verbose):
-	 ShapesElement(verbose), mLuminescent(luminescent), mValue(value), mRed(r), mGreen(g), mBlue(b)
+ShapesColor::ShapesColor(uint8_t r, uint8_t g, uint8_t b, unsigned int value, bool luminescent, bool verbose) :
+	ShapesElement(verbose),
+	mLuminescent(luminescent),
+	mValue(value),
+	mRed((r << 8) | r),
+	mGreen((g << 8) | g),
+	mBlue((b << 8) | b)
 {
-
+	
 }
 
 ShapesColor::~ShapesColor(void)
@@ -142,7 +147,7 @@ ShapesColorTable::ShapesColorTable(std::ifstream& ifs, wxString file_ext): Shape
 		for (unsigned int value = 0; value < colorCount; value++) {
 			unsigned char	rgb[3];
 			ifs.read((char *)rgb, 3);
-			ShapesColor		*newColor = new ShapesColor(rgb[0]<<8, rgb[1]<<8, rgb[2]<<8, value);
+			ShapesColor		*newColor = new ShapesColor(rgb[0], rgb[1], rgb[2], value);
 			mColors.push_back(newColor);
 		}
 	} else if (file_ext == wxString(wxT("gpl"))) {
@@ -155,7 +160,7 @@ ShapesColorTable::ShapesColorTable(std::ifstream& ifs, wxString file_ext): Shape
 
 			ifs.getline(buffer, 255);
 			if (sscanf(buffer, "%u %u %u", &red, &green, &blue) == 3) {
-				ShapesColor	*newColor = new ShapesColor(red<<8, green<<8, blue<<8, value);
+				ShapesColor	*newColor = new ShapesColor(red, green, blue, value);
 
 				mColors.push_back(newColor);
 				value++;
@@ -655,9 +660,9 @@ void ShapesBitmap::ClipboardCopy(ShapesColorTable* colortable) const
 			for (int y = 0; y < mHeight; ++y) {
 				unsigned char c = *src++;
 				ShapesColor* color = colortable->GetColor(c);
-				*dst++ = color->Red();
-				*dst++ = color->Green();
-				*dst++ = color->Blue();
+				*dst++ = color->Red() >> 8;
+				*dst++ = color->Green() >> 8;
+				*dst++ = color->Blue() >> 8;
 			}
 		}
 

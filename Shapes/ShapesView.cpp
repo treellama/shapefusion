@@ -633,7 +633,7 @@ void ShapesView::MenuShapesAddColorTable(wxCommandEvent &e)
 			
 			ifs.close();
 			if (newct->ColorCount() > 0) {
-				if (newct->GetColor(0)->Red() != 0 || newct->GetColor(0)->Green() != 0 || newct->GetColor(0)->Blue() != 255<<8)
+				if (newct->GetColor(0)->Red() != 0 || newct->GetColor(0)->Green() != 0 || newct->GetColor(0)->Blue() != 0xFFFF)
 					wxMessageBox(wxT("The first color of the table being imported is not the usual Marathon chroma key color"
 									 " (no red, no green, maximum blue). It should be corrected manually to avoid problems."),
 								 wxT("Invalid chroma key color"), wxOK | wxICON_WARNING, mFrame);

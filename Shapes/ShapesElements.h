@@ -66,7 +66,7 @@ private:
 public:
 	// constructor/destructor
 	ShapesColor(bool verbose = false);
-	ShapesColor(unsigned int r, unsigned int g, unsigned int b, unsigned int value, bool luminescent = false, bool verbose = false);
+	ShapesColor(uint8_t r, uint8_t g, uint8_t b, unsigned int value, bool luminescent = false, bool verbose = false);
 	~ShapesColor(void);
 
 	// operators
