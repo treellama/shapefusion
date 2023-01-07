@@ -1336,11 +1336,12 @@ BigEndianBuffer& ShapesChunk::SaveObject(BigEndianBuffer& buffer)
 					sequence_count = SequenceCount(),
 					i;
 	long			sequence_table_offset,
-					sequence_offsets[sequence_count],
 					frame_table_offset,
-					frame_offsets[frame_count],
-					bitmap_table_offset,
-					bitmap_offsets[bitmap_count];
+					bitmap_table_offset;
+
+	std::vector<long> sequence_offsets(sequence_count);
+	std::vector<long> frame_offsets(frame_count);
+	std::vector<long> bitmap_offsets(bitmap_count);
 				
 	// skip the collection definition, we'll fill it at the end
 	buffer.Position(SIZEOF_collection_definition);
