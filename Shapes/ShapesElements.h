@@ -24,6 +24,7 @@
     #include "wx/wx.h"
 #include "wx/clipbrd.h"
 #endif
+#include <cstdint>
 #include <vector>
 using std::vector;
 #include "../BigEndianBuffer.h"
