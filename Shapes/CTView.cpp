@@ -48,7 +48,7 @@ CTView::CTView(wxWindow *parent):
 {
 	SetBackgroundColour(wxColour(255, 255, 255));
 	mInvisiblePen.SetColour(0, 0, 0);
-	mInvisiblePen.SetStyle(wxTRANSPARENT);
+	mInvisiblePen.SetStyle(wxPENSTYLE_TRANSPARENT);
 	mSelectionPen.SetColour(0, 0, 0);
 	mSelectionPen.SetWidth(3);
 }
@@ -59,7 +59,7 @@ void CTView::OnPaint(wxPaintEvent& e)
 		return;
 
 	wxPaintDC		tempdc(this);
-	wxBrush			brush(wxColour(0, 0, 0), wxSOLID);
+	wxBrush			brush(wxColour(0, 0, 0), wxBRUSHSTYLE_SOLID);
 	unsigned int	x = mMargin, y = mMargin;
 	int				width, height;
 
