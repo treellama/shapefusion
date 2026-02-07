@@ -956,8 +956,8 @@ BigEndianBuffer& ShapesSequence::LoadObject(BigEndianBuffer& buffer, long offset
 	unsigned char	namelen = buffer.ReadUChar();
 
 	if (namelen > 32) {
-		wxLogError(wxT("[ShapesSequence] Sequence name too long (%d/32)"), namelen);
-		return buffer;
+		wxLogWarning(wxT("[ShapesSequence] Sequence name too long (%d/32); truncating and attempting to load anyway"), namelen);
+		namelen = 32;
 	}
 
 	char		name[33];
