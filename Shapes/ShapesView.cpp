@@ -1950,7 +1950,7 @@ void ShapesView::EditSequenceFields(wxCommandEvent &e)
 							if (v != sel_seq->FramesPerView()) {
 								int		real_nov = ActualNumberOfViews(sel_seq->NumberOfViews()),
 								old_fpv = sel_seq->FramesPerView();
-								short	old_indexes[real_nov * old_fpv];
+								std::vector<short> old_indexes(real_nov * old_fpv);
 								
 								for (int i = 0; i < real_nov * old_fpv; i++)
 									old_indexes[i] = sel_seq->mFrameIndexes[i];
