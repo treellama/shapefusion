@@ -438,15 +438,15 @@ public:
 	void DeleteSequence(unsigned int chunk, unsigned int s);
 	// utilities
 	unsigned int SizeInFile(unsigned int chunk) const;
-	
+
 #if wxUSE_STD_IOSTREAM
 	wxSTD ostream& SaveObject(wxSTD ostream& stream);
 	wxSTD ostream& SavePatch(wxSTD ostream& stream, const ShapesCollection& other, int index, int depth);
-	wxSTD istream& LoadObject(wxSTD istream& stream);
+	wxSTD istream& LoadObject(wxSTD istream& stream, int32_t& min_data_offset);
 #else
 	wxOutputStream& SaveObject(wxOutputStream& stream);
 	wxOutputStream& SavePatch(wxOutputStream& stream, const ShapesCollection& other, int index, int depth);
-	wxInputStream& LoadObject(wxInputStream& stream);
+	wxInputStream& LoadObject(wxInputStream& stream, int32_t& min_data_offset);
 #endif
 	BigEndianBuffer& LoadPatch(BigEndianBuffer& buffer);
 };

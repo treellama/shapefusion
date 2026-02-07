@@ -1974,9 +1974,9 @@ wxOutputStream& ShapesCollection::SavePatch(wxOutputStream& stream, const Shapes
 }
 
 #if wxUSE_STD_IOSTREAM
-wxSTD istream& ShapesCollection::LoadObject(wxSTD istream& stream)
+wxSTD istream& ShapesCollection::LoadObject(wxSTD istream& stream, int32_t& min_data_offset)
 #else
-wxInputStream& ShapesCollection::LoadObject(wxInputStream& stream)
+wxInputStream& ShapesCollection::LoadObject(wxInputStream& stream, int32_t& min_data_offset)
 #endif
 {
 	BigEndianBuffer	coll_header(SIZEOF_collection_header);
@@ -2011,6 +2011,14 @@ wxInputStream& ShapesCollection::LoadObject(wxInputStream& stream)
 		return stream;
 	if ((offset16 + length16) > filesize)
 		return stream;
+
+	if (offset8 > 0 && offset8 < min_data_offset) {
+		min_data_offset = offset8;
+	}
+
+	if (offset16 > 0 && offset16 < min_data_offset) {
+		min_data_offset = offset16;
+	}
 	
 	if (IsVerbose()) {
 		wxLogDebug(wxT("[ShapesCollection]     Status: %d"), mStatus);

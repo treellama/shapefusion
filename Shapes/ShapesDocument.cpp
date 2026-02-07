@@ -276,7 +276,9 @@ wxInputStream& ShapesDocument::LoadObject(wxInputStream& stream)
 	// find how many collections are stored and load them
 	unsigned int	i = 0;
 
-	while (true) {
+	int32_t min_data_offset = INT32_MAX;
+
+	while (i * SIZEOF_collection_header < min_data_offset) {
 		ShapesCollection	*c = new ShapesCollection(IsVerbose());
 
 		if (IsVerbose())
@@ -287,7 +289,8 @@ wxInputStream& ShapesDocument::LoadObject(wxInputStream& stream)
 #else
 		stream.SeekI(i * SIZEOF_collection_header);
 #endif
-		c->LoadObject(stream);
+		int32_t c_data_start;
+		c->LoadObject(stream, min_data_offset);
 
 		if (c->IsGood()) {
 			mCollections.push_back(c);
