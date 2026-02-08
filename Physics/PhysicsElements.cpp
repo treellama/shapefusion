@@ -30,6 +30,45 @@
 
 #include "PhysicsElements.h"
 
+#include "DefaultPhysics.h"
+
+static constexpr double from_fixed(int32_t i) {
+	return i / 65536.0;
+}
+
+PhysicsConstants::PhysicsConstants(const physics_constants& m2) :
+	PhysicsElement{false},
+	mMaximumForwardVelocity{from_fixed(m2.maximum_forward_velocity)},
+	mMaximumBackwardVelocity{from_fixed(m2.maximum_backward_velocity)},
+	mMaximumPerpendicularVelocity{from_fixed(m2.maximum_perpendicular_velocity)},
+	mAcceleration{from_fixed(m2.acceleration)},
+	mDeceleration{from_fixed(m2.deceleration)},
+	mAirborneDeceleration{from_fixed(m2.airborne_deceleration)},
+	mGravitationalAcceleration{from_fixed(m2.gravitational_acceleration)},
+	mClimbingAcceleration{from_fixed(m2.climbing_acceleration)},
+	mTerminalVelocity{from_fixed(m2.terminal_velocity)},
+	mExternalDeceleration{from_fixed(m2.external_deceleration)},
+	mAngularAcceleration{from_fixed(m2.angular_acceleration)},
+	mAngularDeceleration{from_fixed(m2.angular_deceleration)},
+	mMaximumAngularVelocity{from_fixed(m2.maximum_angular_velocity)},
+	mAngularRecenteringVelocity{from_fixed(m2.angular_recentering_velocity)},
+	mFastAngularVelocity{from_fixed(m2.fast_angular_velocity)},
+	mFastAngularMaximum{from_fixed(m2.fast_angular_maximum)},
+	mMaximumElevation{from_fixed(m2.maximum_elevation)},
+	mExternalAngularDeceleration{from_fixed(m2.external_angular_deceleration)},
+	mStepDelta{from_fixed(m2.step_delta)},
+	mStepAmplitude{from_fixed(m2.step_amplitude)},
+	mRadius{from_fixed(m2.radius)},
+	mHeight{from_fixed(m2.height)},
+	mDeadHeight{from_fixed(m2.dead_height)},
+	mCameraHeight{from_fixed(m2.camera_height)},
+	mSplashHeight{from_fixed(m2.splash_height)},
+	mHalfCameraSeparation{from_fixed(m2.half_camera_separation)}
+{
+	mGoodData = true;
+}
+
+
 BigEndianBuffer& PhysicsConstants::LoadObject(BigEndianBuffer& buffer)
 {
 	// everything is a 16.16 fixed, for whatever reason
@@ -114,6 +153,20 @@ BigEndianBuffer& PhysicsConstants::SaveObject(BigEndianBuffer& buffer) const
 	return buffer;
 }
 
+AttackDefinition::AttackDefinition(const attack_definition& m2) :
+	PhysicsElement{false},
+	mType{m2.type},
+	mRepetitions{m2.repetitions},
+	mError{m2.error * 360.0 / 512.0},
+	mRange{m2.range},
+	mAttackShape{m2.attack_shape},
+	mDx{m2.dx},
+	mDy{m2.dy},
+	mDz{m2.dz}
+{
+	mGoodData = true;
+}
+
 BigEndianBuffer& AttackDefinition::LoadObject(BigEndianBuffer& buffer)
 {
 	mType = buffer.ReadShort();
@@ -143,6 +196,17 @@ BigEndianBuffer& AttackDefinition::SaveObject(BigEndianBuffer& buffer) const
 	buffer.WriteShort(mDz);
 	
 	return buffer;
+}
+
+DamageDefinition::DamageDefinition(const damage_definition& m2) :
+	PhysicsElement{false},
+	mType{m2.type},
+	mFlags{m2.flags},
+	mBase{m2.base},
+	mRandom{m2.random},
+	mScale{from_fixed(m2.scale)}
+{
+	mGoodData = true;
 }
 
 BigEndianBuffer& DamageDefinition::LoadObject(BigEndianBuffer& buffer)
@@ -181,6 +245,20 @@ static unsigned short BuildCollection(unsigned short collection, unsigned short 
 	}
 }
 
+EffectDefinition::EffectDefinition(const effect_definition& m2) :
+	PhysicsElement{false},
+	mCollection{static_cast<uint16_t>(m2.collection & 0x1f)},
+	mColorTable{static_cast<uint16_t>((m2.collection >> 5) & 0xf)},
+	mShape{m2.shape},
+	mSoundPitch{from_fixed(m2.sound_pitch)},
+	mFlags{static_cast<unsigned short>(m2.flags)},
+	mDelay{m2.delay},
+	mDelaySound{m2.delay_sound}
+{
+	mGoodData = true;
+}
+	
+
 BigEndianBuffer& EffectDefinition::LoadObject(BigEndianBuffer& buffer)
 {
 	mCollection = buffer.ReadUShort();
@@ -206,6 +284,62 @@ BigEndianBuffer& EffectDefinition::SaveObject(BigEndianBuffer& buffer) const
 	buffer.WriteShort(mDelaySound);
 
 	return buffer;
+}
+
+MonsterDefinition::MonsterDefinition(const monster_definition& m2) :
+	PhysicsElement{false},
+	mCollection{static_cast<uint16_t>(m2.collection & 0x1f)},
+	mColorTable{static_cast<uint16_t>((m2.collection >> 5) & 0x7)},
+	mVitality{m2.vitality},
+	mImmunities{m2.immunities},
+	mWeaknesses{m2.weaknesses},
+	mFlags{m2.flags},
+	mClass{m2.monster_class},
+	mFriends{m2.friends},
+	mEnemies{m2.enemies},
+	mSoundPitch{from_fixed(m2.sound_pitch)},
+	mActivationSound{m2.activation_sound},
+	mFriendlyActivationSound{m2.friendly_activation_sound},
+	mClearSound{m2.clear_sound},
+	mKillSound{m2.kill_sound},
+	mApologySound{m2.apology_sound},
+	mFlamingSound{m2.flaming_sound},
+	mRandomSound{m2.random_sound},
+	mRandomSoundMask{m2.random_sound_mask},
+	mCarryingItemType{m2.carrying_item_type},
+	mRadius{m2.radius},
+	mHeight{m2.height},
+	mPreferredHoverHeight{m2.preferred_hover_height},
+	mMinimumLedgeDelta{m2.minimum_ledge_delta},
+	mMaximumLedgeDelta{m2.maximum_ledge_delta},
+	mExternalVelocityScale{from_fixed(m2.external_velocity_scale)},
+	mImpactEffect{m2.impact_effect},
+	mMeleeImpactEffect{m2.melee_impact_effect},
+	mContrailEffect{m2.contrail_effect},
+	mHalfVisualArc{m2.half_visual_arc},
+	mHalfVerticalVisualArc{m2.half_vertical_visual_arc},
+	mVisualRange{m2.visual_range},
+	mDarkVisualRange{m2.dark_visual_range},
+	mIntelligence{m2.intelligence},
+	mSpeed{m2.speed},
+	mGravity{m2.gravity},
+	mTerminalVelocity{m2.terminal_velocity},
+	mDoorRetryMask{m2.door_retry_mask},
+	mShrapnelRadius{m2.shrapnel_radius},
+	mShrapnelDamage{m2.shrapnel_damage},
+	mHitShapes{m2.hit_shapes},
+	mHardDyingShape{m2.hard_dying_shape},
+	mSoftDyingShape{m2.soft_dying_shape},
+	mHardDeadShapes{m2.hard_dead_shapes},
+	mStationaryShape{m2.stationary_shape},
+	mMovingShape{m2.moving_shape},
+	mTeleportInShape{m2.teleport_in_shape},
+	mTeleportOutShape{m2.teleport_out_shape},
+	mAttackFrequency{m2.attack_frequency},
+	mMeleeAttack{m2.melee_attack},
+	mRangedAttack{m2.ranged_attack}
+{
+	mGoodData = true;
 }
 
 BigEndianBuffer& MonsterDefinition::LoadObject(BigEndianBuffer& buffer)
@@ -355,6 +489,30 @@ BigEndianBuffer& MonsterDefinition::SaveObject(BigEndianBuffer& buffer) const
 	return buffer;
 }
 
+ProjectileDefinition::ProjectileDefinition(const projectile_definition& m2) :
+	PhysicsElement{false},
+	mCollection{static_cast<uint16_t>(m2.collection & 0x1f)},
+	mColorTable{static_cast<uint16_t>((m2.collection >> 5) & 0x7)},
+	mShape{m2.shape},
+	mDetonationEffect{m2.detonation_effect},
+	mMediaDetonationEffect{m2.media_detonation_effect},
+	mContrailEffect{m2.contrail_effect},
+	mTicksBetweenContrails{m2.ticks_between_contrails},
+	mMaximumContrails{m2.maximum_contrails},
+	mMediaProjectilePromotion{m2.media_projectile_promotion},
+	mRadius{m2.radius},
+	mAreaOfEffect{m2.area_of_effect},
+	mDamage{m2.damage},
+	mFlags{m2.flags},
+	mSpeed{m2.speed},
+	mMaximumRange{m2.maximum_range},
+	mSoundPitch{from_fixed(m2.sound_pitch)},
+	mFlybySound{m2.flyby_sound},
+	mReboundSound{m2.rebound_sound}
+{
+	mGoodData = true;
+}
+
 BigEndianBuffer& ProjectileDefinition::LoadObject(BigEndianBuffer& buffer)
 {
 	mCollection = buffer.ReadUShort();
@@ -417,6 +575,30 @@ BigEndianBuffer& ProjectileDefinition::SaveObject(BigEndianBuffer& buffer) const
 	return buffer;
 }
 
+TriggerDefinition::TriggerDefinition(const trigger_definition& m2) :
+	PhysicsElement{false},
+	mRoundsPerMagazine{m2.rounds_per_magazine},
+	mAmmunitionType{m2.ammunition_type},
+	mTicksPerRound{m2.ticks_per_round},
+	mRecoveryTicks{m2.recovery_ticks},
+	mChargingTicks{m2.charging_ticks},
+	mRecoilMagnitude{m2.recoil_magnitude},
+	mFiringSound{m2.firing_sound},
+	mClickSound{m2.click_sound},
+	mChargingSound{m2.charging_sound},
+	mShellCasingSound{m2.shell_casing_sound},
+	mReloadingSound{m2.reloading_sound},
+	mChargedSound{m2.charged_sound},
+	mProjectileType{m2.projectile_type},
+	mThetaError{m2.theta_error},
+	mDx{m2.dx},
+	mDz{m2.dz},
+	mShellCasingType{m2.shell_casing_type},
+	mBurstCount{m2.burst_count}
+{
+	mGoodData = true;
+}
+
 BigEndianBuffer& TriggerDefinition::LoadObject(BigEndianBuffer& buffer)
 {
 	mRoundsPerMagazine = buffer.ReadShort();
@@ -468,6 +650,38 @@ BigEndianBuffer& TriggerDefinition::SaveObject(BigEndianBuffer& buffer) const
 	buffer.WriteShort(mBurstCount);
 
 	return buffer;
+}
+
+WeaponDefinition::WeaponDefinition(const weapon_definition& m2) :
+	PhysicsElement{false},
+	mItemType{m2.item_type},
+	mPowerupType{m2.powerup_type},
+	mWeaponClass{m2.weapon_class},
+	mFlags{m2.flags},
+	mFiringLightIntensity{from_fixed(m2.firing_light_intensity)},
+	mFiringIntensityDecayTicks{m2.firing_intensity_decay_ticks},
+	mIdleHeight{from_fixed(m2.idle_height)},
+	mBobAmplitude{from_fixed(m2.bob_amplitude)},
+	mKickHeight{from_fixed(m2.kick_height)},
+	mReloadHeight{from_fixed(m2.reload_height)},
+	mIdleWidth{from_fixed(m2.idle_width)},
+	mHorizontalAmplitude{from_fixed(m2.horizontal_amplitude)},
+	mCollection{static_cast<uint16_t>(m2.collection & 0x1f)},
+	mColorTable{static_cast<uint16_t>((m2.collection >> 5) & 0x7)},
+	mIdleShape{m2.idle_shape},
+	mFiringShape{m2.firing_shape},
+	mReloadingShape{m2.reloading_shape},
+	mChargingShape{m2.charging_shape},
+	mChargedShape{m2.charged_shape},
+	mReadyTicks{m2.ready_ticks},
+	mAwaitReloadTicks{m2.await_reload_ticks},
+	mLoadingTicks{m2.loading_ticks},
+	mFinishLoadingTicks{m2.finish_loading_ticks},
+	mPowerupTicks{m2.powerup_ticks},
+	mPrimaryTrigger{m2.weapons_by_trigger[_primary_weapon]},
+	mSecondaryTrigger{m2.weapons_by_trigger[_secondary_weapon]}
+{
+	mGoodData = true;
 }
 
 BigEndianBuffer& WeaponDefinition::LoadObject(BigEndianBuffer& buffer)

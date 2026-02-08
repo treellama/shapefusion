@@ -22,6 +22,15 @@
 #include "../BigEndianBuffer.h"
 #include <iostream>
 
+struct attack_definition;
+struct damage_definition;
+struct effect_definition;
+struct monster_definition;
+struct physics_constants;
+struct projectile_definition;
+struct trigger_definition;
+struct weapon_definition;
+
 class PhysicsElement
 {
 private:
@@ -38,6 +47,7 @@ public:
 	bool IsGood() const { return mGoodData; }
 	bool IsVerbose() const { return mVerboseLoading; }
 };
+
 
 class PhysicsConstants : public PhysicsElement
 {
@@ -156,6 +166,7 @@ public:
 
 
 	PhysicsConstants(bool verbose = false) : PhysicsElement(verbose) { }
+	PhysicsConstants(const physics_constants&);
 	~PhysicsConstants() { }
 
 	BigEndianBuffer& SaveObject(BigEndianBuffer& buffer) const;
@@ -197,6 +208,7 @@ public:
 	void SetDz(short v) { mDz = v; }
 	
 	AttackDefinition(bool verbose = false) : PhysicsElement(verbose) { }
+	AttackDefinition(const attack_definition&);
 	~AttackDefinition() { }
 
 	BigEndianBuffer& SaveObject(BigEndianBuffer& buffer) const;
@@ -237,6 +249,7 @@ public:
 	void SetScale(double d) { mScale = d; }
 
 	DamageDefinition(bool verbose = false) : PhysicsElement(verbose) { }
+	DamageDefinition(const damage_definition&);
 	~DamageDefinition() { }
 
 	BigEndianBuffer& SaveObject(BigEndianBuffer& buffer) const;
@@ -306,6 +319,7 @@ public:
 	}
 
 	EffectDefinition(bool verbose = false) : PhysicsElement(verbose) { }
+	EffectDefinition(const effect_definition&);
 	~EffectDefinition() { }
 
 	BigEndianBuffer& SaveObject(BigEndianBuffer& buffer) const;
@@ -524,6 +538,7 @@ public:
 	void SetAttackFrequency(short v) { mAttackFrequency = v; }
 
 	MonsterDefinition(bool verbose = false) : PhysicsElement(verbose) { }
+	MonsterDefinition(const monster_definition& m2);
 	~MonsterDefinition() { }
 
 	BigEndianBuffer& SaveObject(BigEndianBuffer& buffer) const;
@@ -615,6 +630,7 @@ public:
 	void SetReboundSound(short v) { mReboundSound = v; }
 
 	ProjectileDefinition(bool verbose = false) : PhysicsElement(verbose) { }
+	ProjectileDefinition(const projectile_definition&);
 	~ProjectileDefinition() { }
 	
 	BigEndianBuffer& SaveObject(BigEndianBuffer& buffer) const;
@@ -693,6 +709,7 @@ public:
 	void SetBurstCount(short v) { mBurstCount = v; }
 
 	TriggerDefinition(bool verbose = false) : PhysicsElement(verbose) { }
+	TriggerDefinition(const trigger_definition&);
 	~TriggerDefinition() { }
 
 	BigEndianBuffer& SaveObject(BigEndianBuffer& buffer) const;
@@ -805,6 +822,7 @@ public:
 
 
 	WeaponDefinition(bool verbose = false) : PhysicsElement(verbose) { }
+	WeaponDefinition(const weapon_definition&);
 	~WeaponDefinition() { }
 
 	BigEndianBuffer& SaveObject(BigEndianBuffer& buffer) const;

@@ -1450,6 +1450,8 @@ bool PhysicsView::OnCreate(wxDocument* doc, long flags)
 	mFrame->Show(true);
 	Activate(true);
 
+	OnUpdate(this, nullptr);
+
 	return true;
 }
 
