@@ -22,6 +22,8 @@
 #include <algorithm>
 #include <memory>
 
+#include "wx/clipbrd.h"
+
 // on-file struct sizes
 #define SIZEOF_collection_definition		544
 #define SIZEOF_rgb_color_value				8
