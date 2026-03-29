@@ -434,13 +434,18 @@ unsigned char* AppleSoundHeader::Data(void)
 	return &mData[0];
 }
 
-SoundsDefinition::SoundsDefinition(bool verbose): SoundsElement(verbose)
+SoundsDefinition::SoundsDefinition(bool verbose):
+	SoundsElement(verbose),
+	mSoundCode{-1},
+	mBehaviorIndex{_sound_is_quiet},
+	mFlags{0},
+	mChance{_always},
+	mLowPitch{0},
+	mHighPitch{0},
+	mPermutationsPlayed{0},
+	mLastPlayed{0},
+	mRemap8bit{false}
 {
-	mSoundCode = -1;
-	mBehaviorIndex = _sound_is_quiet;
-	mFlags = 0;
-	mChance = _always;
-	mSounds.clear();
 }
 
 SoundsDefinition::~SoundsDefinition()
