@@ -47,11 +47,11 @@ bool ShapeFusionApp::OnInit(void)
 
 	// Create a template relating drawing documents to their views
 	(void) new wxDocTemplate(m_docManager, _T("Shapes"), _T("*"), _T(""), _T(""), _T("Shapes"), _T("Shapes"),
-		CLASSINFO(ShapesDocument), CLASSINFO(ShapesView));
+							 CLASSINFO(ShapesDocument), CLASSINFO(ShapesView), wxTEMPLATE_INVISIBLE);
 	(void) new wxDocTemplate(m_docManager, _T("Sounds"), _T("*"), _T(""), _T(""), _T("Sounds"), _T("Sounds"),
-		CLASSINFO(SoundsDocument), CLASSINFO(SoundsView));
+							 CLASSINFO(SoundsDocument), CLASSINFO(SoundsView), wxTEMPLATE_INVISIBLE);
 
-	(void) new wxDocTemplate(m_docManager, _T("Physics"), _T("*"), _T(""), _T(""), _T("Physics"), _T("Physics"), CLASSINFO(PhysicsDocument), CLASSINFO(PhysicsView));
+	(void) new wxDocTemplate(m_docManager, _T("Physics"), _T("*"), _T(""), _T(""), _T("Physics"), _T("Physics"), CLASSINFO(PhysicsDocument), CLASSINFO(PhysicsView), wxTEMPLATE_VISIBLE);
 
 #ifdef __WXMAC__
 	//TODO: Put correct file extension values here

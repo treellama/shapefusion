@@ -1450,11 +1450,15 @@ bool PhysicsView::OnCreate(wxDocument* doc, long flags)
 	mFrame->Show(true);
 	Activate(true);
 
+	OnUpdate(this, nullptr);
+
 	return true;
 }
 
 void PhysicsView::OnUpdate(wxView*, wxObject*)
 {
+	tree->DeleteChildren(tree->GetRootItem());
+	
 	wxTreeItemId aliens = tree->AppendItem(tree->GetRootItem(), _("Aliens"), -1, -1, new PhysicsTreeItemData());
 	unsigned int monster_count = static_cast<PhysicsDocument*>(GetDocument())->MonsterCount();
 	for (unsigned int i = 0; i < monster_count; ++i) {

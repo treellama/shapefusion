@@ -32,13 +32,35 @@
 #include "../BigEndianBuffer.h"
 #include "PhysicsDocument.h"
 
+#include "DefaultPhysics.h"
+
 #define FOUR_CHARS_TO_INT(a,b,c,d) (((unsigned int)(a) << 24) | ((unsigned int)(b) << 16) | ((unsigned int)(c) << 8) | (unsigned int)(d))
 
 IMPLEMENT_DYNAMIC_CLASS(PhysicsDocument, wxDocument)
 
-PhysicsDocument::PhysicsDocument() : wxDocument(), PhysicsElement(true)
+PhysicsDocument::PhysicsDocument() : wxDocument(), PhysicsElement(false)
 {
-	mConstants.resize(2);
+	for (auto i = 0; i < NUMBER_OF_MONSTER_TYPES; ++i) {
+		mMonsterDefinitions.emplace_back(monster_definitions[i]);
+	}
+
+	for (auto i = 0; i < NUMBER_OF_EFFECT_TYPES; ++i) {
+		mEffectDefinitions.emplace_back(effect_definitions[i]);
+	}
+
+	for (auto i = 0; i < NUMBER_OF_PROJECTILE_TYPES; ++i) {
+		mProjectileDefinitions.emplace_back(projectile_definitions[i]);
+	}
+	
+	for (auto i = 0; i < NUMBER_OF_PHYSICS_MODELS; ++i) {
+		mConstants.emplace_back(physics_models[i]);
+	}
+
+	for (auto i = 0; i < MAXIMUM_NUMBER_OF_WEAPONS; ++i) {
+		mWeaponDefinitions.emplace_back(weapon_definitions[i]);
+	}
+
+	mGoodData = true;
 }
 
 PhysicsDocument::~PhysicsDocument()

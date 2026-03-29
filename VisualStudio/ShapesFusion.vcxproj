@@ -180,6 +180,7 @@
     <ClInclude Include="..\DefaultNames.h" />
     <ClInclude Include="..\GenericEndianBuffer.h" />
     <ClInclude Include="..\LittleEndianBuffer.h" />
+    <ClInclude Include="..\Physics\DefaultPhysics.h" />
     <ClInclude Include="..\Physics\PhysicsDocument.h" />
     <ClInclude Include="..\Physics\PhysicsElements.h" />
     <ClInclude Include="..\Physics\PhysicsTreeItemData.h" />
@@ -210,6 +211,7 @@
     <ClCompile Include="..\DefaultNames.cpp" />
     <ClCompile Include="..\GenericEndianBuffer.cpp" />
     <ClCompile Include="..\LittleEndianBuffer.cpp" />
+    <ClCompile Include="..\Physics\DefaultPhysics.cpp" />
     <ClCompile Include="..\Physics\PhysicsDocument.cpp" />
     <ClCompile Include="..\Physics\PhysicsEditor.cpp" />
     <ClCompile Include="..\Physics\PhysicsElements.cpp" />
