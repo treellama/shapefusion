@@ -10,5 +10,11 @@
 		  "default-features": false
       }
    ],
-	"builtin-baseline":"c3867e714dd3a51c272826eea77267876517ed99"
+	"builtin-baseline":"c3867e714dd3a51c272826eea77267876517ed99",
+	"overrides": [
+    { 
+        "name": "wxwidgets", 
+        "version": "3.2.10"
+    }
+  ]
 }
