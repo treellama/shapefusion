@@ -99,6 +99,9 @@
     <ClInclude Include="..\Resources\resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\Physics\DefaultPhysics.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Physics\PhysicsDocument.cpp">
@@ -183,6 +186,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\ShapeFusionMenus.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Physics\DefaultPhysics.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

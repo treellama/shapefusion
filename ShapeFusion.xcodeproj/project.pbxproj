@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 45;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -28,12 +28,6 @@
 		1FE8DF890B9C4431003EF856 /* COPYING.txt in Resources */ = {isa = PBXBuildFile; fileRef = 1FE8DF870B9C4431003EF856 /* COPYING.txt */; };
 		1FE8DF8A0B9C4431003EF856 /* README.txt in Resources */ = {isa = PBXBuildFile; fileRef = 1FE8DF880B9C4431003EF856 /* README.txt */; };
 		1FEDD4640B9C3F9D00D69B62 /* utilities.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1FEDD4610B9C3F9D00D69B62 /* utilities.cpp */; };
-		4DE10B410CC3992D00BAEC76 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F08B4C360AB0B06D00896399 /* Carbon.framework */; };
-		4DE10B4A0CC39BF200BAEC76 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F08B4C760AB0B7E300896399 /* IOKit.framework */; };
-		4DE10B4B0CC39BF400BAEC76 /* System.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F08B4C370AB0B09A00896399 /* System.framework */; };
-		4DE10B4E0CC39C2E00BAEC76 /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DE10B4D0CC39C2E00BAEC76 /* libiconv.dylib */; };
-		4DE10B530CC39C8E00BAEC76 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DE10B520CC39C8E00BAEC76 /* Cocoa.framework */; };
-		4DE10B570CC39CAB00BAEC76 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DE10B560CC39CAB00BAEC76 /* libz.dylib */; };
 		AE0270E314C51B4F0093B508 /* PhysicsDocument.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AE0270DE14C51B4F0093B508 /* PhysicsDocument.cpp */; };
 		AE0270E414C51B4F0093B508 /* PhysicsEditor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AE0270DF14C51B4F0093B508 /* PhysicsEditor.cpp */; };
 		AE0270E514C51B4F0093B508 /* PhysicsElements.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AE0270E014C51B4F0093B508 /* PhysicsElements.cpp */; };
@@ -42,6 +36,7 @@
 		AE02710C14C51C220093B508 /* DefaultNames.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AE02710A14C51C220093B508 /* DefaultNames.cpp */; };
 		AE02711214C51C510093B508 /* ShapeFusionDocManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AE02711014C51C510093B508 /* ShapeFusionDocManager.cpp */; };
 		AE33904A1290D7A2000DE273 /* shapefusion.icns in Resources */ = {isa = PBXBuildFile; fileRef = AE3390491290D7A2000DE273 /* shapefusion.icns */; };
+		AE68C1E82F7B5B8400430790 /* DefaultPhysics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AE68C1E72F7B5B8400430790 /* DefaultPhysics.cpp */; };
 		F03A573C0D0381F00057BB53 /* GenericEndianBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F03A573B0D0381F00057BB53 /* GenericEndianBuffer.cpp */; };
 		F08B4C5A0AB0B31E00896399 /* ShapeFusionApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F08B4B780AB0AE4B00896399 /* ShapeFusionApp.cpp */; };
 /* End PBXBuildFile section */
@@ -98,9 +93,6 @@
 		1FE8DF880B9C4431003EF856 /* README.txt */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = README.txt; sourceTree = "<group>"; };
 		1FEDD4610B9C3F9D00D69B62 /* utilities.cpp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = utilities.cpp; sourceTree = "<group>"; };
 		1FEDD4620B9C3F9D00D69B62 /* utilities.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = utilities.h; sourceTree = "<group>"; };
-		4DE10B4D0CC39C2E00BAEC76 /* libiconv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.dylib; path = /usr/lib/libiconv.dylib; sourceTree = "<absolute>"; };
-		4DE10B520CC39C8E00BAEC76 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
-		4DE10B560CC39CAB00BAEC76 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = /usr/lib/libz.dylib; sourceTree = "<absolute>"; };
 		AE0270DE14C51B4F0093B508 /* PhysicsDocument.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PhysicsDocument.cpp; path = Physics/PhysicsDocument.cpp; sourceTree = "<group>"; };
 		AE0270DF14C51B4F0093B508 /* PhysicsEditor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PhysicsEditor.cpp; path = Physics/PhysicsEditor.cpp; sourceTree = "<group>"; };
 		AE0270E014C51B4F0093B508 /* PhysicsElements.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PhysicsElements.cpp; path = Physics/PhysicsElements.cpp; sourceTree = "<group>"; };
@@ -115,6 +107,8 @@
 		AE02711014C51C510093B508 /* ShapeFusionDocManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ShapeFusionDocManager.cpp; sourceTree = "<group>"; };
 		AE02711114C51C510093B508 /* ShapeFusionDocManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShapeFusionDocManager.h; sourceTree = "<group>"; };
 		AE3390491290D7A2000DE273 /* shapefusion.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = shapefusion.icns; path = Resources/shapefusion.icns; sourceTree = "<group>"; };
+		AE68C1E62F7B5B8400430790 /* DefaultPhysics.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DefaultPhysics.h; path = Physics/DefaultPhysics.h; sourceTree = "<group>"; };
+		AE68C1E72F7B5B8400430790 /* DefaultPhysics.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = DefaultPhysics.cpp; path = Physics/DefaultPhysics.cpp; sourceTree = "<group>"; };
 		AEEC4EC224EA10D7006C0530 /* ShapeFusion.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ShapeFusion.entitlements; sourceTree = "<group>"; };
 		F03A573B0D0381F00057BB53 /* GenericEndianBuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.cpp.cpp; path = GenericEndianBuffer.cpp; sourceTree = "<group>"; };
 		F03A573D0D0381F80057BB53 /* GenericEndianBuffer.h */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.c.h; path = GenericEndianBuffer.h; sourceTree = "<group>"; };
@@ -130,12 +124,8 @@
 		F08B4B860AB0AE6C00896399 /* CTBrowser.h */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.c.h; path = CTBrowser.h; sourceTree = "<group>"; };
 		F08B4B870AB0AE6C00896399 /* BitmapView.h */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.c.h; path = BitmapView.h; sourceTree = "<group>"; };
 		F08B4B880AB0AE6C00896399 /* BitmapBrowser.h */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.c.h; path = BitmapBrowser.h; sourceTree = "<group>"; };
-		F08B4C360AB0B06D00896399 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
-		F08B4C370AB0B09A00896399 /* System.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = System.framework; path = /System/Library/Frameworks/System.framework; sourceTree = "<absolute>"; };
 		F08B4C440AB0B10000896399 /* ShapeFusion.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ShapeFusion.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F08B4C470AB0B10000896399 /* ShapeFusion-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "ShapeFusion-Info.plist"; sourceTree = "<group>"; };
-		F08B4C760AB0B7E300896399 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = /System/Library/Frameworks/IOKit.framework; sourceTree = "<absolute>"; };
-		F08B4CB30AB0C0E700896399 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
 		F0966E020B551E4900820E4F /* SequenceView.cpp */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.cpp.cpp; path = SequenceView.cpp; sourceTree = "<group>"; };
 		F0966E040B551E5100820E4F /* SequenceView.h */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.c.h; path = SequenceView.h; sourceTree = "<group>"; };
 		F096F44E0AD2DD97005A633A /* BigEndianBuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.cpp.cpp; path = BigEndianBuffer.cpp; sourceTree = "<group>"; };
@@ -147,12 +137,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4DE10B410CC3992D00BAEC76 /* Carbon.framework in Frameworks */,
-				4DE10B4A0CC39BF200BAEC76 /* IOKit.framework in Frameworks */,
-				4DE10B4B0CC39BF400BAEC76 /* System.framework in Frameworks */,
-				4DE10B530CC39C8E00BAEC76 /* Cocoa.framework in Frameworks */,
-				4DE10B4E0CC39C2E00BAEC76 /* libiconv.dylib in Frameworks */,
-				4DE10B570CC39CAB00BAEC76 /* libz.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -206,6 +190,8 @@
 		AE0270DD14C51B3A0093B508 /* Physics */ = {
 			isa = PBXGroup;
 			children = (
+				AE68C1E62F7B5B8400430790 /* DefaultPhysics.h */,
+				AE68C1E72F7B5B8400430790 /* DefaultPhysics.cpp */,
 				AE0270E814C51B680093B508 /* PhysicsDocument.h */,
 				AE0270E914C51B680093B508 /* PhysicsElements.h */,
 				AE0270EA14C51B680093B508 /* PhysicsTreeItemData.h */,
@@ -225,7 +211,6 @@
 				AEEC4EC224EA10D7006C0530 /* ShapeFusion.entitlements */,
 				F08B4B720AB0AE0B00896399 /* Sources */,
 				F08B4B750AB0AE1200896399 /* Resources */,
-				F08B4B9E0AB0B02A00896399 /* External things */,
 				F08B4C450AB0B10000896399 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -265,20 +250,6 @@
 				AE02710B14C51C220093B508 /* DefaultNames.h */,
 			);
 			name = Resources;
-			sourceTree = "<group>";
-		};
-		F08B4B9E0AB0B02A00896399 /* External things */ = {
-			isa = PBXGroup;
-			children = (
-				4DE10B560CC39CAB00BAEC76 /* libz.dylib */,
-				4DE10B520CC39C8E00BAEC76 /* Cocoa.framework */,
-				4DE10B4D0CC39C2E00BAEC76 /* libiconv.dylib */,
-				F08B4C360AB0B06D00896399 /* Carbon.framework */,
-				F08B4C370AB0B09A00896399 /* System.framework */,
-				F08B4C760AB0B7E300896399 /* IOKit.framework */,
-				F08B4CB30AB0C0E700896399 /* OpenGL.framework */,
-			);
-			name = "External things";
 			sourceTree = "<group>";
 		};
 		F08B4C450AB0B10000896399 /* Products */ = {
@@ -374,6 +345,7 @@
 				1FD3571A0BA21F2000360AA5 /* ShapesTreeItemData.cpp in Sources */,
 				1FAD85D20BB1E9410024D113 /* SoundsDocument.cpp in Sources */,
 				1FAD85D30BB1E9410024D113 /* SoundsElements.cpp in Sources */,
+				AE68C1E82F7B5B8400430790 /* DefaultPhysics.cpp in Sources */,
 				1FAD85D40BB1E9410024D113 /* SoundsView.cpp in Sources */,
 				F03A573C0D0381F00057BB53 /* GenericEndianBuffer.cpp in Sources */,
 				1FD941E10B92D5CD00DD1EEC /* BigEndianBuffer.cpp in Sources */,
@@ -563,12 +535,72 @@
 					__WXMAC__,
 				);
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				"HEADER_SEARCH_PATHS[arch=arm64]" = (
+					"$(SRCROOT)/vcpkg/installed-arm64-osx/arm64-osx/lib/wx/include/osx_cocoa-unicode-static-3.2",
+					"$(SRCROOT)/vcpkg/installed-arm64-osx/arm64-osx/include/wx-3.2",
+					"$(SRCROOT)/vcpkg/installed-arm64-osx/arm64-osx/include",
+					$SRCROOT,
+				);
+				"HEADER_SEARCH_PATHS[arch=x86_64]" = (
+					"$(SRCROOT)/vcpkg/installed-x64-osx/x64-osx/lib/wx/include/osx_cocoa-unicode-static-3.2",
+					"$(SRCROOT)/vcpkg/installed-x64-osx/x64-osx/include/wx-3.2",
+					"$(SRCROOT)/vcpkg/installed-x64-osx/x64-osx/include",
+					$SRCROOT,
+				);
 				INFOPLIST_FILE = "ShapeFusion-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(WX_LIB_ROOT)",
 				);
+				"LIBRARY_SEARCH_PATHS[arch=arm64]" = "$(SRCROOT)/vcpkg/installed-arm64-osx/arm64-osx/lib";
+				"LIBRARY_SEARCH_PATHS[arch=x86_64]" = "$(SRCROOT)/vcpkg/installed-x64-osx/x64-osx/lib";
 				MARKETING_VERSION = 0.7;
+				OTHER_CFLAGS = (
+					"-D_FILE_OFFSET_BITS=64",
+					"-D__WXMAC__",
+					"-D__WXOSX__",
+					"-D__WXOSX_COCOA__",
+				);
+				OTHER_LDFLAGS = (
+					"-lwx_osx_cocoau_xrc-3.2",
+					"-lwx_osx_cocoau_qa-3.2",
+					"-lwx_baseu_net-3.2",
+					"-lwx_osx_cocoau_html-3.2",
+					"-lwx_osx_cocoau_core-3.2",
+					"-lwx_baseu_xml-3.2",
+					"-lwx_baseu-3.2",
+					"-lwx_osx_cocoau_core-3.2",
+					"-ljpeg",
+					"-lpng16",
+					"-lz",
+					"-ltiff",
+					"-llzma",
+					"-ljpeg",
+					"-lz",
+					"-lm",
+					"-lnanosvg",
+					"-lnanosvgrast",
+					"-framework",
+					AudioToolbox,
+					"-lwx_baseu-3.2",
+					"-lexpat",
+					"-lz",
+					"-lpcre2-32",
+					/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.4.sdk/usr/lib/libiconv.tbd,
+					"-framework",
+					CoreFoundation,
+					"-framework",
+					Security,
+					"-framework",
+					Carbon,
+					"-framework",
+					Cocoa,
+					"-framework",
+					IOKit,
+					"-framework",
+					QuartzCore,
+					"-lsndfile",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.titodalcanton.shapefusion;
 				PRODUCT_NAME = ShapeFusion;
 				WRAPPER_EXTENSION = app;
@@ -591,12 +623,72 @@
 					__WXMAC__,
 				);
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				"HEADER_SEARCH_PATHS[arch=arm64]" = (
+					"$(SRCROOT)/vcpkg/installed-arm64-osx/arm64-osx/lib/wx/include/osx_cocoa-unicode-static-3.2",
+					"$(SRCROOT)/vcpkg/installed-arm64-osx/arm64-osx/include/wx-3.2",
+					"$(SRCROOT)/vcpkg/installed-arm64-osx/arm64-osx/include",
+					$SRCROOT,
+				);
+				"HEADER_SEARCH_PATHS[arch=x86_64]" = (
+					"$(SRCROOT)/vcpkg/installed-x64-osx/x64-osx/lib/wx/include/osx_cocoa-unicode-static-3.2",
+					"$(SRCROOT)/vcpkg/installed-x64-osx/x64-osx/include/wx-3.2",
+					"$(SRCROOT)/vcpkg/installed-x64-osx/x64-osx/include",
+					$SRCROOT,
+				);
 				INFOPLIST_FILE = "ShapeFusion-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(WX_LIB_ROOT)",
 				);
+				"LIBRARY_SEARCH_PATHS[arch=arm64]" = "$(SRCROOT)/vcpkg/installed-arm64-osx/arm64-osx/lib";
+				"LIBRARY_SEARCH_PATHS[arch=x86_64]" = "$(SRCROOT)/vcpkg/installed-x64-osx/x64-osx/lib";
 				MARKETING_VERSION = 0.7;
+				OTHER_CFLAGS = (
+					"-D_FILE_OFFSET_BITS=64",
+					"-D__WXMAC__",
+					"-D__WXOSX__",
+					"-D__WXOSX_COCOA__",
+				);
+				OTHER_LDFLAGS = (
+					"-lwx_osx_cocoau_xrc-3.2",
+					"-lwx_osx_cocoau_qa-3.2",
+					"-lwx_baseu_net-3.2",
+					"-lwx_osx_cocoau_html-3.2",
+					"-lwx_osx_cocoau_core-3.2",
+					"-lwx_baseu_xml-3.2",
+					"-lwx_baseu-3.2",
+					"-lwx_osx_cocoau_core-3.2",
+					"-ljpeg",
+					"-lpng16",
+					"-lz",
+					"-ltiff",
+					"-llzma",
+					"-ljpeg",
+					"-lz",
+					"-lm",
+					"-lnanosvg",
+					"-lnanosvgrast",
+					"-framework",
+					AudioToolbox,
+					"-lwx_baseu-3.2",
+					"-lexpat",
+					"-lz",
+					"-lpcre2-32",
+					/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.4.sdk/usr/lib/libiconv.tbd,
+					"-framework",
+					CoreFoundation,
+					"-framework",
+					Security,
+					"-framework",
+					Carbon,
+					"-framework",
+					Cocoa,
+					"-framework",
+					IOKit,
+					"-framework",
+					QuartzCore,
+					"-lsndfile",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.titodalcanton.shapefusion;
 				PRODUCT_NAME = ShapeFusion;
 				STRIP_INSTALLED_PRODUCT = YES;
