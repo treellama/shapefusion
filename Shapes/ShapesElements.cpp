@@ -849,6 +849,29 @@ BigEndianBuffer& ShapesFrame::LoadObject(BigEndianBuffer& buffer, unsigned int o
 	return buffer;
 }
 
+void ShapesFrame::RecalculateWorldFields(const ShapesBitmap* bitmap)
+{
+	if (bitmap) {
+		auto w = bitmap->Width();
+		auto h = bitmap->Height();
+		auto scale_factor = ScaleFactor();
+
+		SetWorldLeft(-scale_factor * OriginX());
+		SetWorldTop(scale_factor * OriginY());
+		SetWorldRight(scale_factor * (w - OriginX()));
+		SetWorldBottom(-scale_factor * (h - OriginY()));
+		SetWorldX0(scale_factor * (KeyX() - OriginX()));
+		SetWorldY0(-scale_factor * (KeyY() - OriginY()));
+	} else {
+		SetWorldLeft(0);
+		SetWorldRight(0);
+		SetWorldTop(0);
+		SetWorldBottom(0);
+		SetWorldX0(0);
+		SetWorldY0(0);
+	}
+}
+
 ShapesSequence::ShapesSequence(bool verbose): ShapesElement(verbose)
 {
 	// initialize values to something reasonable
@@ -1367,7 +1390,8 @@ BigEndianBuffer& ShapesChunk::SaveObject(BigEndianBuffer& buffer)
 	buffer.Position(buffer.Position() + frame_count * 4);
 	for (i = 0; i < frame_count; i++) {
 		frame_offsets[i] = buffer.Position();
-		
+
+		mFrames[i]->RecalculateWorldFields(GetBitmap(mFrames[i]->BitmapIndex()));
 		mFrames[i]->SaveObject(buffer);
 	}
 	

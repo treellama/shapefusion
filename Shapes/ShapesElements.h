@@ -245,6 +245,8 @@ public:
 	BigEndianBuffer& SaveObject(BigEndianBuffer& buffer);
 	BigEndianBuffer& SavePatch(BigEndianBuffer& buffer, int index);
 	BigEndianBuffer& LoadObject(BigEndianBuffer& buffer, unsigned int offset);
+
+	void RecalculateWorldFields(const ShapesBitmap* bitmap);
 };
 
 // sequence types (ShapesSequence.number_of_views). Nobody

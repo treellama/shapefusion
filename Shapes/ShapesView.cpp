@@ -1770,28 +1770,21 @@ void ShapesView::EditFrameFields(wxCommandEvent &e)
 		long	v = 0;
 		
 		if (s.ToLong(&v)) {
-			bool	recalculate_world_fields = false;
-			
 			switch (e.GetId()) {
 				case FIELD_ORIGIN_X:
 					sel_frame->SetOriginX(v);
-					recalculate_world_fields = true;
 					break;
 				case FIELD_ORIGIN_Y:
 					sel_frame->SetOriginY(v);
-					recalculate_world_fields = true;
 					break;
 				case FIELD_KEY_X:
 					sel_frame->SetKeyX(v);
-					recalculate_world_fields = true;
 					break;
 				case FIELD_KEY_Y:
 					sel_frame->SetKeyY(v);
-					recalculate_world_fields = true;
 					break;
 				case FIELD_FRAME_SCALEFACTOR:
 					sel_frame->SetScaleFactor(v);
-					recalculate_world_fields = true;
 					break;
 				case FIELD_MIN_LIGHT_INT:
 					if (v > 100) {
@@ -1805,21 +1798,6 @@ void ShapesView::EditFrameFields(wxCommandEvent &e)
 					}
 					sel_frame->SetMinimumLightIntensity(v / 100.0);
 					break;
-			}
-			// recalculate world_* fields if needed and possible
-			if (recalculate_world_fields && sel_frame->BitmapIndex() >= 0
-				&& sel_frame->BitmapIndex() < (int)((ShapesDocument*)GetDocument())->CollectionBitmapCount(mSelectedColl, mSelectedVers)) {
-				ShapesBitmap	*assoc_bitmap = ((ShapesDocument*)GetDocument())->GetBitmap(mSelectedColl, mSelectedVers, sel_frame->BitmapIndex());
-				int			w = assoc_bitmap->Width(),
-				h = assoc_bitmap->Height(),
-				scale_factor = sel_frame->ScaleFactor();
-				
-				sel_frame->SetWorldLeft(-scale_factor * sel_frame->OriginX());
-				sel_frame->SetWorldTop(scale_factor * sel_frame->OriginY());
-				sel_frame->SetWorldRight(scale_factor * (w - sel_frame->OriginX()));
-				sel_frame->SetWorldBottom(-scale_factor * (h - sel_frame->OriginY()));
-				sel_frame->SetWorldX0(scale_factor * (sel_frame->KeyX() - sel_frame->OriginX()));
-				sel_frame->SetWorldY0(-scale_factor * (sel_frame->KeyY() - sel_frame->OriginY()));
 			}
 			f_view->Refresh();
 			((ShapesDocument*)GetDocument())->Modify(true);
