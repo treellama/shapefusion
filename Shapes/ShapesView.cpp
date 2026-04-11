@@ -97,8 +97,9 @@ ShapesView::~ShapesView(void)
 
 bool ShapesView::OnCreate(wxDocument *doc, long WXUNUSED(flags))
 {
-	wxString	frameTitle = _T("ShapeFusion : Shapes : ");
 	
+	wxString	frameTitle = _T("ShapeFusion : Shapes : ");
+
 	frameTitle.Append(doc->GetFilename());
     mFrame = wxGetApp().CreateChildFrame(doc, this, frameTitle, wxPoint(0, 0), wxSize(900, 600));
 	mFrame->SetSizeHints(200, 200);

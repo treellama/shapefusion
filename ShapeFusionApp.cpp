@@ -107,7 +107,7 @@ wxFrame *ShapeFusionApp::CreateChildFrame(wxDocument *doc, wxView *view, const w
 {
     // Make a child frame
     wxDocChildFrame *subframe = new wxDocChildFrame(doc, view, GetMainFrame(), wxID_ANY, title,
-        point, size, style);
+													frame->FromDIP(point), frame->FromDIP(size), style);
     
     wxMenuBar *menu_bar = new wxMenuBar;
     

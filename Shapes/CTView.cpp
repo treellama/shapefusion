@@ -44,13 +44,13 @@ static const char *self_luminescent_icon_xpm[] = {
 
 CTView::CTView(wxWindow *parent):
 	wxPanel(parent, -1, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER | wxFULL_REPAINT_ON_RESIZE),
-	mColorTable(NULL), mSwatchSize(0), mMargin(7), mLightBulbIcon(self_luminescent_icon_xpm)
+	mColorTable(NULL), mSwatchSize(0), mMargin(parent->FromDIP(7)), mLightBulbIcon(self_luminescent_icon_xpm)
 {
 	SetBackgroundColour(wxColour(255, 255, 255));
 	mInvisiblePen.SetColour(0, 0, 0);
 	mInvisiblePen.SetStyle(wxPENSTYLE_TRANSPARENT);
 	mSelectionPen.SetColour(0, 0, 0);
-	mSelectionPen.SetWidth(3);
+	mSelectionPen.SetWidth(FromDIP(3));
 }
 
 void CTView::OnPaint(wxPaintEvent& e)
@@ -63,6 +63,8 @@ void CTView::OnPaint(wxPaintEvent& e)
 	unsigned int	x = mMargin, y = mMargin;
 	int				width, height;
 
+	wxBitmap lightBulbIcon = mLightBulbIcon.GetBitmapFor(this);
+
 	tempdc.GetSize(&width, &height);
 	tempdc.SetPen(mInvisiblePen);
 	for (unsigned int j = 0; j < mColorTable->ColorCount(); j++) {
@@ -70,7 +72,10 @@ void CTView::OnPaint(wxPaintEvent& e)
 		if (mSelectionMask[j]) {
 			tempdc.SetPen(mSelectionPen);
 			tempdc.SetBrush(*wxWHITE_BRUSH);
-			tempdc.DrawRectangle(x-3, y-3, mSwatchSize+6, mSwatchSize+6);
+			tempdc.DrawRectangle(x - mSelectionPen.GetWidth(),
+								 y - mSelectionPen.GetWidth(),
+								 mSwatchSize + mSelectionPen.GetWidth() * 2,
+								 mSwatchSize + mSelectionPen.GetWidth() * 2);
 			tempdc.SetPen(mInvisiblePen);
 		}
 		// draw color swatch
@@ -82,7 +87,7 @@ void CTView::OnPaint(wxPaintEvent& e)
 		if (mColorTable->GetColor(j)->Luminescent()) {
 			// display self-luminescent color flag
 			tempdc.SetBrush(*wxWHITE_BRUSH);
-			tempdc.DrawBitmap(mLightBulbIcon, x, y + mSwatchSize - mLightBulbIcon.GetHeight(), true);
+			tempdc.DrawBitmap(lightBulbIcon, x, y + mSwatchSize - lightBulbIcon.GetHeight(), true);
 		}
 		x += mSwatchSize + mMargin;
 		if ((int)(x + mSwatchSize + mMargin) >= width) {
