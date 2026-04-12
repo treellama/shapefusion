@@ -537,7 +537,7 @@ wxBitmap SequenceView::CreateThumbnail(ShapesFrame *fp)
 
 		// TODO apply transfer mode
 
-		return ImageThumbnail(newimg, mThumbnailSize, true);
+		return ImageThumbnail(newimg, mThumbnailSize, static_cast<double>(FromDIP(100)) / 100.0);
 	}
 }
 

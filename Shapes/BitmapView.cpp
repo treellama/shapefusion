@@ -45,8 +45,10 @@ void BitmapView::OnPaint(wxPaintEvent& e)
 	DoPrepareDC(tempdc);
 	GetClientSize(&cw, &ch);
 	tempdc.SetPen(mInvisiblePen);
-	if (mEncBmp != NULL && mColorTable != NULL)
-		tempdc.DrawBitmap(mDecBmp, vw/2 - mDecBmp.GetWidth()/2, vh/2 - mDecBmp.GetHeight()/2);
+	if (mEncBmp != NULL && mColorTable != NULL) {
+		auto bmp = mDecBmp.GetBitmapFor(this);
+		tempdc.DrawBitmap(bmp, vw/2 - bmp.GetWidth()/2, vh/2 - bmp.GetHeight()/2);
+	}
 }
 
 // handle mouse drag (pan view)
@@ -74,10 +76,10 @@ void BitmapView::OnDrag(wxMouseEvent &e)
 
 void BitmapView::OnSize(wxSizeEvent &e)
 {
-	int cw, ch,
-		vw = (mEncBmp == NULL) ? 0 : mEncBmp->Width(),
-		vh = (mEncBmp == NULL) ? 0 : mEncBmp->Height();
-	
+	auto vw = (mEncBmp == NULL) ? 0 : FromDIP(mEncBmp->Width());
+	auto vh = (mEncBmp == NULL) ? 0 : FromDIP(mEncBmp->Height());
+
+	int cw, ch;
 	GetClientSize(&cw, &ch);
 	if (vw < cw)
 		vw = cw;
@@ -90,7 +92,7 @@ void BitmapView::SetTranspPixelsDisplay(bool show)
 {
 	mWhiteTransparency = show;
 	if (mEncBmp != NULL && mEncBmp->Pixels() != NULL && mColorTable != NULL)
-		mDecBmp = wxBitmap(ShapesBitmapToImage(mEncBmp, mColorTable, mWhiteTransparency));
+		mDecBmp = wxBitmapBundle(ShapesBitmapToImage(mEncBmp, mColorTable, mWhiteTransparency));
 	Refresh();
 }
 
@@ -101,10 +103,10 @@ void BitmapView::SetBitmap(ShapesBitmap *bp)
 	if (mEncBmp != NULL) {
 		if (mEncBmp->Pixels() != NULL) {
 			// adjust sizes
-			int	cw, ch,
-				vw = mEncBmp->Width(),
-				vh = mEncBmp->Height();
+			auto vw = FromDIP(mEncBmp->Width());
+			auto vh = FromDIP(mEncBmp->Height());
 
+			int	cw, ch;
 			GetClientSize(&cw, &ch);
 			if (vw < cw)
 				vw = cw;
@@ -113,7 +115,7 @@ void BitmapView::SetBitmap(ShapesBitmap *bp)
 			SetVirtualSize(vw, vh);
 			// decode bitmap
 			if (mColorTable != NULL)
-				mDecBmp = wxBitmap(ShapesBitmapToImage(mEncBmp, mColorTable, mWhiteTransparency));
+				mDecBmp = wxBitmapBundle(ShapesBitmapToImage(mEncBmp, mColorTable, mWhiteTransparency));
 			Refresh();
 		} else {
 			wxLogError(wxT("[BitmapView] Addes a bitmap with NULL pixels"));
@@ -134,7 +136,7 @@ void BitmapView::SetColorTable(ShapesColorTable *ct)
 {
 	mColorTable = ct;
 	if (mEncBmp != NULL && mEncBmp->Pixels() != NULL && mColorTable != NULL)
-		mDecBmp = wxBitmap(ShapesBitmapToImage(mEncBmp, mColorTable, mWhiteTransparency));
+		mDecBmp = wxBitmapBundle(ShapesBitmapToImage(mEncBmp, mColorTable, mWhiteTransparency));
 	Refresh();
 }
 

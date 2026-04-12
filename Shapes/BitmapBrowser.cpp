@@ -37,10 +37,10 @@ BitmapBrowser::BitmapBrowser(wxWindow *parent, wxWindowID id):
 	SetBackgroundColour(wxColour(255, 255, 255));
 	mThumbnailPen.SetColour(200, 200, 200);
 	mSelectionPen.SetColour(0, 0, 0);
-	mSelectionPen.SetWidth(3);
+	mSelectionPen.SetWidth(FromDIP(3));
 	SetScrollRate(0, 2);
-	mThumbnailSize = 64;
-	mMargin = 7;
+	mThumbnailSize = FromDIP(64);
+	mMargin = FromDIP(7);
 	mWhiteTransparency = true;
 	mAutoSize = false;
 }
@@ -369,7 +369,7 @@ wxBitmap BitmapBrowser::CreateThumbnail(ShapesBitmap *bp)
 
 	if (mColorTable)
 		newimg = ShapesBitmapToImage(bp, mColorTable, mWhiteTransparency);
-	return ImageThumbnail(newimg, mThumbnailSize, true);
+	return ImageThumbnail(newimg, mThumbnailSize, static_cast<double>(FromDIP(100)) / 100.0);
 }
 
 void BitmapBrowser::RebuildThumbnail(unsigned int i)

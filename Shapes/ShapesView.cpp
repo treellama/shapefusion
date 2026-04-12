@@ -197,7 +197,7 @@ bool ShapesView::OnCreate(wxDocument *doc, long WXUNUSED(flags))
 	// create the bitmaps section
 	b_outer_sizer = new wxBoxSizer(wxVERTICAL);
 	bb = new BitmapBrowser(main_panel, BITMAP_BROWSER);
-	bb->SetThumbnailSize(64);
+	bb->SetThumbnailSize(mFrame->FromDIP(64));
 	b_count_label = new wxStaticText(main_panel, -1, wxT("N bitmaps"));
 	b_edit_static_box = new wxStaticBox(main_panel, -1, wxT("Bitmap N of M"));
 	b_edit_box = new wxStaticBoxSizer(b_edit_static_box, wxHORIZONTAL);
@@ -600,13 +600,13 @@ void ShapesView::MenuViewTNSize(wxCommandEvent &e)
 	
 	switch (e.GetId()) {
 		case VIEW_MENU_TNSIZE_SMALL:
-			size = 32;
+			size = mFrame->FromDIP(32);
 			break;
 		case VIEW_MENU_TNSIZE_MEDIUM:
-			size = 64;
+			size = mFrame->FromDIP(64);
 			break;
 		case VIEW_MENU_TNSIZE_LARGE:
-			size = 128;
+			size = mFrame->FromDIP(128);
 			break;
 		case VIEW_MENU_TNSIZE_AUTO:
 			size = -1;

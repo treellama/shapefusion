@@ -409,7 +409,7 @@ wxBitmap FrameBrowser::CreateThumbnail(ShapesFrame *fp)
 		if (fp->IsYmirrored())
 			newimg = newimg.Mirror(false);
 
-		return ImageThumbnail(newimg, mThumbnailSize, true);
+		return ImageThumbnail(newimg, mThumbnailSize, static_cast<double>(FromDIP(100)) / 100.0);
 	}
 }
 

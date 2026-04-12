@@ -25,7 +25,7 @@
 #include "wx/image.h"
 
 wxImage ShapesBitmapToImage(ShapesBitmap *bp, ShapesColorTable *ct, bool white_transparency);
-wxBitmap ImageThumbnail(wxImage &img, int tn_size, bool filtering);
+wxBitmap ImageThumbnail(wxImage& img, int tn_size, double max_upscale);
 wxBitmap BadThumbnail(int tn_size);
 float ColourDistance(float r1, float g1, float b1, float r2, float g2, float b2);
 
