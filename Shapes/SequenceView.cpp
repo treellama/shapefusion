@@ -42,17 +42,17 @@ const int THUMB_ARROW_BUTTON_MARGIN = 2;
 
 SequenceView::SequenceView(wxWindow *parent, wxWindowID id):
 	wxScrolledWindow(parent, id, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER | wxFULL_REPAINT_ON_RESIZE),
-	mColorTable(NULL), mThumbnailSize(64), mMargin(7), mPrevBtnIcon(arrow_left_bits, 4, 7),
-	mNextBtnIcon(arrow_right_bits, 4, 7), mAutoSize(false), mSelection(-1), mFrameIndexes(NULL), mView(0)
+	mColorTable(NULL), mThumbnailSize(FromDIP(64)), mMargin(FromDIP(7)), mPrevBtnIcon(wxBitmap(arrow_left_bits, 4, 7)),
+	mNextBtnIcon(wxBitmap(arrow_right_bits, 4, 7)), mAutoSize(false), mSelection(-1), mFrameIndexes(NULL), mView(0)
 {
 	SetBackgroundStyle(wxBG_STYLE_CUSTOM);
 	SetBackgroundColour(wxColour(255, 255, 255));
 	mThumbnailPen.SetColour(200, 200, 200);
 	mSelectionPen.SetColour(0, 0, 0);
-	mSelectionPen.SetWidth(3);
+	mSelectionPen.SetWidth(FromDIP(3));
 	mAngleBrush.SetColour(200, 200, 200);
 	SetScrollRate(2, 2);
-	mAngleLabelSpace = 30;	// TODO get this from real font extent
+	mAngleLabelSpace = FromDIP(30);	// TODO get this from real font extent
 	mWhiteTransparency = true;
 	mNumberOfViews = 0;
 	mFramesPerView = 0;
@@ -99,13 +99,16 @@ void SequenceView::OnPaint(wxPaintEvent& e)
 		// draw arrow buttons if mouse is over this thumbnail
 		wxRect	tnrect(x, y, mThumbnailSize, mThumbnailSize);
 
+		auto nextBtnIcon = mNextBtnIcon.GetBitmapFor(this);
+		auto prevBtnIcon = mPrevBtnIcon.GetBitmapFor(this);
+
 		if (tnrect.Contains(mouse)) {
 			wxString	label = wxString::Format(wxT("%d"), (*mFrameIndexes)[i]);
 			int			labelw, labelh;
 
 			tempdc.SetFont(*wxSMALL_FONT);
-			tempdc.DrawBitmap(mPrevBtnIcon, x + 2, y + mThumbnailSize - mPrevBtnIcon.GetHeight() - 2);
-			tempdc.DrawBitmap(mNextBtnIcon, x + mThumbnailSize - mNextBtnIcon.GetWidth() - 2, y + mThumbnailSize - mNextBtnIcon.GetHeight() - 2);
+			tempdc.DrawBitmap(prevBtnIcon, x + FromDIP(2), y + mThumbnailSize - prevBtnIcon.GetHeight() - FromDIP(2));
+			tempdc.DrawBitmap(nextBtnIcon, x + mThumbnailSize - nextBtnIcon.GetWidth() - FromDIP(2), y + mThumbnailSize - nextBtnIcon.GetHeight() - FromDIP(2));
 			tempdc.GetTextExtent(label, &labelw, &labelh);
 			tempdc.SetTextForeground(wxColour(255, 255, 255));
 			tempdc.DrawText(label, x + (mThumbnailSize-labelw) / 2 - 1, y + mThumbnailSize - labelh - 2);
@@ -585,15 +588,18 @@ wxRect SequenceView::GetNextArrowButtonRect(int thumbnail_index) const
 	int thumb_x = mThumbnailPositions[thumbnail_index].x;
 	int thumb_y = mThumbnailPositions[thumbnail_index].y;
 
-	int x = thumb_x + mThumbnailSize - mNextBtnIcon.GetWidth() - THUMB_ARROW_MARGIN;
-	int y = thumb_y + mThumbnailSize - mNextBtnIcon.GetHeight() - THUMB_ARROW_MARGIN;
-	int w = mPrevBtnIcon.GetWidth();
-	int h = mPrevBtnIcon.GetHeight();
+	auto nextBtnIcon = mNextBtnIcon.GetBitmapFor(this);
+	auto prevBtnIcon = mPrevBtnIcon.GetBitmapFor(this);
 
-	return wxRect(x - THUMB_ARROW_BUTTON_MARGIN,
-		      y - THUMB_ARROW_BUTTON_MARGIN,
-		      w + 2 * THUMB_ARROW_BUTTON_MARGIN,
-		      h + 2 * THUMB_ARROW_BUTTON_MARGIN);
+	int x = thumb_x + mThumbnailSize - nextBtnIcon.GetWidth() - FromDIP(THUMB_ARROW_MARGIN);
+	int y = thumb_y + mThumbnailSize - nextBtnIcon.GetHeight() - FromDIP(THUMB_ARROW_MARGIN);
+	int w = prevBtnIcon.GetWidth();
+	int h = prevBtnIcon.GetHeight();
+
+	return wxRect(x - FromDIP(THUMB_ARROW_BUTTON_MARGIN),
+				  y - FromDIP(THUMB_ARROW_BUTTON_MARGIN),
+				  w + FromDIP(2 * THUMB_ARROW_BUTTON_MARGIN),
+				  h + FromDIP(2 * THUMB_ARROW_BUTTON_MARGIN));
 }
 
 wxRect SequenceView::GetPrevArrowButtonRect(int thumbnail_index) const
@@ -601,13 +607,16 @@ wxRect SequenceView::GetPrevArrowButtonRect(int thumbnail_index) const
 	int thumb_x = mThumbnailPositions[thumbnail_index].x;
 	int thumb_y = mThumbnailPositions[thumbnail_index].y;
 
-	int x = thumb_x + THUMB_ARROW_MARGIN;
-	int y = thumb_y + mThumbnailSize - mNextBtnIcon.GetHeight() - THUMB_ARROW_MARGIN;
-	int w = mPrevBtnIcon.GetWidth();
-	int h = mPrevBtnIcon.GetHeight();
+	auto nextBtnIcon = mNextBtnIcon.GetBitmapFor(this);
+	auto prevBtnIcon = mPrevBtnIcon.GetBitmapFor(this);
 
-	return wxRect(x - THUMB_ARROW_BUTTON_MARGIN, 
-		      y - THUMB_ARROW_BUTTON_MARGIN,
-		      w + 2 * THUMB_ARROW_BUTTON_MARGIN,
-		      h + 2 * THUMB_ARROW_BUTTON_MARGIN);
+	int x = thumb_x + THUMB_ARROW_MARGIN;
+	int y = thumb_y + mThumbnailSize - nextBtnIcon.GetHeight() - FromDIP(THUMB_ARROW_MARGIN);
+	int w = prevBtnIcon.GetWidth();
+	int h = prevBtnIcon.GetHeight();
+
+	return wxRect(x - FromDIP(THUMB_ARROW_BUTTON_MARGIN), 
+				  y - FromDIP(THUMB_ARROW_BUTTON_MARGIN),
+				  w + FromDIP(2 * THUMB_ARROW_BUTTON_MARGIN),
+				  h + FromDIP(2 * THUMB_ARROW_BUTTON_MARGIN));
 }

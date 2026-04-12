@@ -44,7 +44,7 @@ private:
 	wxCoord					mThumbnailSize,
 							mMargin,			// margin between thumbnails and window edges
 							mAngleLabelSpace;
-	wxBitmap				mPrevBtnIcon,
+	wxBitmapBundle			mPrevBtnIcon,
 							mNextBtnIcon;
 	bool					mAutoSize,
 							mWhiteTransparency;
