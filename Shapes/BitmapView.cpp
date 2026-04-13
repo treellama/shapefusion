@@ -46,8 +46,11 @@ void BitmapView::OnPaint(wxPaintEvent& e)
 	GetClientSize(&cw, &ch);
 	tempdc.SetPen(mInvisiblePen);
 	if (mEncBmp != NULL && mColorTable != NULL) {
-		auto bmp = mDecBmp.GetBitmapFor(this);
-		tempdc.DrawBitmap(bmp, vw/2 - bmp.GetWidth()/2, vh/2 - bmp.GetHeight()/2);
+		if (mDIPBmp.GetSize() != FromDIP(mDecBmp.GetSize())) {
+			mDIPBmp = mDecBmp;
+			wxBitmap::Rescale(mDIPBmp, FromDIP(mDecBmp.GetSize()));
+		}
+		tempdc.DrawBitmap(mDIPBmp, vw/2 - mDIPBmp.GetWidth()/2, vh/2 - mDIPBmp.GetHeight()/2);
 	}
 }
 
@@ -91,8 +94,11 @@ void BitmapView::OnSize(wxSizeEvent &e)
 void BitmapView::SetTranspPixelsDisplay(bool show)
 {
 	mWhiteTransparency = show;
-	if (mEncBmp != NULL && mEncBmp->Pixels() != NULL && mColorTable != NULL)
-		mDecBmp = wxBitmapBundle(ShapesBitmapToImage(mEncBmp, mColorTable, mWhiteTransparency));
+	if (mEncBmp != NULL && mEncBmp->Pixels() != NULL && mColorTable != NULL) {
+		mDecBmp = wxBitmap(ShapesBitmapToImage(mEncBmp, mColorTable, mWhiteTransparency));
+		mDIPBmp = mDecBmp;
+		wxBitmap::Rescale(mDIPBmp, FromDIP(mDecBmp.GetSize()));
+	}
 	Refresh();
 }
 
@@ -114,8 +120,11 @@ void BitmapView::SetBitmap(ShapesBitmap *bp)
 				vh = ch;
 			SetVirtualSize(vw, vh);
 			// decode bitmap
-			if (mColorTable != NULL)
-				mDecBmp = wxBitmapBundle(ShapesBitmapToImage(mEncBmp, mColorTable, mWhiteTransparency));
+			if (mColorTable != NULL) {
+				mDecBmp = wxBitmap(ShapesBitmapToImage(mEncBmp, mColorTable, mWhiteTransparency));
+				mDIPBmp = mDecBmp;
+				wxBitmap::Rescale(mDIPBmp, FromDIP(mDecBmp.GetSize()));
+			}
 			Refresh();
 		} else {
 			wxLogError(wxT("[BitmapView] Addes a bitmap with NULL pixels"));
@@ -135,8 +144,11 @@ ShapesBitmap *BitmapView::GetBitmap(void) const
 void BitmapView::SetColorTable(ShapesColorTable *ct)
 {
 	mColorTable = ct;
-	if (mEncBmp != NULL && mEncBmp->Pixels() != NULL && mColorTable != NULL)
-		mDecBmp = wxBitmapBundle(ShapesBitmapToImage(mEncBmp, mColorTable, mWhiteTransparency));
+	if (mEncBmp != NULL && mEncBmp->Pixels() != NULL && mColorTable != NULL) {
+		mDecBmp = wxBitmap(ShapesBitmapToImage(mEncBmp, mColorTable, mWhiteTransparency));
+		mDIPBmp = mDecBmp;
+		wxBitmap::Rescale(mDIPBmp, FromDIP(mDecBmp.GetSize()));
+	}
 	Refresh();
 }
 

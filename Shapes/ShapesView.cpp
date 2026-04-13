@@ -229,7 +229,7 @@ bool ShapesView::OnCreate(wxDocument *doc, long WXUNUSED(flags))
 	f_edit_static_box = new wxStaticBox(main_panel, -1, wxT("Frame N"));
 	f_edit_box = new wxStaticBoxSizer(f_edit_static_box, wxHORIZONTAL);
 	f_bitmap_label = new wxStaticText(main_panel, -1, wxT("Associated bitmap:"));
-	f_bitmap_id = new wxSpinCtrl(main_panel, FIELD_BITMAP_INDEX, wxT("0"), wxDefaultPosition, wxSize(60, -1));
+	f_bitmap_id = new wxSpinCtrl(main_panel, FIELD_BITMAP_INDEX, wxT("0"), wxDefaultPosition, mFrame->FromDIP(wxSize(60, -1)));
 	f_xmirror_checkbox = new wxCheckBox(main_panel, CB_XMIRROR, wxT("X mirror"));
 	f_ymirror_checkbox = new wxCheckBox(main_panel, CB_YMIRROR, wxT("Y mirror"));
 	f_keypoint_checkbox = new wxCheckBox(main_panel, CB_KEYPOINT, wxT("Keypoint obscured"));
