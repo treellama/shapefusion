@@ -38,8 +38,10 @@ FrameView::FrameView(wxWindow *parent, wxWindowID id):
 	EnableScrolling(false, false);
 	// origin cursor pen
 	mOriginPen.SetColour(0, 128, 128);
+	mOriginPen.SetWidth(FromDIP(1));
 	// key cursor pen
 	mKeypointPen.SetColour(128, 0, 128);
+	mKeypointPen.SetWidth(FromDIP(1));
 	// mouse cursors
 	mPanCursor = wxCursor(wxCURSOR_ARROW);
 	mPointCursor = wxCursor(wxCURSOR_CROSS);
@@ -50,32 +52,36 @@ FrameView::FrameView(wxWindow *parent, wxWindowID id):
 void FrameView::OnPaint(wxPaintEvent& e)
 {
 	wxPaintDC   tempdc(this);
-	int			vw, vh, cw, ch;
+	int			vw, vh;
+
+	if (mDIPBmp.GetSize() != FromDIP(mDecBmp.GetSize())) {
+		mDIPBmp = mDecBmp;
+		wxBitmap::Rescale(mDIPBmp, FromDIP(mDecBmp.GetSize()));
+	}
 
 	GetVirtualSize(&vw, &vh);
 	DoPrepareDC(tempdc);
-	GetClientSize(&cw, &ch);
 	if (mFrame != NULL && mColorTable != NULL) {
 		if (mEncBmp != NULL) {
 			int	origin_x, origin_y;
 
 			if (mCenterOrigin) {
-				origin_x = vw/2 - mFrame->OriginX();
-				origin_y = vh/2 - mFrame->OriginY();
+				origin_x = vw/2 - FromDIP(mFrame->OriginX());
+				origin_y = vh/2 - FromDIP(mFrame->OriginY());
 			} else {
-				origin_x = vw/2 - mDecBmp.GetWidth()/2;
-				origin_y = vh/2 - mDecBmp.GetHeight()/2;
+				origin_x = vw/2 - mDIPBmp.GetWidth()/2;
+				origin_y = vh/2 - mDIPBmp.GetHeight()/2;
 			}
 			// draw bitmap
-			tempdc.DrawBitmap(mDecBmp, origin_x, origin_y);
+			tempdc.DrawBitmap(mDIPBmp, origin_x, origin_y);
 			// mark bitmap origin
 			tempdc.SetPen(mOriginPen);
-			tempdc.CrossHair(mFrame->OriginX() + origin_x, mFrame->OriginY() + origin_y);
-			tempdc.DrawCircle(mFrame->OriginX() + origin_x, mFrame->OriginY() + origin_y, 2);
+			tempdc.CrossHair(FromDIP(mFrame->OriginX()) + origin_x, FromDIP(mFrame->OriginY()) + origin_y);
+			tempdc.DrawCircle(FromDIP(mFrame->OriginX()) + origin_x, FromDIP(mFrame->OriginY()) + origin_y, FromDIP(2));
 			// mark bitmap keypoint
 			tempdc.SetPen(mKeypointPen);
-			tempdc.CrossHair(mFrame->KeyX() + origin_x, mFrame->KeyY() + origin_y);
-			tempdc.DrawCircle(mFrame->KeyX() + origin_x, mFrame->KeyY() + origin_y, 2);
+			tempdc.CrossHair(FromDIP(mFrame->KeyX()) + origin_x, FromDIP(mFrame->KeyY()) + origin_y);
+			tempdc.DrawCircle(FromDIP(mFrame->KeyX()) + origin_x, FromDIP(mFrame->KeyY()) + origin_y, FromDIP(2));
 			// origin & key labels
 			wxString	origin_label = wxT("Origin"),
 						key_label = wxT("Keypoint");
@@ -85,15 +91,15 @@ void FrameView::OnPaint(wxPaintEvent& e)
 			tempdc.GetTextExtent(origin_label, &text1w, &text1h);
 			tempdc.GetTextExtent(key_label, &text2w, &text2h);
 			tempdc.SetTextForeground(wxColour(0, 128, 128));
-			if (mFrame->OriginY() + origin_y >= text1h + 2)
-				tempdc.DrawText(origin_label, vw - text1w - 2, mFrame->OriginY() + origin_y - text1h - 2);
+			if (FromDIP(mFrame->OriginY()) + origin_y >= text1h + 2)
+				tempdc.DrawText(origin_label, vw - text1w - 2, FromDIP(mFrame->OriginY()) + origin_y - text1h - 2);
 			else
-				tempdc.DrawText(origin_label, vw - text1w - 2, mFrame->OriginY() + origin_y + 2);
+				tempdc.DrawText(origin_label, vw - text1w - 2, FromDIP(mFrame->OriginY()) + origin_y + 2);
 			tempdc.SetTextForeground(wxColour(128, 0, 128));
-			if (mFrame->KeyY() + origin_y >= text2h + 2)
-				tempdc.DrawText(key_label, vw - text2w - 2, mFrame->KeyY() + origin_y - text2h - 2);
+			if (FromDIP(mFrame->KeyY()) + origin_y >= text2h + 2)
+				tempdc.DrawText(key_label, vw - text2w - 2, FromDIP(mFrame->KeyY()) + origin_y - text2h - 2);
 			else
-				tempdc.DrawText(key_label, vw - text2w - 2, mFrame->KeyY() + origin_y + 2);
+				tempdc.DrawText(key_label, vw - text2w - 2, FromDIP(mFrame->KeyY()) + origin_y + 2);
 		} else {
 			wxString	no_bmp_label = wxT("No associated bitmap");
 			int			text_w, text_h,
@@ -143,10 +149,10 @@ void FrameView::OnDrag(wxMouseEvent &e)
 
 			GetVirtualSize(&vw, &vh);
 			GetViewStart(&scroll_x, &scroll_y);
-			origin_x = vw/2 - mDecBmp.GetWidth()/2;
-			origin_y = vh/2 - mDecBmp.GetHeight()/2;
-			mFrame->SetOriginX(e.GetPosition().x + scroll_x - origin_x);
-			mFrame->SetOriginY(e.GetPosition().y + scroll_y - origin_y);
+			origin_x = vw/2 - mDIPBmp.GetWidth()/2;
+			origin_y = vh/2 - mDIPBmp.GetHeight()/2;
+			mFrame->SetOriginX(ToDIP(e.GetPosition().x + scroll_x - origin_x));
+			mFrame->SetOriginY(ToDIP(e.GetPosition().y + scroll_y - origin_y));
 			// send an event so that other gui elements can update
 			wxCommandEvent  event(wxEVT_FRAMEVIEW_DRAG, GetId());
 
@@ -160,10 +166,10 @@ void FrameView::OnDrag(wxMouseEvent &e)
 
 			GetVirtualSize(&vw, &vh);
 			GetViewStart(&scroll_x, &scroll_y);
-			origin_x = vw/2 - mDecBmp.GetWidth()/2;
-			origin_y = vh/2 - mDecBmp.GetHeight()/2;
-			mFrame->SetKeyX(e.GetPosition().x + scroll_x - origin_x);
-			mFrame->SetKeyY(e.GetPosition().y + scroll_y - origin_y);
+			origin_x = vw/2 - mDIPBmp.GetWidth()/2;
+			origin_y = vh/2 - mDIPBmp.GetHeight()/2;
+			mFrame->SetKeyX(ToDIP(e.GetPosition().x + scroll_x - origin_x));
+			mFrame->SetKeyY(ToDIP(e.GetPosition().y + scroll_y - origin_y));
 			// send an event so that other gui elements can update
 			wxCommandEvent  event(wxEVT_FRAMEVIEW_DRAG, GetId());
 
@@ -181,8 +187,8 @@ void FrameView::OnDrag(wxMouseEvent &e)
 		GetVirtualSize(&vw, &vh);
 		GetViewStart(&scroll_x, &scroll_y);
 
-		int origin_x = vw/2 - mDecBmp.GetWidth()/2,
-			origin_y = vh/2 - mDecBmp.GetHeight()/2,
+		int origin_x = vw/2 - mDIPBmp.GetWidth()/2,
+			origin_y = vh/2 - mDIPBmp.GetHeight()/2,
 			x = e.GetPosition().x + scroll_x,
 			y = e.GetPosition().y + scroll_y,
 			delta_x,
@@ -190,11 +196,11 @@ void FrameView::OnDrag(wxMouseEvent &e)
 			dist_origin,
 			dist_keypoint;
 
-		delta_x = x - (mFrame->OriginX() + origin_x);
-		delta_y = y - (mFrame->OriginY() + origin_y);
+		delta_x = x - (FromDIP(mFrame->OriginX()) + origin_x);
+		delta_y = y - (FromDIP(mFrame->OriginY()) + origin_y);
 		dist_origin = delta_x*delta_x + delta_y*delta_y;
-		delta_x = x - (mFrame->KeyX() + origin_x);
-		delta_y = y - (mFrame->KeyY() + origin_y);
+		delta_x = x - (FromDIP(mFrame->KeyX()) + origin_x);
+		delta_y = y - (FromDIP(mFrame->KeyY()) + origin_y);
 		dist_keypoint = delta_x*delta_x + delta_y*delta_y;
 		// are we near origin or keypoint?
 		if (dist_origin < 25) {
@@ -294,6 +300,8 @@ void FrameView::SetBitmap(ShapesBitmap *bp)
 						img = img.Mirror(false);
 				}
 				mDecBmp = wxBitmap(img);
+				mDIPBmp = mDecBmp;
+				wxBitmap::Rescale(mDIPBmp, FromDIP(mDecBmp.GetSize()));
 			}
 			Refresh();
 		} else {

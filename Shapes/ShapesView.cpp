@@ -224,7 +224,7 @@ bool ShapesView::OnCreate(wxDocument *doc, long WXUNUSED(flags))
 	// dereferencing it are triggered during initialization
 	f_view = new FrameView(main_panel, FRAME_VIEW);
 	fb = new FrameBrowser(main_panel, FRAME_BROWSER);
-	fb->SetThumbnailSize(64);
+	fb->SetThumbnailSize(mFrame->FromDIP(64));
 	f_count_label = new wxStaticText(main_panel, -1, wxT("N frames"));
 	f_edit_static_box = new wxStaticBox(main_panel, -1, wxT("Frame N"));
 	f_edit_box = new wxStaticBoxSizer(f_edit_static_box, wxHORIZONTAL);
