@@ -36,11 +36,12 @@ BitmapBrowser::BitmapBrowser(wxWindow *parent, wxWindowID id):
 {
 	SetBackgroundColour(wxColour(255, 255, 255));
 	mThumbnailPen.SetColour(200, 200, 200);
+	mThumbnailPen.SetWidth(FromDIP(1));
 	mSelectionPen.SetColour(0, 0, 0);
-	mSelectionPen.SetWidth(3);
+	mSelectionPen.SetWidth(FromDIP(3));
 	SetScrollRate(0, 2);
-	mThumbnailSize = 64;
-	mMargin = 7;
+	mThumbnailSize = FromDIP(64);
+	mMargin = FromDIP(7);
 	mWhiteTransparency = true;
 	mAutoSize = false;
 }
@@ -71,10 +72,10 @@ void BitmapBrowser::OnPaint(wxPaintEvent& e)
 		if (i == mSelection) {
 			tempdc.DrawBitmap(mThumbnails[i], x + mThumbnailSize/2 - bw/2, y + mThumbnailSize/2 - bh/2);
 			tempdc.SetPen(mSelectionPen);
-			tempdc.DrawRectangle(x-2, y-2, mThumbnailSize+4, mThumbnailSize+4);
+			tempdc.DrawRectangle(x - FromDIP(2), y - FromDIP(2), mThumbnailSize + FromDIP(4), mThumbnailSize + FromDIP(4));
 			tempdc.SetPen(mThumbnailPen);
 		} else {
-			tempdc.DrawRectangle(x-1, y-1, mThumbnailSize+2, mThumbnailSize+2);
+			tempdc.DrawRectangle(x - FromDIP(1), y - FromDIP(1), mThumbnailSize + FromDIP(2), mThumbnailSize + FromDIP(2));
 			tempdc.DrawBitmap(mThumbnails[i], x + mThumbnailSize/2 - bw/2, y + mThumbnailSize/2 - bh/2);
 		}
 	}
@@ -369,7 +370,7 @@ wxBitmap BitmapBrowser::CreateThumbnail(ShapesBitmap *bp)
 
 	if (mColorTable)
 		newimg = ShapesBitmapToImage(bp, mColorTable, mWhiteTransparency);
-	return ImageThumbnail(newimg, mThumbnailSize, true);
+	return ImageThumbnail(newimg, mThumbnailSize, static_cast<double>(FromDIP(100)) / 100.0);
 }
 
 void BitmapBrowser::RebuildThumbnail(unsigned int i)

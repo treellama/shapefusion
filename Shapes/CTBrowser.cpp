@@ -28,15 +28,15 @@ END_EVENT_TABLE()
 
 CTBrowser::CTBrowser(wxWindow *parent):
 	wxScrolledWindow(parent, -1, wxDefaultPosition, wxDefaultSize, wxSUNKEN_BORDER | wxFULL_REPAINT_ON_RESIZE),
-	mSampleW(1), mSampleH(20), mSelection(-1)
+	mSampleW(parent->FromDIP(1)), mSampleH(parent->FromDIP(20)), mSelection(-1)
 {
 	SetBackgroundColour(wxColour(255, 255, 255));
 	mInvisiblePen.SetColour(0, 0, 0);
 	mInvisiblePen.SetStyle(wxPENSTYLE_TRANSPARENT);
 	mSelectionPen.SetColour(0, 0, 0);
-	mSelectionPen.SetWidth(3);
+	mSelectionPen.SetWidth(FromDIP(3));
 	SetScrollRate(2, 2);
-	mMargin = 10;
+	mMargin = FromDIP(10);
 }
 
 void CTBrowser::OnPaint(wxPaintEvent& e)
@@ -56,7 +56,10 @@ void CTBrowser::OnPaint(wxPaintEvent& e)
 		if ((int)i == mSelection) {
 			tempdc.SetPen(mSelectionPen);
 			tempdc.SetBrush(*wxWHITE_BRUSH);
-			tempdc.DrawRectangle(x-3, y-3, mSampleW*mColorsPerTable+6, mSampleH+6);
+			tempdc.DrawRectangle(x - mSelectionPen.GetWidth(),
+								 y - mSelectionPen.GetWidth(),
+								 mSampleW * mColorsPerTable + mSelectionPen.GetWidth() * 2,
+								 mSampleH + mSelectionPen.GetWidth() * 2);
 			tempdc.SetPen(mInvisiblePen);
 			tempdc.SetBrush(*wxTRANSPARENT_BRUSH);
 		}
@@ -70,7 +73,7 @@ void CTBrowser::OnPaint(wxPaintEvent& e)
 			if (mColorTables[i]->GetColor(j)->Luminescent()) {
 				// display the self-luminescent color flag
 				tempdc.SetBrush(*wxWHITE_BRUSH);
-				tempdc.DrawRectangle(x + 2, y + 2, 2, 2);
+				tempdc.DrawRectangle(x + FromDIP(2), y + FromDIP(2), FromDIP(2), FromDIP(2));
 			}
 			x += mSampleW;
 		}

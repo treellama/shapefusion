@@ -33,7 +33,8 @@
 class BitmapView: public wxScrolledWindow {
 private:
 	ShapesBitmap		*mEncBmp;			// encoded bitmap
-	wxBitmap			mDecBmp;			// ready-to-draw bitmap
+	wxBitmap		    mDecBmp;			// decoded bitmap
+	wxBitmap		    mDIPBmp;			// ready-to-draw bitmap
 	ShapesColorTable	*mColorTable;		// which palette to use for display
 	bool				mWhiteTransparency;	// hide transparent pixels
 	wxPen				mInvisiblePen;

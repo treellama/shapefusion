@@ -58,15 +58,15 @@ wxImage ShapesBitmapToImage(ShapesBitmap *bp, ShapesColorTable *ct, bool white_t
 // dimension is greater than the specified thumbnail size, the wxImage
 // will be scaled down (keeping its aspect ratio). If the wxImage is smaller,
 // it will be just converted to a wxBitmap.
-wxBitmap ImageThumbnail(wxImage &img, int tn_size, bool filtering)
+wxBitmap ImageThumbnail(wxImage& img, int tn_size, double max_upscale)
 {
-	int	w = img.GetWidth(),
-		h = img.GetHeight();
+	auto w = static_cast<int>(img.GetWidth() * max_upscale);
+	auto h = static_cast<int>(img.GetHeight() * max_upscale);
 
-	// scale the wxImage down to thumbnail size if larger
+	auto new_h = h;
+	auto new_w = w;
+
 	if (w > tn_size || h > tn_size) {
-		int	new_w, new_h;
-
 		if (w > h) {
 			new_w = tn_size;
 			new_h = new_w * h / w;
@@ -78,68 +78,10 @@ wxBitmap ImageThumbnail(wxImage &img, int tn_size, bool filtering)
 			if (new_w < 1)
 				new_w = 1;
 		}
-
-		if (filtering) {
-			// wx doesn't allow nice scaling, so we supply here. The thing works this way:
-			// 1) calculate where each source pixel will end up in the final image
-			// 2) add the source pixel value to the destination pixel
-			// 3) divide each destination pixel by the number of pixels
-			//    that were added there.
-			// It's nothing more than a brutal pixel-level average, but results are quite good.
-			wxImage			scaledimg(new_w, new_h);
-			unsigned char	*src = img.GetData(),
-							*srcp = src,
-							*dst = scaledimg.GetData();
-			unsigned int	pixcount = new_w * new_h,
-							*tempbuf = new unsigned int[pixcount * 3],
-							*countbuf = new unsigned int[pixcount];
-
-			memset(tempbuf, 0, pixcount * 3 * sizeof(unsigned int));
-			memset(countbuf, 0, pixcount * sizeof(unsigned int));
-			// sum
-			for (int y = 0; y < h; y++) {
-				unsigned int	dsty = (y * new_h) / h * new_w;
-
-				for (int x = 0; x < w; x++) {
-					unsigned int	i = x * new_w / w + dsty,
-									*tempp = &tempbuf[3 * i];
-
-					*tempp++ += *srcp++;
-					*tempp++ += *srcp++;
-					*tempp += *srcp++;
-					countbuf[i]++;
-				}
-			}
-			// divide
-			unsigned int	*tempp = tempbuf,
-							*countp = countbuf;
-			unsigned char	*dstp = dst;
-
-			for (unsigned int i = 0; i < pixcount; i++) {
-				unsigned int	count = *countp++;
-
-				if (count == 0) {
-					*dstp++ = 0;
-					*dstp++ = 0;
-					*dstp++ = 0;
-				} else {
-					*dstp++ = *tempp++ / count;
-					*dstp++ = *tempp++ / count;
-					*dstp++ = *tempp++ / count;
-				}
-			}
-
-			delete[] tempbuf;
-			delete[] countbuf;
-			return wxBitmap(scaledimg);
-		} else {
-			// ugly (but fast and simple) wx scaler
-			img.Rescale(new_w, new_h);
-			return wxBitmap(img);
-		}
-	} else {
-		return wxBitmap(img);
 	}
+
+	img.Rescale(new_w, new_h, wxIMAGE_QUALITY_HIGH);
+	return wxBitmap(img);
 }
 
 // create the "bad item" (red 'X') thumbnail

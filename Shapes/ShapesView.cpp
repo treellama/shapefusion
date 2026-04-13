@@ -97,8 +97,9 @@ ShapesView::~ShapesView(void)
 
 bool ShapesView::OnCreate(wxDocument *doc, long WXUNUSED(flags))
 {
-	wxString	frameTitle = _T("ShapeFusion : Shapes : ");
 	
+	wxString	frameTitle = _T("ShapeFusion : Shapes : ");
+
 	frameTitle.Append(doc->GetFilename());
     mFrame = wxGetApp().CreateChildFrame(doc, this, frameTitle, wxPoint(0, 0), wxSize(900, 600));
 	mFrame->SetSizeHints(200, 200);
@@ -196,7 +197,7 @@ bool ShapesView::OnCreate(wxDocument *doc, long WXUNUSED(flags))
 	// create the bitmaps section
 	b_outer_sizer = new wxBoxSizer(wxVERTICAL);
 	bb = new BitmapBrowser(main_panel, BITMAP_BROWSER);
-	bb->SetThumbnailSize(64);
+	bb->SetThumbnailSize(mFrame->FromDIP(64));
 	b_count_label = new wxStaticText(main_panel, -1, wxT("N bitmaps"));
 	b_edit_static_box = new wxStaticBox(main_panel, -1, wxT("Bitmap N of M"));
 	b_edit_box = new wxStaticBoxSizer(b_edit_static_box, wxHORIZONTAL);
@@ -223,12 +224,12 @@ bool ShapesView::OnCreate(wxDocument *doc, long WXUNUSED(flags))
 	// dereferencing it are triggered during initialization
 	f_view = new FrameView(main_panel, FRAME_VIEW);
 	fb = new FrameBrowser(main_panel, FRAME_BROWSER);
-	fb->SetThumbnailSize(64);
+	fb->SetThumbnailSize(mFrame->FromDIP(64));
 	f_count_label = new wxStaticText(main_panel, -1, wxT("N frames"));
 	f_edit_static_box = new wxStaticBox(main_panel, -1, wxT("Frame N"));
 	f_edit_box = new wxStaticBoxSizer(f_edit_static_box, wxHORIZONTAL);
 	f_bitmap_label = new wxStaticText(main_panel, -1, wxT("Associated bitmap:"));
-	f_bitmap_id = new wxSpinCtrl(main_panel, FIELD_BITMAP_INDEX, wxT("0"), wxDefaultPosition, wxSize(60, -1));
+	f_bitmap_id = new wxSpinCtrl(main_panel, FIELD_BITMAP_INDEX, wxT("0"), wxDefaultPosition, mFrame->FromDIP(wxSize(60, -1)));
 	f_xmirror_checkbox = new wxCheckBox(main_panel, CB_XMIRROR, wxT("X mirror"));
 	f_ymirror_checkbox = new wxCheckBox(main_panel, CB_YMIRROR, wxT("Y mirror"));
 	f_keypoint_checkbox = new wxCheckBox(main_panel, CB_KEYPOINT, wxT("Keypoint obscured"));
@@ -599,13 +600,13 @@ void ShapesView::MenuViewTNSize(wxCommandEvent &e)
 	
 	switch (e.GetId()) {
 		case VIEW_MENU_TNSIZE_SMALL:
-			size = 32;
+			size = mFrame->FromDIP(32);
 			break;
 		case VIEW_MENU_TNSIZE_MEDIUM:
-			size = 64;
+			size = mFrame->FromDIP(64);
 			break;
 		case VIEW_MENU_TNSIZE_LARGE:
-			size = 128;
+			size = mFrame->FromDIP(128);
 			break;
 		case VIEW_MENU_TNSIZE_AUTO:
 			size = -1;

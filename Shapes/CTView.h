@@ -42,7 +42,7 @@ private:
 						mSelectionPen;
 	unsigned int		mSwatchSize,
 						mMargin;
-	wxBitmap			mLightBulbIcon;
+	wxBitmapBundle		mLightBulbIcon;
 	vector<bool>		mSelectionMask;
 
 protected:
