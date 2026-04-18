@@ -220,31 +220,28 @@ bool ShapesView::OnCreate(wxDocument *doc, long WXUNUSED(flags))
 	mainbox->Show(b_outer_sizer, false);
 	// create the frames section
 	f_outer_sizer = new wxBoxSizer(wxVERTICAL);
-	// FIXME the FrameView should be initialized later, but spurious event handlers
-	// dereferencing it are triggered during initialization
-	f_view = new FrameView(main_panel, FRAME_VIEW);
 	fb = new FrameBrowser(main_panel, FRAME_BROWSER);
 	fb->SetThumbnailSize(mFrame->FromDIP(64));
 	f_count_label = new wxStaticText(main_panel, -1, wxT("N frames"));
-	f_edit_static_box = new wxStaticBox(main_panel, -1, wxT("Frame N"));
-	f_edit_box = new wxStaticBoxSizer(f_edit_static_box, wxHORIZONTAL);
-	f_bitmap_label = new wxStaticText(main_panel, -1, wxT("Associated bitmap:"));
-	f_bitmap_id = new wxSpinCtrl(main_panel, FIELD_BITMAP_INDEX, wxT("0"), wxDefaultPosition, mFrame->FromDIP(wxSize(60, -1)));
-	f_xmirror_checkbox = new wxCheckBox(main_panel, CB_XMIRROR, wxT("X mirror"));
-	f_ymirror_checkbox = new wxCheckBox(main_panel, CB_YMIRROR, wxT("Y mirror"));
-	f_keypoint_checkbox = new wxCheckBox(main_panel, CB_KEYPOINT, wxT("Keypoint obscured"));
-	f_origin_x_label = new wxStaticText(main_panel, -1, wxT("Origin X:"), wxDefaultPosition, wxSize(150, -1));
-	f_origin_x_field = new wxTextCtrl(main_panel, FIELD_ORIGIN_X, wxT("0"), wxDefaultPosition, wxSize(60, -1));
-	f_origin_y_label = new wxStaticText(main_panel, -1, wxT("Origin Y:"), wxDefaultPosition, wxSize(150, -1));
-	f_origin_y_field = new wxTextCtrl(main_panel, FIELD_ORIGIN_Y, wxT("0"), wxDefaultPosition, wxSize(60, -1));
-	f_key_x_label = new wxStaticText(main_panel, -1, wxT("Keypoint X:"), wxDefaultPosition, wxSize(150, -1));
-	f_key_x_field = new wxTextCtrl(main_panel, FIELD_KEY_X, wxT("0"), wxDefaultPosition, wxSize(60, -1));
-	f_key_y_label = new wxStaticText(main_panel, -1, wxT("Keypoint Y:"), wxDefaultPosition, wxSize(150, -1));
-	f_key_y_field = new wxTextCtrl(main_panel, FIELD_KEY_Y, wxT("0"), wxDefaultPosition, wxSize(60, -1));
-	f_scalefactor_label = new wxStaticText(main_panel, -1, wxT("Scale factor:"), wxDefaultPosition, wxSize(150, -1));
-	f_scalefactor_field = new wxTextCtrl(main_panel, FIELD_FRAME_SCALEFACTOR, wxT("0"), wxDefaultPosition, wxSize(60, -1));
-	f_mli_label = new wxStaticText(main_panel, -1, wxT("Minimum lightness (%):"), wxDefaultPosition, wxSize(150, -1));
-	f_mli_field = new wxTextCtrl(main_panel, FIELD_MIN_LIGHT_INT, wxT("0"), wxDefaultPosition, wxSize(60, -1));
+	f_edit_box = new wxStaticBoxSizer(wxHORIZONTAL, main_panel, wxT("Frame N"));
+	f_view = new FrameView(f_edit_box->GetStaticBox(), FRAME_VIEW);
+	f_bitmap_label = new wxStaticText(f_edit_box->GetStaticBox(), -1, wxT("Associated bitmap:"));
+	f_bitmap_id = new wxSpinCtrl(f_edit_box->GetStaticBox(), FIELD_BITMAP_INDEX, wxT("0"), wxDefaultPosition, mFrame->FromDIP(wxSize(60, -1)));
+	f_xmirror_checkbox = new wxCheckBox(f_edit_box->GetStaticBox(), CB_XMIRROR, wxT("X mirror"));
+	f_ymirror_checkbox = new wxCheckBox(f_edit_box->GetStaticBox(), CB_YMIRROR, wxT("Y mirror"));
+	f_keypoint_checkbox = new wxCheckBox(f_edit_box->GetStaticBox(), CB_KEYPOINT, wxT("Keypoint obscured"));
+	f_origin_x_label = new wxStaticText(f_edit_box->GetStaticBox(), -1, wxT("Origin X:"), wxDefaultPosition, wxSize(150, -1));
+	f_origin_x_field = new wxTextCtrl(f_edit_box->GetStaticBox(), FIELD_ORIGIN_X, wxT("0"), wxDefaultPosition, wxSize(60, -1));
+	f_origin_y_label = new wxStaticText(f_edit_box->GetStaticBox(), -1, wxT("Origin Y:"), wxDefaultPosition, wxSize(150, -1));
+	f_origin_y_field = new wxTextCtrl(f_edit_box->GetStaticBox(), FIELD_ORIGIN_Y, wxT("0"), wxDefaultPosition, wxSize(60, -1));
+	f_key_x_label = new wxStaticText(f_edit_box->GetStaticBox(), -1, wxT("Keypoint X:"), wxDefaultPosition, wxSize(150, -1));
+	f_key_x_field = new wxTextCtrl(f_edit_box->GetStaticBox(), FIELD_KEY_X, wxT("0"), wxDefaultPosition, wxSize(60, -1));
+	f_key_y_label = new wxStaticText(f_edit_box->GetStaticBox(), -1, wxT("Keypoint Y:"), wxDefaultPosition, wxSize(150, -1));
+	f_key_y_field = new wxTextCtrl(f_edit_box->GetStaticBox(), FIELD_KEY_Y, wxT("0"), wxDefaultPosition, wxSize(60, -1));
+	f_scalefactor_label = new wxStaticText(f_edit_box->GetStaticBox(), -1, wxT("Scale factor:"), wxDefaultPosition, wxSize(150, -1));
+	f_scalefactor_field = new wxTextCtrl(f_edit_box->GetStaticBox(), FIELD_FRAME_SCALEFACTOR, wxT("0"), wxDefaultPosition, wxSize(60, -1));
+	f_mli_label = new wxStaticText(f_edit_box->GetStaticBox(), -1, wxT("Minimum lightness (%):"), wxDefaultPosition, wxSize(150, -1));
+	f_mli_field = new wxTextCtrl(f_edit_box->GetStaticBox(), FIELD_MIN_LIGHT_INT, wxT("0"), wxDefaultPosition, wxSize(60, -1));
 	f_origin_box = new wxFlexGridSizer(10, 2, 5, 0);
 	f_origin_box->Add(f_bitmap_label, 1, wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
 	f_origin_box->Add(f_bitmap_id, 0, wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL);
@@ -1674,8 +1671,8 @@ void ShapesView::OnFrameSelect(wxCommandEvent &e)
 		ShapesBitmap	*assoc_bitmap = NULL;
 		
 		// set labels
-		f_edit_static_box->SetLabel(wxString::Format(wxT("Frame %d of %u"),
-													 selection, ((ShapesDocument*)GetDocument())->CollectionFrameCount(mSelectedColl, mSelectedVers)));
+		f_edit_box->GetStaticBox()->SetLabel(wxString::Format(wxT("Frame %d of %u"),
+											  selection, ((ShapesDocument*)GetDocument())->CollectionFrameCount(mSelectedColl, mSelectedVers)));
 		// set frame view
 		f_view->SetFrame(sel_frame);
 		if (sel_frame->BitmapIndex() >= 0)
