@@ -443,8 +443,7 @@ SoundsDefinition::SoundsDefinition(bool verbose):
 	mLowPitch{0},
 	mHighPitch{0},
 	mPermutationsPlayed{0},
-	mLastPlayed{0},
-	mRemap8bit{false}
+	mLastPlayed{0}
 {
 }
 

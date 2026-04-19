@@ -122,8 +122,6 @@ bool SoundsView::OnCreate(wxDocument *doc, long WXUNUSED(flags))
 	sound_sixteen_bit_text = new wxStaticText(main_panel, wxID_ANY, wxT("16-bit sounds: "));
 	sound_sixteen_bit_list = new wxListBox(main_panel, (wxWindowID)SOUND_SIXTEEN_BIT_PERMUTATIONS_LIST);
 	
-	sound_remap_check_box = new wxCheckBox(main_panel, SOUND_REMAP_CHECK_BOX, wxT("Remap 8-bit"));
-	
 	frame_sizer = new wxBoxSizer(wxHORIZONTAL);
 	sound_class_sizer = new wxBoxSizer(wxVERTICAL);
 	sound_class_header_sizer = new wxFlexGridSizer(2, 2, 0, 0);
@@ -162,7 +160,6 @@ bool SoundsView::OnCreate(wxDocument *doc, long WXUNUSED(flags))
 	sound_eight_bit_sizer->Add(sound_eight_bit_list, 1, wxEXPAND | wxRIGHT, 5);
 	sound_sixteen_bit_sizer->Add(sound_sixteen_bit_text, 0, 0, 0);
 	sound_sixteen_bit_sizer->Add(sound_sixteen_bit_list, 1, wxEXPAND, 0);
-	sound_sixteen_bit_sizer->Add(sound_remap_check_box, 0, 0, 0);
 	
 	sound_permutation_sizer->Add(sound_eight_bit_sizer, 1, wxEXPAND, 0);
 	sound_permutation_sizer->Add(sound_sixteen_bit_sizer, 1, wxEXPAND, 0);

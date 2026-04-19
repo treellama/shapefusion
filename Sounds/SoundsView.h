@@ -44,7 +44,6 @@ private:
 		SOUND_HIGH_PITCH_FIELD,
 		SOUND_EIGHT_BIT_PERMUTATIONS_LIST,
 		SOUND_SIXTEEN_BIT_PERMUTATIONS_LIST,
-		SOUND_REMAP_CHECK_BOX
 	};
 
 	wxBoxSizer		*frame_sizer;
@@ -81,7 +80,6 @@ private:
 	wxSizer						*sound_sixteen_bit_sizer;
 	wxStaticText					*sound_sixteen_bit_text;
 	wxListBox						*sound_sixteen_bit_list;
-	wxCheckBox						*sound_remap_check_box;
 
     wxFrame			*frame;
 	wxMenuBar		*menubar;

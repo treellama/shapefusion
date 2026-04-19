@@ -172,8 +172,6 @@ private:
 //	short *ptr;
 //	int size;
 	
-	bool mRemap8bit;
-
 public:
 	SoundsDefinition(bool verbose = false);
 	~SoundsDefinition();
