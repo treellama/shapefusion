@@ -54,7 +54,7 @@ private:
 	wxStaticText				*sound_class_id_text;
 	wxTextCtrl					*sound_class_id_field;
 	wxStaticText				*sound_class_number_text;
-	wxStaticText				*sound_class_number_field;
+	wxTextCtrl				*sound_class_number_field;
 	wxListBox				*sound_class_list;
 	wxSizer				*sound_editor_sizer;
 	wxSizer					*sound_flags_sizer;

@@ -74,6 +74,8 @@ bool SoundsView::OnCreate(wxDocument *doc, long WXUNUSED(flags))
 	frameTitle.Append(doc->GetFilename());
 	
     frame = wxGetApp().CreateChildFrame(doc, this, frameTitle, wxPoint(0, 0), wxSize(600, 400), wxDEFAULT_FRAME_STYLE);// & ~ (wxRESIZE_BORDER | wxRESIZE_BOX | wxMAXIMIZE_BOX));
+
+	const auto m = frame->GetTextExtent(wxT("M"));
 	
 	payload = (SoundsDocument*)doc;
 	
@@ -89,14 +91,15 @@ bool SoundsView::OnCreate(wxDocument *doc, long WXUNUSED(flags))
 	main_panel = new wxPanel(frame);
 	main_panel->Show();
 	
-	sound_class_text = new wxStaticText(main_panel, wxID_ANY, wxT("Sound classes: "));
-	sound_class_id_text = new wxStaticText(main_panel, wxID_ANY, wxT("Class ID: "));
+	sound_class_list = new wxListBox(main_panel, (wxWindowID)SOUND_CLASS_LIST);
+	sound_class_list->SetMinSize(wxSize(m.x * 25, m.y * 5));
+
+	sound_class_id_text = new wxStaticText(main_panel, wxID_ANY, wxT("Sound Class: "));
 	sound_class_id_field = new wxTextCtrl(main_panel, SOUND_CLASS_ID_FIELD, wxT(""));
 	
-	sound_class_number_text = new wxStaticText(main_panel, wxID_ANY, wxT("Class number: "));
-	sound_class_number_field = new wxStaticText(main_panel, SOUND_CLASS_NUMBER_FIELD, wxT(""));
-	
-	sound_class_list = new wxListBox(main_panel, (wxWindowID)SOUND_CLASS_LIST);
+	sound_class_number_text = new wxStaticText(main_panel, wxID_ANY, wxT("Sound Index: "));
+	sound_class_number_field = new wxTextCtrl(main_panel, SOUND_CLASS_NUMBER_FIELD, wxT(""));
+	sound_class_number_field->Disable();
 	
 	sound_flag_restart_checkbox = new wxCheckBox(main_panel, SOUND_FLAGS_RESTART, wxT("Cannot be restarted"));
 	sound_flag_abort_checkbox = new wxCheckBox(main_panel, SOUND_FLAGS_ABORT, wxT("Does not self-abort"));
@@ -118,16 +121,18 @@ bool SoundsView::OnCreate(wxDocument *doc, long WXUNUSED(flags))
 	
 	sound_eight_bit_text = new wxStaticText(main_panel, wxID_ANY, wxT("8-bit sounds:"));
 	sound_eight_bit_list = new wxListBox(main_panel, (wxWindowID)SOUND_EIGHT_BIT_PERMUTATIONS_LIST);
+	sound_eight_bit_list->SetMinSize(wxSize(m.x * 5, m.y * 7.5));
 	
 	sound_sixteen_bit_text = new wxStaticText(main_panel, wxID_ANY, wxT("16-bit sounds: "));
 	sound_sixteen_bit_list = new wxListBox(main_panel, (wxWindowID)SOUND_SIXTEEN_BIT_PERMUTATIONS_LIST);
+	sound_sixteen_bit_list->SetMinSize(wxSize(m.x * 5, m.y * 7.5));
 	
 	frame_sizer = new wxBoxSizer(wxHORIZONTAL);
 	sound_class_sizer = new wxBoxSizer(wxVERTICAL);
-	sound_class_header_sizer = new wxFlexGridSizer(2, 2, 0, 0);
+	sound_class_header_sizer = new wxFlexGridSizer(2, 2, m.y / 2, m.y / 2);
 	sound_editor_sizer = new wxBoxSizer(wxVERTICAL);
 	sound_flags_sizer = new wxStaticBoxSizer(wxVERTICAL, main_panel, wxT("Flags"));
-	sound_menus_sizer = new wxFlexGridSizer(2, 3, 0, 0);
+	sound_menus_sizer = new wxFlexGridSizer(3, 2, m.y / 2, m.y / 2);
 	sound_permutation_sizer = new wxBoxSizer(wxHORIZONTAL);
 	sound_eight_bit_sizer = new wxBoxSizer(wxVERTICAL);
 	sound_sixteen_bit_sizer = new wxBoxSizer(wxVERTICAL);
@@ -137,44 +142,44 @@ bool SoundsView::OnCreate(wxDocument *doc, long WXUNUSED(flags))
 	sound_class_header_sizer->Add(sound_class_number_text, 0, wxALIGN_CENTER_VERTICAL, 0);
 	sound_class_header_sizer->Add(sound_class_number_field, 0, 0, 0);
 	
-	sound_class_sizer->Add(sound_class_text, 0, 0, 0);
-	sound_class_sizer->Add(sound_class_header_sizer, 0, 0, 0);
 	sound_class_sizer->Add(sound_class_list, 1, wxEXPAND, 0);
+	sound_class_sizer->Add(sound_class_header_sizer, 0, wxTOP, m.y / 2);
 	
-	sound_flags_sizer->Add(sound_flag_restart_checkbox, 0, 0, 0);
-	sound_flags_sizer->Add(sound_flag_abort_checkbox, 0, 0, 0);
-	sound_flags_sizer->Add(sound_flag_resist_checkbox, 0, 0, 0);
-	sound_flags_sizer->Add(sound_flag_change_checkbox, 0, 0, 0);
-	sound_flags_sizer->Add(sound_flag_obstructed_checkbox, 0, 0, 0);
-	sound_flags_sizer->Add(sound_flag_mobstructed_checkbox, 0, 0, 0);
-	sound_flags_sizer->Add(sound_flag_ambient_checkbox, 0, 0, 0);
+	sound_flags_sizer->Add(sound_flag_restart_checkbox, 0, wxTOP, m.y / 4);
+	sound_flags_sizer->Add(sound_flag_abort_checkbox, 0, wxTOP, m.y / 4);
+	sound_flags_sizer->Add(sound_flag_resist_checkbox, 0, wxTOP, m.y / 4);
+	sound_flags_sizer->Add(sound_flag_change_checkbox, 0, wxTOP, m.y / 4);
+	sound_flags_sizer->Add(sound_flag_obstructed_checkbox, 0, wxTOP, m.y / 4);
+	sound_flags_sizer->Add(sound_flag_mobstructed_checkbox, 0, wxTOP, m.y / 4);
+	sound_flags_sizer->Add(sound_flag_ambient_checkbox, 0, wxTOP | wxBOTTOM, m.y / 4);
 	
 	sound_menus_sizer->Add(sound_chance_text, 0, wxALIGN_CENTER_VERTICAL, 0);
-	sound_menus_sizer->Add(sound_chance_menu, 0, 0, 0);
+	sound_menus_sizer->Add(sound_chance_menu, 0, wxEXPAND, 0);
 	sound_menus_sizer->Add(sound_low_pitch_text, 0, wxALIGN_CENTER_VERTICAL, 0);
 	sound_menus_sizer->Add(sound_low_pitch_field, 0, 0, 0);
 	sound_menus_sizer->Add(sound_high_pitch_text, 0, wxALIGN_CENTER_VERTICAL, 0);
 	sound_menus_sizer->Add(sound_high_pitch_field, 0, 0, 0);
 	
 	sound_eight_bit_sizer->Add(sound_eight_bit_text, 0, 0, 0);
-	sound_eight_bit_sizer->Add(sound_eight_bit_list, 1, wxEXPAND | wxRIGHT, 5);
+	sound_eight_bit_sizer->Add(sound_eight_bit_list, 1, wxEXPAND, 0);
 	sound_sixteen_bit_sizer->Add(sound_sixteen_bit_text, 0, 0, 0);
 	sound_sixteen_bit_sizer->Add(sound_sixteen_bit_list, 1, wxEXPAND, 0);
 	
 	sound_permutation_sizer->Add(sound_eight_bit_sizer, 1, wxEXPAND, 0);
+	sound_permutation_sizer->AddSpacer(m.y / 2);
 	sound_permutation_sizer->Add(sound_sixteen_bit_sizer, 1, wxEXPAND, 0);
 	
-	sound_editor_sizer->Add(sound_flags_sizer, 0, 0, 0);
-	sound_editor_sizer->AddSpacer(1);
+	sound_editor_sizer->Add(sound_flags_sizer, 0, wxEXPAND, 0);
+	sound_editor_sizer->AddSpacer(m.y / 2);
 	sound_editor_sizer->Add(sound_volume_radio_button, 0, 0, 0);
-	sound_editor_sizer->AddSpacer(1);
+	sound_editor_sizer->AddSpacer(m.y / 2);
 	sound_editor_sizer->Add(sound_menus_sizer, 0, 0, 0);
-	sound_editor_sizer->AddSpacer(5);
+	sound_editor_sizer->AddSpacer(m.y / 2);
 	sound_editor_sizer->Add(sound_permutation_sizer, 1, wxEXPAND, 0);
 	
-	frame_sizer->Add(sound_class_sizer, 0, wxEXPAND | wxALL, 5);
-	frame_sizer->AddSpacer(5);
-	frame_sizer->Add(sound_editor_sizer, 0, wxEXPAND | wxALL, 5);
+	frame_sizer->Add(sound_class_sizer, 1, wxEXPAND | wxALL, m.y / 2);
+	frame_sizer->AddSpacer(m.x);
+	frame_sizer->Add(sound_editor_sizer, 0, wxEXPAND | wxALL, m.y / 2);
 	
 	main_panel->SetSizer(frame_sizer);
 	frame_sizer->Layout();
@@ -312,7 +317,7 @@ void SoundsView::Update(void)
 		
 		def = payload->Get8BitSoundDefinition(mSoundClass);
 				
-		sound_class_number_field->SetLabel(wxString::Format(wxT("%d"), mSoundClass));
+		sound_class_number_field->ChangeValue(wxString::Format(wxT("%d"), mSoundClass));
 		sound_class_id_field->ChangeValue(wxString::Format(wxT("%d"), def->GetSoundCode()));
 		
 		sound_volume_radio_button->SetSelection(def->GetBehaviorIndex());
