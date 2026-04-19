@@ -75,7 +75,7 @@ bool SoundsView::OnCreate(wxDocument *doc, long WXUNUSED(flags))
 	
     frame = wxGetApp().CreateChildFrame(doc, this, frameTitle, wxPoint(0, 0), wxSize(600, 400), wxDEFAULT_FRAME_STYLE);// & ~ (wxRESIZE_BORDER | wxRESIZE_BOX | wxMAXIMIZE_BOX));
 
-	const auto m = frame->GetTextExtent(wxT("M"));
+	const auto m = frame->GetTextExtent("M");
 	
 	payload = (SoundsDocument*)doc;
 	
@@ -96,28 +96,50 @@ bool SoundsView::OnCreate(wxDocument *doc, long WXUNUSED(flags))
 
 	sound_class_id_text = new wxStaticText(main_panel, wxID_ANY, wxT("Sound Class: "));
 	sound_class_id_field = new wxTextCtrl(main_panel, SOUND_CLASS_ID_FIELD, wxT(""));
+
+	sound_class_id_field->SetToolTip(wxT("Sound class must not be -1 for sounds to play in engine. By convention, unique and a multiple of 10."));
 	
 	sound_class_number_text = new wxStaticText(main_panel, wxID_ANY, wxT("Sound Index: "));
 	sound_class_number_field = new wxTextCtrl(main_panel, SOUND_CLASS_NUMBER_FIELD, wxT(""));
 	sound_class_number_field->Disable();
+
+	sound_class_number_field->SetToolTip(wxT("Set automatically by its position in the list of sound definitions."));
 	
 	sound_flag_restart_checkbox = new wxCheckBox(main_panel, SOUND_FLAGS_RESTART, wxT("Cannot be restarted"));
+	sound_flag_restart_checkbox->SetToolTip(wxT("Sound will not play again if already playing (for example, Bob's voices)"));
+	
 	sound_flag_abort_checkbox = new wxCheckBox(main_panel, SOUND_FLAGS_ABORT, wxT("Does not self-abort"));
+	sound_flag_abort_checkbox->SetToolTip(wxT("Effectively unused"));
+	
 	sound_flag_resist_checkbox = new wxCheckBox(main_panel, SOUND_FLAGS_RESIST, wxT("Resists pitch changes"));
+	sound_flag_resist_checkbox->SetToolTip(wxT("External pitch changes are 50% effective"));
+	
 	sound_flag_change_checkbox = new wxCheckBox(main_panel, SOUND_FLAGS_CHANGE, wxT("Can't change pitch"));
+	sound_flag_change_checkbox->SetToolTip(wxT("External pitch changes are ignored"));
+	
 	sound_flag_obstructed_checkbox = new wxCheckBox(main_panel, SOUND_FLAGS_OBSTRUCTED, wxT("Can't be obstructed"));
+	sound_flag_obstructed_checkbox->SetToolTip(wxT("Sound will not be obstructed by walls"));
+
 	sound_flag_mobstructed_checkbox = new wxCheckBox(main_panel, SOUND_FLAGS_MOBSTRUCTED, wxT("Can't be media obstructed"));
+	sound_flag_mobstructed_checkbox->SetToolTip(wxT("Sound will not be obstructed by media layers"));
+	
 	sound_flag_ambient_checkbox = new wxCheckBox(main_panel, SOUND_FLAGS_AMBIENT, wxT("Is ambient"));
+	sound_flag_ambient_checkbox->SetToolTip(wxT("Marks a sound as ambient for loading purposes"));
 	
 	sound_volume_radio_button = new wxRadioBox(main_panel, SOUND_VOLUME_RADIO_BUTTON, wxT("Volume"), wxDefaultPosition, wxDefaultSize, 3, volume_labels, 3, wxRA_SPECIFY_COLS);
+	sound_volume_radio_button->SetToolTip(wxT("Soft sounds are silent when obstructed; loud sounds can be heard farther away"));
 	
 	sound_chance_text = new wxStaticText(main_panel, wxID_ANY, wxT("Chance: "));
 	sound_chance_menu = new wxChoice(main_panel, SOUND_CHANCE_MENU, wxDefaultPosition, wxDefaultSize, 10, chances_labels);
+	sound_chance_menu->SetToolTip("Unused");
 	
 	sound_low_pitch_text = new wxStaticText(main_panel, wxID_ANY, wxT("Low pitch: "));
 	sound_low_pitch_field = new wxTextCtrl(main_panel, SOUND_LOW_PITCH_FIELD);
+	sound_low_pitch_field->SetToolTip("Unused; leave set to 0");
+	
 	sound_high_pitch_text = new wxStaticText(main_panel, wxID_ANY, wxT("High pitch: "));
 	sound_high_pitch_field = new wxTextCtrl(main_panel, SOUND_HIGH_PITCH_FIELD);
+	sound_high_pitch_field->SetToolTip("Unused; leave set to 0");
 	
 	sound_eight_bit_text = new wxStaticText(main_panel, wxID_ANY, wxT("8-bit sounds:"));
 	sound_eight_bit_list = new wxListBox(main_panel, (wxWindowID)SOUND_EIGHT_BIT_PERMUTATIONS_LIST);
