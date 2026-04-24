@@ -37,6 +37,7 @@
 		AE02711214C51C510093B508 /* ShapeFusionDocManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AE02711014C51C510093B508 /* ShapeFusionDocManager.cpp */; };
 		AE33904A1290D7A2000DE273 /* shapefusion.icns in Resources */ = {isa = PBXBuildFile; fileRef = AE3390491290D7A2000DE273 /* shapefusion.icns */; };
 		AE68C1E82F7B5B8400430790 /* DefaultPhysics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AE68C1E72F7B5B8400430790 /* DefaultPhysics.cpp */; };
+		AEBB94182F9AFF2E001F1A59 /* libiconv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = AEBB94162F9AFF18001F1A59 /* libiconv.tbd */; };
 		F03A573C0D0381F00057BB53 /* GenericEndianBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F03A573B0D0381F00057BB53 /* GenericEndianBuffer.cpp */; };
 		F08B4C5A0AB0B31E00896399 /* ShapeFusionApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F08B4B780AB0AE4B00896399 /* ShapeFusionApp.cpp */; };
 /* End PBXBuildFile section */
@@ -51,6 +52,7 @@
 			isEditable = 1;
 			outputFiles = (
 			);
+			script = "# Type a script or drag a script file from your workspace to insert its path.\n";
 		};
 /* End PBXBuildRule section */
 
@@ -109,6 +111,7 @@
 		AE3390491290D7A2000DE273 /* shapefusion.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = shapefusion.icns; path = Resources/shapefusion.icns; sourceTree = "<group>"; };
 		AE68C1E62F7B5B8400430790 /* DefaultPhysics.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DefaultPhysics.h; path = Physics/DefaultPhysics.h; sourceTree = "<group>"; };
 		AE68C1E72F7B5B8400430790 /* DefaultPhysics.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = DefaultPhysics.cpp; path = Physics/DefaultPhysics.cpp; sourceTree = "<group>"; };
+		AEBB94162F9AFF18001F1A59 /* libiconv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libiconv.tbd; path = usr/lib/libiconv.tbd; sourceTree = SDKROOT; };
 		AEEC4EC224EA10D7006C0530 /* ShapeFusion.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ShapeFusion.entitlements; sourceTree = "<group>"; };
 		F03A573B0D0381F00057BB53 /* GenericEndianBuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.cpp.cpp; path = GenericEndianBuffer.cpp; sourceTree = "<group>"; };
 		F03A573D0D0381F80057BB53 /* GenericEndianBuffer.h */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.c.h; path = GenericEndianBuffer.h; sourceTree = "<group>"; };
@@ -137,6 +140,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AEBB94182F9AFF2E001F1A59 /* libiconv.tbd in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -205,12 +209,21 @@
 			name = Physics;
 			sourceTree = "<group>";
 		};
+		AEBB94152F9AFF18001F1A59 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				AEBB94162F9AFF18001F1A59 /* libiconv.tbd */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		F08B4B580AB0ADBA00896399 = {
 			isa = PBXGroup;
 			children = (
 				AEEC4EC224EA10D7006C0530 /* ShapeFusion.entitlements */,
 				F08B4B720AB0AE0B00896399 /* Sources */,
 				F08B4B750AB0AE1200896399 /* Resources */,
+				AEBB94152F9AFF18001F1A59 /* Frameworks */,
 				F08B4C450AB0B10000896399 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -586,7 +599,6 @@
 					"-lexpat",
 					"-lz",
 					"-lpcre2-32",
-					/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.4.sdk/usr/lib/libiconv.tbd,
 					"-framework",
 					CoreFoundation,
 					"-framework",
@@ -674,7 +686,6 @@
 					"-lexpat",
 					"-lz",
 					"-lpcre2-32",
-					/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.4.sdk/usr/lib/libiconv.tbd,
 					"-framework",
 					CoreFoundation,
 					"-framework",
