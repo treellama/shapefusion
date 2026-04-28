@@ -68,9 +68,11 @@ public:
 #if wxUSE_STD_IOSTREAM
     wxSTD ostream& SaveObject(wxSTD ostream& stream);
     wxSTD istream& LoadObject(wxSTD istream& stream);
+	bool LoadPatch(wxSTD istream& stream);
 #else
     wxOutputStream& SaveObject(wxOutputStream& stream);
     wxInputStream& LoadObject(wxInputStream& stream);
+	bool LoadPatch(wxInputStream& stream);
 #endif
 };
 

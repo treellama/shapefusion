@@ -33,6 +33,8 @@
     #include "wx/txtstrm.h"
 #endif
 
+#include <cstdint>
+
 #include "SoundsDocument.h"
 #include "SoundsView.h"
 
@@ -253,3 +255,64 @@ wxInputStream& SoundsDocument::LoadObject(wxInputStream& stream)
 	return stream;
 }
 
+#if wxUSE_STD_IOSTREAM
+bool SoundsDocument::LoadPatch(wxSTD istream& stream)
+#else
+bool SoundsDocument::LoadPatch(wxInputStream& stream)
+#endif
+{
+#if wxUSE_STD_IOSTREAM
+	stream.seekg(0, std::ios::end);
+	uint32_t filesize = stream.tellg();
+	stream.seekg(0, std::ios::beg);
+#else
+	uint32_t filesize = stream.GetSize();
+#endif
+
+	BigEndianBuffer buffer{filesize};
+
+#if wxUSE_STD_IOSTREAM
+	stream.read(reinterpret_cast<char*>(buffer.Data()), buffer.Size());
+#else
+	stream.Read(reinterpret_cast<char*>(buffer.Data()), buffer.Size());
+#endif
+
+	Modify(true);
+
+	while (buffer.Position() < buffer.Size()) {
+		uint32_t sndc = buffer.ReadULong();
+		if (sndc != FOUR_CHARS_TO_INT('s','n','d','c')) {
+			return false;
+		}
+
+		(void) buffer.ReadShort();
+		uint16_t index = buffer.ReadUShort();
+		uint16_t source = 0;
+		if (index >= 215) {
+			index -= 215;
+			source = 1;
+		}
+
+		// load the sound header and then the permutations
+		SoundsDefinition* snd = new SoundsDefinition(IsVerbose());
+		
+		auto offset = buffer.Position();
+		
+		constexpr bool fromPatch = true;
+		snd->LoadObject(buffer, fromPatch);
+		if (!snd->IsGood()) {
+			return false;
+		}
+
+		mSoundDefinitions[source][index] = snd;
+
+		auto next = offset + SIZEOF_sound_definition + snd->GetPermutationCount() * 4 + snd->GetTotalLength();
+		if (next < buffer.Size()) {
+			buffer.Position(next);
+		} else {
+			break;
+		}
+	}
+	
+	return true;
+}

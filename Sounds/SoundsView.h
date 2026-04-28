@@ -118,6 +118,9 @@ public:
 	void MenuImportSound(wxCommandEvent &e);
 	void MenuExportSound(wxCommandEvent &e);
 
+	void MenuImportPatch(wxCommandEvent& e);
+	void MenuGeneratePatch(wxCommandEvent& e);
+
 	void ExportSound(wxString filepath);
 
 protected:

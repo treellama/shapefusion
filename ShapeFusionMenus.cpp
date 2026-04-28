@@ -187,6 +187,10 @@ void CreateSoundsMenu(wxMenuBar *menu_bar)
 	sounds_menu->Enable(SOUNDS_MENU_ADDCLASS, false);
 	sounds_menu->Enable(SOUNDS_MENU_EXPORT, false);
 	sounds_menu->Enable(SOUNDS_MENU_IMPORT, false);
+
+	sounds_menu->AppendSeparator();
+	sounds_menu->Append(SOUNDS_MENU_IMPORTPATCH, wxT("Apply Sounds Patch..."));
+	sounds_menu->Append(SOUNDS_MENU_GENERATEPATCH, wxT("Export Sounds Patch..."));
 	
 	// ... and add the whole to the menu_bar
 	menu_bar->Append(sounds_menu, wxT("S&ounds"));
