@@ -65,7 +65,7 @@ SoundsDefinition *SoundsDocument::GetSoundDefinition(unsigned short source_index
 		return NULL;
 	if (sound_index > mSoundDefinitions[source_index].size())
 		return NULL;
-	return mSoundDefinitions[source_index][sound_index];
+	return mSoundDefinitions[source_index][sound_index].get();
 }
 
 SoundsDefinition *SoundsDocument::Get8BitSoundDefinition(unsigned short sound_index)
@@ -81,13 +81,10 @@ SoundsDefinition *SoundsDocument::Get16BitSoundDefinition(unsigned short sound_i
 void SoundsDocument::AddSoundDefinition(void)
 {
 	// As there's always two versions (8-bit/16-bit) of the same sound, we add both there...
-	SoundsDefinition	*snd8 = new SoundsDefinition(),
-						*snd16 = new SoundsDefinition();
-
 	// We add 8-bit...
-	mSoundDefinitions[_sound_8bit].push_back(snd8);
+	mSoundDefinitions[_sound_8bit].push_back(std::make_unique<SoundsDefinition>());
 	// ... and 16-bit
-	mSoundDefinitions[_sound_16bit].push_back(snd16);
+	mSoundDefinitions[_sound_16bit].push_back(std::make_unique<SoundsDefinition>());
 	
 	// We mark ourselves as modified...
 	Modify(true);
@@ -231,7 +228,7 @@ wxInputStream& SoundsDocument::LoadObject(wxInputStream& stream)
 	/* Now we load 8-bit and 16-bit sounds */
 	for (int i = 0; i < mSourceCount; i++) {
 		for (int j = 0; j < mSoundCount; j++) {
-			SoundsDefinition *snd = new SoundsDefinition(IsVerbose());
+			auto snd = std::make_unique<SoundsDefinition>(IsVerbose());
 			
 			if (IsVerbose())
 				wxLogDebug(wxT("[SoundsDocument] Loading source %d, sound %d"), i, j);
@@ -247,7 +244,7 @@ wxInputStream& SoundsDocument::LoadObject(wxInputStream& stream)
 			
 			filebuffer.Position(oldpos + SIZEOF_sound_definition);
 			
-			mSoundDefinitions[i].push_back(snd);
+			mSoundDefinitions[i].push_back(std::move(snd));
 		}
 	}
 	
@@ -294,7 +291,7 @@ bool SoundsDocument::LoadPatch(wxInputStream& stream)
 		}
 
 		// load the sound header and then the permutations
-		SoundsDefinition* snd = new SoundsDefinition(IsVerbose());
+		auto snd = std::make_unique<SoundsDefinition>(IsVerbose());
 		
 		auto offset = buffer.Position();
 		
@@ -304,9 +301,9 @@ bool SoundsDocument::LoadPatch(wxInputStream& stream)
 			return false;
 		}
 
-		mSoundDefinitions[source][index] = snd;
-
 		auto next = offset + SIZEOF_sound_definition + snd->GetPermutationCount() * 4 + snd->GetTotalLength();
+		mSoundDefinitions[source][index] = std::move(snd);
+
 		if (next < buffer.Size()) {
 			buffer.Position(next);
 		} else {

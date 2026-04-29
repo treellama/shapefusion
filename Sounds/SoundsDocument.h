@@ -19,6 +19,8 @@
 #ifndef __SOUNDDOCUMENT_H__
 #define __SOUNDDOCUMENT_H__
 
+#include <memory>
+
 #include "wx/docview.h"
 #include "wx/cmdproc.h"
 #include "SoundsElements.h"
@@ -36,7 +38,7 @@ private:
 	short mSoundCount;
 	
 	// immediately followed by source_count*sound_count sound_definition structures
-	std::vector< std::vector<SoundsDefinition*> > mSoundDefinitions;
+	std::vector< std::vector<std::unique_ptr<SoundsDefinition>>> mSoundDefinitions;
 
 	/* some of our needed info */
 	bool mM2Demo;
