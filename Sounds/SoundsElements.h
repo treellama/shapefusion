@@ -249,9 +249,9 @@ public:
 	unsigned long GetTotalLength() const { return mTotalLength; }
 	
 	// Utilities
-	unsigned int GetSizeInFile(void);
-    BigEndianBuffer& SaveObject(BigEndianBuffer& buffer, unsigned int& offset);
-    BigEndianBuffer& LoadObject(BigEndianBuffer& buffer, bool fromPatch = false);
+	unsigned int GetSizeInFile(bool in_patch = false);
+    BigEndianBuffer& SaveObject(BigEndianBuffer& buffer, unsigned int& offset, bool to_patch = false);
+    BigEndianBuffer& LoadObject(BigEndianBuffer& buffer, bool from_patch = false);
 };
 
 #endif

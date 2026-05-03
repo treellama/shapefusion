@@ -70,10 +70,12 @@ public:
 #if wxUSE_STD_IOSTREAM
     wxSTD ostream& SaveObject(wxSTD ostream& stream);
     wxSTD istream& LoadObject(wxSTD istream& stream);
+	wxSTD ostream& SavePatch(wxSTD ostream& stream, const SoundsDocument& other);
 	bool LoadPatch(wxSTD istream& stream);
 #else
     wxOutputStream& SaveObject(wxOutputStream& stream);
     wxInputStream& LoadObject(wxInputStream& stream);
+	wxOutputStream& SavePatch(wxOutputStream& stream, const ShapesDocument& other);
 	bool LoadPatch(wxInputStream& stream);
 #endif
 };

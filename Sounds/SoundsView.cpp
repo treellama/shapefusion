@@ -615,7 +615,46 @@ void SoundsView::MenuImportPatch(wxCommandEvent& e)
 
 void SoundsView::MenuGeneratePatch(wxCommandEvent& e)
 {
+	auto document = static_cast<SoundsDocument*>(GetDocument());
 
+	if (!document) {
+		return;
+	}
+
+	// prompt the user for a base for the patch
+	wxFileDialog dlg(frame, wxT("Choose a base file (e.g. standard Infinity sounds)"),
+					 wxT(""), wxT(""),
+					 wxT("Sounds file (*.sndA)|*.sndA|All files (*.*)|*.*"),
+					 wxFD_OPEN);
+
+	if (dlg.ShowModal() != wxID_OK) {
+		return;
+	}
+
+	SoundsDocument base;
+	if (!base.DoOpenDocument(dlg.GetPath())) {
+		return;
+	}
+
+	// prompt the user for a patch location
+	wxString path = wxFileSelector(wxT("Export patch file"), wxT(""),
+								   wxT("Sounds Patch.Snpa"), wxT(""),
+								   wxT("Sounds patch|*.SnPa"),
+								   wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+
+	if (path.empty()) {
+		return;
+	}
+
+#if wxUSE_STD_IOSTREAM
+	wxSTD ofstream stream(path.mb_str(), wxSTD ios_base::out | wxSTD ios_base::binary | wxSTD ios_base::trunc);
+#else
+	wxFileOutputStream stream(path);
+	if (!stream.IsOk()) {
+		return;
+	}
+#endif
+	document->SavePatch(stream, base);
 }
 
 void SoundsView::SoundPermutationSelected(wxCommandEvent &e)

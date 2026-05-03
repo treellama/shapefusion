@@ -313,3 +313,54 @@ bool SoundsDocument::LoadPatch(wxInputStream& stream)
 	
 	return true;
 }
+
+#if wxUSE_STD_IOSTREAM
+wxSTD ostream& SoundsDocument::SavePatch(wxSTD ostream& stream, const SoundsDocument& other)
+#else
+wxOutputStream& SoundsDocument::SavePatch(wxOutputStream& stream, const ShapesDocument& other)
+#endif
+{
+	auto count = mSoundDefinitions[0].size();
+	auto other_count = other.mSoundDefinitions[0].size();
+
+	bool warn_215 = false;
+
+	for (auto source = 0; source < 2; ++source) {
+		for (auto i = 0; i < count; ++i) {
+			bool output_definition = false;
+			if (i < other_count) {
+				if (*mSoundDefinitions[source][i] != *other.mSoundDefinitions[source][i]) {
+					if (i < 215) {
+						output_definition = true;
+					} else {
+						warn_215 = true;
+					}
+				}
+			} else if (i < 215) {
+				output_definition = true;
+			} else {
+				warn_215 = true;
+			}
+
+			if (output_definition) {
+				constexpr bool fromPatch = true;
+				BigEndianBuffer buffer{8 + mSoundDefinitions[source][i]->GetSizeInFile(fromPatch)};
+				
+				buffer.WriteULong(FOUR_CHARS_TO_INT('s','n','d','c'));
+				buffer.WriteShort(0);
+				buffer.WriteShort(i + source * 215);
+
+				unsigned int offset = 0;
+				mSoundDefinitions[source][i]->SaveObject(buffer, offset, fromPatch);
+
+#if wxUSE_STD_IOSTREAM
+				stream.write(reinterpret_cast<char*>(buffer.Data()), buffer.Size());
+#else
+				stream.Write(reinterpret_cast<char*>(buffer.Data()), buffer.Size());
+#endif
+			}
+		}
+	}
+
+	return stream;
+}
