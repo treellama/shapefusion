@@ -638,7 +638,7 @@ void SoundsView::MenuGeneratePatch(wxCommandEvent& e)
 
 	// prompt the user for a patch location
 	wxString path = wxFileSelector(wxT("Export patch file"), wxT(""),
-								   wxT("Sounds Patch.Snpa"), wxT(""),
+								   wxT("Sounds Patch.SnPa"), wxT(""),
 								   wxT("Sounds patch|*.SnPa"),
 								   wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 
