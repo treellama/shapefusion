@@ -362,5 +362,10 @@ wxOutputStream& SoundsDocument::SavePatch(wxOutputStream& stream, const ShapesDo
 		}
 	}
 
+	if (warn_215) {
+		wxMessageDialog d{GetDocumentWindow(), wxT("Warning: Anvil sounds patches cannot patch sounds past sound index 215. Sounds past index 215 will not be updated in the saved patch."), wxT("Warning: too many sounds"), wxOK | wxCENTRE | wxICON_WARNING};
+		d.ShowModal();
+	}
+
 	return stream;
 }
