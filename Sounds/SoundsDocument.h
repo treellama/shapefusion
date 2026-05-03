@@ -19,6 +19,8 @@
 #ifndef __SOUNDDOCUMENT_H__
 #define __SOUNDDOCUMENT_H__
 
+#include <memory>
+
 #include "wx/docview.h"
 #include "wx/cmdproc.h"
 #include "SoundsElements.h"
@@ -36,7 +38,7 @@ private:
 	short mSoundCount;
 	
 	// immediately followed by source_count*sound_count sound_definition structures
-	std::vector< std::vector<SoundsDefinition*> > mSoundDefinitions;
+	std::vector< std::vector<std::unique_ptr<SoundsDefinition>>> mSoundDefinitions;
 
 	/* some of our needed info */
 	bool mM2Demo;
@@ -68,9 +70,13 @@ public:
 #if wxUSE_STD_IOSTREAM
     wxSTD ostream& SaveObject(wxSTD ostream& stream);
     wxSTD istream& LoadObject(wxSTD istream& stream);
+	wxSTD ostream& SavePatch(wxSTD ostream& stream, const SoundsDocument& other);
+	bool LoadPatch(wxSTD istream& stream);
 #else
     wxOutputStream& SaveObject(wxOutputStream& stream);
     wxInputStream& LoadObject(wxInputStream& stream);
+	wxOutputStream& SavePatch(wxOutputStream& stream, const ShapesDocument& other);
+	bool LoadPatch(wxInputStream& stream);
 #endif
 };
 

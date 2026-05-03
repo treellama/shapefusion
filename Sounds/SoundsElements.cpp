@@ -476,12 +476,17 @@ bool SoundsDefinition::operator!=(const SoundsDefinition& right) const
 	return (!HaveSameAttributesAs(right) || !HaveSameSoundsAs(right));
 }
 
-unsigned int SoundsDefinition::GetSizeInFile(void)
+unsigned int SoundsDefinition::GetSizeInFile(bool is_patch)
 {
 	unsigned int	size = SIZEOF_sound_definition;
 
 	for (unsigned int i = 0; i < mSounds.size(); i++)
 		size += mSounds[i].Size();
+
+	if (is_patch) {
+		size += GetPermutationCount() * 4;
+	}
+	
 	return size;
 }
 
@@ -502,7 +507,7 @@ void SoundsDefinition::SetChance(short chance)
 	mChance = 32768*chance/10;
 }
 
-BigEndianBuffer& SoundsDefinition::SaveObject(BigEndianBuffer& buffer, unsigned int& offset)
+BigEndianBuffer& SoundsDefinition::SaveObject(BigEndianBuffer& buffer, unsigned int& offset, bool to_patch)
 {
 	unsigned int oldpos = buffer.Position();
 	
@@ -559,24 +564,34 @@ BigEndianBuffer& SoundsDefinition::SaveObject(BigEndianBuffer& buffer, unsigned 
 	}
 	
 	buffer.WriteULong(mLastPlayed);
-	
-	// Now, we write actual sound data where it belongs...
-	buffer.Position(offset);
-	
+	buffer.WriteULong(0);
+	buffer.WriteULong(0);
+
+	if (to_patch) {
+		// anvil patches have a redundant list of permutation sizes here
+		for (auto i = 0; i < mSounds.size(); ++i) {
+			buffer.WriteULong(mSounds[i].Size());
+		}
+	} else {
+		buffer.Position(offset);
+	}
+
 	for (unsigned int i = 0; i < mSounds.size(); i++) {
 		mSounds[i].SaveObject(buffer);
 	}
-	
-	// We put back position to the end of the written sound_definition...
-	buffer.Position(oldpos + SIZEOF_sound_definition);
-	// ... and add our total_length to the offset, so that next invocation
-	// writes its sound data at the correct place.
-	offset += total_length;
+
+	if (!to_patch) {
+		// We put back position to the end of the written sound_definition...
+		buffer.Position(oldpos + SIZEOF_sound_definition);
+		// ... and add our total_length to the offset, so that next invocation
+		// writes its sound data at the correct place.
+		offset += total_length;
+	}
 	
 	return buffer;
 }
 
-BigEndianBuffer& SoundsDefinition::LoadObject(BigEndianBuffer& buffer)
+BigEndianBuffer& SoundsDefinition::LoadObject(BigEndianBuffer& buffer, bool from_patch)
 {
 	mSoundCode = buffer.ReadShort();
 
@@ -608,14 +623,14 @@ BigEndianBuffer& SoundsDefinition::LoadObject(BigEndianBuffer& buffer)
 	mPermutationsPlayed = buffer.ReadUShort();
 	int groupOffset = buffer.ReadULong();
 	int singleLength = buffer.ReadULong();
-	int totalLength = buffer.ReadULong();
+	mTotalLength = buffer.ReadULong();
 	
 	// Bug fix for RED Sounds : When groupOffset is out of bounds, consider sound empty.
 	if (groupOffset < 0)
 		permutations = 0;
-	
-	if (permutations != 0 && (unsigned int)(groupOffset + totalLength) > buffer.Size()) {
-		wxLogError(wxT("[SoundsDefinition] incorrect group offset / total length (%d/%d)"), groupOffset, totalLength);
+
+	if (!from_patch && permutations != 0 && (unsigned int)(groupOffset + mTotalLength) > buffer.Size()) {
+		wxLogError(wxT("[SoundsDefinition] incorrect group offset / total length (%d/%d)"), groupOffset, mTotalLength);
 		return buffer;
 	}
 	
@@ -627,6 +642,20 @@ BigEndianBuffer& SoundsDefinition::LoadObject(BigEndianBuffer& buffer)
 	}
 	
 	mLastPlayed = buffer.ReadULong();
+	(void) buffer.ReadULong();	// unused
+	(void) buffer.ReadULong();
+
+
+	if (from_patch) {
+		// Anvil patches have a redundant list of permutation sizes here
+		for (auto i = 0; i < permutations; ++i) {
+			(void) buffer.ReadULong();
+		}
+
+		if (permutations != 0 && mTotalLength + buffer.Position() > buffer.Size()) {
+			wxLogError(wxT("[SoundsDefinition] incorrect total length in patch (%d)"), mTotalLength);
+		}
+	}
 	
 	if (IsVerbose()) {
 		wxLogDebug(wxT("[SoundsDefinition] Sound Code:			%d"), mSoundCode);
@@ -639,7 +668,7 @@ BigEndianBuffer& SoundsDefinition::LoadObject(BigEndianBuffer& buffer)
 		wxLogDebug(wxT("[SoundsDefinition] Permutations Played:	%d"), mPermutationsPlayed);
 		wxLogDebug(wxT("[SoundsDefinition] Group Offset:		%d"), groupOffset);
 		wxLogDebug(wxT("[SoundsDefinition] Single Length:		%d"), singleLength);
-		wxLogDebug(wxT("[SoundsDefinition] Total Length:		%d"), totalLength);
+		wxLogDebug(wxT("[SoundsDefinition] Total Length:		%d"), mTotalLength);
 		wxLogDebug(wxT("[SoundsDefinition] Last Played:			%d"), mLastPlayed);
 	}
 	
@@ -652,13 +681,18 @@ BigEndianBuffer& SoundsDefinition::LoadObject(BigEndianBuffer& buffer)
 		if (permutations == 1)
 			size = singleLength;
 		else if (i == permutations - 1)
-			size = totalLength - soundOffsets[i];
+			size = mTotalLength - soundOffsets[i];
 		else
 			size = soundOffsets[i + 1] - soundOffsets[i];
 		
 		AppleSoundHeader sndbuffer(IsVerbose());
 
-		buffer.Position(groupOffset + soundOffsets[i]);
+		if (from_patch) {
+			// group offset ignored for patches
+			buffer.Position(oldpos + soundOffsets[i]);
+		}  else {
+			buffer.Position(groupOffset + soundOffsets[i]);
+		}
 		sndbuffer.LoadObject(buffer);
 		if (sndbuffer.IsGood()) {
 			mSounds.push_back(sndbuffer);

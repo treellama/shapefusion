@@ -537,6 +537,7 @@
 		F08B4C490AB0B10000896399 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_ENTITLEMENTS = ShapeFusion.entitlements;
 				CODE_SIGN_IDENTITY = "-";
@@ -623,6 +624,7 @@
 		F08B4C4A0AB0B10000896399 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "c++17";
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_ENTITLEMENTS = ShapeFusion.entitlements;
 				CODE_SIGN_IDENTITY = "-";

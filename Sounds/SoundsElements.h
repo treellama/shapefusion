@@ -164,7 +164,8 @@ private:
 	/* filled in later */
 //	short mPermutations;
 	unsigned short mPermutationsPlayed;
-//	int mGroupOffset, mSingleLength, mTotalLength; // magic numbers necessary to load sounds
+	//	int mGroupOffset, mSingleLength, mTotalLength; // magic numbers necessary to load sounds
+	unsigned int mTotalLength;
 //	std::vector<int> mSoundOffsets;
 	std::vector<AppleSoundHeader> mSounds;
 	unsigned int mLastPlayed; // machine ticks
@@ -244,11 +245,13 @@ public:
 	void DeletePermutation(unsigned int permutation_index);
 	AppleSoundHeader* GetPermutation(unsigned int permutation_index);
 	AppleSoundHeader* NewPermutation(wxString path);
+
+	unsigned long GetTotalLength() const { return mTotalLength; }
 	
 	// Utilities
-	unsigned int GetSizeInFile(void);
-    BigEndianBuffer& SaveObject(BigEndianBuffer& buffer, unsigned int& offset);
-    BigEndianBuffer& LoadObject(BigEndianBuffer& buffer);
+	unsigned int GetSizeInFile(bool in_patch = false);
+    BigEndianBuffer& SaveObject(BigEndianBuffer& buffer, unsigned int& offset, bool to_patch = false);
+    BigEndianBuffer& LoadObject(BigEndianBuffer& buffer, bool from_patch = false);
 };
 
 #endif

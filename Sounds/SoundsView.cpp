@@ -54,6 +54,8 @@ BEGIN_EVENT_TABLE(SoundsView, wxView)
 	EVT_MENU(SOUNDS_MENU_ADDCLASS, SoundsView::MenuAddSoundClass)
 	EVT_MENU(SOUNDS_MENU_EXPORT, SoundsView::MenuExportSound)
 	EVT_MENU(SOUNDS_MENU_IMPORT, SoundsView::MenuImportSound)
+	EVT_MENU(SOUNDS_MENU_IMPORTPATCH, SoundsView::MenuImportPatch)
+	EVT_MENU(SOUNDS_MENU_GENERATEPATCH, SoundsView::MenuGeneratePatch)
 END_EVENT_TABLE()
 
 IMPLEMENT_DYNAMIC_CLASS(SoundsView, wxView)
@@ -580,6 +582,79 @@ void SoundsView::MenuExportSound(wxCommandEvent &e)
 		if (!result)
 			wxLogDebug(wxT("[SoundsView] Error exporting sound"));
 	}
+}
+
+void SoundsView::MenuImportPatch(wxCommandEvent& e)
+{
+	auto document = static_cast<SoundsDocument*>(GetDocument());
+	if (!document) {
+		return;
+	}
+
+	auto path = wxFileSelector(wxT("Choose a patch file"), wxT(""), wxT(""), wxT(""), wxT("Patch files (*.SnPa)|*.SnPa|All Files (*.*)|*.*"), wxFD_OPEN);
+
+	if (path.empty()) {
+		return;
+	}
+
+#if wxUSE_STD_IOSTREAM
+	wxSTD ifstream stream(path.mb_str(), wxSTD ios_base::in | wxSTD ios_base::binary);
+#else
+	wxFileInputStream stream(path);
+	if (!stream.IsOk()) {
+		return;
+	}
+#endif
+
+	if (!document->LoadPatch(stream)) {
+		wxMessageBox(wxT("Error loading sounds patch; the patch may be partially applied!"), wxT("Error loading sounds patch"), wxOK | wxICON_ERROR, frame);
+	}
+
+	Update();
+}
+
+void SoundsView::MenuGeneratePatch(wxCommandEvent& e)
+{
+	auto document = static_cast<SoundsDocument*>(GetDocument());
+
+	if (!document) {
+		return;
+	}
+
+	// prompt the user for a base for the patch
+	wxFileDialog dlg(frame, wxT("Choose a base file (e.g. standard Infinity sounds)"),
+					 wxT(""), wxT(""),
+					 wxT("Sounds file (*.sndA)|*.sndA|All files (*.*)|*.*"),
+					 wxFD_OPEN);
+
+	if (dlg.ShowModal() != wxID_OK) {
+		return;
+	}
+
+	SoundsDocument base;
+	if (!base.DoOpenDocument(dlg.GetPath())) {
+		return;
+	}
+
+	// prompt the user for a patch location
+	wxString path = wxFileSelector(wxT("Export patch file"), wxT(""),
+								   wxT("Sounds Patch.SnPa"), wxT(""),
+								   wxT("Sounds patch|*.SnPa"),
+								   wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+
+	if (path.empty()) {
+		return;
+	}
+
+#if wxUSE_STD_IOSTREAM
+	wxSTD ofstream stream(path.mb_str(), wxSTD ios_base::out | wxSTD ios_base::binary | wxSTD ios_base::trunc);
+#else
+	wxFileOutputStream stream(path);
+	if (!stream.IsOk()) {
+		return;
+	}
+#endif
+	document->SavePatch(stream, base);
 }
 
 void SoundsView::SoundPermutationSelected(wxCommandEvent &e)

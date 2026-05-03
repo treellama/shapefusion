@@ -33,6 +33,8 @@
     #include "wx/txtstrm.h"
 #endif
 
+#include <cstdint>
+
 #include "SoundsDocument.h"
 #include "SoundsView.h"
 
@@ -63,7 +65,7 @@ SoundsDefinition *SoundsDocument::GetSoundDefinition(unsigned short source_index
 		return NULL;
 	if (sound_index > mSoundDefinitions[source_index].size())
 		return NULL;
-	return mSoundDefinitions[source_index][sound_index];
+	return mSoundDefinitions[source_index][sound_index].get();
 }
 
 SoundsDefinition *SoundsDocument::Get8BitSoundDefinition(unsigned short sound_index)
@@ -79,13 +81,10 @@ SoundsDefinition *SoundsDocument::Get16BitSoundDefinition(unsigned short sound_i
 void SoundsDocument::AddSoundDefinition(void)
 {
 	// As there's always two versions (8-bit/16-bit) of the same sound, we add both there...
-	SoundsDefinition	*snd8 = new SoundsDefinition(),
-						*snd16 = new SoundsDefinition();
-
 	// We add 8-bit...
-	mSoundDefinitions[_sound_8bit].push_back(snd8);
+	mSoundDefinitions[_sound_8bit].push_back(std::make_unique<SoundsDefinition>());
 	// ... and 16-bit
-	mSoundDefinitions[_sound_16bit].push_back(snd16);
+	mSoundDefinitions[_sound_16bit].push_back(std::make_unique<SoundsDefinition>());
 	
 	// We mark ourselves as modified...
 	Modify(true);
@@ -229,7 +228,7 @@ wxInputStream& SoundsDocument::LoadObject(wxInputStream& stream)
 	/* Now we load 8-bit and 16-bit sounds */
 	for (int i = 0; i < mSourceCount; i++) {
 		for (int j = 0; j < mSoundCount; j++) {
-			SoundsDefinition *snd = new SoundsDefinition(IsVerbose());
+			auto snd = std::make_unique<SoundsDefinition>(IsVerbose());
 			
 			if (IsVerbose())
 				wxLogDebug(wxT("[SoundsDocument] Loading source %d, sound %d"), i, j);
@@ -245,7 +244,7 @@ wxInputStream& SoundsDocument::LoadObject(wxInputStream& stream)
 			
 			filebuffer.Position(oldpos + SIZEOF_sound_definition);
 			
-			mSoundDefinitions[i].push_back(snd);
+			mSoundDefinitions[i].push_back(std::move(snd));
 		}
 	}
 	
@@ -253,3 +252,120 @@ wxInputStream& SoundsDocument::LoadObject(wxInputStream& stream)
 	return stream;
 }
 
+#if wxUSE_STD_IOSTREAM
+bool SoundsDocument::LoadPatch(wxSTD istream& stream)
+#else
+bool SoundsDocument::LoadPatch(wxInputStream& stream)
+#endif
+{
+#if wxUSE_STD_IOSTREAM
+	stream.seekg(0, std::ios::end);
+	uint32_t filesize = stream.tellg();
+	stream.seekg(0, std::ios::beg);
+#else
+	uint32_t filesize = stream.GetSize();
+#endif
+
+	BigEndianBuffer buffer{filesize};
+
+#if wxUSE_STD_IOSTREAM
+	stream.read(reinterpret_cast<char*>(buffer.Data()), buffer.Size());
+#else
+	stream.Read(reinterpret_cast<char*>(buffer.Data()), buffer.Size());
+#endif
+
+	Modify(true);
+
+	while (buffer.Position() < buffer.Size()) {
+		uint32_t sndc = buffer.ReadULong();
+		if (sndc != FOUR_CHARS_TO_INT('s','n','d','c')) {
+			return false;
+		}
+
+		(void) buffer.ReadShort();
+		uint16_t index = buffer.ReadUShort();
+		uint16_t source = 0;
+		if (index >= 215) {
+			index -= 215;
+			source = 1;
+		}
+
+		// load the sound header and then the permutations
+		auto snd = std::make_unique<SoundsDefinition>(IsVerbose());
+		
+		auto offset = buffer.Position();
+		
+		constexpr bool fromPatch = true;
+		snd->LoadObject(buffer, fromPatch);
+		if (!snd->IsGood()) {
+			return false;
+		}
+
+		auto next = offset + SIZEOF_sound_definition + snd->GetPermutationCount() * 4 + snd->GetTotalLength();
+		mSoundDefinitions[source][index] = std::move(snd);
+
+		if (next < buffer.Size()) {
+			buffer.Position(next);
+		} else {
+			break;
+		}
+	}
+	
+	return true;
+}
+
+#if wxUSE_STD_IOSTREAM
+wxSTD ostream& SoundsDocument::SavePatch(wxSTD ostream& stream, const SoundsDocument& other)
+#else
+wxOutputStream& SoundsDocument::SavePatch(wxOutputStream& stream, const ShapesDocument& other)
+#endif
+{
+	auto count = mSoundDefinitions[0].size();
+	auto other_count = other.mSoundDefinitions[0].size();
+
+	bool warn_215 = false;
+
+	for (auto source = 0; source < 2; ++source) {
+		for (auto i = 0; i < count; ++i) {
+			bool output_definition = false;
+			if (i < other_count) {
+				if (*mSoundDefinitions[source][i] != *other.mSoundDefinitions[source][i]) {
+					if (i < 215) {
+						output_definition = true;
+					} else {
+						warn_215 = true;
+					}
+				}
+			} else if (i < 215) {
+				output_definition = true;
+			} else {
+				warn_215 = true;
+			}
+
+			if (output_definition) {
+				constexpr bool fromPatch = true;
+				BigEndianBuffer buffer{8 + mSoundDefinitions[source][i]->GetSizeInFile(fromPatch)};
+				
+				buffer.WriteULong(FOUR_CHARS_TO_INT('s','n','d','c'));
+				buffer.WriteShort(0);
+				buffer.WriteShort(i + source * 215);
+
+				unsigned int offset = 0;
+				mSoundDefinitions[source][i]->SaveObject(buffer, offset, fromPatch);
+
+#if wxUSE_STD_IOSTREAM
+				stream.write(reinterpret_cast<char*>(buffer.Data()), buffer.Size());
+#else
+				stream.Write(reinterpret_cast<char*>(buffer.Data()), buffer.Size());
+#endif
+			}
+		}
+	}
+
+	if (warn_215) {
+		wxMessageDialog d{GetDocumentWindow(), wxT("Warning: Anvil sounds patches cannot patch sounds past sound index 215. Sounds past index 215 will not be updated in the saved patch."), wxT("Warning: too many sounds"), wxOK | wxCENTRE | wxICON_WARNING};
+		d.ShowModal();
+	}
+
+	return stream;
+}
